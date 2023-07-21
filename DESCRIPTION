@@ -1,0 +1,15 @@
+Package: CDMUtilities
+Title: Methods and Utilities for the OMOP Common Data Model
+Version: 0.0.0.9000
+Authors@R: c(
+    person(
+        "Marti", "Catala", email = "marti.catalasabate@ndorms.ox.ac.uk", 
+        role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3308-9905")
+    ))
+Description: This package provides methods and utilities functionalities for the
+    OMOP Common Data Model based packages. This package also mantains the core
+    classes.
+License: Apache License (>= 2)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
