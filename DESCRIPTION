@@ -16,6 +16,9 @@ RoxygenNote: 7.2.3
 Imports: 
     cli,
     dplyr,
+    here,
     magrittr,
     methods,
-    rlang
+    readr,
+    rlang,
+    zip
