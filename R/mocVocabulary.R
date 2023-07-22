@@ -1,6 +1,6 @@
 # Copyright 2022 DARWIN EU (C)
 #
-# This file is part of DrugUtilisation
+# This file is part of CDMUtilities
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -59,8 +59,20 @@ mockVocabulary <- function(concept = NULL,
   )
 
   # fill tables
-  cdm_source <- fillCdmSource(cdm_source)
-  concept <- fillConcept(concept)
+  cdm_source <- fillColumns(cdm_source, "cdm_source")
+  concept <- fillColumns(concept, "concept")
+  vocabulary <- fillColumns(vocabulary, "vocabulary")
+  domain <- fillColumns(domain, "domain")
+  concept_class <- fillColumns(concept_class, "concept_class")
+  concept_relationship <- fillColumns(
+    concept_relationship, "concept_relationship"
+  )
+  concept_synonym <- fillColumns(concept_synonym, "concept_synonym")
+  concept_ancestor <- fillColumns(concept_ancestor, concept_ancestor)
+  source_to_concept_map <- fillColumns(
+    source_to_concept_map, "source_to_concept_map"
+  )
+  drug_strength <- fillColumns(drug_strength, "drug_strength")
 
   newCdmReference(
     cdmTables = list(
@@ -70,4 +82,12 @@ mockVocabulary <- function(concept = NULL,
     ),
     cdmName = "MOCK VOCABULARY"
   )
+}
+
+fillColumns <- function(table, tableName) {
+  if (is.null(table)) {
+    return(defaultTable(tableName))
+  } else {
+    colnamesToAdd <- tableColnames()colnames(table)
+  }
 }

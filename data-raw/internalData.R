@@ -32,7 +32,30 @@ domainInformation <- readr::read_csv(
   here::here("data-raw", "domain_information.csv"), show_col_types = FALSE
 )
 
+# fields and type of tables
+fieldsTables53 <- readr::read_csv(
+  here::here("data-raw", "OMOP_CDMv5.3_Field_Level.csv"), show_col_types = FALSE
+) %>%
+  dplyr::mutate(cdm_version_53 = 1)
+fieldsTables54 <- readr::read_csv(
+  here::here("data-raw", "OMOP_CDMv5.4_Field_Level.csv"), show_col_types = FALSE
+) %>%
+  dplyr::mutate(cdm_version_54 = 1)
+fieldsTables <- fieldsTables53 %>%
+  full_join(
+    fieldsTables54,
+    by = c("cdmTableName", "cdmFieldName", "isRequired", "cdmDatatype")
+  ) %>%
+  mutate(
+    cdm_version = case_when(
+      cdm_version_53 == 1 & cdm_version_54 == 1 ~ "5.3; 5.4",
+      cdm_version_53 == 1 & cdm_version_54 == 0 ~ "5.3",
+      cdm_version_53 == 0 & cdm_version_54 == 1 ~ "5.4"
+    )
+  ) %>%
+  select(-"cdm_version_53", -"cdm_version_54")
+
 usethis::use_data(
   mockDrugStrength, mockConcept, mockConceptAncestor, domainInformation,
-  internal = TRUE, overwrite = TRUE
+  fieldsTables, internal = TRUE, overwrite = TRUE
 )
