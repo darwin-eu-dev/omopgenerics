@@ -60,82 +60,58 @@ mockCdm <- function(cdmVocabuly,
                     observation = NULL,
                     seed = 1,
                     ...) {
-  # get vocabulary
-  vocab <- vocabularyTables(concept, concept_ancestor, drug_strength)
-  concept <- vocab$concept
-  concept_ancestor <- vocab$concept_ancestor
-  drug_strength <- vocab$drug_strength
-
-  # set seed
-  set.seed(seed)
-
-  # create person if NULL
-  if (is.null(person)) {
-    person <- createPersonTable(numberIndividuals)
-  } else {
-    person <- person %>%
-      dplyr::mutate(birth_datetime = as.Date(
-        paste(
-          .data$year_of_birth,
-          dplyr::if_else(is.na(.data$month_of_birth), 1, .data$month_of_birth),
-          dplyr::if_else(is.na(.data$day_of_birth), 1, .data$day_of_birth),
-          sep = "-"
-        ),
-        "%Y-%m-%d"
-      ))
-  }
-
-  # create observation_period if NULL
-  if (is.null(observation_period)) {
-    observation_period <- createObservationPeriod(person)
-  }
-
-  # create drug_exposure if NULL
-  if (is.null(drug_exposure)) {
-    drug_exposure <- createDrugExposure(observation_period, concept)
-  }
-
-  # create condition_occurrence if NULL
-  if (is.null(condition_occurrence)) {
-    condition_occurrence <- createConditionOccurrence(
-      observation_period, concept
-    )
-  }
-
-  # create observation if NULL
-  if (is.null(observation)) {
-    observation <- createObservation(observation_period, concept)
-  }
-
-  visit_occurrence <- createVisitOccurrence(condition_occurrence, drug_exposure)
-
-  cohorts <- list(...)
-  cohorts <- createCohorts(cohorts, observation_period)
-
-  listTables <- list(
-    concept = concept, concept_ancestor = concept_ancestor,
-    drug_strength = drug_strength, person = person,
-    observation_period = observation_period, drug_exposure = drug_exposure,
-    condition_occurrence = condition_occurrence,
-    visit_occurrence = visit_occurrence, observation = observation
+  # check inputs
+  checkInput(
+    cdmVocabuly = cdmVocabuly, cdmName = cdmName, individuals = individuals,
+    person = person, observation_period = observation_period, death = death,
+    condition_occurrence = condition_occurrence, drug_exposure = drug_exposure,
+    procedure_occurrence = procedure_occurrence,
+    device_exposure = device_exposure, measurement = measurement,
+    observation = observation, seed = seed, listTables = list(...)
   )
 
-  return(cdm)
-}
+  listTables <- c(
+    list(
+      person = person, observation_period = observation_period, death = death,
+      condition_occurrence = condition_occurrence,
+      drug_exposure = drug_exposure, measurement = measurement,
+      procedure_occurrence = procedure_occurrence, observation = observation,
+      device_exposure = device_exposure
+    ),
+    listTables
+  )
 
-#' To create the vocabulary tables
-#' @noRd
-vocabularyTables <- function(concept, concept_ancestor, drug_strength) {
-  if (is.null(concept)) {
-    concept <- mockConcept
-  }
-  if (is.null(concept_ancestor)) {
-    concept_ancestor <- mockConceptAncestor
-  }
-  if (is.null(drug_strength)) {
-    drug_strength <- mockDrugStrength
-  }
-  return(list(concept = concept, concept_ancestor = concept_ancestor, drug_strength = drug_strength))
+  listTables <- c(cdmVocabuly, listTables)
+  cdm <- newCdmReference(cdmTables = listTables, cdmName = cdmName)
+
+  cdm <- generatePerson(cdm = cdm, individuals = individuals, seed = seed)
+  cdm <- generateObservationPeriod(
+    cdm = cdm, observationPeriodPerPerson = 1, seed =seed
+  )
+  cdm <- generateDeath(cdm = cdm, deathFraction = 0.3, seed = seed)
+  cdm <- generateConditionOccurrence(
+    cdm = cdm, conditionOccurrencePerPerson = 3, seed = seed
+  )
+  cdm <- generateDrugExposure(
+    cdm = cdm, drugExposurePerPerson = 5, seed = seed
+  )
+  cdm <- generateMeasurement(
+    cdm = cdm, measurementPerPerson = 2, seed = seed
+  )
+  cdm <- generateProcedureOccurrence(
+    cdm = cdm, procedureOccurrencePerPerson = 1, seed = seed
+  )
+  cdm <- generateObservation(
+    cdm = cdm, observationPerPerson = 1, seed = seed
+  )
+  cdm <- generateDeviceExposure(
+    cdm = cdm, deviceExposurePerPerson = 1, seed = seed
+  )
+  cdm <- generateDrugEra(cdm = cdm)
+  cdm <- generateConditionEra(cdm = cdm)
+  cdm <- generateCohorts(cdm = cdm, numberCohorts = 2, seed = seed)
+
+  return(cdm)
 }
 
 #' To add the cohort set if NULL

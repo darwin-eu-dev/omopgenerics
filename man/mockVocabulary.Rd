@@ -13,7 +13,8 @@ mockVocabulary(
   concept_synonym = NULL,
   concept_ancestor = NULL,
   source_to_concept_map = NULL,
-  drug_strength = NULL
+  drug_strength = NULL,
+  cdm_version = "5.3"
 )
 }
 \arguments{

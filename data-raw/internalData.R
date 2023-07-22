@@ -49,8 +49,8 @@ fieldsTables <- fieldsTables53 %>%
   mutate(
     cdm_version = case_when(
       cdm_version_53 == 1 & cdm_version_54 == 1 ~ "5.3; 5.4",
-      cdm_version_53 == 1 & cdm_version_54 == 0 ~ "5.3",
-      cdm_version_53 == 0 & cdm_version_54 == 1 ~ "5.4"
+      cdm_version_53 == 1 & is.na(cdm_version_54) ~ "5.3",
+      is.na(cdm_version_53) & cdm_version_54 == 1 ~ "5.4"
     )
   ) %>%
   select(-"cdm_version_53", -"cdm_version_54")

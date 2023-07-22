@@ -47,7 +47,8 @@ mockVocabulary <- function(concept = NULL,
                            concept_synonym = NULL,
                            concept_ancestor = NULL,
                            source_to_concept_map = NULL,
-                           drug_strength = NULL) {
+                           drug_strength = NULL,
+                           cdm_version = "5.3") {
   # check inputs
   checkInput(
     cdm_source = cdm_source, concept = concept, vocabulary = vocabulary,
@@ -55,24 +56,28 @@ mockVocabulary <- function(concept = NULL,
     concept_class= concept_class, concept_relationship = concept_relationship,
     concept_synonym = concept_synonym, concept_ancestor = concept_ancestor,
     source_to_concept_map = source_to_concept_map,
-    drug_strength = drug_strength
+    drug_strength = drug_strength, cdm_version = cdm_version
   )
 
   # fill tables
-  cdm_source <- fillColumns(cdm_source, "cdm_source")
-  concept <- fillColumns(concept, "concept")
-  vocabulary <- fillColumns(vocabulary, "vocabulary")
-  domain <- fillColumns(domain, "domain")
-  concept_class <- fillColumns(concept_class, "concept_class")
+  cdm_source <- fillColumns(cdm_source, "cdm_source", cdm_version)
+  concept <- fillColumns(concept, "concept", cdm_version)
+  vocabulary <- fillColumns(vocabulary, "vocabulary", cdm_version)
+  domain <- fillColumns(domain, "domain", cdm_version)
+  concept_class <- fillColumns(concept_class, "concept_class", cdm_version)
   concept_relationship <- fillColumns(
-    concept_relationship, "concept_relationship"
+    concept_relationship, "concept_relationship", cdm_version
   )
-  concept_synonym <- fillColumns(concept_synonym, "concept_synonym")
-  concept_ancestor <- fillColumns(concept_ancestor, concept_ancestor)
+  concept_synonym <- fillColumns(
+    concept_synonym, "concept_synonym", cdm_version
+  )
+  concept_ancestor <- fillColumns(
+    concept_ancestor, concept_ancestor, cdm_version
+  )
   source_to_concept_map <- fillColumns(
-    source_to_concept_map, "source_to_concept_map"
+    source_to_concept_map, "source_to_concept_map", cdm_version
   )
-  drug_strength <- fillColumns(drug_strength, "drug_strength")
+  drug_strength <- fillColumns(drug_strength, "drug_strength", cdm_version)
 
   newCdmReference(
     cdmTables = list(
@@ -84,10 +89,57 @@ mockVocabulary <- function(concept = NULL,
   )
 }
 
-fillColumns <- function(table, tableName) {
+fillColumns <- function(table, tableName, cdm_version) {
   if (is.null(table)) {
     return(defaultTable(tableName))
   } else {
-    colnamesToAdd <- tableColnames()colnames(table)
+    return(correctTable(table, tableName, cdm_version))
   }
+}
+
+defaultTable <- function(tableName) {
+  tableName <- paste0(
+    "mock",
+    substr(toupper(tableName), 1, 1),
+    substr(
+      tableName, 2, nchar(tableName)
+    )
+  )
+  return(eval(parse(text = tableName)))
+}
+
+correctTable <- function(table, tableName, cdm_version) {
+  expectedColnames <- fieldsTables %>%
+    dplyr::filter(
+      grepl(.env$cdm_version, .data$cdm_version) &
+        .data$cdmTableName == .env$tableName
+    )
+  requiredColnames <- expectedColnames %>%
+    dplyr::filter(.data$isRequired == TRUE) %>%
+    dplyr::pull("cdmFieldName")
+  optionalColnames <- expectedColnames %>%
+    dplyr::filter(.data$isRequired == FALSE) %>%
+    dplyr::pull("cdmFieldName")
+  colnamesToAdd <- setdiff(requiredColnames, colnames(table))
+  colnamesToRemove <- setdiff(
+    colnames(table), c(requiredColnames, optionalColnames)
+  )
+  if (length(colnamesToRemove) > 0) {
+    cli::cli_warn(paste0(
+      "Extra fields (", paste0(colnamesToRemove, ", "), ") removed from:",
+      tableName
+    ))
+  }
+  for (k in seq_along(colnamesToAdd)) {
+    type <- expectedColnames %>%
+      dplyr::filter(.data$cdmFieldName == .env$colnamesToAdd[k]) %>%
+      dplyr::pull("cdmDatatype")
+    table <- table %>%
+      dplyr::mutate(
+        !!expectedColnames[k] := as.character(NA) # correct for type
+      )
+  }
+  table <- table %>%
+    dplyr::select(dplyr::any_of(expectedColnames[["cdmFieldName"]]))
+  return(table)
 }
