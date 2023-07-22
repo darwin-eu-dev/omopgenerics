@@ -3,6 +3,7 @@
 export("%>%")
 export(bind)
 export(checkInput)
+export(checkListTables)
 export(export)
 export(exportResults)
 export(mockCdm)
