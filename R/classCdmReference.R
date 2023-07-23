@@ -26,7 +26,7 @@
 #'
 newCdmReference <- function(cdmTables, cdmName) {
   # initial input check
-  #checkInput(cdmTables = cdmTables, cdmName = cdmName)
+  # checkInput(cdmTables = cdmTables, cdmName = cdmName)
 
   attr(cdmTables, "cdm_name") <- cdmName
   class(cdmTables) <- "cdm_reference"

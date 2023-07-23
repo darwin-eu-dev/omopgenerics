@@ -2,15 +2,23 @@
 % Please edit documentation in R/setTemporary.R
 \name{setTemporary}
 \alias{setTemporary}
-\title{Set temporary (or premanent) behaviour for compute functions.}
+\title{Set temporary (or permanent) behavior for compute functions.}
 \usage{
 setTemporary(intermediateAsTemp = TRUE, cohortAsTemp = FALSE)
 }
 \arguments{
-\item{intermediate}{Whether intermediate tables should be temporary.}
+\item{intermediateAsTemp}{Whether intermediate tables should be temporary.}
 
-\item{cohort}{Whether cohort tables should be temporary.}
+\item{cohortAsTemp}{Whether cohort tables should be temporary.}
 }
 \description{
-Set temporary (or premanent) behaviour for compute functions.
+Set temporary (or permanent) behavior for compute functions.
+}
+\examples{
+\donttest{
+library(CDMUtilities)
+
+setTemporary(intermediateAsTemp = TRUE, cohortAsTemp = FALSE)
+}
+
 }

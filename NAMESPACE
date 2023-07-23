@@ -2,6 +2,7 @@
 
 export("%>%")
 export(bind)
+export(checkCdmName)
 export(checkInput)
 export(checkListTables)
 export(export)

@@ -41,10 +41,10 @@ exportResults <- function(...,
                           resultsStem = "results",
                           zip = FALSE) {
   # initial checks
-  #elements <- list(...)
-  #checkInput(
-  #  eleemnts = elements, path = path, resultsStem = resultsStem, zip = zip
-  #)
+  elements <- list(...)
+  checkInput(
+    elements = elements, path = path, resultsStem = resultsStem, zip = zip
+  )
 
   # put names
   names(elements) <- paste0(resultsStem, names(elements), ".csv")
@@ -63,5 +63,6 @@ exportResults <- function(...,
     )
   }
 
-  invisible(NULL)
+  # return
+  return(invisible(NULL))
 }

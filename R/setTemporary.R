@@ -14,19 +14,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Set temporary (or premanent) behaviour for compute functions.
+#' Set temporary (or permanent) behavior for compute functions.
 #'
-#' @param intermediate Whether intermediate tables should be temporary.
-#' @param cohort Whether cohort tables should be temporary.
+#' @param intermediateAsTemp Whether intermediate tables should be temporary.
+#' @param cohortAsTemp Whether cohort tables should be temporary.
 #'
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(CDMUtilities)
+#'
+#' setTemporary(intermediateAsTemp = TRUE, cohortAsTemp = FALSE)
+#' }
+#'
 setTemporary <- function(intermediateAsTemp = TRUE,
                          cohortAsTemp = FALSE) {
+  # check inputs
   checkInput(
     intermediateAsTemp = intermediateAsTemp, cohortAsTemp = cohortAsTemp
   )
+
+  # set options
   options("intermediate_as_temp" = intermediateAsTemp)
   options("cohort_as_temp" = cohortAsTemp)
-  invisible(NULL)
+
+  # return
+  return(invisible(NULL))
 }
