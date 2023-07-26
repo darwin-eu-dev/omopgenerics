@@ -35,7 +35,6 @@ export <- function(...) {
 #' @export
 #'
 export.GeneratedCohortSet <- function(cohort) {
-  checkInput(cohort = cohort)
   cohortSet(cohort) %>%
     dplyr::inner_join(cohortAttrition(cohort), by = "cohort_definition_id")
 }
@@ -49,8 +48,6 @@ export.GeneratedCohortSet <- function(cohort) {
 #' @export
 #'
 export.cdm_reference <- function(cdm) {
-  checkInput(cdm = cdm)
-
   person_count <- cdm[["person"]] %>% dplyr::tally() %>% dplyr::pull("n")
   observation_period_count <- cdm[["observation_period"]] %>%
     dplyr::tally() %>%

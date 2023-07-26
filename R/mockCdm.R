@@ -70,15 +70,12 @@ mockCdm <- function(cdmVocabuly,
     observation = observation, seed = seed, listTables = list(...)
   )
 
-  listTables <- c(
-    list(
-      person = person, observation_period = observation_period, death = death,
-      condition_occurrence = condition_occurrence,
-      drug_exposure = drug_exposure, measurement = measurement,
-      procedure_occurrence = procedure_occurrence, observation = observation,
-      device_exposure = device_exposure
-    ),
-    listTables
+  listTables <- list(
+    person = person, observation_period = observation_period, death = death,
+    condition_occurrence = condition_occurrence,
+    drug_exposure = drug_exposure, measurement = measurement,
+    procedure_occurrence = procedure_occurrence, observation = observation,
+    device_exposure = device_exposure, ...
   )
 
   listTables <- c(cdmVocabuly, listTables)
@@ -159,7 +156,13 @@ addCohortAttrition <- function(cohort) {
 
 #' To create the person tables
 #' @noRd
-createPersonTable <- function(numberIndividuals) {
+generatePerson <- function(cdm, individuals, seed) {
+  if (is.numeric(individuals)) {
+    individuals <- dplyr::tibble(
+      number_individuals = individuals, sex = "Both", age_min = 0,
+      age_max = 150, start = as.Date(NA), end = as.Date(NA)
+    )
+  }
   person <- dplyr::tibble(
     person_id = 1:numberIndividuals,
     gender_concept_id = sample(c(8507, 8532), numberIndividuals, T),

@@ -26,7 +26,7 @@
 #'
 newCdmReference <- function(cdmTables, cdmName) {
   # initial input check
-  # checkInput(cdmTables = cdmTables, cdmName = cdmName)
+  checkInput(cdmTables = cdmTables, cdmName = cdmName)
 
   attr(cdmTables, "cdm_name") <- cdmName
   class(cdmTables) <- "cdm_reference"
@@ -61,3 +61,17 @@ newCdmReference <- function(cdmTables, cdmName) {
   return(tbl)
 }
 
+#' Print a CDM reference object
+#'
+#' @param x A cdm_reference object
+#' @param ... Included for compatibility with generic. Not used.
+#'
+#' @return Invisibly returns the input
+#' @export
+print.cdm_reference <- function(x, ...) {
+  type <- class(x[[1]])[[1]]
+  cli::cat_line(glue::glue("# OMOP CDM reference ({type})"))
+  cli::cat_line("")
+  cli::cat_line(paste("Tables:", paste(names(x), collapse = ", ")))
+  invisible(x)
+}
