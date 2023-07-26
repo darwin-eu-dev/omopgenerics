@@ -89,6 +89,23 @@ newGeneratedCohortSet <- function(cohortTable,
   return(cohortTable)
 }
 
+#' To assess if an object is a valid GeneratedCohortSet.
+#'
+#' @param cohortTable Table to validate
+#'
+#' @return invisible(cohortTable)
+#'
+#' @export
+#'
+#' @examples
+#' \donttest{
+#' library(CDMUtilities)
+#'
+#' cdm <- mockCdm()
+#'
+#' validateGeneratedCohortSet(cdm$cohort1)
+#' }
+#'
 validateGeneratedCohortSet <- function(cohortTable) {
   # class
   if (!("GeneratedCohortSet" %in% class(cohortTable))) {
@@ -97,6 +114,7 @@ validateGeneratedCohortSet <- function(cohortTable) {
       object"
     )
   }
+
   # attributes exist
   if (!all(
     c("cohort_set", "cohort_count", "cohort_attrition") %in%
@@ -107,6 +125,13 @@ validateGeneratedCohortSet <- function(cohortTable) {
       a GeneretedCohortSet object."
     )
   }
+
+  # get attributes
+  cohort <- cohortTable
+  cohort_set <- attr(cohortTable, "cohort_set")
+  cohort_count <- attr(cohortTable, "cohort_count")
+  cohort_attrition <- attr(cohortTable, "cohort_attrition")
+
   checkColumns <- function(x, cols, nam) {
     if (!all(cols %in% colnames(x))) {
       cli::cli_abort(paste0(
@@ -123,37 +148,78 @@ validateGeneratedCohortSet <- function(cohortTable) {
       "cohort_end_date"),
     "the cohort"
   )
+  clCohort <- cl(cohort)
+  clCohortSet <- cl(cohort_set)
+  clCohortCount <- cl(cohort_count)
+  clCohortAttrition <- cl(cohort_attrition)
   # classes attributes
-  classCohort <- paste0(class(cohortTable), collapse = ", ")
-  classCohortSet <- paste0(
-    class(attr(cohortTable, "cohort_set")), collapse = ", "
-  )
-  classCohortCount <- paste0(
-    class(attr(cohortTable, "cohort_count")), collapse = ", "
-  )
-  classCohortAttrition <- paste0(
-    class(attr(cohortTable, "cohort_attrition")), collapse = ", "
-  )
-  if (class())
-  # validate set
+  if (!equal(clCohort, clCohortSet, clCohortCount, clCohortAttrition)) {
+    cli::cli_abort(c(
+      "class of cohort objects must be the same:",
+      paste0("** class(cohort) = ", clCohort),
+      paste0("** class(cohort_set) = ", clCohortSet),
+      paste0("** class(cohort_attrition) = ", clCohortAttrition),
+      paste0("** class(cohort_count) = ", clCohortCount)
+    ))
+  }
+
+  # set columns
   checkColumns(
     attr(cohortTable, "cohort_set"), c("cohort_definition_id", "cohort_name"),
     "the cohort_set"
   )
-  # validate count
+
+  # count columns
   checkColumns(
     attr(cohortTable, "cohort_count"),
     c("cohort_definition_id", "number_records", "number_subjects"),
     "the cohort_count"
   )
-  # validate attrition
+
+  # attrition columns
   checkColumns(
     attr(cohortTable, "cohort_attrition"),
     c("cohort_definition_id", "number_records", "number_subjects", "reason_id",
       "reason", "excluded_records", "excluded_subjects"),
     "the cohort_attrition"
   )
+
   # cohort_definition_id the same
-  # validate cohort overlap
-  # in observation
+  cdiCohort <- cdi(cohort)
+  cdiCohortSet <- cdi(cohort_set)
+  cdiCohortCount <- cdi(cohort_count)
+  cdiCohortAttrition <- cdi(cohort_attrition)
+  if (!equal(cdiCohort, cdiCohortSet, cdiCohortCount, cdiCohortAttrition)) {
+    cli::cli_abort(c(
+      "Present cohort_definition_id must be the same in all elements",
+      paste0("** cohort :", cdiCohort),
+      paste0("** cohort_set : ", cdiCohortSet),
+      paste0("** cohort_attrition : ", cdiCohortCount),
+      paste0("** cohort_count : ", cdiCohortAttrition)
+    ))
+  }
+
+  # validate cohort overlap?
+  # in observation?
+
+  return(invisible(cohortTable))
+}
+
+equal <- function(...) {
+  x <- list(...)
+  flag <- TRUE
+  for (k in 2:length(x)) {
+    flag <- flag & all(x[[1]]==x[[k]])
+  }
+  return(flag)
+}
+cl <- function(x) {
+  paste0(class(x), collapse = ", ")
+}
+gi <- function(x) {
+  x %>%
+    dplyr::select("cohort_definition_id") %>%
+    dplyr::distinct() %>%
+    dplyr::pull() %>%
+    sort()
 }
