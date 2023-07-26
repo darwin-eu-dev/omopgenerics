@@ -2,6 +2,10 @@
 
 S3method("$",cdm_reference)
 S3method("[[",cdm_reference)
+S3method(bind,GeneratedCohortSet)
+S3method(bind,cdm_reference)
+S3method(export,GeneratedCohortSet)
+S3method(export,cdm_reference)
 export("%>%")
 export(bind)
 export(checkCdmName)
