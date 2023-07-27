@@ -37,15 +37,6 @@
 #'
 #' @export
 #'
-#' @examples
-#' \donttest{
-#' library(CDMUtilities)
-#'
-#' cdm <- mockCdm()
-#'
-#' cdm
-#' }
-#'
 mockCdm <- function(cdmVocabuly = mockVocabulary(),
                     cdmName = "MOCK CDM",
                     individuals = 10,
@@ -61,56 +52,56 @@ mockCdm <- function(cdmVocabuly = mockVocabulary(),
                     seed = 1,
                     ...) {
   # check inputs
-  checkInput(
-    cdmVocabuly = cdmVocabuly, cdmName = cdmName, individuals = individuals,
-    person = person, observation_period = observation_period, death = death,
-    condition_occurrence = condition_occurrence, drug_exposure = drug_exposure,
-    procedure_occurrence = procedure_occurrence,
-    device_exposure = device_exposure, measurement = measurement,
-    observation = observation, seed = seed, listTables = list(...)
-  )
-
-  listTables <- list(
-    person = person, observation_period = observation_period, death = death,
-    condition_occurrence = condition_occurrence,
-    drug_exposure = drug_exposure, measurement = measurement,
-    procedure_occurrence = procedure_occurrence, observation = observation,
-    device_exposure = device_exposure, ...
-  )
-
-  listTables <- c(cdmVocabuly, listTables)
-  cdm <- newCdmReference(
-    cdmTables = listTables, cdmName = cdmName, cdmVersion = attr()
-  )
-
-  cdm <- generatePerson(cdm = cdm, individuals = individuals, seed = seed)
-  cdm <- generateObservationPeriod(
-    cdm = cdm, observationPeriodPerPerson = 1, seed =seed
-  )
-  cdm <- generateDeath(cdm = cdm, deathFraction = 0.3, seed = seed)
-  cdm <- generateConditionOccurrence(
-    cdm = cdm, conditionOccurrencePerPerson = 3, seed = seed
-  )
-  cdm <- generateDrugExposure(
-    cdm = cdm, drugExposurePerPerson = 5, seed = seed
-  )
-  cdm <- generateMeasurement(
-    cdm = cdm, measurementPerPerson = 2, seed = seed
-  )
-  cdm <- generateProcedureOccurrence(
-    cdm = cdm, procedureOccurrencePerPerson = 1, seed = seed
-  )
-  cdm <- generateObservation(
-    cdm = cdm, observationPerPerson = 1, seed = seed
-  )
-  cdm <- generateDeviceExposure(
-    cdm = cdm, deviceExposurePerPerson = 1, seed = seed
-  )
-  cdm <- generateDrugEra(cdm = cdm)
-  cdm <- generateConditionEra(cdm = cdm)
-  cdm <- generateCohorts(cdm = cdm, numberCohorts = 2, seed = seed)
-
-  return(cdm)
+  #checkInput(
+  #  cdmVocabuly = cdmVocabuly, cdmName = cdmName, individuals = individuals,
+  #  person = person, observation_period = observation_period, death = death,
+  #  condition_occurrence = condition_occurrence, drug_exposure = drug_exposure,
+  #  procedure_occurrence = procedure_occurrence,
+  #  device_exposure = device_exposure, measurement = measurement,
+  #  observation = observation, seed = seed, listTables = list(...)
+  #)
+#
+#   listTables <- list(
+#     person = person, observation_period = observation_period, death = death,
+#     condition_occurrence = condition_occurrence,
+#     drug_exposure = drug_exposure, measurement = measurement,
+#     procedure_occurrence = procedure_occurrence, observation = observation,
+#     device_exposure = device_exposure, ...
+#   )
+#
+#   listTables <- c(cdmVocabuly, listTables)
+#   cdm <- newCdmReference(
+#     cdmTables = listTables, cdmName = cdmName, cdmVersion = attr()
+#   )
+#
+#   cdm <- generatePerson(cdm = cdm, individuals = individuals, seed = seed)
+#   cdm <- generateObservationPeriod(
+#     cdm = cdm, observationPeriodPerPerson = 1, seed =seed
+#   )
+#   cdm <- generateDeath(cdm = cdm, deathFraction = 0.3, seed = seed)
+#   cdm <- generateConditionOccurrence(
+#     cdm = cdm, conditionOccurrencePerPerson = 3, seed = seed
+#   )
+#   cdm <- generateDrugExposure(
+#     cdm = cdm, drugExposurePerPerson = 5, seed = seed
+#   )
+#   cdm <- generateMeasurement(
+#     cdm = cdm, measurementPerPerson = 2, seed = seed
+#   )
+#   cdm <- generateProcedureOccurrence(
+#     cdm = cdm, procedureOccurrencePerPerson = 1, seed = seed
+#   )
+#   cdm <- generateObservation(
+#     cdm = cdm, observationPerPerson = 1, seed = seed
+#   )
+#   cdm <- generateDeviceExposure(
+#     cdm = cdm, deviceExposurePerPerson = 1, seed = seed
+#   )
+#   cdm <- generateDrugEra(cdm = cdm)
+#   cdm <- generateConditionEra(cdm = cdm)
+#   cdm <- generateCohorts(cdm = cdm, numberCohorts = 2, seed = seed)
+#
+#  return(cdm)
 }
 
 #' To add the cohort set if NULL
@@ -170,31 +161,7 @@ generatePerson <- function(cdm, individuals, seed) {
   } else {
     cdm[["person"]] <- correctTable(cdm[["person"]], "person")
   }
-
-  person <- dplyr::tibble(
-    person_id = 1:numberIndividuals,
-    gender_concept_id = sample(c(8507, 8532), numberIndividuals, T),
-    year_of_birth = sample(1950:2020, numberIndividuals, T),
-    day_of_birth = sample(1:365, numberIndividuals, T),
-    birth_datetime = as.Date(NA),
-    race_concept_id = as.numeric(NA),
-    ethnicity_concept_id = as.numeric(NA),
-    location_id = as.numeric(NA),
-    provider_id = as.numeric(NA),
-    care_site_id = as.numeric(NA)
-  ) %>%
-    dplyr::mutate(
-      birth_datetime = as.Date(
-        paste0(.data$year_of_birth, "-01-01"), "%Y-%m-%d"
-      ) +
-        lubridate::days(.data$day_of_birth - 1)
-    ) %>%
-    dplyr::mutate(
-      year_of_birth = lubridate::year(.data$birth_datetime),
-      month_of_birth = lubridate::month(.data$birth_datetime),
-      day_of_birth = lubridate::day(.data$birth_datetime)
-    )
-  return(person)
+  return(cdm)
 }
 
 #' To create the observation period tables

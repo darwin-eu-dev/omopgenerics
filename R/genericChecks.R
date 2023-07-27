@@ -18,7 +18,7 @@
 
 #' @noRd
 checkCharacter <- function(x,
-                           names = FALSE,
+                           named = FALSE,
                            len = NULL,
                            error) {
   if (!is.list(x)) {

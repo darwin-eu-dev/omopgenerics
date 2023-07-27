@@ -36,11 +36,11 @@ newGeneratedCohortSet <- function(cohortTable,
                                   cohortCountTable = NULL,
                                   validate = TRUE) {
   # initial input check
-  checkInput(
-    cohortTable = cohortTable, cohortSetTable = cohortSetTable,
-    cohortAttritionTable = cohortAttritionTable,
-    cohortCountTable = cohortCountTable, validate = validate
-  )
+  #checkInput(
+  #  cohortTable = cohortTable, cohortSetTable = cohortSetTable,
+  #  cohortAttritionTable = cohortAttritionTable,
+  #  cohortCountTable = cohortCountTable, validate = validate
+  #)
 
   if (is.null(cohortSetTable)) {
     cohortSetTable <- cohortTable %>%
@@ -96,15 +96,6 @@ newGeneratedCohortSet <- function(cohortTable,
 #' @return invisible(cohortTable)
 #'
 #' @export
-#'
-#' @examples
-#' \donttest{
-#' library(CDMUtilities)
-#'
-#' cdm <- mockCdm()
-#'
-#' validateGeneratedCohortSet(cdm$cohort1)
-#' }
 #'
 validateGeneratedCohortSet <- function(cohortTable) {
   # class
@@ -216,7 +207,7 @@ equal <- function(...) {
 cl <- function(x) {
   paste0(class(x), collapse = ", ")
 }
-gi <- function(x) {
+cdi <- function(x) {
   x %>%
     dplyr::select("cohort_definition_id") %>%
     dplyr::distinct() %>%

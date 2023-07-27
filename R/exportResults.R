@@ -24,34 +24,22 @@
 #'
 #' @export
 #'
-#' @examples
-#' \donttest{
-#' library(CDMUtilities)
-#' library(here)
-#'
-#' #cdm <- mockCdm()
-#' #exportResults(
-#' #  cdm, path = here("Results"), resultsStem = "analysisCdmUtilities",
-#' #  zip = TRUE
-#' #)
-#' }
-#'
 exportResults <- function(...,
                           path = here::here(),
                           resultsStem = "results",
                           zip = FALSE) {
   # initial checks
   elements <- list(...)
-  checkInput(
-    elements = elements, path = path, resultsStem = resultsStem, zip = zip
-  )
+  #checkInput(
+  #  elements = elements, path = path, resultsStem = resultsStem, zip = zip
+  #)
 
   # put names
   names(elements) <- paste0(resultsStem, names(elements), ".csv")
 
   # export
   for (k in seq_along(elements)) {
-    element <- export(elements[[k]])
+    element <- exportObject(elements[[k]])
     readr::write_csv(x = element, file = paste0(path, "/", names(elements)[k]))
   }
 

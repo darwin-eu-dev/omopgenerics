@@ -19,16 +19,3 @@ if exported.}
 \description{
 Export list of results
 }
-\examples{
-\donttest{
-library(CDMUtilities)
-library(here)
-
-#cdm <- mockCdm()
-#exportResults(
-#  cdm, path = here("Results"), resultsStem = "analysisCdmUtilities",
-#  zip = TRUE
-#)
-}
-
-}

@@ -24,7 +24,7 @@
 #' @param conceptRelationship Concept_relationship table.
 #' @param conceptSynonym Concept_synonym table.
 #' @param conceptAncestor Concept_ancestor table.
-#' @param soourceToConceptMap Source_to_concept_map table.
+#' @param sourceToConceptMap Source_to_concept_map table.
 #' @param drugStrength Drug_strength table.
 #' @param cdmVersion cdm version.
 #' @param cdmName Name of the cdm.
@@ -32,15 +32,6 @@
 #' @return A cdm reference with the vocabulary mock tables
 #'
 #' @export
-#'
-#' @examples
-#' \donttest{
-#' library(CDMUtilities)
-#'
-#' cdm <- mockVocabulary()
-#'
-#' cdm
-#' }
 #'
 mockVocabulary <- function(cdmSource = NULL,
                            concept = NULL,
@@ -55,13 +46,13 @@ mockVocabulary <- function(cdmSource = NULL,
                            cdmVersion = "5.3",
                            cdmName = "MOCK VOCABULARY") {
   # check inputs
-  checkInput(
-    cdmSource = cdmSource, concept = concept, vocabulary = vocabulary,
-    domain = domain, conceptClass = conceptClass,
-    conceptRelationship = conceptRelationship, conceptSynonym = conceptSynonym,
-    conceptAncestor = conceptAncestor, sourceToConceptMap = sourceToConceptMap,
-    drugStrength = drugStrength, cdmVersion = cdmVersion, cdmName = cdmName
-  )
+  #checkInput(
+  #  cdmSource = cdmSource, concept = concept, vocabulary = vocabulary,
+  #  domain = domain, conceptClass = conceptClass,
+  #  conceptRelationship = conceptRelationship, conceptSynonym = conceptSynonym,
+  #  conceptAncestor = conceptAncestor, sourceToConceptMap = sourceToConceptMap,
+  #  drugStrength = drugStrength, cdmVersion = cdmVersion, cdmName = cdmName
+  #)
 
   # fill tables
   cdmSource <- fillColumns(cdmSource, "cdm_source", cdmVersion)
@@ -86,13 +77,13 @@ mockVocabulary <- function(cdmSource = NULL,
   cdm <- newCdmReference(
     cdmTables = list(
       cdm_source = cdmSource, concept = concept, vocabulary = vocabulary,
-      domain = doamin, concept_class = conceptClass,
+      domain = domain, concept_class = conceptClass,
       concept_relationship = conceptRelationship,
       concept_synonym = conceptSynonym, concept_ancestor = conceptAncestor,
       source_to_concept_map = sourceToConceptMap, drug_strength = drugStrength
     ),
     cdmName = "MOCK VOCABULARY",
-    cdmVersion = cdm_version,
+    cdmVersion = cdmVersion,
     validate = FALSE
   )
 

@@ -29,6 +29,7 @@ bind <- function(...) {
 #' Bind multiple cdm_reference objects.
 #'
 #' @param ... Multiple cdm_reference objects.
+#' @param newCdmName Name of the new cdm object.
 #'
 #' @return New cdm_reference.
 #'
@@ -95,7 +96,7 @@ getNewIds <- function(listOfCohorts) {
     ids <- ids %>%
       dplyr::union_all(
         ids %>%
-          inner_join(
+          dplyr::inner_join(
             cs %>%
               dplyr::select("cohort_definition_id", "cohort_name"),
             by = "cohort_name"
@@ -110,7 +111,7 @@ getNewIds <- function(listOfCohorts) {
             new_cohort_definition_id = dplyr::row_number(), cohort = k
           ) %>%
           dplyr::mutate(
-            new_cohort_definition_id = new_cohort_definition_id + max(
+            new_cohort_definition_id = .data$new_cohort_definition_id + max(
               ids$new_cohort_definition_id
             )
           )

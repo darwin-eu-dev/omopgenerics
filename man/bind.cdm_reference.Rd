@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{...}{Multiple cdm_reference objects.}
+
+\item{newCdmName}{Name of the new cdm object.}
 }
 \value{
 New cdm_reference.

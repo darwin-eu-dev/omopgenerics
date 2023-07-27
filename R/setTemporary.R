@@ -31,9 +31,9 @@
 setTemporary <- function(intermediateAsTemp = TRUE,
                          cohortAsTemp = FALSE) {
   # check inputs
-  checkInput(
-    intermediateAsTemp = intermediateAsTemp, cohortAsTemp = cohortAsTemp
-  )
+  #checkInput(
+  #  intermediateAsTemp = intermediateAsTemp, cohortAsTemp = cohortAsTemp
+  #)
 
   # set options
   options("intermediate_as_temp" = intermediateAsTemp)

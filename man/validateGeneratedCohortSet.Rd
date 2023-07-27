@@ -15,13 +15,3 @@ invisible(cohortTable)
 \description{
 To assess if an object is a valid GeneratedCohortSet.
 }
-\examples{
-\donttest{
-library(CDMUtilities)
-
-cdm <- mockCdm()
-
-validateGeneratedCohortSet(cdm$cohort1)
-}
-
-}

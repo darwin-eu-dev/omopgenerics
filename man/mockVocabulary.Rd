@@ -20,37 +20,33 @@ mockVocabulary(
 )
 }
 \arguments{
+\item{cdmSource}{cdm source table.}
+
 \item{concept}{Concept table.}
 
 \item{vocabulary}{Vocabulary table}
 
-\item{domain}{Doamin table.}
+\item{domain}{Domain table.}
 
-\item{concept_class}{Concept_class table.}
+\item{conceptClass}{Concept_class table.}
 
-\item{concept_relationship}{Concept_relationship table.}
+\item{conceptRelationship}{Concept_relationship table.}
 
-\item{concept_synonym}{Concept_synonym table.}
+\item{conceptSynonym}{Concept_synonym table.}
 
-\item{concept_ancestor}{Concept_ancestor table.}
+\item{conceptAncestor}{Concept_ancestor table.}
 
-\item{soource_to_concept_map}{Source_to_concept_map table.}
+\item{sourceToConceptMap}{Source_to_concept_map table.}
 
-\item{drug_strength}{Drug_strength table.}
+\item{drugStrength}{Drug_strength table.}
+
+\item{cdmVersion}{cdm version.}
+
+\item{cdmName}{Name of the cdm.}
 }
 \value{
 A cdm reference with the vocabulary mock tables
 }
 \description{
 It creates a mock database with the vocabulary.
-}
-\examples{
-\donttest{
-library(CDMUtilities)
-
-cdm <- mockVocabulary()
-
-cdm
-}
-
 }

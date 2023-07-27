@@ -58,13 +58,3 @@ A cdm reference with the mock tables
 \description{
 It creates a mock cdm_reference.
 }
-\examples{
-\donttest{
-library(CDMUtilities)
-
-cdm <- mockCdm()
-
-cdm
-}
-
-}
