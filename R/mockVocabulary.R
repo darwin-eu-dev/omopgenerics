@@ -64,34 +64,39 @@ mockVocabulary <- function(cdmSource = NULL,
   )
 
   # fill tables
-  cdm_source <- fillColumns(cdm_source, "cdm_source", cdmVersion)
+  cdmSource <- fillColumns(cdmSource, "cdm_source", cdmVersion)
   concept <- fillColumns(concept, "concept", cdmVersion)
   vocabulary <- fillColumns(vocabulary, "vocabulary", cdmVersion)
   domain <- fillColumns(domain, "domain", cdmVersion)
-  concept_class <- fillColumns(concept_class, "concept_class", cdmVersion)
-  concept_relationship <- fillColumns(
-    concept_relationship, "concept_relationship", cdmVersion
+  conceptClass <- fillColumns(conceptClass, "concept_class", cdmVersion)
+  conceptRelationship <- fillColumns(
+    conceptRelationship, "concept_relationship", cdmVersion
   )
-  concept_synonym <- fillColumns(
-    concept_synonym, "concept_synonym", cdmVersion
+  conceptSynonym <- fillColumns(
+    conceptSynonym, "concept_synonym", cdmVersion
   )
-  concept_ancestor <- fillColumns(
-    concept_ancestor, concept_ancestor, cdmVersion
+  conceptAncestor <- fillColumns(
+    conceptAncestor, "concept_ancestor", cdmVersion
   )
-  source_to_concept_map <- fillColumns(
-    source_to_concept_map, "source_to_concept_map", cdmVersion
+  sourceToConceptMap <- fillColumns(
+    sourceToConceptMap, "source_to_concept_map", cdmVersion
   )
-  drug_strength <- fillColumns(drug_strength, "drug_strength", cdmVersion)
+  drugStrength <- fillColumns(drugStrength, "drug_strength", cdmVersion)
 
-  newCdmReference(
+  cdm <- newCdmReference(
     cdmTables = list(
-      cdm_source, concept, vocabulary, domain, concept_class,
-      concept_relationship, concept_synonym, concept_ancestor,
-      source_to_concept_map, drug_strength
+      cdm_source = cdmSource, concept = concept, vocabulary = vocabulary,
+      domain = doamin, concept_class = conceptClass,
+      concept_relationship = conceptRelationship,
+      concept_synonym = conceptSynonym, concept_ancestor = conceptAncestor,
+      source_to_concept_map = sourceToConceptMap, drug_strength = drugStrength
     ),
     cdmName = "MOCK VOCABULARY",
-    cdmVersion = cdm_version
+    cdmVersion = cdm_version,
+    validate = FALSE
   )
+
+  return(cdm)
 }
 
 fillColumns <- function(table, tableName, cdm_version) {
