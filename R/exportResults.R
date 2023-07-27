@@ -39,7 +39,7 @@ exportResults <- function(...,
 
   # export
   for (k in seq_along(elements)) {
-    element <- exportObject(elements[[k]])
+    element <- export(elements[[k]])
     readr::write_csv(x = element, file = paste0(path, "/", names(elements)[k]))
   }
 
