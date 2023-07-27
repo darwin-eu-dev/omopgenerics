@@ -46,7 +46,7 @@
 #' cdm
 #' }
 #'
-mockCdm <- function(cdmVocabuly,
+mockCdm <- function(cdmVocabuly = mockVocabulary(),
                     cdmName = "MOCK CDM",
                     individuals = 10,
                     person = NULL,
@@ -79,7 +79,9 @@ mockCdm <- function(cdmVocabuly,
   )
 
   listTables <- c(cdmVocabuly, listTables)
-  cdm <- newCdmReference(cdmTables = listTables, cdmName = cdmName)
+  cdm <- newCdmReference(
+    cdmTables = listTables, cdmName = cdmName, cdmVersion = attr()
+  )
 
   cdm <- generatePerson(cdm = cdm, individuals = individuals, seed = seed)
   cdm <- generateObservationPeriod(
@@ -157,12 +159,18 @@ addCohortAttrition <- function(cohort) {
 #' To create the person tables
 #' @noRd
 generatePerson <- function(cdm, individuals, seed) {
-  if (is.numeric(individuals)) {
-    individuals <- dplyr::tibble(
-      number_individuals = individuals, sex = "Both", age_min = 0,
-      age_max = 150, start = as.Date(NA), end = as.Date(NA)
-    )
+  if (is.null(cdm[["person"]])) {
+    if (is.numeric(individuals)) {
+      individuals <- dplyr::tibble(
+        number_individuals = individuals, sex = "Both", age_min = 0,
+        age_max = 150, start = as.Date(NA), end = as.Date(NA)
+      )
+    }
+    set.seed(seed)
+  } else {
+    cdm[["person"]] <- correctTable(cdm[["person"]], "person")
   }
+
   person <- dplyr::tibble(
     person_id = 1:numberIndividuals,
     gender_concept_id = sample(c(8507, 8532), numberIndividuals, T),

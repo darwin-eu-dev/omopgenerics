@@ -5,16 +5,18 @@
 \title{It creates a mock database with the vocabulary.}
 \usage{
 mockVocabulary(
+  cdmSource = NULL,
   concept = NULL,
   vocabulary = NULL,
   domain = NULL,
-  concept_class = NULL,
-  concept_relationship = NULL,
-  concept_synonym = NULL,
-  concept_ancestor = NULL,
-  source_to_concept_map = NULL,
-  drug_strength = NULL,
-  cdm_version = "5.3"
+  conceptClass = NULL,
+  conceptRelationship = NULL,
+  conceptSynonym = NULL,
+  conceptAncestor = NULL,
+  sourceToConceptMap = NULL,
+  drugStrength = NULL,
+  cdmVersion = "5.3",
+  cdmName = "MOCK VOCABULARY"
 )
 }
 \arguments{
@@ -32,9 +34,9 @@ mockVocabulary(
 
 \item{concept_ancestor}{Concept_ancestor table.}
 
-\item{drug_strength}{Drug_strength table.}
-
 \item{soource_to_concept_map}{Source_to_concept_map table.}
+
+\item{drug_strength}{Drug_strength table.}
 }
 \value{
 A cdm reference with the vocabulary mock tables

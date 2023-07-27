@@ -16,15 +16,18 @@
 
 #' It creates a mock database with the vocabulary.
 #'
+#' @param cdmSource cdm source table.
 #' @param concept Concept table.
 #' @param vocabulary Vocabulary table
-#' @param domain Doamin table.
-#' @param concept_class Concept_class table.
-#' @param concept_relationship Concept_relationship table.
-#' @param concept_synonym Concept_synonym table.
-#' @param concept_ancestor Concept_ancestor table.
-#' @param soource_to_concept_map Source_to_concept_map table.
-#' @param drug_strength Drug_strength table.
+#' @param domain Domain table.
+#' @param conceptClass Concept_class table.
+#' @param conceptRelationship Concept_relationship table.
+#' @param conceptSynonym Concept_synonym table.
+#' @param conceptAncestor Concept_ancestor table.
+#' @param soourceToConceptMap Source_to_concept_map table.
+#' @param drugStrength Drug_strength table.
+#' @param cdmVersion cdm version.
+#' @param cdmName Name of the cdm.
 #'
 #' @return A cdm reference with the vocabulary mock tables
 #'
@@ -39,45 +42,46 @@
 #' cdm
 #' }
 #'
-mockVocabulary <- function(concept = NULL,
+mockVocabulary <- function(cdmSource = NULL,
+                           concept = NULL,
                            vocabulary = NULL,
                            domain = NULL,
-                           concept_class = NULL,
-                           concept_relationship = NULL,
-                           concept_synonym = NULL,
-                           concept_ancestor = NULL,
-                           source_to_concept_map = NULL,
-                           drug_strength = NULL,
-                           cdm_version = "5.3") {
+                           conceptClass = NULL,
+                           conceptRelationship = NULL,
+                           conceptSynonym = NULL,
+                           conceptAncestor = NULL,
+                           sourceToConceptMap = NULL,
+                           drugStrength = NULL,
+                           cdmVersion = "5.3",
+                           cdmName = "MOCK VOCABULARY") {
   # check inputs
   checkInput(
-    cdm_source = cdm_source, concept = concept, vocabulary = vocabulary,
-    domain = domain, concept_class = concept_class,
-    concept_class= concept_class, concept_relationship = concept_relationship,
-    concept_synonym = concept_synonym, concept_ancestor = concept_ancestor,
-    source_to_concept_map = source_to_concept_map,
-    drug_strength = drug_strength, cdm_version = cdm_version
+    cdmSource = cdmSource, concept = concept, vocabulary = vocabulary,
+    domain = domain, conceptClass = conceptClass,
+    conceptRelationship = conceptRelationship, conceptSynonym = conceptSynonym,
+    conceptAncestor = conceptAncestor, sourceToConceptMap = sourceToConceptMap,
+    drugStrength = drugStrength, cdmVersion = cdmVersion, cdmName = cdmName
   )
 
   # fill tables
-  cdm_source <- fillColumns(cdm_source, "cdm_source", cdm_version)
-  concept <- fillColumns(concept, "concept", cdm_version)
-  vocabulary <- fillColumns(vocabulary, "vocabulary", cdm_version)
-  domain <- fillColumns(domain, "domain", cdm_version)
-  concept_class <- fillColumns(concept_class, "concept_class", cdm_version)
+  cdm_source <- fillColumns(cdm_source, "cdm_source", cdmVersion)
+  concept <- fillColumns(concept, "concept", cdmVersion)
+  vocabulary <- fillColumns(vocabulary, "vocabulary", cdmVersion)
+  domain <- fillColumns(domain, "domain", cdmVersion)
+  concept_class <- fillColumns(concept_class, "concept_class", cdmVersion)
   concept_relationship <- fillColumns(
-    concept_relationship, "concept_relationship", cdm_version
+    concept_relationship, "concept_relationship", cdmVersion
   )
   concept_synonym <- fillColumns(
-    concept_synonym, "concept_synonym", cdm_version
+    concept_synonym, "concept_synonym", cdmVersion
   )
   concept_ancestor <- fillColumns(
-    concept_ancestor, concept_ancestor, cdm_version
+    concept_ancestor, concept_ancestor, cdmVersion
   )
   source_to_concept_map <- fillColumns(
-    source_to_concept_map, "source_to_concept_map", cdm_version
+    source_to_concept_map, "source_to_concept_map", cdmVersion
   )
-  drug_strength <- fillColumns(drug_strength, "drug_strength", cdm_version)
+  drug_strength <- fillColumns(drug_strength, "drug_strength", cdmVersion)
 
   newCdmReference(
     cdmTables = list(
@@ -85,7 +89,8 @@ mockVocabulary <- function(concept = NULL,
       concept_relationship, concept_synonym, concept_ancestor,
       source_to_concept_map, drug_strength
     ),
-    cdmName = "MOCK VOCABULARY"
+    cdmName = "MOCK VOCABULARY",
+    cdmVersion = cdm_version
   )
 }
 

@@ -19,18 +19,36 @@
 #' @param cdmTables List of tables (tbl_sql, tbl or data.frame) that contains a
 #' reference to an OMOP Common data model.
 #' @param cdmName Name of the cdm.
+#' @param cdmVersion Version of the cdm ("5.3" or "5.4").
+#' @param validate Whether to validate the cdm object.
 #'
-#' @return A cdm reference
+#' @return A CdmReference object.
 #'
 #' @export
 #'
-newCdmReference <- function(cdmTables, cdmName) {
+newCdmReference <- function(cdmTables, cdmName, cdmVersion, validate = TRUE) {
   # initial input check
-  checkInput(cdmTables = cdmTables, cdmName = cdmName)
+  checkInput(cdmTables = cdmTables, cdmName = cdmName, cdmVersion = cdmVersion)
 
   attr(cdmTables, "cdm_name") <- cdmName
+  attr(cdmTables, "cdm_version") <- cdmVersion
   class(cdmTables) <- "cdm_reference"
+
+  validateCdmReference(cdmTables)
+
   return(cdmTables)
+}
+
+#' Validate a CdmReferenceObject.
+#'
+#' @param cdm A CdmReference object.
+#'
+#' @export
+validateCdmReference <- function(cdm) {
+  if (!("cdm_reference" %in% class(cdm))) {
+    cli::cli_abort("A CdmReference object must have class cdm_reference.")
+  }
+  return(invisible(cdm))
 }
 
 #' Subset a cdm reference object

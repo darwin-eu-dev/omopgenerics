@@ -4,16 +4,20 @@
 \alias{newCdmReference}
 \title{CdmReference objects constructor}
 \usage{
-newCdmReference(cdmTables, cdmName)
+newCdmReference(cdmTables, cdmName, cdmVersion, validate = TRUE)
 }
 \arguments{
 \item{cdmTables}{List of tables (tbl_sql, tbl or data.frame) that contains a
 reference to an OMOP Common data model.}
 
 \item{cdmName}{Name of the cdm.}
+
+\item{cdmVersion}{Version of the cdm ("5.3" or "5.4").}
+
+\item{validate}{Whether to validate the cdm object.}
 }
 \value{
-A cdm reference
+A CdmReference object.
 }
 \description{
 CdmReference objects constructor
