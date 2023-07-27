@@ -22,8 +22,8 @@
 #'
 #' @export
 #'
-exportObject <- function(x) {
-  UseMethod("exportObject")
+export <- function(x) {
+  UseMethod("export")
 }
 
 #' Export a GeneratedCohortSet.
@@ -34,7 +34,7 @@ exportObject <- function(x) {
 #'
 #' @export
 #'
-exportObject.GeneratedCohortSet <- function(x) {
+export.GeneratedCohortSet <- function(x) {
   cohortSet(x) %>%
     dplyr::inner_join(cohortAttrition(x), by = "cohort_definition_id")
 }
@@ -47,7 +47,7 @@ exportObject.GeneratedCohortSet <- function(x) {
 #'
 #' @export
 #'
-exportObject.cdm_reference <- function(x) {
+export.cdm_reference <- function(x) {
   person_count <- x[["person"]] %>% dplyr::tally() %>% dplyr::pull("n")
   observation_period_count <- x[["observation_period"]] %>%
     dplyr::tally() %>%
