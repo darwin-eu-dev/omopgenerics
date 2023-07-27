@@ -16,6 +16,13 @@ RoxygenNote: 7.2.3
 Imports: 
     cli,
     dplyr,
+    glue,
+    here,
     magrittr,
     methods,
-    rlang
+    readr,
+    rlang,
+    tidyr,
+    zip
+Depends: 
+    R (>= 2.10)
