@@ -46,13 +46,13 @@ mockVocabulary <- function(cdmSource = NULL,
                            cdmVersion = "5.3",
                            cdmName = "MOCK VOCABULARY") {
   # check inputs
-  #checkInput(
-  #  cdmSource = cdmSource, concept = concept, vocabulary = vocabulary,
-  #  domain = domain, conceptClass = conceptClass,
-  #  conceptRelationship = conceptRelationship, conceptSynonym = conceptSynonym,
-  #  conceptAncestor = conceptAncestor, sourceToConceptMap = sourceToConceptMap,
-  #  drugStrength = drugStrength, cdmVersion = cdmVersion, cdmName = cdmName
-  #)
+  checkInput(
+   cdmSource = cdmSource, concept = concept, vocabulary = vocabulary,
+   domain = domain, conceptClass = conceptClass,
+   conceptRelationship = conceptRelationship, conceptSynonym = conceptSynonym,
+   conceptAncestor = conceptAncestor, sourceToConceptMap = sourceToConceptMap,
+   drugStrength = drugStrength, cdmVersion = cdmVersion, cdmName = cdmName
+  )
 
   # fill tables
   cdmSource <- fillColumns(cdmSource, "cdm_source", cdmVersion)

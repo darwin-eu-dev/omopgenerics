@@ -69,3 +69,22 @@ checkList <- function(x,
     }
   }
 }
+
+#' @noRd
+checkChoice <- function(x,
+                        choices,
+                        error,
+                        len = 1,
+                        null.ok = FALSE) {
+  if (!(null.ok == TRUE & is.null(x))) {
+    if (length(x) != len) {
+      cli::cli_abort(error)
+    }
+    if (!all(sort(unique(class(x)))) == sort(unique(class(choices)))) {
+      cli::cli_abort(error)
+    }
+    if (!all(x %in% choices)) {
+      cli::cli_abort(error)
+    }
+  }
+}
