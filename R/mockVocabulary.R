@@ -54,25 +54,19 @@ mockVocabulary <- function(cdmSource = NULL,
    drugStrength = drugStrength, cdmVersion = cdmVersion, cdmName = cdmName
   )
 
+  # create the list of tables
+  listTables <- list(
+    cdmSource = cdmSource, concept = concept, vocabulary = vocabulary,
+    domain = domain, conceptClass = conceptClass,
+    conceptRelationship = conceptRelationship, conceptSynonym = conceptSynonym,
+    conceptAncestor = conceptAncestor, sourceToConceptMap = sourceToConceptMap,
+    drugStrength = drugStrength
+  )
+
   # fill tables
-  cdmSource <- fillColumns(cdmSource, "cdm_source", cdmVersion)
-  concept <- fillColumns(concept, "concept", cdmVersion)
-  vocabulary <- fillColumns(vocabulary, "vocabulary", cdmVersion)
-  domain <- fillColumns(domain, "domain", cdmVersion)
-  conceptClass <- fillColumns(conceptClass, "concept_class", cdmVersion)
-  conceptRelationship <- fillColumns(
-    conceptRelationship, "concept_relationship", cdmVersion
-  )
-  conceptSynonym <- fillColumns(
-    conceptSynonym, "concept_synonym", cdmVersion
-  )
-  conceptAncestor <- fillColumns(
-    conceptAncestor, "concept_ancestor", cdmVersion
-  )
-  sourceToConceptMap <- fillColumns(
-    sourceToConceptMap, "source_to_concept_map", cdmVersion
-  )
-  drugStrength <- fillColumns(drugStrength, "drug_strength", cdmVersion)
+  for (nam in names(listTables)) {
+    listTables <- fillColumns(listTables, nam, cdmVersion)
+  }
 
   cdm <- newCdmReference(
     cdmTables = list(

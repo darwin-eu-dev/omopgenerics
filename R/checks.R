@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Check if it contains a list of omop objects.
+#' Check if it contains a list of omop objects.
+#' @param element To check
 checkElements <- function(elements) {
   error <- "Elements must be a named list"
   checkList(elements, named = TRUE, error = error, uniqueType = FALSE)
@@ -133,6 +134,13 @@ tableCheck <- function(table, name) {
 checkCdmVersion <- function(cdmVersion) {
   error <- "cdmVersion must be \"5.3\" or \"5.4\"."
   checkChoice(cdmVersion, c("5.3", "5.4"), error)
+}
+
+# check string
+checkString <- function(string) {
+  if (!is.character(string)) {
+    cli::cli_abort("string must be a character vector")
+  }
 }
 
 # checkInput(
