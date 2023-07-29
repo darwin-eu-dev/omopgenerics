@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# specific checks ----
 # Check if it contains a list of omop objects.
 checkElements <- function(elements) {
   error <- "Elements must be a named list"
@@ -62,6 +61,85 @@ checkListTables <- function(listTables) {
 checkCdmName <- function(cdmName) {
   error <- "cdmName must be a character of length one"
   checkCharacter(x = cdmName, len = 1, error = error)
+}
+
+# Check cdm source table.
+checkCdmSource <- function(cdmSource) {
+  tableCheck(cdmSource, "cdmSource")
+}
+
+# Check cdm source table.
+checkCdmSource <- function(cdmSource) {
+  tableCheck(cdmSource, "cdmSource")
+}
+
+# Check cdmSource table.
+checkCdmSource <- function(cdmSource){
+  tableCheck(cdmSource, "cdmSource")
+}
+
+# Check concept table.
+checkConcept <- function(concept){
+  tableCheck(concept, "concept")
+}
+
+# Check vocabulary table.
+checkVocabulary <- function(vocabulary){
+  tableCheck(vocabulary, "vocabulary")
+}
+
+# Check domain table.
+checkDomain <- function(domain){
+  tableCheck(domain, "domain")
+}
+
+# Check conceptClass table.
+checkConceptClass <- function(conceptClass){
+  tableCheck(conceptClass, "conceptClass")
+}
+
+# Check conceptRelationship table.
+checkConceptRelationship <- function(conceptRelationship){
+  tableCheck(conceptRelationship, "conceptRelationship")
+}
+
+# Check conceptSynonym table.
+checkConceptSynonym <- function(conceptSynonym){
+  tableCheck(conceptSynonym, "conceptSynonym")
+}
+
+# Check conceptAncestor table.
+checkConceptAncestor <- function(conceptAncestor){
+  tableCheck(conceptAncestor, "conceptAncestor")
+}
+
+# Check sourceToConceptMap table.
+checkSourceToConceptMap <- function(sourceToConceptMap){
+  tableCheck(sourceToConceptMap, "sourceToConceptMap")
+}
+
+# Check drugStrength table.
+checkDrugStrength <- function(drugStrength){
+  tableCheck(drugStrength, "drugStrength")
+}
+
+tableCheck <- function(table, name) {
+  if (!is.null(table) | !("tbl" %in% class(table))) {
+    cli::cli(paste0(name, " must be NULL or a table"))
+  }
+}
+
+# check cdmVersion
+checkCdmVersion <- function(cdmVersion) {
+  error <- "cdmVersion must be \"5.3\" or \"5.4\"."
+  checkChoice(cdmVersion, c("5.3", "5.4"), error)
+}
+
+# check string
+checkString <- function(string) {
+  if (!is.character(string)) {
+    cli::cli_abort("string must be a character vector")
+  }
 }
 
 # checkInput(
