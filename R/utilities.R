@@ -28,7 +28,7 @@
 #'
 toSnakeCase <- function(string) {
   # checkInput
-  #checkInput(string = string)
+  checkInput(string = string)
 
   # eliminate special characters
   string <- gsub("[^[:alnum:]]", "_", string)

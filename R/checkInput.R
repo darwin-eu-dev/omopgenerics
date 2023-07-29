@@ -113,7 +113,10 @@ config <- function(inputs, .options) {
 performChecks <- function(toCheck, inputs) {
   for (k in seq_len(nrow(toCheck))) {
     x <- toCheck[k,]
-    eval(parse(text = paste0(x$package, "::", x$name, "(", paste0(
+    nam <- ifelse(
+      x$package == "CDMUtilities", x$name, paste0(x$package, "::", x$name)
+    )
+    eval(parse(text = paste0(nam, "(", paste0(
       unlist(x$available_argument), " = inputs[[\"",
       unlist(x$available_argument), "\"]]", collapse = ", "
     ), ")")))
@@ -140,9 +143,9 @@ assertNamedList <- function(input) {
 #' @noRd
 #'
 getAvailableFunctions <- function() {
-  # functions available in InputChecker
-  name <- getNamespaceExports("InputChecker")
-  functionsInputChecker <- dplyr::tibble(package = "InputChecker", name = name)
+  # functions available in CDMUtilities
+  name <- ls(getNamespace("CDMUtilities"), all.names = TRUE)
+  functionsCDMUtilities <- dplyr::tibble(package = "CDMUtilities", name = name)
 
   # functions available in source package
   packageName <- methods::getPackageName()
@@ -150,7 +153,7 @@ getAvailableFunctions <- function() {
   functionsSourcePackage <- dplyr::tibble(package = packageName, name =  name)
 
   # eliminate standard checks if present in source package
-  functions <- functionsInputChecker %>%
+  functions <- functionsCDMUtilities %>%
     dplyr::anti_join(functionsSourcePackage, by = "name") %>%
     dplyr::union_all(functionsSourcePackage) %>%
     dplyr::filter(
@@ -173,7 +176,10 @@ addArgument <- function(functions) {
     dplyr::rowwise() %>%
     dplyr::group_split() %>%
     lapply(function(x){
-      argument <- formals(eval(parse(text = paste0(x$package, "::", x$name))))
+      nam <- ifelse(
+        x$package == "CDMUtilities", x$name, paste0(x$package, "::", x$name)
+      )
+      argument <- formals(eval(parse(text = nam)))
       requiredArgument <- lapply(argument, function(x){
         xx <- x
         missing(xx)

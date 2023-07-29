@@ -14,8 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Check if it contains a list of omop objects.
-#' @param element To check
+# Check if it contains a list of omop objects.
 checkElements <- function(elements) {
   error <- "Elements must be a named list"
   checkList(elements, named = TRUE, error = error, uniqueType = FALSE)
