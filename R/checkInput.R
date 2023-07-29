@@ -154,12 +154,15 @@ getAvailableFunctions <- function() {
 
   # eliminate standard checks if present in source package
   functions <- functionsCDMUtilities %>%
-    dplyr::anti_join(functionsSourcePackage, by = "name") %>%
-    dplyr::union_all(functionsSourcePackage) %>%
+    #dplyr::anti_join(functionsSourcePackage, by = "name") %>%
+    #dplyr::union_all(functionsSourcePackage) %>%
     dplyr::filter(
       substr(.data$name, 1, 5) == "check" & .data$name != "checkInput"
     ) %>%
-    dplyr::mutate(input = tolower(substr(.data$name, 6, nchar(.data$name))))
+    dplyr::mutate(input = paste0(
+      tolower(substr(.data$name, 6, 6)),
+      substr(.data$name, 7, nchar(.data$name))
+    ))
 
   # add argument
   functions <- addArgument(functions)
