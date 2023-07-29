@@ -33,6 +33,10 @@ toSnakeCase <- function(string) {
   # eliminate special characters
   string <- gsub("[^[:alnum:]]", "_", string)
 
+  # zero lengths
+  id0 <- nchar(string) == 0
+  string[id0] <- as.character(NA)
+
   # identify upper case
   string <- strsplit(string, "")
   string <- lapply(string, function(x) {
@@ -58,6 +62,9 @@ toSnakeCase <- function(string) {
     string <- gsub("__", "_", string)
   }
 
+  # zero lengths
+  string[id0] <- ""
+
   # eliminate initial/final "_"
   string <- sapply(string, function(x) {
     if (nchar(x) > 1 && substr(x, 1, 1) == "_") {
@@ -65,9 +72,6 @@ toSnakeCase <- function(string) {
     }
     if (nchar(x) > 1 && substr(x, nchar(x), nchar(x)) == "_") {
       x <- substr(x, 1, nchar(x)-1)
-    }
-    if (nchar(x) == 1 && x == "_") {
-      x <- character()
     }
     return(x)
   })
@@ -92,6 +96,10 @@ toCamelCase <- function(string) {
   # first to snake case
   string <- toSnakeCase(string)
 
+  # zero lengths
+  id0 <- nchar(string) == 0
+  string[id0] <- as.character(NA)
+
   # add upper case
   string <- lapply(strsplit(string, ""), function(x) {
     if (length(x) > 1) {
@@ -102,6 +110,7 @@ toCamelCase <- function(string) {
     return(x)
   }) %>%
     unlist()
+  string[id0] <- ""
   names(string) <- NULL
 
   return(string)
