@@ -30,8 +30,16 @@ test_that("temporary behaviour", {
   expect_true(getOption("intermediate_as_temp") == TRUE)
   expect_true(getOption("cohort_as_temp") == FALSE)
 
-  setTemporary()
-  expect_true(getOption("intermediate_as_temp") == TRUE)
+  setTemporary(intermediateAsTemp = FALSE)
+  expect_true(getOption("intermediate_as_temp") == FALSE)
   expect_true(getOption("cohort_as_temp") == FALSE)
+
+  setTemporary(cohortAsTemp = TRUE)
+  expect_true(getOption("intermediate_as_temp") == TRUE)
+  expect_true(getOption("cohort_as_temp") == TRUE)
+
+  setTemporary(intermediateAsTemp = FALSE, cohortAsTemp = TRUE)
+  expect_true(getOption("intermediate_as_temp") == FALSE)
+  expect_true(getOption("cohort_as_temp") == TRUE)
 
 })
