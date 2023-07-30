@@ -34,8 +34,7 @@ toSnakeCase <- function(string) {
   string <- gsub("[^[:alnum:]]", "_", string)
 
   # zero lengths
-  id0 <- nchar(string) == 0
-  string[id0] <- as.character(NA)
+  string[nchar(string) == 0] <- as.character(NA)
 
   # identify upper case
   string <- strsplit(string, "")
@@ -63,7 +62,7 @@ toSnakeCase <- function(string) {
   }
 
   # zero lengths
-  string[id0] <- ""
+  string[is.na(string)] <- ""
 
   # eliminate initial/final "_"
   string <- sapply(string, function(x) {
@@ -97,8 +96,7 @@ toCamelCase <- function(string) {
   string <- toSnakeCase(string)
 
   # zero lengths
-  id0 <- nchar(string) == 0
-  string[id0] <- as.character(NA)
+  string[nchar(string) == 0] <- as.character(NA)
 
   # add upper case
   string <- lapply(strsplit(string, ""), function(x) {
@@ -110,8 +108,36 @@ toCamelCase <- function(string) {
     return(x)
   }) %>%
     unlist()
-  string[id0] <- ""
+  string[is.na(string)] <- ""
   names(string) <- NULL
 
   return(string)
+}
+
+#' Set temporary (or permanent) behavior for compute functions.
+#'
+#' @param intermediateAsTemp Whether intermediate tables should be temporary.
+#' @param cohortAsTemp Whether cohort tables should be temporary.
+#'
+#' @export
+#'
+#' @examples
+#' \donttest{
+#' library(CDMUtilities)
+#' setTemporary(intermediateAsTemp = TRUE, cohortAsTemp = FALSE)
+#' }
+#'
+setTemporary <- function(intermediateAsTemp = TRUE,
+                         cohortAsTemp = FALSE) {
+  # check inputs
+  checkInput(
+    intermediateAsTemp = intermediateAsTemp, cohortAsTemp = cohortAsTemp
+  )
+
+  # set options
+  options("intermediate_as_temp" = intermediateAsTemp)
+  options("cohort_as_temp" = cohortAsTemp)
+
+  # return
+  return(invisible(NULL))
 }

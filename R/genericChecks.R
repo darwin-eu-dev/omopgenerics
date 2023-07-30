@@ -88,3 +88,16 @@ checkChoice <- function(x,
     }
   }
 }
+
+#' @noRd
+checkLogical <- function(x, len = 1, na.ok = FALSE, error) {
+  if (!is.logical(x)) {
+    cli::cli_abort(error)
+  }
+  if (!is.null(len) && length(x) != len) {
+    cli::cli_abort(error)
+  }
+  if (!na.ok && any(is.na(x))) {
+    cli::cli_abort(error)
+  }
+}

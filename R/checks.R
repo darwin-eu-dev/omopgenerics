@@ -142,6 +142,20 @@ checkString <- function(string) {
   }
 }
 
+# check intermediateAsTemp
+checkIntermediateAsTemp <- function(intermediateAsTemp) {
+  checkLogical(
+    intermediateAsTemp, error = "intermediateAsTemp must be TRUE or FALSE"
+  )
+}
+
+# check cohortAsTemp
+checkCohortAsTemp <- function(cohortAsTemp) {
+  checkLogical(
+    cohortAsTemp, error = "cohortAsTemp must be TRUE or FALSE"
+  )
+}
+
 # checkInput(
 #   cdmVocabuly = cdmVocabuly, cdmName = cdmName, individuals = individuals,
 #   person = person, observation_period = observation_period, death = death,
@@ -161,7 +175,4 @@ checkString <- function(string) {
 #   drug_strength = drug_strength, cdm_version = cdm_version
 # )
 #
-# checkInput(
-#   intermediateAsTemp = intermediateAsTemp, cohortAsTemp = cohortAsTemp
-# )
 
