@@ -154,8 +154,8 @@ getAvailableFunctions <- function() {
 
   # eliminate standard checks if present in source package
   functions <- functionsCDMUtilities %>%
-    #dplyr::anti_join(functionsSourcePackage, by = "name") %>%
-    #dplyr::union_all(functionsSourcePackage) %>%
+    dplyr::anti_join(functionsSourcePackage, by = "name") %>%
+    dplyr::union_all(functionsSourcePackage) %>%
     dplyr::filter(
       substr(.data$name, 1, 5) == "check" & .data$name != "checkInput"
     ) %>%
