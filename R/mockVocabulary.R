@@ -93,14 +93,28 @@ fillColumns <- function(table, tableName, cdm_version) {
 }
 
 defaultTable <- function(tableName) {
-  tableName <- paste0(
-    "mock",
-    substr(toupper(tableName), 1, 1),
-    substr(
-      tableName, 2, nchar(tableName)
+  if (tableName %in% c("conceptRelationship", "conceptSynonym", "sourceToConceptMap")) {
+    cols <- fieldsTables %>%
+      dplyr::filter(
+        .data$cdmTableName == toSnakeCase(tableName),
+        .data$isRequired == TRUE, grepl("5.3", .data$cdm_version)
+      ) %>%
+      dplyr::select("cdmFieldName", "cdmDatatype")
+    x <- dplyr::tibble() %>%
+      dplyr::mutate(
+
+      )
+  } else {
+    tableName <- paste0(
+      "mock",
+      substr(toupper(tableName), 1, 1),
+      substr(
+        tableName, 2, nchar(tableName)
+      )
     )
-  )
-  return(eval(parse(text = tableName)))
+    x <- eval(parse(text = tableName))
+  }
+  return(x)
 }
 
 correctTable <- function(table, tableName, cdm_version) {

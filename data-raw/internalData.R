@@ -18,13 +18,25 @@ library(dplyr)
 
 # add the mock vocabulary data
 mockDrugStrength <- readr::read_csv(
-  here::here("data-raw", "drug_strength.csv"), show_col_types = FALSE
+  here::here("data-raw", "drugStrength.csv"), show_col_types = FALSE
 )
 mockConcept <- readr::read_csv(
   here::here("data-raw", "concept.csv"), show_col_types = FALSE
 )
 mockConceptAncestor <- readr::read_csv(
-  here::here("data-raw", "concept_ancestor.csv"), show_col_types = FALSE
+  here::here("data-raw", "conceptAncestor.csv"), show_col_types = FALSE
+)
+mockCdmSource <- readr::read_csv(
+  here::here("data-raw", "cdmSource.csv"), show_col_types = FALSE
+)
+mockVocabulary <- readr::read_csv(
+  here::here("data-raw", "vocabulary.csv"), show_col_types = FALSE
+)
+mockDomain <- readr::read_csv(
+  here::here("data-raw", "domain.csv"), show_col_types = FALSE
+)
+mockConceptClass <- readr::read_csv(
+  here::here("data-raw", "conceptClass.csv"), show_col_types = FALSE
 )
 
 # add the information related to the different domains
@@ -57,5 +69,6 @@ fieldsTables <- fieldsTables53 %>%
 
 usethis::use_data(
   mockDrugStrength, mockConcept, mockConceptAncestor, domainInformation,
-  fieldsTables, internal = TRUE, overwrite = TRUE
+  mockCdmSource, mockVocabulary, mockDomain, mockConceptClass, fieldsTables,
+  internal = TRUE, overwrite = TRUE
 )
