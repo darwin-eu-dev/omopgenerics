@@ -5,7 +5,7 @@
 \title{It creates a mock cdm_reference.}
 \usage{
 mockCdm(
-  cdmVocabuly = mockVocabulary(),
+  cdmVocabuly = mockVocabularyCdm(),
   cdmName = "MOCK CDM",
   individuals = 10,
   person = NULL,

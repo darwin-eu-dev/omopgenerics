@@ -37,7 +37,7 @@
 #'
 #' @export
 #'
-mockCdm <- function(cdmVocabuly = mockVocabulary(),
+mockCdm <- function(cdmVocabuly = mockVocabularyCdm(),
                     cdmName = "MOCK CDM",
                     individuals = 10,
                     person = NULL,
