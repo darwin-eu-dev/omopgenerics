@@ -196,3 +196,23 @@ addArgument <- function(functions) {
     }) %>%
     dplyr::bind_rows()
 }
+
+#' List available inputs to check
+#'
+#' @export
+#'
+#' @examples
+#' \donttest{
+#' library(CDMUtilities)
+#' listInputCheck()
+#' }
+#'
+listInputCheck <- function() {
+  dplyr::tibble(name = ls(getNamespace("CDMUtilities"), all.names = TRUE)) %>%
+    dplyr::filter(substr(.data$name, 1, 5) == "check") %>%
+    dplyr::mutate(name = paste0(
+      tolower(substr(.data$name, 6, 6)),
+      substr(.data$name, 7, nchar(.data$name))
+    )) %>%
+    dplyr::pull()
+}

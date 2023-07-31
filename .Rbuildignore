@@ -3,3 +3,4 @@
 ^LICENSE\.md$
 ^\.github$
 ^data-raw$
+_pkgdown.yml
