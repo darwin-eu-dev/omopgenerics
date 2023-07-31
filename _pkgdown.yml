@@ -10,36 +10,29 @@ navbar:
 reference:
   - title: Utilities
   - subtitle: Create a mock cdm object
-    desc: Create a mock cdm object
     contents:
       - '`mockCdm`'
       - '`mockVocabularyCdm`'
   - subtitle: Check inputs
-    desc: Check inputs
     contents:
       - '`checkInput`'
       - '`listInputCheck`'
   - subtitle: Export results to csv and zip files
-    desc: Export results to csv and zip files
     contents:
       - '`exportResults`'
   - subtitle: Temporary behaviour of cohorts
-    desc: Temporary behaviour of cohorts
     contents:
       - '`setTemporary`'
   - subtitle: Convert strings to snake_case or camelCase
-    desc: Convert strings to snake_case or camelCase
     contents:
       - '`toSnakeCase`'
       - '`toCamelCase`'
   - title: Classes
   - subtitle: GeneratedCohortSet
-    desc: GeneratedCohortSet
     contents:
       - '`newGeneratedCohortSet`'
       - '`validateGeneratedCohortSet`'
   - subtitle: CdmReference
-    desc: CdmReference
     contents:
       - '`newCdmReference`'
       - '`validateCdmReference`'
