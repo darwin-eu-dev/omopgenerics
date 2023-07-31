@@ -141,3 +141,18 @@ setTemporary <- function(intermediateAsTemp = TRUE,
   # return
   return(invisible(NULL))
 }
+
+asType <- function(x, type) {
+  if (type == "integer") {
+    x <- as.integer(x)
+  } else if (grepl("date", type)) {
+    x <- as.Date(x)
+  } else if (type == "float") {
+    x <- as.numeric(x)
+  } else if (grepl("varchar", type)) {
+    x <- as.character(x)
+  } else {
+    cli::cli_warn(paste0("Not recognised type: ", type))
+  }
+  return(x)
+}

@@ -21,7 +21,7 @@ checkCharacter <- function(x,
                            named = FALSE,
                            len = NULL,
                            error) {
-  if (!is.list(x)) {
+  if (!is.character(x)) {
     cli::cli_abort(error)
   }
   if (named == TRUE & length(names(x)) != length(x)) {
@@ -80,7 +80,7 @@ checkChoice <- function(x,
     if (length(x) != len) {
       cli::cli_abort(error)
     }
-    if (!all(sort(unique(class(x)))) == sort(unique(class(choices)))) {
+    if (!all(sort(unique(class(x))) == sort(unique(class(choices))))) {
       cli::cli_abort(error)
     }
     if (!all(x %in% choices)) {

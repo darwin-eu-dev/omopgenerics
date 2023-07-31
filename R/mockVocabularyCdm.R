@@ -33,25 +33,32 @@
 #'
 #' @export
 #'
-mockVocabulary <- function(cdmSource = NULL,
-                           concept = NULL,
-                           vocabulary = NULL,
-                           domain = NULL,
-                           conceptClass = NULL,
-                           conceptRelationship = NULL,
-                           conceptSynonym = NULL,
-                           conceptAncestor = NULL,
-                           sourceToConceptMap = NULL,
-                           drugStrength = NULL,
-                           cdmVersion = "5.3",
-                           cdmName = "MOCK VOCABULARY") {
+#' @examples
+#' \donttest{
+#' library(CDMUtilities)
+#' cdm <- mockVocabularyCdm()
+#' cdm
+#' }
+#'
+mockVocabularyCdm <- function(cdmSource = NULL,
+                              concept = NULL,
+                              vocabulary = NULL,
+                              domain = NULL,
+                              conceptClass = NULL,
+                              conceptRelationship = NULL,
+                              conceptSynonym = NULL,
+                              conceptAncestor = NULL,
+                              sourceToConceptMap = NULL,
+                              drugStrength = NULL,
+                              cdmVersion = "5.3",
+                              cdmName = "MOCK VOCABULARY") {
   # check inputs
   checkInput(
-   cdmSource = cdmSource, concept = concept, vocabulary = vocabulary,
-   domain = domain, conceptClass = conceptClass,
-   conceptRelationship = conceptRelationship, conceptSynonym = conceptSynonym,
-   conceptAncestor = conceptAncestor, sourceToConceptMap = sourceToConceptMap,
-   drugStrength = drugStrength, cdmVersion = cdmVersion, cdmName = cdmName
+    cdmSource = cdmSource, concept = concept, vocabulary = vocabulary,
+    domain = domain, conceptClass = conceptClass,
+    conceptRelationship = conceptRelationship, conceptSynonym = conceptSynonym,
+    conceptAncestor = conceptAncestor, sourceToConceptMap = sourceToConceptMap,
+    drugStrength = drugStrength, cdmVersion = cdmVersion, cdmName = cdmName
   )
 
   # create the list of tables
@@ -67,29 +74,25 @@ mockVocabulary <- function(cdmSource = NULL,
   for (nam in names(listTables)) {
     listTables <- fillColumns(listTables, nam, cdmVersion)
   }
+  names(listTables) <- toSnakeCase(names(listTables))
 
   cdm <- newCdmReference(
-    cdmTables = list(
-      cdm_source = cdmSource, concept = concept, vocabulary = vocabulary,
-      domain = domain, concept_class = conceptClass,
-      concept_relationship = conceptRelationship,
-      concept_synonym = conceptSynonym, concept_ancestor = conceptAncestor,
-      source_to_concept_map = sourceToConceptMap, drug_strength = drugStrength
-    ),
-    cdmName = "MOCK VOCABULARY",
-    cdmVersion = cdmVersion,
+    cdmTables = listTables, cdmName = cdmName, cdmVersion = cdmVersion,
     validate = FALSE
   )
 
   return(cdm)
 }
 
-fillColumns <- function(table, tableName, cdm_version) {
+fillColumns <- function(listTables, tableName, cdm_version) {
+  table <- listTables[[tableName]]
   if (is.null(table)) {
-    return(defaultTable(tableName))
+    table <- defaultTable(tableName)
   } else {
-    return(correctTable(table, tableName, cdm_version))
+    table <- correctTable(table, tableName, cdm_version)
   }
+  listTables[[tableName]] <- table
+  return(listTables)
 }
 
 defaultTable <- function(tableName) {
@@ -100,10 +103,13 @@ defaultTable <- function(tableName) {
         .data$isRequired == TRUE, grepl("5.3", .data$cdm_version)
       ) %>%
       dplyr::select("cdmFieldName", "cdmDatatype")
-    x <- dplyr::tibble() %>%
-      dplyr::mutate(
-
-      )
+    x <- dplyr::tibble()
+    for (k in seq_len(nrow(cols))) {
+      x <- x %>%
+        dplyr::mutate(!!cols$cdmFieldName[k] := asType(
+          NULL, cols$cdmDatatype[k]
+        ))
+    }
   } else {
     tableName <- paste0(
       "mock",
@@ -117,10 +123,10 @@ defaultTable <- function(tableName) {
   return(x)
 }
 
-correctTable <- function(table, tableName, cdm_version) {
+correctTable <- function(table, tableName, cdmVersion) {
   expectedColnames <- fieldsTables %>%
     dplyr::filter(
-      grepl(.env$cdm_version, .data$cdm_version) &
+      grepl(.env$cdmVersion, .data$cdm_version) &
         .data$cdmTableName == .env$tableName
     )
   requiredColnames <- expectedColnames %>%
@@ -135,8 +141,8 @@ correctTable <- function(table, tableName, cdm_version) {
   )
   if (length(colnamesToRemove) > 0) {
     cli::cli_warn(paste0(
-      "Extra fields (", paste0(colnamesToRemove, ", "), ") removed from:",
-      tableName
+      "Extra columns (", paste0(colnamesToRemove, collapse = ", "),
+      ") removed from: ", tableName
     ))
   }
   for (k in seq_along(colnamesToAdd)) {
@@ -144,9 +150,7 @@ correctTable <- function(table, tableName, cdm_version) {
       dplyr::filter(.data$cdmFieldName == .env$colnamesToAdd[k]) %>%
       dplyr::pull("cdmDatatype")
     table <- table %>%
-      dplyr::mutate(
-        !!expectedColnames[k] := as.character(NA) # correct for type
-      )
+      dplyr::mutate(!!colnamesToAdd[k] := asType(NA, type))
   }
   table <- table %>%
     dplyr::select(dplyr::any_of(expectedColnames[["cdmFieldName"]]))
