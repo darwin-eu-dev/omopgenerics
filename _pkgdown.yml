@@ -7,42 +7,57 @@ navbar:
   structure:
     right: [github]
 
-# reference:
-#   - subtitle: Utilities
-#   - desc: Create a mock cdm object
-#   - contents:
-#     - '`mockCdm`'
-#     - '`mockVocabularyCdm`'
-#   - desc: Check inputs
-#   - contents:
-#     - '`checkInput`'
-#     - '`listInputCheck`'
-#   - desc: Export results to csv and zip files
-#   - contents:
-#     - '`exportResults`'
-#   - desc: Temporary behaviour of cohorts
-#   - contents:
-#     - '`setTemporary`'
-#   - desc: Convert strings to snake_case or camelCase
-#   - contents:
-#     - '`toSnakeCase`'
-#     - '`toCamelCase`'
-#   - subtitle: Classes
-#   - desc: GeneratedCohortSet
-#   - contents:
-#     - '`newGeneratedCohortSet`'
-#     - '`validateGeneratedCohortSet`'
-#   - desc: CdmReference
-#   - contents:
-#     - '`newCdmReference`'
-#     - '`validateCdmReference`'
-#   - subtitle: Methods
-#   - contents:
-#     - matches("bind")
-#     - matches("export")
-#     - matches("cohortSet")
-#     - matches("cohortAttrition")
-#     - matches("cohortCount")
-#     - matches("print")
-#     - matches("`[[`")
-#     - matches("`$`")
+reference:
+  - title: Utilities
+  - subtitle: Create a mock cdm object
+    contents:
+      - '`mockCdm`'
+      - '`mockVocabularyCdm`'
+  - subtitle: Check inputs
+    contents:
+      - '`checkInput`'
+      - '`listInputCheck`'
+  - subtitle: Export results to csv and zip files
+    contents:
+      - '`exportResults`'
+  - subtitle: Temporary behaviour of cohorts
+    contents:
+      - '`setTemporary`'
+  - subtitle: Convert strings to snake_case or camelCase
+    contents:
+      - '`toSnakeCase`'
+      - '`toCamelCase`'
+  - title: Classes
+  - subtitle: GeneratedCohortSet
+    contents:
+      - '`newGeneratedCohortSet`'
+      - '`validateGeneratedCohortSet`'
+  - subtitle: CdmReference
+    contents:
+      - '`newCdmReference`'
+      - '`validateCdmReference`'
+  - title: Methods
+  - subtitle: Bind more than one element from the same class
+    contents:
+      - "`bind`"
+      - "`bind.cdm_reference`"
+      - "`bind.GeneratedCohortSet`"
+  - subtitle: Export one element to a tibble
+    contents:
+      - "`export`"
+      - "`export.cdm_reference`"
+      - "`export.GeneratedCohortSet`"
+  - subtitle: CohortSet of a GeneratedCohortSet
+    contents:
+      - matches("cohortSet")
+  - subtitle: CohortAttrition of a GeneratedCohortSet
+    contents:
+      - matches("cohortAttrition")
+  - subtitle: CohortCount of a GeneratedCohortSet
+    contents:
+      - matches("cohortCount")
+  - subtitle: cdm_reference utilities
+    contents:
+      - "`print.cdm_reference`"
+      - "`[[.cdm_reference`"
+      - "`$.cdm_reference`"
