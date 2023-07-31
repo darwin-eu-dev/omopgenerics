@@ -37,15 +37,26 @@ reference:
       - '`newCdmReference`'
       - '`validateCdmReference`'
   - title: Methods
-    desc: Methods
+    subtitle: Bind more than one element from the same class
     contents:
-      - matches("bind")
+      - "`bind`"
+      - "`bind.cdm_reference`"
+      - "`bind.GeneratedCohortSet`"
+    subtitle: Export one element to a tibble
+    contents:
       - "`export`"
       - "`export.cdm_reference`"
       - "`export.GeneratedCohortSet`"
+    subtitle: CohortSet of a GeneratedCohortSet
+    contents:
       - matches("cohortSet")
+    subtitle: CohortAttrition of a GeneratedCohortSet
+    contents:
       - matches("cohortAttrition")
+    subtitle: CohortCount of a GeneratedCohortSet
+    contents:
       - matches("cohortCount")
-      - matches("print")
+    subtitle: cdm_reference utilities
+      - "`print.cdm_reference`"
       - "`[[.cdm_reference`"
       - "`$.cdm_reference`"
