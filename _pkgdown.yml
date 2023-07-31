@@ -33,8 +33,9 @@ reference:
     - '`validateCdmReference`'
   - subtitle: Methods
   - contents:
-    - '`bind`'
-    - '`export`'
-    - '`cohortSet`'
-    - '`cohortAttrition`'
-    - '`cohortCount`'
+    - matches("bind")
+    - matches("export")
+    - matches("cohortSet")
+    - matches("cohortAttrition")
+    - matches("cohortCount")
+    - matches("print")
