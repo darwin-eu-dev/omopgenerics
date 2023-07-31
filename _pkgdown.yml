@@ -54,5 +54,5 @@ reference:
       - matches("cohortAttrition")
       - matches("cohortCount")
       - matches("print")
-      - matches("`[[`")
-      - matches("`$`")
+      - "`[[.cdm_reference`"
+      - "`$.cdm_reference`"
