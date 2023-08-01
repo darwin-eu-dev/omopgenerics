@@ -5,7 +5,7 @@
 \title{It creates a mock cdm_reference.}
 \usage{
 mockCdm(
-  cdmVocabuly = mockVocabularyCdm(),
+  cdmVocabulary = mockVocabularyCdm(),
   cdmName = "MOCK CDM",
   individuals = 10,
   person = NULL,
@@ -22,7 +22,7 @@ mockCdm(
 )
 }
 \arguments{
-\item{cdmVocabuly}{A cdm_reference that contains the vocabulary tables.}
+\item{cdmVocabulary}{A cdm_reference that contains the vocabulary tables.}
 
 \item{cdmName}{Name of the cdm.}
 

@@ -16,7 +16,7 @@
 
 #' It creates a mock cdm_reference.
 #'
-#' @param cdmVocabuly A cdm_reference that contains the vocabulary tables.
+#' @param cdmVocabulary A cdm_reference that contains the vocabulary tables.
 #' @param cdmName Name of the cdm.
 #' @param individuals Number of individuals in the mock database or table with
 #' the demographics data.
@@ -37,7 +37,7 @@
 #'
 #' @export
 #'
-mockCdm <- function(cdmVocabuly = mockVocabularyCdm(),
+mockCdm <- function(cdmVocabulary = mockVocabularyCdm(),
                     cdmName = "MOCK CDM",
                     individuals = 10,
                     person = NULL,

@@ -4,9 +4,16 @@
 \name{CDMUtilities-package}
 \alias{CDMUtilities}
 \alias{CDMUtilities-package}
-\title{CDMUtilities: Methods and Utilities for the OMOP Common Data Model}
+\title{CDMUtilities: Methods, Utilities and Classes for the OMOP Common Data Model}
 \description{
 This package provides methods and utilities functionalities for the OMOP Common Data Model based packages. This package also mantains the core classes.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://darwin-eu-dev.github.io/CDMUtilities/}
+}
+
 }
 \author{
 \strong{Maintainer}: Marti Catala \email{marti.catalasabate@ndorms.ox.ac.uk} (\href{https://orcid.org/0000-0003-3308-9905}{ORCID})

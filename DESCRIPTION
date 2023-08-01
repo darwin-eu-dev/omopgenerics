@@ -1,5 +1,5 @@
 Package: CDMUtilities
-Title: Methods and Utilities for the OMOP Common Data Model
+Title: Methods, Utilities and Classes for the OMOP Common Data Model
 Version: 0.0.0.9000
 Authors@R: c(
     person(
