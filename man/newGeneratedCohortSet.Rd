@@ -9,6 +9,7 @@ newGeneratedCohortSet(
   cohortSetTable = NULL,
   cohortAttritionTable = NULL,
   cohortCountTable = NULL,
+  cohortName = "cohort",
   validate = TRUE
 )
 }
@@ -23,7 +24,9 @@ number_subjects, number_records, reason_id, reason, excluded_subjects,
 excluded_records.}
 
 \item{cohortCountTable}{Table with at least: cohort_definition_id,
-number_subjects, number_records}
+number_subjects, number_records.}
+
+\item{cohortName}{Name of the GeneratedCohortSet stem.}
 
 \item{validate}{Whether to validate the GeneratedCohortSet.}
 }

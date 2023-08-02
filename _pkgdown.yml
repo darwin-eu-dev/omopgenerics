@@ -45,6 +45,7 @@ reference:
   - subtitle: Export one element to a tibble
     contents:
       - "`export`"
+      - "`export.tbl`"
       - "`export.cdm_reference`"
       - "`export.GeneratedCohortSet`"
   - subtitle: CohortSet of a GeneratedCohortSet

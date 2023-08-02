@@ -241,19 +241,6 @@ createCohort <- function(observation_period) {
     )
 }
 
-#' To create a random date between two dates
-#' @noRd
-createDate <- function(x, newColumn, lowerLimit, upperLimit) {
-  x %>%
-    dplyr::rowwise() %>%
-    dplyr::mutate(
-      !!newColumn := .data[[lowerLimit]] + sample(
-        0:difftime(.data[[upperLimit]], .data[[lowerLimit]], units = "days"), 1
-      )
-    ) %>%
-    dplyr::ungroup()
-}
-
 #' To create a mock drug_exposure table
 #' @noRd
 createDrugExposure <- function(observation_period, concept) {
@@ -405,4 +392,39 @@ createObservation <- function(observation_period, concept) {
     )
   }
   return(observation)
+}
+
+generateDate <- function(.data, lower, upper, columns) {
+  numberDates <- length(columns)
+  lower <- as.numeric(lower)
+  upper <- as.numeric(upper)
+  x <- dplyr::tibble(lower = lower, upper = upper)
+  for (k in seq_len(numberDates + 1)) {
+    x <- x %>%
+      dplyr::mutate(!!paste0("date", k) := runif(length(lower)))
+  }
+  for (k in rev(seq_len(numberDates + 1))) {
+    x <- x %>%
+      dplyr::mutate(!!paste0("date", k) := purrr::reduce(
+        x %>% dplyr::select(dplyr::all_of(paste0("date", seq_len(k)))), `+`
+      ))
+  }
+  x <- x %>%
+    dplyr::mutate(dplyr::across(
+      dplyr::all_of(paste0("date", seq_len(numberDates))),
+        ~ as.Date(.data$lower + round(
+          (.data$upper - .data$lower) * .x / .data[[paste0(
+            "date", numberDates + 1
+          )]]
+        ), origin = "1970-01-01")
+      )
+    ) %>%
+    dplyr::select(-dplyr::all_of(c(
+      "lower", "upper", paste0("date", numberDates + 1)
+    ))) %>%
+    as.list()
+  for (k in seq_along(columns)) {
+    .data <- .data %>% dplyr::mutate(!!columns[k] := x[[k]])
+  }
+  return(.data)
 }

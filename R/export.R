@@ -36,7 +36,9 @@ export <- function(x) {
 #'
 export.GeneratedCohortSet <- function(x) {
   cohortSet(x) %>%
-    dplyr::inner_join(cohortAttrition(x), by = "cohort_definition_id")
+    dplyr::inner_join(cohortAttrition(x), by = "cohort_definition_id") %>%
+    dplyr::arrange(.data$cohort_definition_id, .data$reason_id) %>%
+    dplyr::mutate(cohort_table_name = attr(x, "tbl_name"))
 }
 
 #' Export a cdm_reference
@@ -112,4 +114,16 @@ export.cdm_reference <- function(x) {
       "snapshot_date"
     ) %>%
     dplyr::mutate_all(as.character)
+}
+
+#' Export a tibble
+#'
+#' @param x A tibble object.
+#'
+#' @return Exported tibble.
+#'
+#' @export
+#'
+export.tbl <- function(x) {
+  x
 }

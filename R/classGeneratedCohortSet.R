@@ -23,7 +23,8 @@
 #' number_subjects, number_records, reason_id, reason, excluded_subjects,
 #' excluded_records.
 #' @param cohortCountTable Table with at least: cohort_definition_id,
-#' number_subjects, number_records
+#' number_subjects, number_records.
+#' @param cohortName Name of the GeneratedCohortSet stem.
 #' @param validate Whether to validate the GeneratedCohortSet.
 #'
 #' @return A GeneratedCohortSet option.
@@ -34,6 +35,7 @@ newGeneratedCohortSet <- function(cohortTable,
                                   cohortSetTable = NULL,
                                   cohortAttritionTable = NULL,
                                   cohortCountTable = NULL,
+                                  cohortName = "cohort",
                                   validate = TRUE) {
   # initial input check
   #checkInput(
