@@ -17,6 +17,7 @@ reference:
     contents:
       - '`checkInput`'
       - '`listInputCheck`'
+      - '`assertCharacter`'
   - subtitle: Export results to csv and zip files
     contents:
       - '`exportResults`'
@@ -28,10 +29,12 @@ reference:
       - '`toSnakeCase`'
       - '`toCamelCase`'
   - title: Classes
-  - subtitle: GeneratedCohortSet
+  - subtitle: cdm_cohort
     contents:
-      - '`newGeneratedCohortSet`'
-      - '`validateGeneratedCohortSet`'
+      - '`newCdmCohort`'
+      - '`newCdmCohort.tbl'
+      - '`validateCdmCohort`'
+      - '`validateCdmCohort.cdm_cohort`'
   - subtitle: CdmReference
     contents:
       - '`newCdmReference`'
@@ -57,8 +60,9 @@ reference:
   - subtitle: CohortCount of a GeneratedCohortSet
     contents:
       - matches("cohortCount")
-  - subtitle: cdm_reference utilities
+  - subtitle: Other methods
     contents:
+      - "`collect.cdm_cohort`"
       - "`print.cdm_reference`"
       - "`[[.cdm_reference`"
       - "`$.cdm_reference`"

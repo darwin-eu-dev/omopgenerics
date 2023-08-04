@@ -24,25 +24,47 @@
 #' excluded_records.
 #' @param cohortCountTable Table with at least: cohort_definition_id,
 #' number_subjects, number_records.
-#' @param cohortName Name of the GeneratedCohortSet stem.
-#' @param validate Whether to validate the GeneratedCohortSet.
+#' @param cohortName Name of the cdm_cohort object.
 #'
-#' @return A GeneratedCohortSet option.
+#' @return A cdm_cohort object
 #'
 #' @export
 #'
-newGeneratedCohortSet <- function(cohortTable,
-                                  cohortSetTable = NULL,
-                                  cohortAttritionTable = NULL,
-                                  cohortCountTable = NULL,
-                                  cohortName = "cohort",
-                                  validate = TRUE) {
+newCdmCohort <- function(cohortTable,
+                         cohortSetTable = NULL,
+                         cohortAttritionTable = NULL,
+                         cohortCountTable = NULL,
+                         cohortName = "cohort") {
+  UseMethod("newCdmCohort")
+}
+
+#' `cdm_cohort` objects constructor.
+#'
+#' @param cohortTable Table with at least: cohort_definition_id, subject_id,
+#' cohort_start_date, cohort_end_date.
+#' @param cohortSetTable Table with at least: cohort_definition_id, cohort_name
+#' @param cohortAttritionTable Table with at least: cohort_definition_id,
+#' number_subjects, number_records, reason_id, reason, excluded_subjects,
+#' excluded_records.
+#' @param cohortCountTable Table with at least: cohort_definition_id,
+#' number_subjects, number_records.
+#' @param cohortName Name of the cdm_cohort object.
+#'
+#' @return A cdm_cohort object
+#'
+#' @export
+#'
+newCdmCohort.tbl <- function(cohortTable,
+                             cohortSetTable = NULL,
+                             cohortAttritionTable = NULL,
+                             cohortCountTable = NULL,
+                             cohortName = "cohort") {
   # initial input check
-  #checkInput(
-  #  cohortTable = cohortTable, cohortSetTable = cohortSetTable,
-  #  cohortAttritionTable = cohortAttritionTable,
-  #  cohortCountTable = cohortCountTable, validate = validate
-  #)
+  checkInput(
+    cohortTable = cohortTable, cohortSetTable = cohortSetTable,
+    cohortAttritionTable = cohortAttritionTable,
+    cohortCountTable = cohortCountTable
+  )
 
   if (is.null(cohortSetTable)) {
     cohortSetTable <- cohortTable %>%
@@ -80,32 +102,35 @@ newGeneratedCohortSet <- function(cohortTable,
   attr(cohortTable, "cohort_attrition") <- cohortAttritionTable
   attr(cohortTable, "cohort_count") <- cohortCountTable
   class(cohortTable) <- c(
-    "GeneratedCohortSet",
-    class(cohortTable)[class(cohortTable) != "GeneratedCohortSet"]
+    "GeneratedCohortSet", # to be removed
+    "cdm_cohort", class(cohortTable)[class(cohortTable) != "cdm_cohort"]
   )
 
-  if (validate == TRUE) {
-    cohortTable <- validateGeneratedCohortSet(cohortTable)
-  }
+  cohort <- validateCdmCohort(cohortTable)
 
-  return(cohortTable)
+  return(cohort)
 }
 
-#' To assess if an object is a valid GeneratedCohortSet.
+#' To assess if an object is a valid `cdm_cohort`
 #'
 #' @param cohortTable Table to validate
 #'
-#' @return invisible(cohortTable)
+#' @export
+#'
+validateCdmCohort <- function(cohortTable) {
+  UseMethod("validateCdmCohort")
+}
+
+#' To assess if an object is a valid `cdm_cohort`.
+#'
+#' @param cohortTable Table to validate
 #'
 #' @export
 #'
-validateGeneratedCohortSet <- function(cohortTable) {
+validateCdmCohort.cdm_cohort <- function(cohortTable) {
   # class
-  if (!("GeneratedCohortSet" %in% class(cohortTable))) {
-    cli::cli_abort(
-      "GeneratedCohortSet must be one of the classes of a GeneratedCohortSet
-      object"
-    )
+  if (!("cdm_cohort" %in% class(cohortTable))) {
+    cli::cli_abort("Object has not `cdm_cohort` class")
   }
 
   # attributes exist
@@ -115,7 +140,7 @@ validateGeneratedCohortSet <- function(cohortTable) {
   )) {
     cli::cli_abort(
       "`cohort_set`, `cohort_count`, `cohort_attrition` must be attributes of
-      a GeneretedCohortSet object."
+      a cdm_cohort object."
     )
   }
 
@@ -125,27 +150,43 @@ validateGeneratedCohortSet <- function(cohortTable) {
   cohort_count <- attr(cohortTable, "cohort_count")
   cohort_attrition <- attr(cohortTable, "cohort_attrition")
 
+  # assert columns
   checkColumns <- function(x, cols, nam) {
     if (!all(cols %in% colnames(x))) {
       cli::cli_abort(paste0(
         "`", paste0(cols, collapse = "`, `"), "` must be column names of ",
-        nam, " of a GeneretedCohortSet object."
+        nam, " of a cdm_cohort object."
       ))
     }
     invisible(NULL)
   }
-  # validate cohort
   checkColumns(
     cohortTable,
     c("cohort_definition_id", "subject_id", "cohort_start_date",
       "cohort_end_date"),
     "the cohort"
   )
+  checkColumns(
+    attr(cohortTable, "cohort_set"), c("cohort_definition_id", "cohort_name"),
+    "the cohort_set"
+  )
+  checkColumns(
+    attr(cohortTable, "cohort_count"),
+    c("cohort_definition_id", "number_records", "number_subjects"),
+    "the cohort_count"
+  )
+  checkColumns(
+    attr(cohortTable, "cohort_attrition"),
+    c("cohort_definition_id", "number_records", "number_subjects", "reason_id",
+      "reason", "excluded_records", "excluded_subjects"),
+    "the cohort_attrition"
+  )
+
+  # classes attributes
   clCohort <- cl(cohort)
   clCohortSet <- cl(cohort_set)
   clCohortCount <- cl(cohort_count)
   clCohortAttrition <- cl(cohort_attrition)
-  # classes attributes
   if (!equal(clCohort, clCohortSet, clCohortCount, clCohortAttrition)) {
     cli::cli_abort(c(
       "class of cohort objects must be the same:",
@@ -155,27 +196,6 @@ validateGeneratedCohortSet <- function(cohortTable) {
       paste0("** class(cohort_count) = ", clCohortCount)
     ))
   }
-
-  # set columns
-  checkColumns(
-    attr(cohortTable, "cohort_set"), c("cohort_definition_id", "cohort_name"),
-    "the cohort_set"
-  )
-
-  # count columns
-  checkColumns(
-    attr(cohortTable, "cohort_count"),
-    c("cohort_definition_id", "number_records", "number_subjects"),
-    "the cohort_count"
-  )
-
-  # attrition columns
-  checkColumns(
-    attr(cohortTable, "cohort_attrition"),
-    c("cohort_definition_id", "number_records", "number_subjects", "reason_id",
-      "reason", "excluded_records", "excluded_subjects"),
-    "the cohort_attrition"
-  )
 
   # cohort_definition_id the same
   cdiCohort <- cdi(cohort)
@@ -194,6 +214,26 @@ validateGeneratedCohortSet <- function(cohortTable) {
 
   # validate cohort overlap?
   # in observation?
+  # column types
+
+  # make correct order
+  cohortTable <- cohortTable %>%
+    dplyr::relocate(c(
+      "cohort_definition_id", "subject_id", "cohort_start_date",
+      "cohort_end_date"
+    ))
+  attr(cohortTable, "cohort_set") <- attr(cohortTable, "cohort_set") %>%
+    dplyr::relocate(c("cohort_definition_id", "cohort_name"))
+  attr(cohortTable, "cohort_count") <- attr(cohortTable, "cohort_count") %>%
+    dplyr::relocate(
+      c("cohort_definition_id", "number_records", "number_subjects")
+    )
+  attr(cohortTable, "cohort_attrition") <-
+    attr(cohortTable, "cohort_attrition") %>%
+    dplyr::relocate(c(
+      "cohort_definition_id", "number_records", "number_subjects", "reason_id",
+      "reason", "excluded_records", "excluded_subjects"
+    ))
 
   return(invisible(cohortTable))
 }
@@ -216,3 +256,14 @@ cdi <- function(x) {
     dplyr::pull() %>%
     sort()
 }
+
+#' To collect a `cdm_cohort` object.
+#'
+#' @param x `cohort_cdm` object.
+#' @param ... Not used (for compatibility).
+#'
+#' @export
+collect.cdm_cohort <- function(x, ...) {
+  x
+}
+
