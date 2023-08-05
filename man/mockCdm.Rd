@@ -17,6 +17,7 @@ mockCdm(
   device_exposure = NULL,
   measurement = NULL,
   observation = NULL,
+  numberRecords = c(default = 2),
   seed = 1,
   ...
 )
@@ -46,6 +47,8 @@ the demographics data.}
 \item{measurement}{Measurement table.}
 
 \item{observation}{Observation table.}
+
+\item{numberRecords}{number of records per person.}
 
 \item{seed}{Random seed.}
 

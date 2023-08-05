@@ -21,7 +21,11 @@ assertCharacter(
 
 \item{missing}{Whether it can contain missing.}
 
+\item{nullOk}{Whether it can be null.}
+
 \item{named}{Whether it has to be named.}
+
+\item{minNumCharacter}{Minimum number of characters.}
 
 \item{errorMessage}{Error message to display.}
 }

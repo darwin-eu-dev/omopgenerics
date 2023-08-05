@@ -21,7 +21,9 @@
 #' @param x To check.
 #' @param len Length that has to have.
 #' @param missing Whether it can contain missing.
+#' @param nullOk Whether it can be null.
 #' @param named Whether it has to be named.
+#' @param minNumCharacter Minimum number of characters.
 #' @param errorMessage Error message to display.
 #'
 #' @export
@@ -79,17 +81,17 @@ assertCharacter <- function(x,
 assertList <- function(x,
                        named = FALSE,
                        types = NULL,
-                       error,
+                       errorMessage,
                        uniqueType = TRUE,
                        len = NULL) {
   if (!is.list(x)) {
-    cli::cli_abort(error)
+    cli::cli_abort(errorMessage)
   }
   if (named == TRUE & length(names(x)) != length(x)) {
-    cli::cli_abort(error)
+    cli::cli_abort(errorMessage)
   }
   if (!is.null(len) & length(x) != len) {
-    cli::cli_abort(error)
+    cli::cli_abort(errorMessage)
   }
   if (!is.null(types)) {
     flag <- lapply(x, function(y) {
@@ -97,7 +99,7 @@ assertList <- function(x,
     }) %>%
       any()
     if (flag != TRUE) {
-      cli::cli_abort(error)
+      cli::cli_abort(errorMessage)
     }
   }
   if (uniqueType == TRUE & length(x) > 1) {
@@ -108,7 +110,7 @@ assertList <- function(x,
     }) %>%
       all()
     if (flag != TRUE) {
-      cli::cli_abort(error)
+      cli::cli_abort(errorMessage)
     }
   }
 }
@@ -116,32 +118,32 @@ assertList <- function(x,
 #' @noRd
 assertChoice <- function(x,
                          choices,
-                         error,
+                         errorMessage,
                          len = 1,
                          null.ok = FALSE) {
   if (!(null.ok == TRUE & is.null(x))) {
     if (length(x) != len) {
-      cli::cli_abort(error)
+      cli::cli_abort(errorMessage)
     }
     if (!all(sort(unique(class(x))) == sort(unique(class(choices))))) {
-      cli::cli_abort(error)
+      cli::cli_abort(errorMessage)
     }
     if (!all(x %in% choices)) {
-      cli::cli_abort(error)
+      cli::cli_abort(errorMessage)
     }
   }
 }
 
 #' @noRd
-assertLogical <- function(x, len = 1, na.ok = FALSE, error) {
+assertLogical <- function(x, len = 1, na.ok = FALSE, errorMessage) {
   if (!is.logical(x)) {
-    cli::cli_abort(error)
+    cli::cli_abort(errorMessage)
   }
   if (!is.null(len) && length(x) != len) {
-    cli::cli_abort(error)
+    cli::cli_abort(errorMessage)
   }
   if (!na.ok && any(is.na(x))) {
-    cli::cli_abort(error)
+    cli::cli_abort(errorMessage)
   }
 }
 

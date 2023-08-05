@@ -67,40 +67,23 @@ newCdmCohort.tbl <- function(cohortTable,
   )
 
   if (is.null(cohortSetTable)) {
-    cohortSetTable <- cohortTable %>%
-      dplyr::select("cohort_definition_id") %>%
-      dplyr::distinct() %>%
-      dplyr::mutate()
+    cohortTable <- addCohortSet(cohortTable)
+  } else {
+    attr(cohortTable, "cohort_set") <- cohortSetTable
   }
 
   if (is.null(cohortCountTable)) {
-    cohortCountTable <- cohortTable %>%
-      dplyr::group_by(.data$cohort_definition_id) %>%
-      dplyr::summarise(
-        number_subjects = dplyr::n_distinct(.data$subject_id),
-        number_records = dplyr::n()
-      ) %>%
-      dplyr::right_join(
-        cohortSetTable %>% dplyr::select("cohort_definition_id"),
-        by = "cohort_definition_id"
-      ) %>%
-      dplyr::mutate(
-        number_subjects = dplyr::coalesce(.data$number_subjects, 0),
-        number_records = dplyr::coalesce(.data$number_records, 0)
-      )
+    cohortTable <- addCohortCount(cohortTable)
+  } else {
+    attr(cohortTable, "cohort_count") <- cohortCountTable
   }
 
   if (is.null(cohortAttritionTable)) {
-    cohortAttritionTable <- cohortCountTable %>%
-      dplyr::mutate(
-        reason_id = 1, reason = "Qualifying initial events",
-        excluded_subjects = 0, excluded_records = 0
-      )
+    cohortTable <- addCohortAttrition(cohortTable)
+  } else {
+    attr(cohortTable, "cohort_attrition") <- cohortAttritionTable
   }
 
-  attr(cohortTable, "cohort_set") <- cohortSetTable
-  attr(cohortTable, "cohort_attrition") <- cohortAttritionTable
-  attr(cohortTable, "cohort_count") <- cohortCountTable
   class(cohortTable) <- c(
     "GeneratedCohortSet", # to be removed
     "cdm_cohort", class(cohortTable)[class(cohortTable) != "cdm_cohort"]
