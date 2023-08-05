@@ -51,6 +51,9 @@ reference:
       - "`export.tbl`"
       - "`export.cdm_reference`"
       - "`export.GeneratedCohortSet`"
+  - subtitle: Name of a cdm_reference
+    contents:
+      - "cdmName"
   - subtitle: CohortSet of a GeneratedCohortSet
     contents:
       - matches("cohortSet")

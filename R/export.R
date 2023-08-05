@@ -38,7 +38,11 @@ export.GeneratedCohortSet <- function(x) {
   cohortSet(x) %>%
     dplyr::inner_join(cohortAttrition(x), by = "cohort_definition_id") %>%
     dplyr::arrange(.data$cohort_definition_id, .data$reason_id) %>%
-    dplyr::mutate(cohort_table_name = attr(x, "tbl_name"))
+    dplyr::mutate(
+      cohort_table_name = attr(x, "tbl_name"),
+      cdm_name = cdmName(attr(x, "cdm_reference")),
+      result_type = "Summary cohort"
+    )
 }
 
 #' Export a cdm_reference
