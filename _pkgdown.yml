@@ -32,7 +32,7 @@ reference:
   - subtitle: cdm_cohort
     contents:
       - '`newCdmCohort`'
-      - '`newCdmCohort.tbl'
+      - '`newCdmCohort.tbl`'
       - '`validateCdmCohort`'
       - '`validateCdmCohort.cdm_cohort`'
   - subtitle: CdmReference
