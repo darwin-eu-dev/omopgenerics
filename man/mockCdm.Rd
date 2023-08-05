@@ -5,7 +5,7 @@
 \title{It creates a mock cdm_reference.}
 \usage{
 mockCdm(
-  cdmVocabuly = mockVocabularyCdm(),
+  cdmVocabulary = mockVocabularyCdm(),
   cdmName = "MOCK CDM",
   individuals = 10,
   person = NULL,
@@ -17,12 +17,13 @@ mockCdm(
   device_exposure = NULL,
   measurement = NULL,
   observation = NULL,
+  numberRecords = c(default = 2),
   seed = 1,
   ...
 )
 }
 \arguments{
-\item{cdmVocabuly}{A cdm_reference that contains the vocabulary tables.}
+\item{cdmVocabulary}{A cdm_reference that contains the vocabulary tables.}
 
 \item{cdmName}{Name of the cdm.}
 
@@ -46,6 +47,8 @@ the demographics data.}
 \item{measurement}{Measurement table.}
 
 \item{observation}{Observation table.}
+
+\item{numberRecords}{number of records per person.}
 
 \item{seed}{Random seed.}
 

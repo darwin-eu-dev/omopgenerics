@@ -17,7 +17,7 @@
 # Check if it contains a list of omop objects.
 checkElements <- function(elements) {
   error <- "Elements must be a named list"
-  checkList(elements, named = TRUE, error = error, uniqueType = FALSE)
+  assertList(elements, named = TRUE, errorMessage = error, uniqueType = FALSE)
 }
 
 # Check if it is a valid path
@@ -51,16 +51,16 @@ checkZip <- function(zip) {
 # Check if it is a list of tables from the same source
 checkListTables <- function(listTables) {
   error <- "listTables must be a named list of tables from the same source"
-  checkList(
+  assertList(
     x = listTables, named = TRUE, types = c("tbl_sql", "tbl"),
-    uniqueType = TRUE, error = error
+    uniqueType = TRUE, errorMessage = error
   )
 }
 
 # Check valid cdm name.
 checkCdmName <- function(cdmName) {
   error <- "cdmName must be a character of length one"
-  checkCharacter(x = cdmName, len = 1, error = error)
+  assertCharacter(x = cdmName, len = 1, errorMessage = error)
 }
 
 # Check cdm source table.
@@ -132,7 +132,7 @@ tableCheck <- function(table, name) {
 # check cdmVersion
 checkCdmVersion <- function(cdmVersion) {
   error <- "cdmVersion must be \"5.3\" or \"5.4\"."
-  checkChoice(cdmVersion, c("5.3", "5.4"), error)
+  assertChoice(cdmVersion, c("5.3", "5.4"), error)
 }
 
 # check string
@@ -144,15 +144,15 @@ checkString <- function(string) {
 
 # check intermediateAsTemp
 checkIntermediateAsTemp <- function(intermediateAsTemp) {
-  checkLogical(
-    intermediateAsTemp, error = "intermediateAsTemp must be TRUE or FALSE"
+  assertLogical(
+    intermediateAsTemp, errorMessage = "intermediateAsTemp must be TRUE or FALSE"
   )
 }
 
 # check cohortAsTemp
 checkCohortAsTemp <- function(cohortAsTemp) {
-  checkLogical(
-    cohortAsTemp, error = "cohortAsTemp must be TRUE or FALSE"
+  assertLogical(
+    cohortAsTemp, errorMessage = "cohortAsTemp must be TRUE or FALSE"
   )
 }
 

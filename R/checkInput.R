@@ -76,7 +76,7 @@ config <- function(inputs, .options) {
   ]
   if (length(notAvailableInputs) > 0) {
     cli::cli_abort(paste0(
-      "The following inputs are not able to be tested:",
+      "The following inputs are not able to be tested: ",
       paste0(notAvailableInputs, collapse = ", ")
     ))
   }
