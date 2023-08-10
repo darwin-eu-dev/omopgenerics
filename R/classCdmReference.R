@@ -39,6 +39,19 @@ newCdmReference <- function(cdmTables, cdmName, cdmVersion, validate = TRUE) {
   return(cdmTables)
 }
 
+#' Name of a cdm_reference.
+#'
+#' @param cdm A cdm_reference object.
+#'
+#' @return Name of the cdm_reference.
+#'
+#' @export
+#'
+cdmName <- function(cdm) {
+  checkInput(cdm = cdm)
+  attr(cdm, "cdm_name")
+}
+
 #' Validate a CdmReferenceObject.
 #'
 #' @param cdm A CdmReference object.
