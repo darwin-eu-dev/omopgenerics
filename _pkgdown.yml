@@ -18,6 +18,11 @@ reference:
       - '`checkInput`'
       - '`listInputCheck`'
       - '`assertCharacter`'
+      - '`assertChoice`'
+      - '`assertList`'
+      - '`assertLogical`'
+      - '`assertNumeric`'
+      - '`assertTibble`'
   - subtitle: Export results to csv and zip files
     contents:
       - '`exportResults`'
