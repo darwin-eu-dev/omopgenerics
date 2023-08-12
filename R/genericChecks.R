@@ -14,14 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TODO export this checks as generic functions in the future
-
-#' Assert if a character fulfill certain conditions.
+#' Assert if an object is a character and fulfill certain conditions.
 #'
 #' @param x To check.
-#' @param len Length that has to have.
-#' @param missing Whether it can contain missing.
-#' @param nullOk Whether it can be null.
+#' @param length Length that has to have.
+#' @param na Whether it can contain NA values.
+#' @param null Whether it can be null.
 #' @param named Whether it has to be named.
 #' @param minNumCharacter Minimum number of characters.
 #' @param errorMessage Error message to display.
@@ -29,9 +27,9 @@
 #' @export
 #'
 assertCharacter <- function(x,
-                            len = NULL,
-                            missing = FALSE,
-                            nullOk = FALSE,
+                            length = NULL,
+                            na = FALSE,
+                            null = FALSE,
                             named = FALSE,
                             minNumCharacter = 0,
                             errorMessage = NULL) {
@@ -40,12 +38,13 @@ assertCharacter <- function(x,
     errorMessage <- paste0(
       paste0(substitute(x), collapse = ""),
       " must be a character",
-      ifelse(!is.null(len), paste0(errorMessage, ", with length = ", len), ""),
-      ifelse(!missing, ", it can not contain missings", ""),
-      ifelse(named, ", it has to be named", ""),
+      errorLength(length),
+      errorNa(na),
+      errorNull(null),
+      errorNamed(named),
       ifelse(
         minNumCharacter > 0,
-        paste(", at least", minNumCharacter, "per element"),
+        paste("; at least", minNumCharacter, "per element"),
         ""
       ),
       "."
@@ -53,121 +52,417 @@ assertCharacter <- function(x,
   }
 
   # assert null
-  if (assertNull(x, nullOk, errorMessage)) {
+  if (assertNull(x, null, errorMessage)) {
+    # no NA vector
+    xNoNa <- x[!is.na(x)]
+
     # assert class
     if (!is.character(x)) {
-      cli::cli_abort(errorMessage)
+      displayErrorMessage(errorMessage)
     }
 
     # assert length
-    assertLength(x, len, errorMessage)
+    assertLength(x, length, errorMessage)
 
-    # assert missing
-    assertMissing(x, missing, errorMessage)
+    # assert na
+    assertNa(x, na, errorMessage)
 
     # assert named
     assertNamed(x, named, errorMessage)
 
     # minimum number of characters
-    if (any(nchar(x[!is.na(x)]) < minNumCharacter)) {
-      cli::cli_abort(errorMessage)
+    if (any(nchar(xNoNa) < minNumCharacter)) {
+      displayErrorMessage(errorMessage)
     }
   }
 
-  invisible(named)
+  return(invisible(x))
 }
 
-#' @noRd
+#' Assert if an object is a list and fulfill certain conditions.
+#'
+#' @param x To check.
+#' @param length Length that has to have.
+#' @param na Whether it can contain NA values.
+#' @param null Whether it can be null.
+#' @param named Whether it has to be named.
+#' @param class Class that elements must have.
+#' @param errorMessage Error message to display.
+#'
+#' @export
+#'
 assertList <- function(x,
+                       length = NULL,
+                       na = FALSE,
+                       null = FALSE,
                        named = FALSE,
-                       types = NULL,
-                       errorMessage,
-                       uniqueType = TRUE,
-                       len = NULL) {
-  if (!is.list(x)) {
-    cli::cli_abort(errorMessage)
+                       class = NULL,
+                       errorMessage = NULL) {
+  # create error message
+  if (is.null(errorMessage)) {
+    errorMessage <- paste0(
+      paste0(substitute(x), collapse = ""),
+      " must be a list",
+      errorLength(length),
+      errorNa(na),
+      errorNull(null),
+      errorNamed(named),
+      ifelse(
+        !is.null(class),
+        paste0("; elements must have class:", paste0(class, collapse = ", ")),
+        ""
+      ),
+      "."
+    )
   }
-  if (named == TRUE & length(names(x)) != length(x)) {
-    cli::cli_abort(errorMessage)
-  }
-  if (!is.null(len) & length(x) != len) {
-    cli::cli_abort(errorMessage)
-  }
-  if (!is.null(types)) {
-    flag <- lapply(x, function(y) {
-      any(types %in% class(y))
-    }) %>%
-      any()
-    if (flag != TRUE) {
-      cli::cli_abort(errorMessage)
+
+  # assert null
+  if (assertNull(x, null, errorMessage)) {
+    # no NA vector
+    xNoNa <- x[!is.na(x)]
+
+    # assert class
+    if (!is.list(x)) {
+      displayErrorMessage(errorMessage)
+    }
+
+    # assert length
+    assertLength(x, length, errorMessage)
+
+    # assert na
+    assertNa(x, na, errorMessage)
+
+    # assert named
+    assertNamed(x, named, errorMessage)
+
+    # assert class
+    if (!is.null(class)) {
+      flag <- lapply(xNoNa, function(y) {
+        any(class %in% base::class(y))
+      }) %>%
+        unlist() %>%
+        all()
+      if (flag != TRUE) {
+        displayErrorMessage(errorMessage)
+      }
     }
   }
-  if (uniqueType == TRUE & length(x) > 1) {
-    cl <- class(x[[1]])
-    flag <- lapply(x, function(y) {
-      cly <- class(y)
-      all(cl %in% cly) & length(cl) == length(cly)
-    }) %>%
-      all()
-    if (flag != TRUE) {
-      cli::cli_abort(errorMessage)
-    }
-  }
+
+  return(invisible(x))
 }
 
-#' @noRd
+#' Assert if an object is a choice and fulfill certain conditions.
+#'
+#' @param x To check.
+#' @param choices Options that x can be.
+#' @param length Length that has to have.
+#' @param na Whether it can contain NA values.
+#' @param null Whether it can be null.
+#' @param named Whether it has to be named.
+#' @param errorMessage Error message to display.
+#'
+#' @export
+#'
 assertChoice <- function(x,
                          choices,
-                         errorMessage,
-                         len = 1,
-                         null.ok = FALSE) {
-  if (!(null.ok == TRUE & is.null(x))) {
-    if (length(x) != len) {
-      cli::cli_abort(errorMessage)
+                         length = NULL,
+                         na = FALSE,
+                         null = FALSE,
+                         named = FALSE,
+                         errorMessage = NULL) {
+  # create error message
+  if (is.null(errorMessage)) {
+    errorMessage <- paste0(
+      paste0(substitute(x), collapse = ""),
+      " must be a choice between: ",
+      paste0(choices, collapse = ", "),
+      errorLength(length),
+      errorNa(na),
+      errorNull(null),
+      errorNamed(named),
+      "."
+    )
+  }
+
+  # assert null
+  if (assertNull(x, null, errorMessage)) {
+    # no NA vector
+    xNoNa <- x[!is.na(x)]
+
+    # assert class
+    if (!all(class(x) == class(choices))) {
+      displayErrorMessage(errorMessage)
     }
-    if (!all(sort(unique(class(x))) == sort(unique(class(choices))))) {
-      cli::cli_abort(errorMessage)
-    }
-    if (!all(x %in% choices)) {
-      cli::cli_abort(errorMessage)
+
+    # assert length
+    assertLength(x, length, errorMessage)
+
+    # assert na
+    assertNa(x, na, errorMessage)
+
+    # assert named
+    assertNamed(x, named, errorMessage)
+
+    # assert choices
+    if (base::length(xNoNa) > 0) {
+      if (!all(xNoNa %in% choices)) {
+        displayErrorMessage(errorMessage)
+      }
     }
   }
+
+  return(invisible(x))
 }
 
-#' @noRd
-assertLogical <- function(x, len = 1, na.ok = FALSE, errorMessage) {
-  if (!is.logical(x)) {
-    cli::cli_abort(errorMessage)
+#' Assert if an object is a logical and fulfill certain conditions.
+#'
+#' @param x To check.
+#' @param length Length that has to have.
+#' @param na Whether it can contain NA values.
+#' @param null Whether it can be null.
+#' @param named Whether it has to be named.
+#' @param errorMessage Error message to display.
+#'
+#' @export
+#'
+assertLogical <- function(x,
+                          length = NULL,
+                          na = FALSE,
+                          null = FALSE,
+                          named = FALSE,
+                          errorMessage = NULL) {
+  # create error message
+  if (is.null(errorMessage)) {
+    errorMessage <- paste0(
+      paste0(substitute(x), collapse = ""),
+      " must be a logical",
+      errorLength(length),
+      errorNa(na),
+      errorNull(null),
+      errorNamed(named),
+      "."
+    )
   }
-  if (!is.null(len) && length(x) != len) {
-    cli::cli_abort(errorMessage)
+
+  # assert null
+  if (assertNull(x, null, errorMessage)) {
+    # assert class
+    if (!is.logical(x)) {
+      displayErrorMessage(errorMessage)
+    }
+
+    # assert length
+    assertLength(x, length, errorMessage)
+
+    # assert na
+    assertNa(x, na, errorMessage)
+
+    # assert named
+    assertNamed(x, named, errorMessage)
   }
-  if (!na.ok && any(is.na(x))) {
-    cli::cli_abort(errorMessage)
-  }
+
+  return(invisible(x))
 }
 
-assertLength <- function(x, len, errorMessage) {
-  if (!is.null(len) && length(x) != len) {
-    cli::cli_abort(errorMessage)
+#' Assert if an object is a numeric and fulfill certain conditions.
+#'
+#' @param x To check.
+#' @param integerish Whether elements must be integerish.
+#' @param min Lower bound.
+#' @param max Upper bound.
+#' @param length Length that has to have.
+#' @param na Whether it can contain NA values.
+#' @param null Whether it can be null.
+#' @param named Whether it has to be named.
+#' @param errorMessage Error message to display.
+#'
+#' @export
+#'
+assertNumeric <- function(x,
+                          integerish = FALSE,
+                          min = -Inf,
+                          max = Inf,
+                          length = NULL,
+                          na = FALSE,
+                          null = FALSE,
+                          named = FALSE,
+                          errorMessage = NULL) {
+  # create error message
+  if (is.null(errorMessage)) {
+    errorMessage <- paste0(
+      paste0(substitute(x), collapse = ""),
+      " must be a numeric",
+      ifelse(integerish, "; it has to be integerish", ""),
+      ifelse(is.infinite(min), "", paste0("; greater than", min)),
+      ifelse(is.infinite(max), "", paste0("; smaller than", max)),
+      errorLength(length),
+      errorNa(na),
+      errorNull(null),
+      errorNamed(named),
+      "."
+    )
+  }
+
+  # assert null
+  if (assertNull(x, null, errorMessage)) {
+    # no NA vector
+    xNoNa <- x[!is.na(x)]
+
+    # assert class
+    if (!is.numeric(x)) {
+      displayErrorMessage(errorMessage)
+    }
+
+    # assert integerish
+    if (integerish & base::length(xNoNa) > 0) {
+      err <- max(abs(xNoNa - round(xNoNa)))
+      if (err > 0.0001) {
+        displayErrorMessage(errorMessage)
+      }
+    }
+
+    # assert lower bound
+    if (!is.infinite(min) & base::length(xNoNa) > 0) {
+      if (base::min(xNoNa) < min) {
+        displayErrorMessage(errorMessage)
+      }
+    }
+
+    # assert upper bound
+    if (!is.infinite(max) & base::length(xNoNa) > 0) {
+      if (base::max(xNoNa) > max) {
+        displayErrorMessage(errorMessage)
+      }
+    }
+
+    # assert length
+    assertLength(x, length, errorMessage)
+
+    # assert na
+    assertNa(x, na, errorMessage)
+
+    # assert named
+    assertNamed(x, named, errorMessage)
+  }
+
+  return(invisible(x))
+}
+
+#' Assert if an object is a tibble and fulfill certain conditions.
+#'
+#' @param x To check.
+#' @param numberColumns Number of columns.
+#' @param numberRows Number of rows.
+#' @param columns Name of columns that must be present.
+#' @param null Whether it can be null.
+#' @param errorMessage Error message to display.
+#'
+#' @export
+#'
+assertTibble <- function(x,
+                         numberColumns = NULL,
+                         numberRows = NULL,
+                         columns = NULL,
+                         null = FALSE,
+                         errorMessage = NULL) {
+  # create error message
+  if (is.null(errorMessage)) {
+    errorMessage <- paste0(
+      paste0(substitute(x), collapse = ""),
+      " must be a tibble",
+      ifelse(is.null(numberColumns), "", paste0("; with at least ", numberColumns, " columns")),
+      ifelse(is.null(numberRows), "", paste0("; with at least ", numberRows, " rows")),
+      ifelse(is.null(columns), "", paste0("; the following columns must be present: ", paste0(columns, collapse = ", "))),
+      errorNull(null),
+      "."
+    )
+  }
+
+  # assert null
+  if (assertNull(x, null, errorMessage)) {
+    # assert class
+    if (!("tbl" %in% class(x))) {
+      displayErrorMessage(errorMessage)
+    }
+
+    # assert numberColumns
+    if (!is.null(numberColumns)) {
+      if (length(x) != numberColumns) {
+        displayErrorMessage(errorMessage)
+      }
+    }
+
+    # assert numberRows
+    if (!is.null(numberRows)) {
+      if (nrow(x) != numberRows) {
+        displayErrorMessage(errorMessage)
+      }
+    }
+
+    # assert columns
+    if (!is.null(columns)) {
+      if (!all(columns %in% colnames(x))) {
+        displayErrorMessage(errorMessage)
+      }
+    }
+  }
+
+  return(invisible(x))
+}
+
+assertLength <- function(x, length, errorMessage) {
+  if (!is.null(length) && base::length(x) != length) {
+    displayErrorMessage(errorMessage)
   }
   invisible(x)
 }
-assertMissing <- function(x, missing, errorMessage) {
-  if (!missing && any(is.na(x))) {
-    cli::cli_abort(errorMessage)
+errorLength <- function(length) {
+  if (!is.null(length)) {
+    str <- paste0("; with length = ", length)
+  } else {
+    str <- ""
+  }
+  return(str)
+}
+assertNa <- function(x, na, errorMessage) {
+  if (!na && any(is.na(x))) {
+    displayErrorMessage(errorMessage)
   }
   invisible(x)
+}
+errorNa <- function(na) {
+  if (na) {
+    str <- ""
+  } else {
+    str <- "; it can not contain NA"
+  }
+  return(str)
 }
 assertNamed <- function(x, named, errorMessage) {
   if (named && length(names(x)[names(x) != ""]) != length(x)) {
-    cli::cli_abort(errorMessage)
+    displayErrorMessage(errorMessage)
   }
   invisible(x)
 }
-assertNull <- function(x, nullOk, errorMessage) {
-  if (!nullOk && is.null(x)) {
-    cli::cli_abort(errorMessage)
+errorNamed <- function(named) {
+  if (named) {
+    str <- "; it has to be named"
+  } else {
+    str <- ""
+  }
+  return(str)
+}
+assertNull <- function(x, null, errorMessage) {
+  if (!null && is.null(x)) {
+    displayErrorMessage(errorMessage)
   }
   return(!is.null(x))
+}
+errorNull <- function(null) {
+  if (null) {
+    str <- ""
+  } else {
+    str <- "; it can not be NULL"
+  }
+  return(str)
 }

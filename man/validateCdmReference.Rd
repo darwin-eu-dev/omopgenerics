@@ -2,13 +2,13 @@
 % Please edit documentation in R/classCdmReference.R
 \name{validateCdmReference}
 \alias{validateCdmReference}
-\title{Validate a CdmReferenceObject.}
+\title{Validate a \code{cdm_reference} object.}
 \usage{
 validateCdmReference(cdm)
 }
 \arguments{
-\item{cdm}{A CdmReference object.}
+\item{cdm}{A \code{cdm_reference} object.}
 }
 \description{
-Validate a CdmReferenceObject.
+Validate a \code{cdm_reference} object.
 }

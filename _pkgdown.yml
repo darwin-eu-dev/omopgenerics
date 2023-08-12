@@ -44,23 +44,23 @@ reference:
     contents:
       - "`bind`"
       - "`bind.cdm_reference`"
-      - "`bind.GeneratedCohortSet`"
+      - "`bind.cdm_cohort`"
   - subtitle: Export one element to a tibble
     contents:
       - "`export`"
       - "`export.tbl`"
       - "`export.cdm_reference`"
-      - "`export.GeneratedCohortSet`"
+      - "`export.cdm_cohort`"
   - subtitle: Name of a cdm_reference
     contents:
       - "cdmName"
-  - subtitle: CohortSet of a GeneratedCohortSet
+  - subtitle: CohortSet of a cdm_cohort
     contents:
       - matches("cohortSet")
-  - subtitle: CohortAttrition of a GeneratedCohortSet
+  - subtitle: CohortAttrition of a cdm_cohort
     contents:
       - matches("cohortAttrition")
-  - subtitle: CohortCount of a GeneratedCohortSet
+  - subtitle: CohortCount of a cdm_cohort
     contents:
       - matches("cohortCount")
   - subtitle: Other methods

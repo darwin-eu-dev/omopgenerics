@@ -26,15 +26,15 @@ export <- function(x) {
   UseMethod("export")
 }
 
-#' Export a GeneratedCohortSet.
+#' Export a cdm_cohort
 #'
-#' @param x A generatedCohortSet object.
+#' @param x A cdm_cohort object.
 #'
-#' @return Exported generatedCohortSet.
+#' @return Exported cdm_cohort.
 #'
 #' @export
 #'
-export.GeneratedCohortSet <- function(x) {
+export.cdm_cohort <- function(x) {
   cohortSet(x) %>%
     dplyr::inner_join(cohortAttrition(x), by = "cohort_definition_id") %>%
     dplyr::arrange(.data$cohort_definition_id, .data$reason_id) %>%

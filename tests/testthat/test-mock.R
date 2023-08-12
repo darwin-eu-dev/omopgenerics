@@ -23,3 +23,7 @@ test_that("test vocab", {
     valid_end_date = as.Date("2099-12-31 "), reason_id = 1
   )))
 })
+
+test_that("test clinical tables", {
+  #expect_no_error(cdm <- mockCdm())
+})

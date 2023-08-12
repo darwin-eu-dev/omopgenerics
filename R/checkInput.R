@@ -53,17 +53,17 @@ checkInput <- function(..., .options = list()) {
 config <- function(inputs, .options) {
   # check that inputs is a named list
   if(!assertNamedList(inputs)) {
-    cli::cli_abort("Inputs must be named to know the check to be applied")
+    displayErrorMessage("Inputs must be named to know the check to be applied")
   }
 
   # check that .options is a named list
   if(!assertNamedList(.options)) {
-    cli::cli_abort(".options must be a named list")
+    displayErrorMessage(".options must be a named list")
   }
 
   # check names in .options different from inputs
   if (any(names(.options) %in% names(inputs))) {
-    cli::cli_abort("Option names cna not be the same than an input.")
+    displayErrorMessage("Option names cna not be the same than an input.")
   }
 
   # read available functions
@@ -75,7 +75,7 @@ config <- function(inputs, .options) {
     !(names(inputs) %in% availableFunctions$input)
   ]
   if (length(notAvailableInputs) > 0) {
-    cli::cli_abort(paste0(
+    displayErrorMessage(paste0(
       "The following inputs are not able to be tested: ",
       paste0(notAvailableInputs, collapse = ", ")
     ))
@@ -102,7 +102,7 @@ config <- function(inputs, .options) {
         paste0(.data$missing_argument, collapse = ", ")
       )) %>%
       dplyr::pull("error")
-    cli::cli_abort(c("x" = "Some required arguments are missing:", arguments))
+    displayErrorMessage(c("x" = "Some required arguments are missing:", arguments))
   }
 
   # return

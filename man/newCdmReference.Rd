@@ -2,9 +2,9 @@
 % Please edit documentation in R/classCdmReference.R
 \name{newCdmReference}
 \alias{newCdmReference}
-\title{CdmReference objects constructor}
+\title{\code{cdm_reference} objects constructor}
 \usage{
-newCdmReference(cdmTables, cdmName, cdmVersion, validate = TRUE)
+newCdmReference(cdmTables, cdmName, cdmVersion)
 }
 \arguments{
 \item{cdmTables}{List of tables (tbl_sql, tbl or data.frame) that contains a
@@ -13,12 +13,10 @@ reference to an OMOP Common data model.}
 \item{cdmName}{Name of the cdm.}
 
 \item{cdmVersion}{Version of the cdm ("5.3" or "5.4").}
-
-\item{validate}{Whether to validate the cdm object.}
 }
 \value{
-A CdmReference object.
+A \code{cdm_reference} object.
 }
 \description{
-CdmReference objects constructor
+\code{cdm_reference} objects constructor
 }

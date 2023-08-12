@@ -61,15 +61,15 @@ appendCdm <- function(cdm1, cdm2) {
   return(cdm1)
 }
 
-#' Bind multiple GeneratedCohortSet objects.
+#' Bind multiple cdm_cohort objects.
 #'
-#' @param ... Multiple generatedCohortSet objects.
+#' @param ... Multiple cdm_cohort objects.
 #'
-#' @return New generatedCohortSet.
+#' @return New cdm_cohort
 #'
 #' @export
 #'
-bind.GeneratedCohortSet <- function(...) {
+bind.cdm_cohort <- function(...) {
   # initial checks
   listOfCohorts = list(...)
   checkInput(listOfCohorts = listOfCohorts)
