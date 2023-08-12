@@ -43,3 +43,8 @@ test_that("temporary behaviour", {
   expect_true(getOption("cohort_as_temp") == TRUE)
 
 })
+
+test_that("test asType", {
+  expect_warning(asType(1, "adfsgagd"))
+  expect_true(1 == asType(1, "float"))
+})

@@ -62,7 +62,7 @@ mockVocabularyCdm <- function(cdmSource = NULL,
   )
 
   # create the list of tables
-  listTables <- list(
+  cdmTables <- list(
     cdmSource = cdmSource, concept = concept, vocabulary = vocabulary,
     domain = domain, conceptClass = conceptClass,
     conceptRelationship = conceptRelationship, conceptSynonym = conceptSynonym,
@@ -71,28 +71,27 @@ mockVocabularyCdm <- function(cdmSource = NULL,
   )
 
   # fill tables
-  for (nam in names(listTables)) {
-    listTables <- fillColumns(listTables, nam, cdmVersion)
+  for (nam in names(cdmTables)) {
+    cdmTables <- fillColumns(cdmTables, nam, cdmVersion)
   }
-  names(listTables) <- toSnakeCase(names(listTables))
+  names(cdmTables) <- toSnakeCase(names(cdmTables))
 
   cdm <- newCdmReference(
-    cdmTables = listTables, cdmName = cdmName, cdmVersion = cdmVersion,
-    validate = FALSE
+    cdmTables = cdmTables, cdmName = cdmName, cdmVersion = cdmVersion
   )
 
   return(cdm)
 }
 
-fillColumns <- function(listTables, tableName, cdm_version) {
-  table <- listTables[[tableName]]
+fillColumns <- function(cdmTables, tableName, cdm_version) {
+  table <- cdmTables[[tableName]]
   if (is.null(table)) {
     table <- defaultTable(tableName)
   } else {
     table <- correctTable(table, tableName, cdm_version)
   }
-  listTables[[tableName]] <- table
-  return(listTables)
+  cdmTables[[tableName]] <- table
+  return(cdmTables)
 }
 
 defaultTable <- function(tableName) {
@@ -140,7 +139,7 @@ correctTable <- function(table, tableName, cdmVersion) {
     colnames(table), c(requiredColnames, optionalColnames)
   )
   if (length(colnamesToRemove) > 0) {
-    cli::cli_warn(paste0(
+    displayWarningMessage(paste0(
       "Extra columns (", paste0(colnamesToRemove, collapse = ", "),
       ") removed from: ", tableName
     ))

@@ -152,7 +152,7 @@ asType <- function(x, type) {
   } else if (grepl("varchar", type)) {
     x <- as.character(x)
   } else {
-    cli::cli_warn(paste0("Not recognised type: ", type))
+    displayWarningMessage(paste0("Not recognised type: ", type))
   }
   return(x)
 }

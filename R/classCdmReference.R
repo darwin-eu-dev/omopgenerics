@@ -14,21 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' CdmReference objects constructor
+#' `cdm_reference` objects constructor
 #'
 #' @param cdmTables List of tables (tbl_sql, tbl or data.frame) that contains a
 #' reference to an OMOP Common data model.
 #' @param cdmName Name of the cdm.
 #' @param cdmVersion Version of the cdm ("5.3" or "5.4").
-#' @param validate Whether to validate the cdm object.
 #'
-#' @return A CdmReference object.
+#' @return A `cdm_reference` object.
 #'
 #' @export
 #'
-newCdmReference <- function(cdmTables, cdmName, cdmVersion, validate = TRUE) {
+newCdmReference <- function(cdmTables, cdmName, cdmVersion) {
   # initial input check
-  # checkInput(cdmTables = cdmTables, cdmName = cdmName, cdmVersion = cdmVersion)
+  checkInput(cdmTables = cdmTables, cdmName = cdmName, cdmVersion = cdmVersion)
 
   attr(cdmTables, "cdm_name") <- cdmName
   attr(cdmTables, "cdm_version") <- cdmVersion
@@ -52,14 +51,14 @@ cdmName <- function(cdm) {
   attr(cdm, "cdm_name")
 }
 
-#' Validate a CdmReferenceObject.
+#' Validate a `cdm_reference` object.
 #'
-#' @param cdm A CdmReference object.
+#' @param cdm A `cdm_reference` object.
 #'
 #' @export
 validateCdmReference <- function(cdm) {
   if (!("cdm_reference" %in% class(cdm))) {
-    cli::cli_abort("A CdmReference object must have class cdm_reference.")
+    displayErrorMessage("A cdm_reference object must have class cdm_reference.")
   }
   return(invisible(cdm))
 }
