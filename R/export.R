@@ -129,5 +129,12 @@ export.cdm_reference <- function(x) {
 #' @export
 #'
 export.tbl <- function(x) {
-  x
+  # remove attributes ?
+  # attributesNames <- names(attributes(x))
+  # for (at in attributesNames) {
+  #   if (!(at %in% c("class", "row.names", "names"))) {
+  #     attr(x, at) <- NULL
+  #   }
+  # }
+  return(x)
 }
