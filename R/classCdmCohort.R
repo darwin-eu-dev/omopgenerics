@@ -256,7 +256,9 @@ cohortSet <- function(cohort) { UseMethod("cohortSet") }
 
 #' @export
 cohortSet.cdm_cohort <- function(cohort) {
-  attr(cohort, "cohort_set")
+  attr(cohort, "cohort_set") %>%
+    dplyr::collect() %>%
+    dplyr::arrange(.data$cohort_definition_id)
 }
 
 #' Get cohort counts from a cdm_cohort object.
@@ -270,7 +272,14 @@ cohortCount <- function(cohort) { UseMethod("cohortCount") }
 
 #' @export
 cohortCount.cdm_cohort <- function(cohort) {
-  attr(cohort, "cohort_count")
+  attr(cohort, "cohort_attrition") %>%
+    dplyr::group_by(.data$cohort_definition_id) %>%
+    dplyr::filter(.data$reason_id == max(.data$reason_id, na.rm = TRUE)) %>%
+    dplyr::select(
+      "cohort_definition_id", "number_records", "number_subjects"
+    ) %>%
+    dplyr::collect() %>%
+    dplyr::arrange(.data$cohort_definition_id)
 }
 
 #' Get cohort attrition from a cdm_cohort object.
@@ -284,6 +293,8 @@ cohortAttrition <- function(cohort) { UseMethod("cohortAttrition") }
 
 #' @export
 cohortAttrition.cdm_cohort <- function(cohort) {
-  attr(cohort, "cohort_attrition")
+  attr(cohort, "cohort_attrition") %>%
+    dplyr::collect() %>%
+    dplyr::arrange(.data$cohort_definition_id)
 }
 

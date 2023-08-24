@@ -21,12 +21,12 @@
 #' @param individuals Number of individuals in the mock database or table with
 #' the demographics data.
 #' @param person Person table.
-#' @param observation_period Observation period table.
+#' @param observationPeriod Observation period table.
 #' @param death death table.
-#' @param condition_occurrence Condition occurrence table.
-#' @param drug_exposure DrugExposure table.
-#' @param procedure_occurrence Procedure occurrence table.
-#' @param device_exposure Device exposure table.
+#' @param conditionOccurrence Condition occurrence table.
+#' @param drugExposure DrugExposure table.
+#' @param procedureOccurrence Procedure occurrence table.
+#' @param deviceExposure Device exposure table.
 #' @param measurement Measurement table.
 #' @param observation Observation table.
 #' @param numberRecords number of records per person.
@@ -42,12 +42,12 @@ mockCdm <- function(cdmVocabulary = mockVocabularyCdm(),
                     cdmName = "MOCK CDM",
                     individuals = 10,
                     person = NULL,
-                    observation_period = NULL,
+                    observationPeriod = NULL,
                     death = NULL,
-                    condition_occurrence = NULL,
-                    drug_exposure = NULL,
-                    procedure_occurrence = NULL,
-                    device_exposure = NULL,
+                    conditionOccurrence = NULL,
+                    drugExposure = NULL,
+                    procedureOccurrence = NULL,
+                    deviceExposure = NULL,
                     measurement = NULL,
                     observation = NULL,
                     numberRecords = c(default = 2),
@@ -56,22 +56,27 @@ mockCdm <- function(cdmVocabulary = mockVocabularyCdm(),
   # check inputs
   checkInput(
     cdmVocabulary = cdmVocabulary, cdmName = cdmName, individuals = individuals,
-    person = person, observation_period = observation_period, death = death,
-    condition_occurrence = condition_occurrence, drug_exposure = drug_exposure,
-    procedure_occurrence = procedure_occurrence,
-    device_exposure = device_exposure, measurement = measurement,
-    observation = observation, seed = seed, cdmTables = list(...)
+    numberRecords = numberRecords, seed = seed, cdmTables = list(
+      person = person, observationPeriod = observationPeriod, death = death,
+      conditionOccurrence = conditionOccurrence, drugExposure = drugExposure,
+      procedureOccurrence = procedureOccurrence,
+      deviceExposure = deviceExposure, measurement = measurement,
+      observation = observation, ...
+    )
   )
 
-  cdmTables <- list(
-    person = person, observation_period = observation_period, death = death,
-    condition_occurrence = condition_occurrence,
-    drug_exposure = drug_exposure, measurement = measurement,
-    procedure_occurrence = procedure_occurrence, observation = observation,
-    device_exposure = device_exposure, ...
+  if (is.null(names(numberRecords))) {
+    numberRecords <- c(default = numberRecords)
+  }
+
+  cdmTables <- c(
+    cdmVocabulary, person = person, observation_period = observationPeriod,
+    death = death, condition_occurrence = conditionOccurrence,
+    drug_exposure = drugExposure, measurement = measurement,
+    procedure_occurrence = procedureOccurrence, observation = observation,
+    device_exposure = deviceExposure, ...
   )
 
-  cdmTables <- c(cdmVocabulary, cdmTables)
   cdm <- newCdmReference(
     cdmTables = cdmTables, cdmName = cdmName, cdmVersion = attr()
   )
@@ -147,9 +152,38 @@ createCohortAttrition <- function(cohort) {
     )
 }
 
-#' To create the person table
-#' @noRd
+#' Function to add the person and observation_period tables to a cdm_reference
+#' object.
+#'
+#' @param cdm A cdm_reference object.
+#' @param individuals A tibble with the number of individuals, sex, year of
+#' birth, start observation and end observation
+#' @param seed Seed for random numbers reproducibility
+#'
+#' @return A cdm_reference object
+#'
+#' @export
+#'
 generatePersonObservationPeriod <- function(cdm, individuals, seed) {
+  # initial checks
+  checkInput(cdm = cdm, individuals = individuals, seed = seed)
+
+  # set initial seed
+  set.seed(seed = seed)
+
+  # correct tables
+  cdm$person <- correctTable(cdm$person, "person", attr(cdm, "cdm_version"))
+  cdm$observation_period <- correctTable(
+    cdm$observation_period, "observation_period", attr(cdm, "cdm_version")
+  )
+
+  # individuals already in the cdm object
+  individualsToCreate <- getIndividuals(cdm, individuals)
+
+  # create new tables
+  cdm$person <- newPersonTable(individuals)
+  cdm$observation_period <- newObservationPeriodTable(individuals)
+
   if (is.null(cdm[["person"]])) {
     if (is.numeric(individuals)) {
       individuals <- dplyr::tibble(

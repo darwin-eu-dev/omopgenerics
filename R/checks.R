@@ -292,14 +292,19 @@ checkSeed <- function(seed) {
   assertNumeric(seed, integerish = TRUE, min = 1, length = 1)
 }
 
-#
-# checkInput(
-#   cdm_source = cdm_source, concept = concept, vocabulary = vocabulary,
-#   domain = domain, concept_class = concept_class,
-#   concept_class= concept_class, concept_relationship = concept_relationship,
-#   concept_synonym = concept_synonym, concept_ancestor = concept_ancestor,
-#   source_to_concept_map = source_to_concept_map,
-#   drug_strength = drug_strength, cdm_version = cdm_version
-# )
-#
+# check numberRecords
+checkNumberRecords <- function(numberRecords) {
+  assertNumeric(numberRecords, min = 0, named = TRUE)
+  nam <- c(
+    "death", "observationPeriod", "conditionOccurrence", "drugExposure",
+    "procedureOccurrence", "deviceExposure", "measurement", "observation"
+  )
+  if (!all(names(numberRecords) %in% c(nam, "default"))) {
+    displayErrorMessage(paste0(
+      "possible names for numberRecords: ", paste0(nam, ", ")
+    ))
+  }
+  if (!all(nam %in% names(numberRecords)) && ) {
 
+  }
+}
