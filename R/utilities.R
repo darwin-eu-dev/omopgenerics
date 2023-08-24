@@ -147,9 +147,9 @@ asType <- function(x, type) {
     x <- as.integer(x)
   } else if (grepl("date", type)) {
     x <- as.Date(x)
-  } else if (type == "float") {
+  } else if (type == "float" | type == "numeric") {
     x <- as.numeric(x)
-  } else if (grepl("varchar", type)) {
+  } else if (grepl("varchar", type) | type == "character") {
     x <- as.character(x)
   } else {
     displayWarningMessage(paste0("Not recognised type: ", type))

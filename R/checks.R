@@ -304,7 +304,7 @@ checkNumberRecords <- function(numberRecords) {
       "possible names for numberRecords: ", paste0(nam, ", ")
     ))
   }
-  if (!all(nam %in% names(numberRecords)) && ) {
+  if (!all(nam %in% names(numberRecords)) && TRUE) {
 
   }
 }

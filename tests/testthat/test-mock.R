@@ -24,6 +24,10 @@ test_that("test vocab", {
   )))
 })
 
+test_that("test person and observation period tables", {
+
+})
+
 test_that("test clinical tables", {
   #expect_no_error(cdm <- mockCdm())
 })

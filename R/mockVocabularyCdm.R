@@ -134,22 +134,32 @@ correctTable <- function(table, tableName, cdmVersion) {
   optionalColnames <- expectedColnames %>%
     dplyr::filter(.data$isRequired == FALSE) %>%
     dplyr::pull("cdmFieldName")
-  colnamesToAdd <- setdiff(requiredColnames, colnames(table))
-  colnamesToRemove <- setdiff(
-    colnames(table), c(requiredColnames, optionalColnames)
-  )
-  if (length(colnamesToRemove) > 0) {
-    displayWarningMessage(paste0(
-      "Extra columns (", paste0(colnamesToRemove, collapse = ", "),
-      ") removed from: ", tableName
-    ))
-  }
-  for (k in seq_along(colnamesToAdd)) {
-    type <- expectedColnames %>%
-      dplyr::filter(.data$cdmFieldName == .env$colnamesToAdd[k]) %>%
-      dplyr::pull("cdmDatatype")
-    table <- table %>%
-      dplyr::mutate(!!colnamesToAdd[k] := asType(NA, type))
+  if (!is.null(table)) {
+    colnamesToAdd <- setdiff(requiredColnames, colnames(table))
+    colnamesToRemove <- setdiff(
+      colnames(table), c(requiredColnames, optionalColnames)
+    )
+    if (length(colnamesToRemove) > 0) {
+      displayWarningMessage(paste0(
+        "Extra columns (", paste0(colnamesToRemove, collapse = ", "),
+        ") removed from: ", tableName
+      ))
+    }
+    for (k in seq_along(colnamesToAdd)) {
+      type <- expectedColnames %>%
+        dplyr::filter(.data$cdmFieldName == .env$colnamesToAdd[k]) %>%
+        dplyr::pull("cdmDatatype")
+      table <- table %>%
+        dplyr::mutate(!!colnamesToAdd[k] := asType(NA, type))
+    }
+  } else {
+    table <- tibble::tibble()
+    for (k in seq_len(expectedColnames)) {
+      name <- expectedColnames$cdmFieldName[k]
+      type <- expectedColnames$cdmDatatype[k]
+      table <- table %>%
+        dplyr::mutate(!!name := asType(NULL, type))
+    }
   }
   table <- table %>%
     dplyr::select(dplyr::any_of(expectedColnames[["cdmFieldName"]]))
