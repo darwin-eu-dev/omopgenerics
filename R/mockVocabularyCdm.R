@@ -122,29 +122,16 @@ defaultTable <- function(tableName) {
   return(x)
 }
 
-correctTable <- function(table, tableName, cdmVersion) {
+correctTable <- function(table, tableName, cdmVersion, warning = TRUE) {
   expectedColnames <- fieldsTables %>%
     dplyr::filter(
       grepl(.env$cdmVersion, .data$cdm_version) &
         .data$cdmTableName == .env$tableName
     )
-  requiredColnames <- expectedColnames %>%
-    dplyr::filter(.data$isRequired == TRUE) %>%
-    dplyr::pull("cdmFieldName")
-  optionalColnames <- expectedColnames %>%
-    dplyr::filter(.data$isRequired == FALSE) %>%
-    dplyr::pull("cdmFieldName")
+  requiredColnames <- expectedColnames %>% dplyr::pull("cdmFieldName")
   if (!is.null(table)) {
     colnamesToAdd <- setdiff(requiredColnames, colnames(table))
-    colnamesToRemove <- setdiff(
-      colnames(table), c(requiredColnames, optionalColnames)
-    )
-    if (length(colnamesToRemove) > 0) {
-      displayWarningMessage(paste0(
-        "Extra columns (", paste0(colnamesToRemove, collapse = ", "),
-        ") removed from: ", tableName
-      ))
-    }
+    colnamesToRemove <- setdiff(colnames(table), requiredColnames)
     for (k in seq_along(colnamesToAdd)) {
       type <- expectedColnames %>%
         dplyr::filter(.data$cdmFieldName == .env$colnamesToAdd[k]) %>%
@@ -152,9 +139,15 @@ correctTable <- function(table, tableName, cdmVersion) {
       table <- table %>%
         dplyr::mutate(!!colnamesToAdd[k] := asType(NA, type))
     }
+    if (length(colnamesToRemove) > 0 & warning) {
+      displayWarningMessage(paste0(
+        "Extra columns (", paste0(colnamesToRemove, collapse = ", "),
+        ") removed from: ", tableName
+      ))
+    }
   } else {
     table <- tibble::tibble()
-    for (k in seq_len(expectedColnames)) {
+    for (k in seq_len(nrow(expectedColnames))) {
       name <- expectedColnames$cdmFieldName[k]
       type <- expectedColnames$cdmDatatype[k]
       table <- table %>%
@@ -162,6 +155,6 @@ correctTable <- function(table, tableName, cdmVersion) {
     }
   }
   table <- table %>%
-    dplyr::select(dplyr::any_of(expectedColnames[["cdmFieldName"]]))
+    dplyr::select(dplyr::all_of(requiredColnames))
   return(table)
 }

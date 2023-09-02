@@ -236,13 +236,43 @@ selectColumns <- function(x, tableName) {
 #' @export
 #'
 generateClinicalDataTable <- function(cdm,
-                                      tableName,
+                                      clinicalTableName,
+                                      numberRows,
                                       seed = 1,
                                       cdmVersion = attr(cdm, "cdm_version")) {
+  # initial checks
   checkInput(
-    cdm = cdm, tableName = tableName, seed = seed, cdmVersion = cdmVersion,
+    cdm = cdm, clinicalTableName = clinicalTableName, numberRows = numberRows, seed = seed,
+    cdmVersion = cdmVersion,
     .options = list(cdmRequiredTables = c("person", "observation_period"))
   )
+
+  # id
+  table <- dplyr::tibble(!!paste0(tableName, "_id") := seq_len(numberRows)) %>%
+    correctTable(
+      tableName = clinicalTableName, cdmVersion = cdmVersion, warning = FALSE
+    )
+
+  # person_id
+  if ("person_id" %in% colnames(table)) {
+    table <- table %>%
+      dplyr::mutate("person_id" = sample(
+        x = cdm$person$person_id, size = numberRows, replace = TRUE
+      ))
+  }
+
+  # date
+  singleDate <- paste0(clinicalTableName, "_date")
+  if (singleDate %in% colnames(table)) {
+    table <- table %>% addDate(singleDate)
+  }
+
+}
+
+addDate <- function(x, cols, observationPeriod) {
+  xnew <- x %>%
+    dplyr::left_join(observationPeriod, by = "person_id")
+
 }
 
 #' #' To create the observation period tables
