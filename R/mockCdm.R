@@ -40,7 +40,7 @@
 #'
 mockCdm <- function(cdmVocabulary = mockVocabularyCdm(),
                     cdmName = "MOCK CDM",
-                    individuals = 10,
+                    individuals = NULL,
                     person = NULL,
                     observationPeriod = NULL,
                     death = NULL,
@@ -65,6 +65,10 @@ mockCdm <- function(cdmVocabulary = mockVocabularyCdm(),
     )
   )
 
+  if (!is.null(seed)) {
+    set.seed(seed = seed)
+  }
+
   if (is.null(names(numberRecords))) {
     numberRecords <- c(default = numberRecords)
   }
@@ -81,34 +85,27 @@ mockCdm <- function(cdmVocabulary = mockVocabularyCdm(),
     cdmTables = cdmTables, cdmName = cdmName, cdmVersion = attr()
   )
 
-  #   cdm <- generatePerson(cdm = cdm, individuals = individuals, seed = seed)
-  #   cdm <- generateObservationPeriod(
-  #     cdm = cdm, observationPeriodPerPerson = 1, seed =seed
-  #   )
-  #   cdm <- generateDeath(cdm = cdm, deathFraction = 0.3, seed = seed)
-  #   cdm <- generateConditionOccurrence(
-  #     cdm = cdm, conditionOccurrencePerPerson = 3, seed = seed
-  #   )
-  #   cdm <- generateDrugExposure(
-  #     cdm = cdm, drugExposurePerPerson = 5, seed = seed
-  #   )
-  #   cdm <- generateMeasurement(
-  #     cdm = cdm, measurementPerPerson = 2, seed = seed
-  #   )
-  #   cdm <- generateProcedureOccurrence(
-  #     cdm = cdm, procedureOccurrencePerPerson = 1, seed = seed
-  #   )
-  #   cdm <- generateObservation(
-  #     cdm = cdm, observationPerPerson = 1, seed = seed
-  #   )
-  #   cdm <- generateDeviceExposure(
-  #     cdm = cdm, deviceExposurePerPerson = 1, seed = seed
-  #   )
-  #   cdm <- generateDrugEra(cdm = cdm)
-  #   cdm <- generateConditionEra(cdm = cdm)
-  #   cdm <- generateCohorts(cdm = cdm, numberCohorts = 2, seed = seed)
-  #
-  #  return(cdm)
+  cdm <- generatePersonObservationPeriod(cdm, individuals, seed)
+
+  clinical <- c(
+    "death", "condition_occurrence", "drug_exposure", "procedure_occurrence",
+    "device_exposure", "measurement", "observation"
+  )
+  for (tab in clinical) {
+    if (tab %in% names(numberRecords)) {
+      records <- round(unname(numberRecords[tab]) * nrow(cdm$person))
+    } else {
+      records <- round(unname(numberRecords["default"]) * nrow(cdm$person))
+    }
+    cdm[[tab]] <- generateClinicalDataTable(cdm, tab, records)
+  }
+
+  cdm <- generateDrugEra(cdm = cdm)
+  cdm <- generateConditionEra(cdm = cdm)
+
+  cdm <- generateCohorts(cdm = cdm, cohortNames = c("cohort1", "cohort2"))
+
+  return(cdm)
 }
 
 
@@ -152,8 +149,7 @@ createCohortAttrition <- function(cohort) {
     )
 }
 
-#' Function to add the person and observation_period tables to a cdm_reference
-#' object.
+#' Function create the observation period in a cdm reference.
 #'
 #' @param cdm A cdm_reference object.
 #' @param individuals A tibble with the number of individuals, sex, year of
@@ -166,8 +162,8 @@ createCohortAttrition <- function(cohort) {
 #' @export
 #'
 generatePersonObservationPeriod <- function(cdm,
-                                            individuals,
-                                            seed = 1,
+                                            individuals = NULL,
+                                            seed = NULL,
                                             cdmVersion = attr(cdm, "cdm_version")) {
   # initial checks
   checkInput(
@@ -175,59 +171,204 @@ generatePersonObservationPeriod <- function(cdm,
   )
 
   # set initial seed
-  set.seed(seed = seed)
+  if (!is.null(seed)) {
+    set.seed(seed = seed)
+  }
 
-  # correct tables
-  cdm$person <- correctTable(cdm$person, "person", attr(cdm, "cdm_version"))
-  cdm$observation_period <- correctTable(
-    cdm$observation_period, "observation_period", attr(cdm, "cdm_version")
-  )
-
-  # individuals already in the cdm object
-  individualsToCreate <- getIndividuals(cdm, individuals)
-
-  # create new tables
-  cdm$person <- selectColumns(individualsToCreate, "person")
-  cdm$observation_period <- selectColumns(
-    individualsToCreate, "observation_period"
-  )
+  if (is.null(individuals)) {
+    individuals <- exisitingIndividuals(cdm)
+    if (is.null(cdm$person)) {
+      cdm$person <- completePersonTable(individuals)
+    }
+    if (is.null(cdm$observation_period)) {
+      cdm$observation_period <- generateObservationPeriod(cdm, individuals)
+    }
+  } else {
+    individuals <- correctIndividuals(individuals)
+    cdm$person <- personFromTibble(individuals)
+    cdm$observation_period <- observationPeriodFromCdm(cdm)
+  }
 
   return(cdm)
 }
 
-getIndividuals <- function(cdm, individuals) {
+correctIndividuals <- function(individuals) {
   if (is.numeric(individuals)) {
     individuals <- dplyr::tibble(
-      number_individuals = individuals, sex = as.character(NA),
-      birth = as.character(NA), start_observation = as.character(NA),
-      end_observation = as.character(NA)
+      person_id = seq_len(individuals), sex = as.character(NA),
+      birth = as.Date(NA), start_observation = as.Date(NA),
+      end_observation = as.Date(NA)
     )
+  } else {
+    cols <- c("sex", "birth", "start_observation", "end_observation")
+    for (col in cols[!(cols %in% colnames(cols))]) {
+      individuals <- individuals %>% dplyr::mutate(!!col := NA)
+    }
+    individuals <- individuals %>%
+      dplyr::mutate(
+        number_individuals = as.numeric(.data$number_individuals),
+        sex = as.character(.data$sex),
+        birth = as.Date(.data$birth),
+        start_observation = as.Date(.data$start_observation),
+        end_observation = as.Date(.data$end_observation)
+      )
+    individuals <- lapply(seq_len(nrow(individuals)), function (x) {
+      dplyr::tibble(
+        person_id = seq_len(individuals$number_individuals[x]),
+        sex = individuals$sex[x], birth = individuals$birth[x],
+        start_observation = individuals$start_observation[x],
+        end_observation = individuals$end_observation[x]
+      )
+    }) %>%
+      dplyr::bind_rows() %>%
+      dplyr::mutate(person_id = dplyr::row_number())
   }
-  individualsInData <- exisitingIndividuals(cdm)
+  return(individuals)
 }
 exisitingIndividuals <- function(cdm) {
   tables <- c(
     "observation_period", "death", "condition_occurrence", "drug_exposure",
     "procedure_occurrence", "device_exposure", "measurement", "observation"
   )
-  ids <- dplyr::tibble(person_id = numeric(), )
-}
-selectColumns <- function(x, tableName) {
-  x %>%
-    dplyr::select(dplyr::any_of(
-      fieldsTables %>%
-        dplyr::filter(
-          grepl(.env$cdmVersion, .data$cdm_version) &
-            .data$cdmTableName == emv$tableName
+  individuals <- list()
+  for (tab in tables) {
+    table <- cdm[[tab]]
+    if (!is.null(table)) {
+      dates <- fieldsTables %>%
+        dplyr::filter(.data$cdmTableName == .env$tab) %>%
+        dplyr::filter(.data$cdmDatatype == "date") %>%
+        dplyr::pull("cdmFieldName")
+      individuals[[tab]] <- dplyr::tibble(
+        person_id = table$person_id,
+        min_date = purrr::reduce(
+          table %>% dplyr::select(dplyr::any_of(dates)), min
+        ),
+        max_date = purrr::reduce(
+          table %>% dplyr::select(dplyr::any_of(dates)), max
         )
-    )) %>%
-    dplyr::distinct()
+      )
+    }
+  }
+  individuals <- dplyr::bind_rows(individuals) %>%
+    dplyr::group_by(.data$person_id) %>%
+    dplyr::summarise(
+      min_date = min(.data$date), max_date = max(.data$date), .groups = "drop"
+    )
+  return(individuals)
+}
+completePersonTable <- function(individuals) {
+  n <- nrow(individuals)
+  cols <- fieldsTables %>%
+    dplyr::filter(.data$cdmTableName == "person") %>%
+    dplyr::pull("cdmFieldName")
+  individuals %>%
+    dplyr::mutate(
+      gender_concept_id = sample(c(8532, 8507), size = n, replace = TRUE),
+      birth_datetime = .data$min_date - round(60*365*runif(n)),
+      race_concept_id = 0,
+      ethnicity_concept_id = 0,
+      location_id = as.numeric(NA),
+      provider_id = as.numeric(NA),
+      care_site_ide = as.numeric(NA),
+      person_source_value = as.character(NA),
+      gender_source_value = as.character(NA),
+      gender_source_concept_id = as.character(NA),
+      race_source_value = as.character(NA),
+      race_source_concept_id = as.numeric(NA),
+      ethnicity_source_value = as.character(NA),
+      ethnicity_source_concept_id = as.numeric(NA)
+    ) %>%
+    dplyr::mutate(
+      year_of_birth = lubridate::year(.data$birth_datetime),
+      month_of_birth = lubridate::month(.data$birth_datetime),
+      day_of_birth = lubridate::day(.data$birth_datetime)
+    ) %>%
+    dplyr::select(dplyr::any_of(cols))
+}
+personFromTibble <- function(individuals) {
+  n <- sum(individuals$number_individuals)
+  cols <- fieldsTables %>%
+    dplyr::filter(.data$cdmTableName == "person") %>%
+    dplyr::pull("cdmFieldName")
+  individuals %>%
+    dplyr::mutate(
+      person_id = dplyr::row_number(),
+      gender_concept_id = dplyr::if_else(
+        .data$sex == "Male", 8507, dplyr::if_else(
+          .data$sex == "Female", 8532, sample(c(8507, 8532), n, TRUE)
+        )
+      ),
+      birth_datetime = dplyr::if_else(
+        is.na(.data$birth),
+        as.Date(round(50*runif(n)), origin = "1970-01-01"),
+        as.Date(.data$birth)
+      ),
+      race_concept_id = 0,
+      ethnicity_concept_id = 0,
+      location_id = as.numeric(NA),
+      provider_id = as.numeric(NA),
+      care_site_ide = as.numeric(NA),
+      person_source_value = as.character(NA),
+      gender_source_value = as.character(NA),
+      gender_source_concept_id = as.character(NA),
+      race_source_value = as.character(NA),
+      race_source_concept_id = as.numeric(NA),
+      ethnicity_source_value = as.character(NA),
+      ethnicity_source_concept_id = as.numeric(NA)
+    ) %>%
+    dplyr::mutate(
+      year_of_birth = lubridate::year(.data$birth_datetime),
+      month_of_birth = lubridate::month(.data$birth_datetime),
+      day_of_birth = lubridate::day(.data$birth_datetime)
+    ) %>%
+    dplyr::select(dplyr::any_of(cols))
+}
+generateObservationPeriod <- function(cdm, individuals) {
+  n <- nrow(individuals)
+  cols <- fieldsTables %>%
+    dplyr::filter(.data$cdmTableName == "observation_period") %>%
+    dplyr::pull("cdmFieldName")
+  individuals <- individuals %>%
+    dplyr::inner_join(
+      cdm$person %>%
+        dplyr::select("person_id", "birth_datetime"),
+      by = "person_id"
+    ) %>%
+    dplyr::mutate(
+      observation_period_start_date = .data$brth_datetime + round(
+        runif(n)*as.numeric(.data$min_date - .data$brth_datetime)
+      ),
+      observation_period_id = dplyr::row_number(),
+      period_type_concept_id  = 0
+    )
+  if (is.null(cdm$death)) {
+    individuals <- individuals %>%
+      dplyr::mutate(
+        observation_period_end_date = .data$max_date + 5*365*runif(n)
+      )
+  } else {
+    individuals <- individuals %>%
+      dplyr::mutate(observation_period_end_date = .data$max_date)
+  }
+  individuals <- individuals %>%
+    dplyr::select(dplyr::all_of(cols))
+  return(individuals)
+}
+observationPeriodFromCdm <- function(cdm, individuals) {
+  n <- nrow(cdm$person)
+  individuals <- cdm$person %>%
+    dplyr::mutate(
+      min_date = .data$birth_datetime + round(60*365*runif(n)),
+      max_date = .data$min_date + round(60*365*runif(n))
+    )
+  generateObservationPeriod(cdm, individuals)
 }
 
 #' Function to add a clinical data table in a cdm_reference.
 #'
 #' @param cdm A cdm_reference object.
 #' @param tableName Name of the table to be created.
+#' @param numberRecords Number of records in the table.
 #' @param seed Seed for random numbers reproducibility.
 #' @param cdmVersion Verison of the cdm.
 #'
@@ -236,9 +377,9 @@ selectColumns <- function(x, tableName) {
 #' @export
 #'
 generateClinicalDataTable <- function(cdm,
-                                      clinicalTableName,
+                                      tableName,
                                       numberRows,
-                                      seed = 1,
+                                      seed = NULL,
                                       cdmVersion = attr(cdm, "cdm_version")) {
   # initial checks
   checkInput(
@@ -246,6 +387,10 @@ generateClinicalDataTable <- function(cdm,
     cdmVersion = cdmVersion,
     .options = list(cdmRequiredTables = c("person", "observation_period"))
   )
+
+  if (!is.null(seed)) {
+    set.seed(seed = seed)
+  }
 
   # id
   table <- dplyr::tibble(!!paste0(tableName, "_id") := seq_len(numberRows)) %>%
@@ -261,18 +406,123 @@ generateClinicalDataTable <- function(cdm,
       ))
   }
 
-  # date
-  singleDate <- paste0(clinicalTableName, "_date")
-  if (singleDate %in% colnames(table)) {
-    table <- table %>% addDate(singleDate)
-  }
+  # dates
+  dates <- paste0(clinicalTableName, c("_date", "_start_date", "_end_date"))
+  dates <- dates[dates %in% colnames(table)]
+  table <- table %>% addDates(dates, cdm$observation_period)
 
 }
 
-addDate <- function(x, cols, observationPeriod) {
-  xnew <- x %>%
-    dplyr::left_join(observationPeriod, by = "person_id")
+addDates <- function(x, cols, observationPeriod) {
+  if (length(cols) > 0) {
+    for (col in cols) {
+      x <- x %>%
+        dplyr::mutate(!!col := runif(dplyr::n()))
+    }
+    sumsum <- paste0(".data[[\"", cols, "\"]]", collapse = " + ")
+    x <- x %>%
+      dplyr::mutate(cum_sum = !!rlang::parse_expr(sumsum)) %>%
+      dplyr::mutate(cum_sum = .data$cum_sum + runif(dplyr::n())) %>%
+      dplyr::mutate(dplyr::across(dplyr::all_of(cols), ~ .x/.data$cum_sum)) %>%
+      dplyr::select(-"cum_sum")
+    observationPeriod <- observationPeriod %>%
+      dplyr::mutate(rand = runif(dplyr::n())) %>%
+      dplyr::group_by(.data$person_id) %>%
+      dplyr::filter(.data$rand == min(.data$rand)) %>%
+      dplyr::ungroup() %>%
+      dplyr::select(-"rand")
+    x <- x %>%
+      dplyr::inner_join(
+        observationPeriod %>%
+          dplyr::mutate(date_diff = .data$observation_period_end_date -
+                          .data$observation_period_start_date
+          ) %>%
+          dplyr::select(
+            "person_id", "start" = "obervation_start_date", "date_diff"
+          ),
+        by = "person_id"
+      ) %>%
+      dplyr::mutate(dplyr::across(
+        dplyr::all_of(cols), ~ round(.x * .data$date_diff) + .data$start
+      )) %>%
+      dplyr::select(-c("start", "date_diff"))
+  }
+  return(x)
+}
 
+#' Function to add a cohort table in a cdm_reference.
+#'
+#' @param cdm A cdm_reference object.
+#' @param tableName Name of the cohort to be created.
+#' @param cohortId Ids of the cohort to generate.
+#' @param cohortName Names of the cohort to generate.
+#' @param seed Seed for random numbers reproducibility.
+#' @param cdmVersion Verison of the cdm.
+#'
+#' @return A cdm_reference object
+#'
+#' @export
+#'
+generateCohortTable <- function(cdm,
+                                tableName = "cohort",
+                                cohortId = 1,
+                                cohortName = paste0("cohort_", cohortId),
+                                counts = 100,
+                                seed = NULL,
+                                cdmVersion = attr(cdm, "cdm_version")) {
+  # initial checks
+  checkInput(
+    cdm = cdm, tableName = tableName, cohortId = cohortId,
+    cohortName = cohortName, counts = counts, seed = seed,
+    cdmVersion = cdmVersion,
+    .options = list(cdmRequiredTables = c("person", "observation_period"))
+  )
+
+  if (!is.null(seed)) {
+    set.seed(seed = seed)
+  }
+
+  # generate cohort table
+  cohort <- list()
+  for (id in cohortId) {
+    if (as.character(id) %in% names(counts)) {
+      num <- counts[as.character(id)] %>% unname()
+    } else {
+      num <- counts[1]
+    }
+    num <- round(num * nrow(cdm$person))
+    cohort[[id]] <- dplyr::tibble(
+      cohort_definition_id = id,
+      subject_id = sample(
+        x = cdm$person$person_id, size = num, replace = TRUE
+      )
+    ) %>%
+      addDates(
+        c("cohort_start_date", "cohort_end_date"), cdm$observation_period
+      )
+  }
+  cohort <- dplyr::bind_rows(cohort)
+
+  # generate cohort set table
+  cohortSetTable <- dplyr::tibble(
+    cohort_definition_id = cohortId, cohort_name = cohortName
+  )
+
+  # create class
+  cdm[[tableName]] <- newCdmCohort(
+    cohortTable = cohort, cohortSetTable = cohortSetTable
+  )
+
+  return(cdm)
+}
+
+generateCohorts <- function(cdm, cohortNames) {
+  for (cohort in cohortNames) {
+    cdm <- generateCohortTable(
+      cdm = cdm, tableName = cohort, cohortId = 1:3, counts = 0.5
+    )
+  }
+  return(cdm)
 }
 
 #' #' To create the observation period tables

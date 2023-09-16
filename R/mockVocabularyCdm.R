@@ -93,7 +93,6 @@ fillColumns <- function(cdmTables, tableName, cdm_version) {
   cdmTables[[tableName]] <- table
   return(cdmTables)
 }
-
 defaultTable <- function(tableName) {
   if (tableName %in% c("conceptRelationship", "conceptSynonym", "sourceToConceptMap")) {
     cols <- fieldsTables %>%
@@ -121,7 +120,6 @@ defaultTable <- function(tableName) {
   }
   return(x)
 }
-
 correctTable <- function(table, tableName, cdmVersion, warning = TRUE) {
   expectedColnames <- fieldsTables %>%
     dplyr::filter(
