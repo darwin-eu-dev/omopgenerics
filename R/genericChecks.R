@@ -22,7 +22,7 @@
 #' @param null Whether it can be null.
 #' @param named Whether it has to be named.
 #' @param minNumCharacter Minimum number of characters.
-#' @param errorMessage Error message to display.
+#' @param call Call argument that will be passed to `cli`.
 #'
 #' @export
 #'
@@ -32,7 +32,7 @@ assertCharacter <- function(x,
                             null = FALSE,
                             named = FALSE,
                             minNumCharacter = 0,
-                            errorMessage = NULL) {
+                            call = parent.frame()) {
   # create error message
   if (is.null(errorMessage)) {
     errorMessage <- paste0(
@@ -87,7 +87,7 @@ assertCharacter <- function(x,
 #' @param null Whether it can be null.
 #' @param named Whether it has to be named.
 #' @param class Class that elements must have.
-#' @param errorMessage Error message to display.
+#' @param call Call argument that will be passed to `cli`.
 #'
 #' @export
 #'
@@ -97,7 +97,7 @@ assertList <- function(x,
                        null = FALSE,
                        named = FALSE,
                        class = NULL,
-                       errorMessage = NULL) {
+                       call = parent.frame()) {
   # create error message
   if (is.null(errorMessage)) {
     errorMessage <- paste0(
@@ -159,7 +159,7 @@ assertList <- function(x,
 #' @param na Whether it can contain NA values.
 #' @param null Whether it can be null.
 #' @param named Whether it has to be named.
-#' @param errorMessage Error message to display.
+#' @param call Call argument that will be passed to `cli`.
 #'
 #' @export
 #'
@@ -169,7 +169,7 @@ assertChoice <- function(x,
                          na = FALSE,
                          null = FALSE,
                          named = FALSE,
-                         errorMessage = NULL) {
+                         call = parent.frame()) {
   # create error message
   if (is.null(errorMessage)) {
     errorMessage <- paste0(
@@ -221,7 +221,7 @@ assertChoice <- function(x,
 #' @param na Whether it can contain NA values.
 #' @param null Whether it can be null.
 #' @param named Whether it has to be named.
-#' @param errorMessage Error message to display.
+#' @param call Call argument that will be passed to `cli`.
 #'
 #' @export
 #'
@@ -230,7 +230,7 @@ assertLogical <- function(x,
                           na = FALSE,
                           null = FALSE,
                           named = FALSE,
-                          errorMessage = NULL) {
+                          call = parent.frame()) {
   # create error message
   if (is.null(errorMessage)) {
     errorMessage <- paste0(
@@ -274,7 +274,7 @@ assertLogical <- function(x,
 #' @param na Whether it can contain NA values.
 #' @param null Whether it can be null.
 #' @param named Whether it has to be named.
-#' @param errorMessage Error message to display.
+#' @param call Call argument that will be passed to `cli`.
 #'
 #' @export
 #'
@@ -286,7 +286,7 @@ assertNumeric <- function(x,
                           na = FALSE,
                           null = FALSE,
                           named = FALSE,
-                          errorMessage = NULL) {
+                          call = parent.frame()) {
   # create error message
   if (is.null(errorMessage)) {
     errorMessage <- paste0(
@@ -355,7 +355,7 @@ assertNumeric <- function(x,
 #' @param numberRows Number of rows.
 #' @param columns Name of columns that must be present.
 #' @param null Whether it can be null.
-#' @param errorMessage Error message to display.
+#' @param call Call argument that will be passed to `cli`.
 #'
 #' @export
 #'
@@ -364,7 +364,7 @@ assertTibble <- function(x,
                          numberRows = NULL,
                          columns = NULL,
                          null = FALSE,
-                         errorMessage = NULL) {
+                         call = parent.frame()) {
   # create error message
   if (is.null(errorMessage)) {
     errorMessage <- paste0(

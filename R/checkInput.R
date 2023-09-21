@@ -35,7 +35,7 @@
 #'# checkInput(cdm = cdm)
 #' }
 #'
-checkInput <- function(..., .options = list()) {
+checkInput <- function(..., .options = list(), call = parent.frame()) {
   inputs <- list(...)
 
   # check config
@@ -45,7 +45,7 @@ checkInput <- function(..., .options = list()) {
   inputs <- append(inputs, .options)
 
   # perform checks
-  performChecks(toCheck = toCheck, inputs = inputs)
+  performChecks(toCheck = toCheck, inputs = inputs, call = call)
 
   return(invisible(NULL))
 }
@@ -110,7 +110,7 @@ config <- function(inputs, .options) {
     dplyr::select("package", "name", "available_argument")
 }
 
-performChecks <- function(toCheck, inputs) {
+performChecks <- function(toCheck, inputs, call = call) {
   for (k in seq_len(nrow(toCheck))) {
     x <- toCheck[k,]
     nam <- ifelse(
@@ -119,7 +119,7 @@ performChecks <- function(toCheck, inputs) {
     eval(parse(text = paste0(nam, "(", paste0(
       unlist(x$available_argument), " = inputs[[\"",
       unlist(x$available_argument), "\"]]", collapse = ", "
-    ), ")")))
+    ), "call = call)")))
   }
 }
 
