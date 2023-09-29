@@ -4,7 +4,7 @@
 \alias{checkInput}
 \title{Check the input parameters in OMOP CDM Tools environment}
 \usage{
-checkInput(..., .options = list())
+checkInput(..., .options = list(), call = parent.frame())
 }
 \arguments{
 \item{...}{Named elements to check. The name will determine the check that is

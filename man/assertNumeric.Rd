@@ -13,7 +13,7 @@ assertNumeric(
   na = FALSE,
   null = FALSE,
   named = FALSE,
-  errorMessage = NULL
+  call = parent.frame()
 )
 }
 \arguments{
@@ -33,7 +33,7 @@ assertNumeric(
 
 \item{named}{Whether it has to be named.}
 
-\item{errorMessage}{Error message to display.}
+\item{call}{Call argument that will be passed to \code{cli}.}
 }
 \description{
 Assert if an object is a numeric and fulfill certain conditions.

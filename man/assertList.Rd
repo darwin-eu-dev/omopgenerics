@@ -11,7 +11,7 @@ assertList(
   null = FALSE,
   named = FALSE,
   class = NULL,
-  errorMessage = NULL
+  call = parent.frame()
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ assertList(
 
 \item{class}{Class that elements must have.}
 
-\item{errorMessage}{Error message to display.}
+\item{call}{Call argument that will be passed to \code{cli}.}
 }
 \description{
 Assert if an object is a list and fulfill certain conditions.

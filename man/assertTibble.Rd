@@ -10,7 +10,7 @@ assertTibble(
   numberRows = NULL,
   columns = NULL,
   null = FALSE,
-  errorMessage = NULL
+  call = parent.frame()
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ assertTibble(
 
 \item{null}{Whether it can be null.}
 
-\item{errorMessage}{Error message to display.}
+\item{call}{Call argument that will be passed to \code{cli}.}
 }
 \description{
 Assert if an object is a tibble and fulfill certain conditions.

@@ -11,7 +11,7 @@ assertChoice(
   na = FALSE,
   null = FALSE,
   named = FALSE,
-  errorMessage = NULL
+  call = parent.frame()
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ assertChoice(
 
 \item{named}{Whether it has to be named.}
 
-\item{errorMessage}{Error message to display.}
+\item{call}{Call argument that will be passed to \code{cli}.}
 }
 \description{
 Assert if an object is a choice and fulfill certain conditions.

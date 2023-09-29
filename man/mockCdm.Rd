@@ -7,14 +7,14 @@
 mockCdm(
   cdmVocabulary = mockVocabularyCdm(),
   cdmName = "MOCK CDM",
-  individuals = 10,
+  individuals = NULL,
   person = NULL,
-  observation_period = NULL,
+  observationPeriod = NULL,
   death = NULL,
-  condition_occurrence = NULL,
-  drug_exposure = NULL,
-  procedure_occurrence = NULL,
-  device_exposure = NULL,
+  conditionOccurrence = NULL,
+  drugExposure = NULL,
+  procedureOccurrence = NULL,
+  deviceExposure = NULL,
   measurement = NULL,
   observation = NULL,
   numberRecords = c(default = 2),
@@ -32,17 +32,17 @@ the demographics data.}
 
 \item{person}{Person table.}
 
-\item{observation_period}{Observation period table.}
+\item{observationPeriod}{Observation period table.}
 
 \item{death}{death table.}
 
-\item{condition_occurrence}{Condition occurrence table.}
+\item{conditionOccurrence}{Condition occurrence table.}
 
-\item{drug_exposure}{DrugExposure table.}
+\item{drugExposure}{DrugExposure table.}
 
-\item{procedure_occurrence}{Procedure occurrence table.}
+\item{procedureOccurrence}{Procedure occurrence table.}
 
-\item{device_exposure}{Device exposure table.}
+\item{deviceExposure}{Device exposure table.}
 
 \item{measurement}{Measurement table.}
 
