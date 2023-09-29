@@ -138,7 +138,7 @@ correctTable <- function(table, tableName, cdmVersion, warning = TRUE) {
         dplyr::mutate(!!colnamesToAdd[k] := asType(NA, type))
     }
     if (length(colnamesToRemove) > 0 & warning) {
-      displayWarningMessage(paste0(
+      cli::cli_warn(paste0(
         "Extra columns (", paste0(colnamesToRemove, collapse = ", "),
         ") removed from: ", tableName
       ))

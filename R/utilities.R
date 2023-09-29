@@ -114,34 +114,6 @@ toCamelCase <- function(string) {
   return(string)
 }
 
-#' Set temporary (or permanent) behavior for compute functions.
-#'
-#' @param intermediateAsTemp Whether intermediate tables should be temporary.
-#' @param cohortAsTemp Whether cohort tables should be temporary.
-#'
-#' @export
-#'
-#' @examples
-#' \donttest{
-#' library(CDMUtilities)
-#' setTemporary(intermediateAsTemp = TRUE, cohortAsTemp = FALSE)
-#' }
-#'
-setTemporary <- function(intermediateAsTemp = TRUE,
-                         cohortAsTemp = FALSE) {
-  # check inputs
-  checkInput(
-    intermediateAsTemp = intermediateAsTemp, cohortAsTemp = cohortAsTemp
-  )
-
-  # set options
-  options("intermediate_as_temp" = intermediateAsTemp)
-  options("cohort_as_temp" = cohortAsTemp)
-
-  # return
-  return(invisible(NULL))
-}
-
 asType <- function(x, type) {
   if (type == "integer") {
     x <- as.integer(x)
@@ -152,7 +124,7 @@ asType <- function(x, type) {
   } else if (grepl("varchar", type) | type == "character") {
     x <- as.character(x)
   } else {
-    displayWarningMessage(paste0("Not recognised type: ", type))
+    cli::cli_warn(paste0("Not recognised type: ", type))
   }
   return(x)
 }
