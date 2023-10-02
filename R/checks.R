@@ -16,15 +16,12 @@
 
 # Check if it contains a list of omop objects.
 checkElements <- function(elements, call = parent.frame()) {
-  error <- "Elements must be a named list."
-  assertList(elements, named = TRUE, errorMessage = error)
+  assertList(elements, named = TRUE, call = call)
 }
 
 # Check if it is a valid path
 checkPath <- function(path, call = parent.frame()) {
-  if (length(path) != 1 | is.character(path) == FALSE) {
-    cli::cli_abort(paste0("path (", path, ") is not a valid path"), call = call)
-  }
+  assertCharacter(path, length = 1, call = call)
   if (dir.exists(path) == FALSE) {
     cli::cli_abort(paste0("directory (", path, ") does not exist"), call = call)
   }

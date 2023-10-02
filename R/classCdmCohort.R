@@ -113,7 +113,7 @@ validateCdmCohort.cdm_cohort <- function(cohortTable) {
     c("cohort_set", "cohort_count", "cohort_attrition") %in%
     names(attributes(cohortTable))
   )) {
-    displayErrorMessage(
+    cli::cli_abort(
       "`cohort_set`, `cohort_count`, `cohort_attrition` must be attributes of
       a cdm_cohort object."
     )
@@ -128,7 +128,7 @@ validateCdmCohort.cdm_cohort <- function(cohortTable) {
   # assert columns
   checkColumns <- function(x, cols, nam) {
     if (!all(cols %in% colnames(x))) {
-      displayErrorMessage(paste0(
+      cli::cli_abort(paste0(
         "`", paste0(cols, collapse = "`, `"), "` must be column names of ",
         nam, " of a cdm_cohort object."
       ))
@@ -163,7 +163,7 @@ validateCdmCohort.cdm_cohort <- function(cohortTable) {
   clCohortCount <- cl(cohort_count)
   clCohortAttrition <- cl(cohort_attrition)
   if (!equal(clCohort, clCohortSet, clCohortCount, clCohortAttrition)) {
-    displayErrorMessage(c(
+    cli::cli_abort(c(
       "class of cohort objects must be the same:",
       paste0("** class(cohort) = ", clCohort),
       paste0("** class(cohort_set) = ", clCohortSet),
@@ -178,7 +178,7 @@ validateCdmCohort.cdm_cohort <- function(cohortTable) {
   cdiCohortCount <- cdi(cohort_count)
   cdiCohortAttrition <- cdi(cohort_attrition)
   if (!equal(cdiCohort, cdiCohortSet, cdiCohortCount, cdiCohortAttrition)) {
-    displayErrorMessage(c(
+    cli::cli_abort(c(
       "Present cohort_definition_id must be the same in all elements",
       paste0("** cohort: ", cdiCohort),
       paste0("** cohort_set: ", cdiCohortSet),

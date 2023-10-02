@@ -58,7 +58,7 @@ cdmName <- function(cdm) {
 #' @export
 validateCdmReference <- function(cdm) {
   if (!("cdm_reference" %in% class(cdm))) {
-    displayErrorMessage("A cdm_reference object must have class cdm_reference.")
+    cli::cli_abort("A cdm_reference object must have class cdm_reference.")
   }
   return(invisible(cdm))
 }

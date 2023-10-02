@@ -55,17 +55,17 @@ checkInput <- function(..., .options = list(), call = parent.frame()) {
 config <- function(inputs, .options) {
   # check that inputs is a named list
   if(!assertNamedList(inputs)) {
-    displayErrorMessage("Inputs must be named to know the check to be applied")
+    cli::cli_abort("Inputs must be named to know the check to be applied")
   }
 
   # check that .options is a named list
   if(!assertNamedList(.options)) {
-    displayErrorMessage(".options must be a named list")
+    cli::cli_abort(".options must be a named list")
   }
 
   # check names in .options different from inputs
   if (any(names(.options) %in% names(inputs))) {
-    displayErrorMessage("Option names cna not be the same than an input.")
+    cli::cli_abort("Option names cna not be the same than an input.")
   }
 
   # read available functions
@@ -77,7 +77,7 @@ config <- function(inputs, .options) {
     !(names(inputs) %in% availableFunctions$input)
   ]
   if (length(notAvailableInputs) > 0) {
-    displayErrorMessage(paste0(
+    cli::cli_abort(paste0(
       "The following inputs are not able to be tested: ",
       paste0(notAvailableInputs, collapse = ", ")
     ))
@@ -104,14 +104,13 @@ config <- function(inputs, .options) {
         paste0(.data$missing_argument, collapse = ", ")
       )) %>%
       dplyr::pull("error")
-    displayErrorMessage(c("x" = "Some required arguments are missing:", arguments))
+    cli::cli_abort(c("x" = "Some required arguments are missing:", arguments))
   }
 
   # return
   availableFunctions %>%
     dplyr::select("package", "name", "available_argument")
 }
-
 performChecks <- function(toCheck, inputs, call = call) {
   for (k in seq_len(nrow(toCheck))) {
     x <- toCheck[k,]
@@ -121,10 +120,9 @@ performChecks <- function(toCheck, inputs, call = call) {
     eval(parse(text = paste0(nam, "(", paste0(
       unlist(x$available_argument), " = inputs[[\"",
       unlist(x$available_argument), "\"]]", collapse = ", "
-    ), "call = call)")))
+    ), ", call = call)")))
   }
 }
-
 assertNamedList <- function(input) {
   if (!is.list(input)) {
     return(FALSE)
@@ -212,9 +210,9 @@ addArgument <- function(functions) {
 listInputCheck <- function() {
   dplyr::tibble(name = ls(getNamespace("CDMUtilities"), all.names = TRUE)) %>%
     dplyr::filter(substr(.data$name, 1, 5) == "check") %>%
-    dplyr::mutate(name = paste0(
-      tolower(substr(.data$name, 6, 6)),
-      substr(.data$name, 7, nchar(.data$name))
-    )) %>%
+    dplyr::mutate(
+      name = toCamelCase(substr(.data$name, 6, nchar(.data$name)))
+    ) %>%
+    dplyr::filter(.data$name != "input") %>%
     dplyr::pull()
 }
