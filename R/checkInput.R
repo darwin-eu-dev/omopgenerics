@@ -20,9 +20,11 @@
 #' applied.
 #' @param .options Other paramters needed to conduct the checks. It must be a
 #' named list.
+#' @param call The corresponding function call is retrieved and mentioned in
+#' error messages as the source of the error.
 #'
 #' @return Informative error and warnings messages if the inputs don't pass the
-#' designed checks.
+#' desired checks.
 #'
 #' @export
 #'
