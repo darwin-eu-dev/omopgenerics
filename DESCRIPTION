@@ -26,5 +26,6 @@ Imports:
 Depends: 
     R (>= 2.10)
 Suggests: 
-    testthat
+    testthat (>= 3.0.0)
 URL: https://darwin-eu-dev.github.io/CDMUtilities/
+Config/testthat/edition: 3

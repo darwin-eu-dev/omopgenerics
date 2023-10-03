@@ -29,8 +29,7 @@ checkPath <- function(path, call = parent.frame()) {
 
 # Check if it is a valid resultStem
 checkResultsStem <- function(resultsStem, call = parent.frame()) {
-  error <- "resultsStem must be a string of length 1 and at least 5 characters"
-  assertCharacter(resultsStem, length = 1, minNumCharacter = 5, errorMessage = error)
+  assertCharacter(resultsStem, length = 1, minNumCharacter = 5, call = call)
 }
 
 # Check if zip should be displayed
@@ -40,24 +39,22 @@ checkZip <- function(zip, call = parent.frame()) {
 
 # Check if it is a list of tables from the same source
 checkCdmTables <- function(cdmTables, call = parent.frame()) {
-  error <- "cdmTables must be a named list of tables from the same source"
-  assertList(x = cdmTables, named = TRUE, errorMessage = error)
+  assertList(cdmTables, named = TRUE, call = call)
 }
 
 # Check valid cdm name.
 checkCdmName <- function(cdmName, call = parent.frame()) {
-  error <- "cdmName must be a character of length one"
-  assertCharacter(x = cdmName, length = 1, errorMessage = error)
+  assertCharacter(cdmName, length = 1, call = call)
 }
 
 # Check cdm source table.
 checkCdmSource <- function(cdmSource, call = parent.frame()) {
-  tableCheck(cdmSource, "cdmSource")
+  tableCheck(cdmSource, "cdmSource", call = call)
 }
 
 # Check cdm source table.
 checkCdmSource <- function(cdmSource, call = parent.frame()) {
-  tableCheck(cdmSource, "cdmSource")
+  tableCheck(cdmSource, "cdmSource", call = call)
 }
 
 # Check cdmSource table.
@@ -107,7 +104,7 @@ checkSourceToConceptMap <- function(sourceToConceptMap, call = parent.frame()){
 
 # Check drugStrength table.
 checkDrugStrength <- function(drugStrength, call = parent.frame()){
-  tableCheck(drugStrength, "drugStrength")
+  tableCheck(table = drugStrength, name = "drugStrength", call = call)
 }
 
 tableCheck <- function(table, name, call = parent.frame()) {

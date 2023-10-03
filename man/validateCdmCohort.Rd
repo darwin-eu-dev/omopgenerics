@@ -2,13 +2,13 @@
 % Please edit documentation in R/classCdmCohort.R
 \name{validateCdmCohort}
 \alias{validateCdmCohort}
-\title{To assess if an object is a valid \code{cdm_cohort}}
+\title{To assess if an object is a valid \code{omop_cohort}}
 \usage{
 validateCdmCohort(cohortTable)
 }
 \arguments{
-\item{cohortTable}{\code{cdm_cohort} to validate.}
+\item{cohortTable}{\code{omop_cohort} to validate.}
 }
 \description{
-To assess if an object is a valid \code{cdm_cohort}
+To assess if an object is a valid \code{omop_cohort}
 }

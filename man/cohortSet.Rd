@@ -2,16 +2,16 @@
 % Please edit documentation in R/classCdmCohort.R
 \name{cohortSet}
 \alias{cohortSet}
-\title{Get cohort settings from a cdm_cohort object.}
+\title{Get cohort settings from a omop_cohort object.}
 \usage{
 cohortSet(cohort)
 }
 \arguments{
-\item{cohort}{A cdm_cohort object.}
+\item{cohort}{A omop_cohort object.}
 }
 \value{
 A table with the details of the cohort set.
 }
 \description{
-Get cohort settings from a cdm_cohort object.
+Get cohort settings from a omop_cohort object.
 }

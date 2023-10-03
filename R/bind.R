@@ -61,15 +61,15 @@ appendCdm <- function(cdm1, cdm2) {
   return(cdm1)
 }
 
-#' Bind multiple cdm_cohort objects.
+#' Bind multiple omop_cohort objects.
 #'
-#' @param ... Multiple cdm_cohort objects.
+#' @param ... Multiple omop_cohort objects.
 #'
-#' @return New cdm_cohort
+#' @return New omop_cohort
 #'
 #' @export
 #'
-bind.cdm_cohort <- function(...) {
+bind.omop_cohort <- function(...) {
   # initial checks
   listOfCohorts = list(...)
   checkInput(listOfCohorts = listOfCohorts)
@@ -127,9 +127,6 @@ updateIds <- function(listOfCohorts, ids) {
     attr(listOfCohorts[[k]], "cohort_set") <- correctId(
       attr(listOfCohorts[[k]], "cohort_set"), id
     )
-    attr(listOfCohorts[[k]], "cohort_count") <- correctId(
-      attr(listOfCohorts[[k]], "cohort_count"), id
-    )
     attr(listOfCohorts[[k]], "cohort_attrition") <- correctId(
       attr(listOfCohorts[[k]], "cohort_attrition"), id
     )
@@ -150,9 +147,6 @@ bindCohorts <- function(listOfCohorts) {
   ))
   attr(cohort, "cohort_attrition") <- dplyr::bind_rows(lapply(
     listOfCohorts, attr, "cohort_attrition"
-  ))
-  attr(cohort, "cohort_count") <- dplyr::bind_rows(lapply(
-    listOfCohorts, attr, "cohort_count"
   ))
   return(cohort)
 }

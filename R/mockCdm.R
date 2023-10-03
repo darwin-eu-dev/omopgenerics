@@ -509,7 +509,7 @@ generateCohortTable <- function(cdm,
   )
 
   # create class
-  cdm[[tableName]] <- newCdmCohort(
+  cdm[[tableName]] <- newOmopCohort(
     cohortTable = cohort, cohortSetTable = cohortSetTable
   )
 
@@ -553,9 +553,6 @@ generateCohorts <- function(cdm, cohortNames) {
 #' addCohortAttributes <- function(cohort) {
 #'   if (is.null(attr(cohort, "cohort_set"))) {
 #'     cohort <- addCohortSet(cohort)
-#'   }
-#'   if (is.null(attr(cohort, "cohort_count"))) {
-#'     cohort <- addCohortCount(cohort)
 #'   }
 #'   if (is.null(attr(cohort, "cohort_attrition"))) {
 #'     cohort <- addCohortAttrition(cohort)

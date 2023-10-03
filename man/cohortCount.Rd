@@ -2,16 +2,16 @@
 % Please edit documentation in R/classCdmCohort.R
 \name{cohortCount}
 \alias{cohortCount}
-\title{Get cohort counts from a cdm_cohort object.}
+\title{Get cohort counts from a omop_cohort object.}
 \usage{
 cohortCount(cohort)
 }
 \arguments{
-\item{cohort}{A cdm_cohort object.}
+\item{cohort}{A omop_cohort object.}
 }
 \value{
 A table with the counts.
 }
 \description{
-Get cohort counts from a cdm_cohort object.
+Get cohort counts from a omop_cohort object.
 }

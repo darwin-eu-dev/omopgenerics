@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' `cdm_cohort` objects constructor.
+#' `omop_cohort` objects constructor.
 #'
 #' @param cohortTable Table with at least: cohort_definition_id, subject_id,
 #' cohort_start_date, cohort_end_date.
@@ -24,21 +24,21 @@
 #' excluded_records.
 #' @param cohortCountTable Table with at least: cohort_definition_id,
 #' number_subjects, number_records.
-#' @param cohortName Name of the cdm_cohort object.
+#' @param cohortName Name of the omop_cohort object.
 #'
-#' @return A cdm_cohort object
+#' @return A omop_cohort object
 #'
 #' @export
 #'
-newCdmCohort <- function(cohortTable,
+newOmopCohort <- function(cohortTable,
                          cohortSetTable = NULL,
                          cohortAttritionTable = NULL,
                          cohortCountTable = NULL,
                          cohortName = "cohort") {
-  UseMethod("newCdmCohort")
+  UseMethod("newOmopCohort")
 }
 
-#' `cdm_cohort` objects constructor.
+#' `omop_cohort` objects constructor.
 #'
 #' @param cohortTable Table with at least: cohort_definition_id, subject_id,
 #' cohort_start_date, cohort_end_date.
@@ -48,13 +48,13 @@ newCdmCohort <- function(cohortTable,
 #' excluded_records.
 #' @param cohortCountTable Table with at least: cohort_definition_id,
 #' number_subjects, number_records.
-#' @param cohortName Name of the cdm_cohort object.
+#' @param cohortName Name of the omop_cohort object.
 #'
-#' @return A cdm_cohort object
+#' @return A omop_cohort object
 #'
 #' @export
 #'
-newCdmCohort.tbl <- function(cohortTable,
+newOmopCohort.tbl <- function(cohortTable,
                              cohortSetTable = NULL,
                              cohortAttritionTable = NULL,
                              cohortCountTable = NULL,
@@ -62,28 +62,31 @@ newCdmCohort.tbl <- function(cohortTable,
   # initial input check
   checkInput(
     cohortTable = cohortTable, cohortSetTable = cohortSetTable,
-    cohortAttritionTable = cohortAttritionTable,
-    cohortCountTable = cohortCountTable
+    cohortAttritionTable = cohortAttritionTable
   )
+
+  if (!missing(cohortCountTable)) {
+    cli::cli_warn(
+      "cohortCountTable is no longer a required input to create an omop_cohort
+      object"
+    )
+  }
 
   if (is.null(cohortSetTable)) {
     cohortSetTable <- createCohortSet(cohortTable)
   }
   attr(cohortTable, "cohort_set") <- cohortSetTable
 
-  if (is.null(cohortCountTable)) {
-    cohortCountTable <- createCohortCount(cohortTable)
-  }
-  attr(cohortTable, "cohort_count") <- cohortCountTable
-
   if (is.null(cohortAttritionTable)) {
     cohortAttritionTable <- createCohortAttrition(cohortTable)
   }
   attr(cohortTable, "cohort_attrition") <- cohortAttritionTable
 
+  newClass <- c("omop_cohort",
+   "GeneratedCohortSet" # to be removed
+  )
   class(cohortTable) <- c(
-    "GeneratedCohortSet", # to be removed
-    "cdm_cohort", class(cohortTable)[class(cohortTable) != "cdm_cohort"]
+    newClass, class(cohortTable)[!(class(cohortTable) %in% newClass)]
   )
 
   cohort <- validateCdmCohort(cohortTable)
@@ -91,9 +94,9 @@ newCdmCohort.tbl <- function(cohortTable,
   return(cohort)
 }
 
-#' To assess if an object is a valid `cdm_cohort`
+#' To assess if an object is a valid `omop_cohort`
 #'
-#' @param cohortTable `cdm_cohort` to validate.
+#' @param cohortTable `omop_cohort` to validate.
 #'
 #' @export
 #'
@@ -101,28 +104,26 @@ validateCdmCohort <- function(cohortTable) {
   UseMethod("validateCdmCohort")
 }
 
-#' To assess if an object is a valid `cdm_cohort`.
+#' To assess if an object is a valid `omop_cohort`.
 #'
 #' @param cohortTable Table to validate
 #'
 #' @export
 #'
-validateCdmCohort.cdm_cohort <- function(cohortTable) {
+validateCdmCohort.omop_cohort <- function(cohortTable) {
   # attributes exist
   if (!all(
-    c("cohort_set", "cohort_count", "cohort_attrition") %in%
-    names(attributes(cohortTable))
+    c("cohort_set", "cohort_attrition") %in% names(attributes(cohortTable))
   )) {
     cli::cli_abort(
-      "`cohort_set`, `cohort_count`, `cohort_attrition` must be attributes of
-      a cdm_cohort object."
+      "`cohort_set` and `cohort_attrition` must be attributes of a omop_cohort
+      object."
     )
   }
 
   # get attributes
   cohort <- cohortTable
   cohort_set <- attr(cohortTable, "cohort_set")
-  cohort_count <- attr(cohortTable, "cohort_count")
   cohort_attrition <- attr(cohortTable, "cohort_attrition")
 
   # assert columns
@@ -130,7 +131,7 @@ validateCdmCohort.cdm_cohort <- function(cohortTable) {
     if (!all(cols %in% colnames(x))) {
       cli::cli_abort(paste0(
         "`", paste0(cols, collapse = "`, `"), "` must be column names of ",
-        nam, " of a cdm_cohort object."
+        nam, " of a omop_cohort object."
       ))
     }
     invisible(NULL)
@@ -146,11 +147,6 @@ validateCdmCohort.cdm_cohort <- function(cohortTable) {
     "the cohort_set"
   )
   checkColumns(
-    attr(cohortTable, "cohort_count"),
-    c("cohort_definition_id", "number_records", "number_subjects"),
-    "the cohort_count"
-  )
-  checkColumns(
     attr(cohortTable, "cohort_attrition"),
     c("cohort_definition_id", "number_records", "number_subjects", "reason_id",
       "reason", "excluded_records", "excluded_subjects"),
@@ -160,30 +156,26 @@ validateCdmCohort.cdm_cohort <- function(cohortTable) {
   # classes attributes
   clCohort <- cl(cohort)
   clCohortSet <- cl(cohort_set)
-  clCohortCount <- cl(cohort_count)
   clCohortAttrition <- cl(cohort_attrition)
-  if (!equal(clCohort, clCohortSet, clCohortCount, clCohortAttrition)) {
+  if (!equal(clCohort, clCohortSet, clCohortAttrition)) {
     cli::cli_abort(c(
       "class of cohort objects must be the same:",
       paste0("** class(cohort) = ", clCohort),
       paste0("** class(cohort_set) = ", clCohortSet),
-      paste0("** class(cohort_attrition) = ", clCohortAttrition),
-      paste0("** class(cohort_count) = ", clCohortCount)
+      paste0("** class(cohort_attrition) = ", clCohortAttrition)
     ))
   }
 
   # cohort_definition_id the same
   cdiCohort <- cdi(cohort)
   cdiCohortSet <- cdi(cohort_set)
-  cdiCohortCount <- cdi(cohort_count)
   cdiCohortAttrition <- cdi(cohort_attrition)
-  if (!equal(cdiCohort, cdiCohortSet, cdiCohortCount, cdiCohortAttrition)) {
+  if (!equal(cdiCohort, cdiCohortSet, cdiCohortAttrition)) {
     cli::cli_abort(c(
       "Present cohort_definition_id must be the same in all elements",
       paste0("** cohort: ", cdiCohort),
       paste0("** cohort_set: ", cdiCohortSet),
-      paste0("** cohort_attrition: ", cdiCohortCount),
-      paste0("** cohort_count: ", cdiCohortAttrition)
+      paste0("** cohort_attrition: ", cdiCohortAttrition)
     ))
   }
 
@@ -199,10 +191,6 @@ validateCdmCohort.cdm_cohort <- function(cohortTable) {
     ))
   attr(cohortTable, "cohort_set") <- attr(cohortTable, "cohort_set") %>%
     dplyr::relocate(c("cohort_definition_id", "cohort_name"))
-  attr(cohortTable, "cohort_count") <- attr(cohortTable, "cohort_count") %>%
-    dplyr::relocate(
-      c("cohort_definition_id", "number_records", "number_subjects")
-    )
   attr(cohortTable, "cohort_attrition") <-
     attr(cohortTable, "cohort_attrition") %>%
     dplyr::relocate(c(
@@ -235,19 +223,25 @@ cdi <- function(x) {
     paste0(collapse = ", ")
 }
 
-#' To collect a `cdm_cohort` object.
+#' To collect a `omop_cohort` object.
 #'
-#' @param x `cohort_cdm` object.
+#' @param x `omop_cohort` object.
 #' @param ... Not used (for compatibility).
 #'
 #' @export
-collect.cdm_cohort <- function(x, ...) {
-  x
+collect.omop_cohort <- function(x, ...) {
+  attrib <- attributes(x)
+  class(x) <- class(x)[class(x) != "omop_cohort"]
+  x <- x %>% dplyr::collect()
+  attr(x, "cohort_set") <- dplyr::collect(attrib$cohort_set)
+  attr(x, "cohort_attrition") <- dplyr::collect(attrib$cohort_attrition)
+  class(x) <- c("omop_cohort", class(x))
+  return(x)
 }
 
-#' Get cohort settings from a cdm_cohort object.
+#' Get cohort settings from a omop_cohort object.
 #'
-#' @param cohort A cdm_cohort object.
+#' @param cohort A omop_cohort object.
 #'
 #' @return A table with the details of the cohort set.
 #'
@@ -255,15 +249,15 @@ collect.cdm_cohort <- function(x, ...) {
 cohortSet <- function(cohort) { UseMethod("cohortSet") }
 
 #' @export
-cohortSet.cdm_cohort <- function(cohort) {
+cohortSet.omop_cohort <- function(cohort) {
   attr(cohort, "cohort_set") %>%
     dplyr::collect() %>%
     dplyr::arrange(.data$cohort_definition_id)
 }
 
-#' Get cohort counts from a cdm_cohort object.
+#' Get cohort counts from a omop_cohort object.
 #'
-#' @param cohort A cdm_cohort object.
+#' @param cohort A omop_cohort object.
 #'
 #' @return A table with the counts.
 #'
@@ -271,7 +265,7 @@ cohortSet.cdm_cohort <- function(cohort) {
 cohortCount <- function(cohort) { UseMethod("cohortCount") }
 
 #' @export
-cohortCount.cdm_cohort <- function(cohort) {
+cohortCount.omop_cohort <- function(cohort) {
   attr(cohort, "cohort_attrition") %>%
     dplyr::group_by(.data$cohort_definition_id) %>%
     dplyr::filter(.data$reason_id == max(.data$reason_id, na.rm = TRUE)) %>%
@@ -279,12 +273,13 @@ cohortCount.cdm_cohort <- function(cohort) {
       "cohort_definition_id", "number_records", "number_subjects"
     ) %>%
     dplyr::collect() %>%
+    dplyr::ungroup() %>%
     dplyr::arrange(.data$cohort_definition_id)
 }
 
-#' Get cohort attrition from a cdm_cohort object.
+#' Get cohort attrition from a omop_cohort object.
 #'
-#' @param cohort A cdm_cohort object.
+#' @param cohort A omop_cohort object.
 #'
 #' @return A table with the attrition.
 #'
@@ -292,9 +287,8 @@ cohortCount.cdm_cohort <- function(cohort) {
 cohortAttrition <- function(cohort) { UseMethod("cohortAttrition") }
 
 #' @export
-cohortAttrition.cdm_cohort <- function(cohort) {
+cohortAttrition.omop_cohort <- function(cohort) {
   attr(cohort, "cohort_attrition") %>%
     dplyr::collect() %>%
     dplyr::arrange(.data$cohort_definition_id)
 }
-

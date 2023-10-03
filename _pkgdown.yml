@@ -34,12 +34,12 @@ reference:
       - '`toSnakeCase`'
       - '`toCamelCase`'
   - title: Classes
-  - subtitle: cdm_cohort
+  - subtitle: omop_cohort
     contents:
-      - '`newCdmCohort`'
-      - '`newCdmCohort.tbl`'
+      - '`newOmopCohort`'
+      - '`newOmopCohort.tbl`'
       - '`validateCdmCohort`'
-      - '`validateCdmCohort.cdm_cohort`'
+      - '`validateCdmCohort.omop_cohort`'
   - subtitle: CdmReference
     contents:
       - '`newCdmReference`'
@@ -49,28 +49,28 @@ reference:
     contents:
       - "`bind`"
       - "`bind.cdm_reference`"
-      - "`bind.cdm_cohort`"
+      - "`bind.omop_cohort`"
   - subtitle: Export one element to a tibble
     contents:
       - "`export`"
       - "`export.tbl`"
       - "`export.cdm_reference`"
-      - "`export.cdm_cohort`"
+      - "`export.omop_cohort`"
   - subtitle: Name of a cdm_reference
     contents:
       - "cdmName"
-  - subtitle: CohortSet of a cdm_cohort
+  - subtitle: CohortSet of a omop_cohort
     contents:
       - matches("cohortSet")
-  - subtitle: CohortAttrition of a cdm_cohort
+  - subtitle: CohortAttrition of a omop_cohort
     contents:
       - matches("cohortAttrition")
-  - subtitle: CohortCount of a cdm_cohort
+  - subtitle: CohortCount of a omop_cohort
     contents:
       - matches("cohortCount")
   - subtitle: Other methods
     contents:
-      - "`collect.cdm_cohort`"
+      - "`collect.omop_cohort`"
       - "`print.cdm_reference`"
       - "`[[.cdm_reference`"
       - "`$.cdm_reference`"

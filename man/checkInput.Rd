@@ -12,10 +12,13 @@ applied.}
 
 \item{.options}{Other paramters needed to conduct the checks. It must be a
 named list.}
+
+\item{call}{The corresponding function call is retrieved and mentioned in
+error messages as the source of the error.}
 }
 \value{
 Informative error and warnings messages if the inputs don't pass the
-designed checks.
+desired checks.
 }
 \description{
 Check the input parameters in OMOP CDM Tools environment

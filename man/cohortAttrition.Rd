@@ -2,16 +2,16 @@
 % Please edit documentation in R/classCdmCohort.R
 \name{cohortAttrition}
 \alias{cohortAttrition}
-\title{Get cohort attrition from a cdm_cohort object.}
+\title{Get cohort attrition from a omop_cohort object.}
 \usage{
 cohortAttrition(cohort)
 }
 \arguments{
-\item{cohort}{A cdm_cohort object.}
+\item{cohort}{A omop_cohort object.}
 }
 \value{
 A table with the attrition.
 }
 \description{
-Get cohort attrition from a cdm_cohort object.
+Get cohort attrition from a omop_cohort object.
 }

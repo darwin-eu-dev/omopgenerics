@@ -1,5 +1,5 @@
 
 test_that("checkInput behaviour", {
   expect_no_error(checkInput())
-  expect_error(checkInput(adsdw = 1))
+  expect_snapshot_error(checkInput(notCheckedVariable = 1))
 })
