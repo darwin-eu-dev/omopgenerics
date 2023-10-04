@@ -9,7 +9,7 @@ generateCohortTable(
   tableName = "cohort",
   cohortId = 1,
   cohortName = paste0("cohort_", cohortId),
-  counts = 100,
+  numberRows = 100,
   seed = NULL,
   cdmVersion = attr(cdm, "cdm_version")
 )
@@ -22,6 +22,9 @@ generateCohortTable(
 \item{cohortId}{Ids of the cohort to generate.}
 
 \item{cohortName}{Names of the cohort to generate.}
+
+\item{numberRows}{Number of records per cohort. It can have a different
+number per cohort.}
 
 \item{seed}{Seed for random numbers reproducibility.}
 

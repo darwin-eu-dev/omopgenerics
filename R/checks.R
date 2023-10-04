@@ -34,7 +34,7 @@ checkResultsStem <- function(resultsStem, call = parent.frame()) {
 
 # Check if zip should be displayed
 checkZip <- function(zip, call = parent.frame()) {
-  assertLogical(zip, length = 1)
+  assertLogical(zip, length = 1, call = call)
 }
 
 # Check if it is a list of tables from the same source
@@ -49,121 +49,117 @@ checkCdmName <- function(cdmName, call = parent.frame()) {
 
 # Check cdm source table.
 checkCdmSource <- function(cdmSource, call = parent.frame()) {
-  tableCheck(cdmSource, "cdmSource", call = call)
-}
-
-# Check cdm source table.
-checkCdmSource <- function(cdmSource, call = parent.frame()) {
-  tableCheck(cdmSource, "cdmSource", call = call)
-}
-
-# Check cdmSource table.
-checkCdmSource <- function(cdmSource, call = parent.frame()){
-  tableCheck(cdmSource, "cdmSource")
+  assertTibble(cdmSource, null = TRUE, call = call)
 }
 
 # Check concept table.
 checkConcept <- function(concept, call = parent.frame()){
-  tableCheck(concept, "concept")
+  assertTibble(concept, null = TRUE, call = call)
 }
 
 # Check vocabulary table.
 checkVocabulary <- function(vocabulary, call = parent.frame()){
-  tableCheck(vocabulary, "vocabulary")
+  assertTibble(vocabulary, null = TRUE, call = call)
 }
 
 # Check domain table.
 checkDomain <- function(domain, call = parent.frame()){
-  tableCheck(domain, "domain")
+  assertTibble(domain, null = TRUE, call = call)
 }
 
 # Check conceptClass table.
 checkConceptClass <- function(conceptClass, call = parent.frame()){
-  tableCheck(conceptClass, "conceptClass")
+  assertTibble(conceptClass, null = TRUE, call = call)
 }
 
 # Check conceptRelationship table.
 checkConceptRelationship <- function(conceptRelationship, call = parent.frame()){
-  tableCheck(conceptRelationship, "conceptRelationship")
+  assertTibble(conceptRelationship, null = TRUE, call = call)
 }
 
 # Check conceptSynonym table.
 checkConceptSynonym <- function(conceptSynonym, call = parent.frame()){
-  tableCheck(conceptSynonym, "conceptSynonym")
+  assertTibble(conceptSynonym, null = TRUE, call = call)
 }
 
 # Check conceptAncestor table.
 checkConceptAncestor <- function(conceptAncestor, call = parent.frame()){
-  tableCheck(conceptAncestor, "conceptAncestor")
+  assertTibble(conceptAncestor, null = TRUE, call = call)
 }
 
 # Check sourceToConceptMap table.
 checkSourceToConceptMap <- function(sourceToConceptMap, call = parent.frame()){
-  tableCheck(sourceToConceptMap, "sourceToConceptMap")
+  assertTibble(sourceToConceptMap, null = TRUE, call = call)
 }
 
 # Check drugStrength table.
 checkDrugStrength <- function(drugStrength, call = parent.frame()){
-  tableCheck(table = drugStrength, name = "drugStrength", call = call)
-}
-
-tableCheck <- function(table, name, call = parent.frame()) {
-  error <- paste0(name, " must be NULL or a table")
-  assertTibble(table, null = TRUE, errorMessage = error)
+  assertTibble(drugStrength, null = TRUE, call = call)
 }
 
 # check cdmVersion
 checkCdmVersion <- function(cdmVersion, call = parent.frame()) {
-  error <- "cdmVersion must be \"5.3\" or \"5.4\"."
-  assertChoice(cdmVersion, c("5.3", "5.4"), errorMessage = NULL)
+  assertChoice(cdmVersion, c("5.3", "5.4"), call = call)
 }
 
 # check string
 checkString <- function(string, call = parent.frame()) {
-  assertCharacter(string, na = TRUE, errorMessage = "string must be a character vector")
+  assertCharacter(string, na = TRUE, call = call)
 }
 
 # check intermediateAsTemp
 checkIntermediateAsTemp <- function(intermediateAsTemp, call = parent.frame()) {
-  assertLogical(
-    intermediateAsTemp, errorMessage = "intermediateAsTemp must be TRUE or FALSE"
-  )
+  assertLogical(intermediateAsTemp, call = call)
 }
 
 # check cohortAsTemp
 checkCohortAsTemp <- function(cohortAsTemp, call = parent.frame()) {
-  assertLogical(
-    cohortAsTemp, errorMessage = "cohortAsTemp must be TRUE or FALSE"
-  )
+  assertLogical(cohortAsTemp, call = call)
 }
 
 # check cohortTable
 checkCohortTable <- function(cohortTable, call = parent.frame()) {
-  assertTibble(cohortTable, columns = c(
-    "cohort_definition_id", "subject_id", "cohort_start_date", "cohort_end_date"
-  ))
+  assertTibble(
+    cohortTable,
+    columns = c(
+      "cohort_definition_id", "subject_id", "cohort_start_date",
+      "cohort_end_date"
+    ),
+    call = call
+  )
 }
 
 # check cohortSetTable
 checkCohortSetTable <- function(cohortSetTable, call = parent.frame()) {
-  assertTibble(cohortSetTable, columns = c(
-    "cohort_definition_id", "cohort_name"
-  ), null = TRUE)
+  assertTibble(
+    cohortSetTable,
+    columns = c("cohort_definition_id", "cohort_name"),
+    null = TRUE,
+    call = call
+  )
 }
 
 # check cohortAttritionTable
 checkCohortAttritionTable <- function(cohortAttritionTable, call = parent.frame()) {
-  assertTibble(cohortAttritionTable, columns = c(
-    "cohort_definition_id", "reason_id", "reason", "number_records",
-    "number_subjects", "excluded_records", "excluded_subjects"
-  ), null = TRUE)
+  assertTibble(
+    cohortAttritionTable,
+    columns = c(
+      "cohort_definition_id", "reason_id", "reason", "number_records",
+      "number_subjects", "excluded_records", "excluded_subjects"
+    ),
+    null = TRUE,
+    call = call
+  )
 }
 
 # check cohortCountTable
 checkCohortCountTable <- function(cohortCountTable, call = parent.frame()) {
-  assertTibble(cohortCountTable, columns = c(
-    "cohort_definition_id", "number_records", "number_subjects"
-  ), null = TRUE)
+  assertTibble(
+    cohortCountTable,
+    columns = c("cohort_definition_id", "number_records", "number_subjects"),
+    null = TRUE,
+    call = call
+  )
 }
 
 # check cdmVocabulary
@@ -178,13 +174,13 @@ checkCdmVocabulary <- function(cdmVocabulary, call = parent.frame()) {
     paste0(tables, collapse = ", "), "; with a valid cdm_version."
   )
   if (!("cdm_reference" %in% class(cdmVocabulary))) {
-    cli::cli_abort(error)
+    cli::cli_abort(error, call = call)
   }
   if (!all(tables %in% names(cdmVocabulary))) {
-    cli::cli_abort(error)
+    cli::cli_abort(error, call = call)
   }
   if (!(attr(cdmVocabulary, "cdm_version") %in% c("5.3", "5.4"))) {
-    cli::cli_abort(error)
+    cli::cli_abort(error, call = call)
   }
   return(invisible(cdmVocabulary))
 }
@@ -194,27 +190,22 @@ checkIndividuals <- function(individuals, person, call = parent.frame()) {
   if (!is.null(individuals)) {
     if (!is.null(person)) {
       cli::cli_abort(
-        "individuals and person are not compatible arguments one must be NULL"
+        "individuals and person are not compatible arguments one must be NULL",
+        call = call
       )
     }
     columns <- c(
       "number_individuals", "sex", "year_birth", "observation_start",
       "observation_end"
     )
-    error <- paste0(
-      "individuals must be a number or a tibble with the following columns: ",
-      paste0(columns, collapse = ", "), "."
-    )
     if (is.numeric(individuals)) {
-      assertNumeric(
-        x = individuals, integerish = TRUE, length = 1, errorMessage = error
-      )
+      assertNumeric(x = individuals, integerish = TRUE, length = 1, call = call)
     } else if ("tbl" %in% class(individuals)) {
-      assertTibble(individuals, columns = columns, errorMessage = error)
-    } else if (is.null(individuals) & is.null(person)){
-
+      assertTibble(individuals, columns = columns, call = call)
     } else {
-      cli::cli_abort(error)
+      cli::cli_abort(
+        "individuals must be a numeric or a tbl element", call = call
+      )
     }
   } else {
     if (is.null(person)) {
@@ -226,57 +217,57 @@ checkIndividuals <- function(individuals, person, call = parent.frame()) {
 
 # check person
 checkPerson <- function(person, call = parent.frame()) {
-  assertTibble(person, null = TRUE)
+  assertTibble(person, null = TRUE, call = call)
 }
 
 # check observationPeriod
 checkObservationPeriod <- function(observationPeriod, call = parent.frame()) {
-  assertTibble(observationPeriod, null = TRUE)
+  assertTibble(observationPeriod, null = TRUE, call = call)
 }
 
 # check death
 checkDeath <- function(death, call = parent.frame()) {
-  assertTibble(death, null = TRUE)
+  assertTibble(death, null = TRUE, call = call)
 }
 
 # check conditionOccurrence
 checkConditionOccurrence <- function(conditionOccurrence, call = parent.frame()) {
-  assertTibble(conditionOccurrence, null = TRUE)
+  assertTibble(conditionOccurrence, null = TRUE, call = call)
 }
 
 # check drugExposure
 checkDrugExposure <- function(drugExposure, call = parent.frame()) {
-  assertTibble(drugExposure, null = TRUE)
+  assertTibble(drugExposure, null = TRUE, call = call)
 }
 
 # check procedureOccurrence
 checkProcedureOccurrence <- function(procedureOccurrence, call = parent.frame()) {
-  assertTibble(procedureOccurrence, null = TRUE)
+  assertTibble(procedureOccurrence, null = TRUE, call = call)
 }
 
 # check deviceExposure
 checkDeviceExposure <- function(deviceExposure, call = parent.frame()) {
-  assertTibble(deviceExposure, null = TRUE)
+  assertTibble(deviceExposure, null = TRUE, call = call)
 }
 
 # check measurement
 checkMeasurement <- function(measurement, call = parent.frame()) {
-  assertTibble(measurement, null = TRUE)
+  assertTibble(measurement, null = TRUE, call = call)
 }
 
 # check observation
 checkObservation <- function(observation, call = parent.frame()) {
-  assertTibble(observation, null = TRUE)
+  assertTibble(observation, null = TRUE, call = call)
 }
 
 # check seed
 checkSeed <- function(seed, call = parent.frame()) {
-  assertNumeric(seed, integerish = TRUE, min = 1, length = 1)
+  assertNumeric(seed, integerish = TRUE, min = 1, length = 1, call = call)
 }
 
 # check numberRecords
 checkNumberRecords <- function(numberRecords, call = parent.frame()) {
-  assertNumeric(numberRecords, min = 0, named = TRUE)
+  assertNumeric(numberRecords, min = 0, named = TRUE, call = call)
   nam <- c(
     "death", "observationPeriod", "conditionOccurrence", "drugExposure",
     "procedureOccurrence", "deviceExposure", "measurement", "observation"

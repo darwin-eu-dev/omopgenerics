@@ -17,11 +17,11 @@ generateClinicalDataTable(
 
 \item{tableName}{Name of the table to be created.}
 
+\item{numberRows}{Number of records in the table.}
+
 \item{seed}{Seed for random numbers reproducibility.}
 
 \item{cdmVersion}{Verison of the cdm.}
-
-\item{numberRecords}{Number of records in the table.}
 }
 \value{
 A cdm_reference object
