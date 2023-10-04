@@ -26,9 +26,6 @@ reference:
   - subtitle: Export results to csv and zip files
     contents:
       - '`exportResults`'
-  - subtitle: Temporary behaviour of cohorts
-    contents:
-      - '`setTemporary`'
   - subtitle: Convert strings to snake_case or camelCase
     contents:
       - '`toSnakeCase`'
