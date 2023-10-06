@@ -31,10 +31,10 @@
 #' @export
 #'
 newOmopCohort <- function(cohortTable,
-                         cohortSetTable = NULL,
-                         cohortAttritionTable = NULL,
-                         cohortCountTable = NULL,
-                         cohortName = "cohort") {
+                          cohortSetTable = NULL,
+                          cohortAttritionTable = NULL,
+                          cohortCountTable = NULL,
+                          cohortName = "cohort") {
   UseMethod("newOmopCohort")
 }
 
@@ -55,10 +55,10 @@ newOmopCohort <- function(cohortTable,
 #' @export
 #'
 newOmopCohort.tbl <- function(cohortTable,
-                             cohortSetTable = NULL,
-                             cohortAttritionTable = NULL,
-                             cohortCountTable = NULL,
-                             cohortName = "cohort") {
+                              cohortSetTable = NULL,
+                              cohortAttritionTable = NULL,
+                              cohortCountTable = NULL,
+                              cohortName = "cohort") {
   # initial input check
   checkInput(
     cohortTable = cohortTable, cohortSetTable = cohortSetTable,
@@ -73,12 +73,12 @@ newOmopCohort.tbl <- function(cohortTable,
   }
 
   if (is.null(cohortSetTable)) {
-    cohortSetTable <- createCohortSet(cohortTable)
+    cohortSetTable <- defaultCohortSet(cohortTable)
   }
   attr(cohortTable, "cohort_set") <- cohortSetTable
 
   if (is.null(cohortAttritionTable)) {
-    cohortAttritionTable <- createCohortAttrition(cohortTable)
+    cohortAttritionTable <- defaultCohortAttrition(cohortTable)
   }
   attr(cohortTable, "cohort_attrition") <- cohortAttritionTable
 
@@ -88,6 +88,8 @@ newOmopCohort.tbl <- function(cohortTable,
   class(cohortTable) <- c(
     newClass, class(cohortTable)[!(class(cohortTable) %in% newClass)]
   )
+
+  attr(cohortTable, "tbl_name") <- cohortName
 
   cohort <- validateCdmCohort(cohortTable)
 
@@ -184,15 +186,15 @@ validateCdmCohort.omop_cohort <- function(cohortTable) {
   # column types
 
   # make correct order
-  cohortTable <- cohortTable %>%
+  cohortTable <- cohortTable |>
     dplyr::relocate(c(
       "cohort_definition_id", "subject_id", "cohort_start_date",
       "cohort_end_date"
     ))
-  attr(cohortTable, "cohort_set") <- attr(cohortTable, "cohort_set") %>%
+  attr(cohortTable, "cohort_set") <- attr(cohortTable, "cohort_set") |>
     dplyr::relocate(c("cohort_definition_id", "cohort_name"))
   attr(cohortTable, "cohort_attrition") <-
-    attr(cohortTable, "cohort_attrition") %>%
+    attr(cohortTable, "cohort_attrition") |>
     dplyr::relocate(c(
       "cohort_definition_id", "number_records", "number_subjects", "reason_id",
       "reason", "excluded_records", "excluded_subjects"
@@ -215,11 +217,11 @@ cl <- function(x) {
   paste0(x, collapse = ", ")
 }
 cdi <- function(x) {
-  x %>%
-    dplyr::select("cohort_definition_id") %>%
-    dplyr::distinct() %>%
-    dplyr::pull() %>%
-    sort() %>%
+  x |>
+    dplyr::select("cohort_definition_id") |>
+    dplyr::distinct() |>
+    dplyr::pull() |>
+    sort() |>
     paste0(collapse = ", ")
 }
 
@@ -232,7 +234,7 @@ cdi <- function(x) {
 collect.omop_cohort <- function(x, ...) {
   attrib <- attributes(x)
   class(x) <- class(x)[class(x) != "omop_cohort"]
-  x <- x %>% dplyr::collect()
+  x <- x |> dplyr::collect()
   attr(x, "cohort_set") <- dplyr::collect(attrib$cohort_set)
   attr(x, "cohort_attrition") <- dplyr::collect(attrib$cohort_attrition)
   class(x) <- c("omop_cohort", class(x))
@@ -250,8 +252,8 @@ cohortSet <- function(cohort) { UseMethod("cohortSet") }
 
 #' @export
 cohortSet.omop_cohort <- function(cohort) {
-  attr(cohort, "cohort_set") %>%
-    dplyr::collect() %>%
+  attr(cohort, "cohort_set") |>
+    dplyr::collect() |>
     dplyr::arrange(.data$cohort_definition_id)
 }
 
@@ -266,14 +268,14 @@ cohortCount <- function(cohort) { UseMethod("cohortCount") }
 
 #' @export
 cohortCount.omop_cohort <- function(cohort) {
-  attr(cohort, "cohort_attrition") %>%
-    dplyr::group_by(.data$cohort_definition_id) %>%
-    dplyr::filter(.data$reason_id == max(.data$reason_id, na.rm = TRUE)) %>%
+  attr(cohort, "cohort_attrition") |>
+    dplyr::group_by(.data$cohort_definition_id) |>
+    dplyr::filter(.data$reason_id == max(.data$reason_id, na.rm = TRUE)) |>
     dplyr::select(
       "cohort_definition_id", "number_records", "number_subjects"
-    ) %>%
-    dplyr::collect() %>%
-    dplyr::ungroup() %>%
+    ) |>
+    dplyr::collect() |>
+    dplyr::ungroup() |>
     dplyr::arrange(.data$cohort_definition_id)
 }
 
@@ -288,7 +290,36 @@ cohortAttrition <- function(cohort) { UseMethod("cohortAttrition") }
 
 #' @export
 cohortAttrition.omop_cohort <- function(cohort) {
-  attr(cohort, "cohort_attrition") %>%
-    dplyr::collect() %>%
+  attr(cohort, "cohort_attrition") |>
+    dplyr::collect() |>
     dplyr::arrange(.data$cohort_definition_id)
+}
+
+defaultCohortSet <- function(cohort) {
+  cohort |>
+    dplyr::select("cohort_definition_id") |>
+    dplyr::distinct() |>
+    dplyr::mutate("cohort_name" = paste0("cohort_", .data$cohort_definition_id))
+}
+
+defaultCohortAttrition <- function(cohort) {
+  cohort |>
+    dplyr::group_by(.data$cohort_definition_id) |>
+    dplyr::summarise(
+      number_records = dplyr::n(),
+      number_subjects = dplyr::n_distinct(.data$subject_id)
+    ) |>
+    dplyr::left_join(attr(cohort, "cohort_set"), by = "cohort_definition_id") |>
+    dplyr::mutate(
+      "number_records" = dplyr::if_else(
+        is.na(.data$number_records), 0, .data$number_records
+      ),
+      "number_subjects" = dplyr::if_else(
+        is.na(.data$number_subjects), 0, .data$number_subjects
+      ),
+      "reason_id" = 1,
+      "reason" = "Initial qualifying events",
+      "excluded_records" = 0,
+      "excluded_subjects" = 0
+    )
 }

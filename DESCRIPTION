@@ -18,13 +18,9 @@ Imports:
     dplyr,
     glue,
     here,
-    lubridate,
-    magrittr,
     methods,
-    purrr,
     readr,
     rlang,
-    tibble,
     zip
 Depends: 
     R (>= 2.10)

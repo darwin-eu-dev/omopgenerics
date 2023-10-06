@@ -9,10 +9,6 @@ navbar:
 
 reference:
   - title: Utilities
-  - subtitle: Create a mock cdm object
-    contents:
-      - '`mockCdm`'
-      - '`mockVocabularyCdm`'
   - subtitle: Check inputs
     contents:
       - '`checkInput`'

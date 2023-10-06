@@ -90,7 +90,7 @@ test_that("test create omop_cohort", {
 
   # remove cols
   expect_no_error(validateCdmCohort(cohort3))
-  attr(cohort3, "cohort_set") <- attr(cohort3, "cohort_set") %>%
+  attr(cohort3, "cohort_set") <- attr(cohort3, "cohort_set") |>
     dplyr::select(-"cohort_name")
   expect_error(validateCdmCohort(cohort3))
 

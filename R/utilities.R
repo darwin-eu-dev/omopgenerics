@@ -53,7 +53,7 @@ toSnakeCase <- function(string) {
       x <- paste0(tolower(y), collapse = "")
     }
     return(x)
-  }) %>%
+  }) |>
     unlist()
 
   # eliminate "__"
@@ -106,25 +106,10 @@ toCamelCase <- function(string) {
       x <- paste0(gsub("_", "", x), collapse = "")
     }
     return(x)
-  }) %>%
+  }) |>
     unlist()
   string[is.na(string)] <- ""
   names(string) <- NULL
 
   return(string)
-}
-
-asType <- function(x, type) {
-  if (type == "integer") {
-    x <- as.integer(x)
-  } else if (grepl("date", type)) {
-    x <- as.Date(x)
-  } else if (type == "float" | type == "numeric") {
-    x <- as.numeric(x)
-  } else if (grepl("varchar", type) | type == "character") {
-    x <- as.character(x)
-  } else {
-    cli::cli_warn(paste0("Not recognised type: ", type))
-  }
-  return(x)
 }

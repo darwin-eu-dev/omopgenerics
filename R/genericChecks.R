@@ -135,8 +135,8 @@ assertList <- function(x,
     if (!is.null(class)) {
       flag <- lapply(xNoNa, function(y) {
         any(class %in% base::class(y))
-      }) %>%
-        unlist() %>%
+      }) |>
+        unlist() |>
         all()
       if (flag != TRUE) {
         cli::cli_abort(errorMessage, call = call)

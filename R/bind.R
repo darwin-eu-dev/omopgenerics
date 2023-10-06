@@ -93,23 +93,23 @@ getNewIds <- function(listOfCohorts) {
   )
   for (k in seq_along(listOfCohorts)) {
     cs <- cohortSet(listOfCohorts[[k]])
-    ids <- ids %>%
+    ids <- ids |>
       dplyr::union_all(
-        ids %>%
+        ids |>
           dplyr::inner_join(
-            cs %>%
+            cs |>
               dplyr::select("cohort_definition_id", "cohort_name"),
             by = "cohort_name"
-          ) %>%
+          ) |>
           dplyr::mutate(cohort = k)
-      ) %>%
+      ) |>
       dplyr::union_all(
-        cs %>%
-          dplyr::anti_join(ids, by = "cohort_name") %>%
-          dplyr::select("cohort_definition_id", "cohort_name") %>%
+        cs |>
+          dplyr::anti_join(ids, by = "cohort_name") |>
+          dplyr::select("cohort_definition_id", "cohort_name") |>
           dplyr::mutate(
             new_cohort_definition_id = dplyr::row_number(), cohort = k
-          ) %>%
+          ) |>
           dplyr::mutate(
             new_cohort_definition_id = .data$new_cohort_definition_id + max(
               ids$new_cohort_definition_id
@@ -117,12 +117,12 @@ getNewIds <- function(listOfCohorts) {
           )
       )
   }
-  ids <- ids %>% dplyr::select(-"cohort_name")
+  ids <- ids |> dplyr::select(-"cohort_name")
   return(ids)
 }
 updateIds <- function(listOfCohorts, ids) {
   for (k in seq_along(listOfCohorts)) {
-    id <- ids %>% dplyr::filter(.data$cohort == .env$k)
+    id <- ids |> dplyr::filter(.data$cohort == .env$k)
     listOfCohorts[[k]] <- correctId(listOfCohorts[[k]], id)
     attr(listOfCohorts[[k]], "cohort_set") <- correctId(
       attr(listOfCohorts[[k]], "cohort_set"), id
@@ -134,10 +134,10 @@ updateIds <- function(listOfCohorts, ids) {
   return(listOfCohorts)
 }
 correctId <- function(tab, id) {
-  tab %>%
-    dplyr::inner_join(id, by = "cohort_definition_id") %>%
-    dplyr::select(-"cohort_definition_id") %>%
-    dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") %>%
+  tab |>
+    dplyr::inner_join(id, by = "cohort_definition_id") |>
+    dplyr::select(-"cohort_definition_id") |>
+    dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") |>
     dplyr::relocate("cohort_definition_id")
 }
 bindCohorts <- function(listOfCohorts) {

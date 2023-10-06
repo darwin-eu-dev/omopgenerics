@@ -69,7 +69,7 @@ config <- function(inputs, .options) {
   }
 
   # read available functions
-  availableFunctions <- getAvailableFunctions() %>%
+  availableFunctions <- getAvailableFunctions() |>
     dplyr::filter(.data$input %in% names(inputs))
 
   # check if we can check all inputs
@@ -84,9 +84,9 @@ config <- function(inputs, .options) {
   }
 
   # check if we have all the needed arguments
-  availableFunctions <- availableFunctions %>%
-    dplyr::mutate(available_argument = list(c(names(inputs), names(.options)))) %>%
-    dplyr::rowwise() %>%
+  availableFunctions <- availableFunctions |>
+    dplyr::mutate(available_argument = list(c(names(inputs), names(.options)))) |>
+    dplyr::rowwise() |>
     dplyr::mutate(
       available_argument = list(.data$argument[
         .data$argument %in% .data$available_argument
@@ -94,21 +94,21 @@ config <- function(inputs, .options) {
       missing_argument = list(.data$required_argument[!(
         .data$required_argument %in% .data$available_argument
       )])
-    ) %>%
+    ) |>
     dplyr::mutate(missing_argument_flag = length(.data$missing_argument))
   if (sum(availableFunctions$missing_argument_flag) > 0) {
-    arguments <- availableFunctions %>%
-      dplyr::filter(.data$missing_argument_flag == 1) %>%
+    arguments <- availableFunctions |>
+      dplyr::filter(.data$missing_argument_flag == 1) |>
       dplyr::mutate(error = paste0(
         "- function: ", .data$package, "::", .data$name, "(); missing argument: ",
         paste0(.data$missing_argument, collapse = ", ")
-      )) %>%
+      )) |>
       dplyr::pull("error")
     cli::cli_abort(c("x" = "Some required arguments are missing:", arguments))
   }
 
   # return
-  availableFunctions %>%
+  availableFunctions |>
     dplyr::select("package", "name", "available_argument")
 }
 performChecks <- function(toCheck, inputs, call = call) {
@@ -153,12 +153,12 @@ getAvailableFunctions <- function() {
   functionsSourcePackage <- dplyr::tibble(package = packageName, name =  name)
 
   # eliminate standard checks if present in source package
-  functions <- functionsCDMUtilities %>%
-    dplyr::anti_join(functionsSourcePackage, by = "name") %>%
-    dplyr::union_all(functionsSourcePackage) %>%
+  functions <- functionsCDMUtilities |>
+    dplyr::anti_join(functionsSourcePackage, by = "name") |>
+    dplyr::union_all(functionsSourcePackage) |>
     dplyr::filter(
       substr(.data$name, 1, 5) == "check" & .data$name != "checkInput"
-    ) %>%
+    ) |>
     dplyr::mutate(input = paste0(
       tolower(substr(.data$name, 6, 6)),
       substr(.data$name, 7, nchar(.data$name))
@@ -175,9 +175,9 @@ getAvailableFunctions <- function() {
 #' @noRd
 #'
 addArgument <- function(functions) {
-  functions %>%
-    dplyr::rowwise() %>%
-    dplyr::group_split() %>%
+  functions |>
+    dplyr::rowwise() |>
+    dplyr::group_split() |>
     lapply(function(x){
       nam <- ifelse(
         x$package == "CDMUtilities", x$name, paste0(x$package, "::", x$name)
@@ -188,12 +188,12 @@ addArgument <- function(functions) {
         missing(xx)
       })
       requiredArgument <- names(requiredArgument)[unlist(requiredArgument)]
-      x %>%
+      x |>
         dplyr::mutate(
           argument = list(names(argument)),
           required_argument = list(requiredArgument)
         )
-    }) %>%
+    }) |>
     dplyr::bind_rows()
 }
 
@@ -208,11 +208,11 @@ addArgument <- function(functions) {
 #' }
 #'
 listInputCheck <- function() {
-  dplyr::tibble(name = ls(getNamespace("CDMUtilities"), all.names = TRUE)) %>%
-    dplyr::filter(substr(.data$name, 1, 5) == "check") %>%
+  dplyr::tibble(name = ls(getNamespace("CDMUtilities"), all.names = TRUE)) |>
+    dplyr::filter(substr(.data$name, 1, 5) == "check") |>
     dplyr::mutate(
       name = toCamelCase(substr(.data$name, 6, nchar(.data$name)))
-    ) %>%
-    dplyr::filter(.data$name != "input") %>%
+    ) |>
+    dplyr::filter(.data$name != "input") |>
     dplyr::pull()
 }

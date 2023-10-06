@@ -22,7 +22,3 @@ test_that("utilities", {
   expect_true(all(camelCase == ""))
 })
 
-test_that("test asType", {
-  expect_warning(asType(1, "adfsgagd"))
-  expect_true(1 == asType(1, "float"))
-})
