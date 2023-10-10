@@ -12,21 +12,30 @@ useAlias <- function(originalCase = c("camelCase", "snake_case"),
   # initial checks
   checkInput(originalCase = originalCase, newCase = newCase)
 
-  # locate existing functions
-  funs <- locateFunctions()
+  # check that you can load current
+  call <- rlang::env_parent()
+  tryCatch(
+    devtools::load_all(),
+    error = function(cond) {
+      cli::cli_abort(
+        "package could not be loaded, please ensure you can run
+        `devtools::load_all() before trying to create the alias.`",
+        call = call
+      )
+    }
+  )
 
-  # detect functions
-  functions <- existingFunctions(funs)
+  # use formals!!
 
   # functions to create alias
-  newAlias <- aliasToCreate(functions, funs)
+  newAlias <- aliasToCreate(originalCase = originalCase, newCase = newCase)
 
   if (nrow(newAlias) > 0) {
     # inform alias
     informAlias(newAlias)
     askConfirmation()
     # create new alias
-    createNewAlias(newAlias)
+    createNewAlias(newAlias, funs)
   } else {
     cli::cli_inform("No alias to create detected")
   }
@@ -34,38 +43,39 @@ useAlias <- function(originalCase = c("camelCase", "snake_case"),
   invisible(TRUE)
 }
 
-existingFunctions <- function() {
-  x <- readLines("NAMESPACE")
-  x <- x[grepl(pattern = "export", x = substr(x = x, start = 1, stop = 6))]
-  x <- substr(x = x, start = 8, stop = nchar(x) - 1)
-  return(x)
-}
-aliasToCreate <- function(functions) {
-  dplyr::tibble(existing_function = functions) |>
+aliasToCreate <- function(originalCase, newCase) {
+  functions <- dplyr::tibble(original_name = readLines("NAMESPACE")) |>
+    dplyr::filter(substr(.data$original_name, 1, 7) == "export(") |>
+    dplyr::mutate(original_name = substr(
+      .data$original_name, 8, nchar(.data$original_name) - 1
+    )) |>
+    dplyr::filter(!grepl("\\.", .data$original_name))
+  functions |>
     dplyr::mutate(
-      snake_case = toSnakeCase(.data$existing_function),
-      camelCase = toCamelCase(.data$existing_function)
+      snake_case = toSnakeCase(.data$original_name),
+      camelCase = toCamelCase(.data$original_name)
     ) |>
     dplyr::filter(.data$snake_case != .data$camelCase) |>
     dplyr::mutate(original_case = dplyr::if_else(
-      .data$existing_function == .data$snake_case, "snake_case", "camelCase"
+      .data$original_name == .data$snake_case, "snake_case", "camelCase"
     )) |>
     dplyr::filter(.data$original_case %in% .env$originalCase) |>
     dplyr::left_join(
       tidyr::expand_grid(original_case = originalCase, new_case = newCase),
-      by = "original_case", relationship = "many-to-many"
+      by = "original_case",
+      relationship = "many-to-many"
     ) |>
     dplyr::mutate(new_name = dplyr::if_else(
       .data$new_case == "snake_case", .data$snake_case, .data$camelCase
     )) |>
-    dplyr::filter(!(.data$new_name %in% .env$functions)) |>
-    dplyr::select("existing_function", "original_case", "new_name", "new_case")
+    dplyr::filter(!(.data$new_name %in% .env$functions$original_name)) |>
+    dplyr::select("original_name", "original_case", "new_name", "new_case")
 }
 informAlias <- function(newAlias) {
   cli::cli_inform("A total of {nrow(newAlias)} new alias will be created:")
   for (k in seq_len(nrow(newAlias))) {
     cli::cli_inform(
-      "+ {newAlias$existing_function[k]} ({newAlias$original_case[k]}) -->
+      "+ {newAlias$original_name[k]} ({newAlias$original_case[k]}) -->
       {newAlias$new_name[k]} ({newAlias$new_case[k]})"
     )
   }
@@ -78,58 +88,50 @@ askConfirmation <- function() {
     ))
     x <- readline()
     if (x == "Y") {
-      cli::cli_inform("The files will be created")
+      cli::cli_inform("File alias.R will be (re)created with all the alias.")
       break
     } else if (x == "n") {
       cli::cli_abort("Files not created")
     }
   }
 }
-locateFunctions <- function() {
-  details <- dplyr::tibble(
-    file_name = character(), function_name = character(),
-    line_start = numeric()
-  )
-  x <- list.files("R")
-  for (k in seq_along(x)) {
-    f <- readLines(paste0("R/", x[k]))
-    idE <- which(grepl(pattern = "#' @export", x = f))
-    idH <- which(grepl(pattern = "#'", x = f))
-    idF <- which(grepl(pattern = "<- function", x = f))
-    for (id in idE) {
-      end <- min(idF[idF > id])
-      start <- max(idH[idH < end]) + 1
-      funName <- paste0(f[start:end], collapse = "")
-      funName <- strsplit(x = funName, split = "<-")[[1]][1] |>
-        gsub(pattern = " ", replacement = "")
-      details <- details |>
-        dplyr::union_all(dplyr::tibble(
-          file_name = x[k], function_name = funName, line_start = end
-        ))
+createNewAlias <- function(newAlias, funs) {
+  aliasFile <- "R/alias.R"
+  initialText <- "# File created using CDMUtilities::useAlias"
+  if (!file.exists(aliasFile)) {
+    file.create(aliasFile)
+    writeLines(text = c(initialText, ""), con = aliasFile)
+  } else {
+    x <- readLines(aliasFile)
+    if (x[1] != initialText) {
+      cli::cli_abort(
+        "alias.R was not generated automatically by `CDMUtilities::useAlias`,
+        please delete or rename this file."
+      )
     }
   }
-  return(details)
-}
-createNewAlias <- function(newAlias, details) {
-  aliasFile <- "R/alias.R"
-  if (file.exists(aliasFile)) {
-    unlink(aliasFile)
-  }
-  file.create(aliasFile)
-  writeLines(
-    text = c(
-      "# File created using CDMUtilities::useAlias", ""
-    ),
-    con = aliasFile
-  )
+  newAlias <- newAlias %>% dplyr::select(-"original_case")
   for (k in seq_len(nrow(newAlias))) {
-    newCase
-    doc <- documentation(newName, oldName, newArguments, oldArguments, values)
+    newCase <- newAlias$new_case[k]
+    newName <- newAlias$new_name[k]
+    originalName <- newAlias$original_name[k]
+    arguments <- eval(parse(text = glue::glue("formals({originalName})")))
+    originalArguments <- names(arguments)
+    if (newCase == "snake_case") {
+      newArguments <- toSnakeCase(originalArguments)
+    } else {
+      newArguments <- toCamelCase(originalArguments)
+    }
+    doc <- documentation(
+      newName = newName, originalName = originalName,
+      newArguments = newArguments, originalArguments = originalArguments,
+      arguments = arguments
+    )
     writeLines(text = c("", doc), con = aliasFile)
   }
 }
-documentation <- function(newName, oldName, newArguments, oldArguments, values) {
-  x <- c(glue::glue("#' @rdname {oldName}"), "#' @export")
+documentation <- function(newName, originalName, newArguments, originalArguments, values) {
+  x <- c(glue::glue("#' @rdname {originalName}"), "#' @export")
   if (length(newArguments) <= 1) {
     x <- c(x, paste0(newName, " <- function(", newArguments, values, ") {"))
   } else {
@@ -149,13 +151,13 @@ documentation <- function(newName, oldName, newArguments, oldArguments, values) 
     }
   }
   if (length(newArguments) == 0) {
-    x <- c(x, glue::glue("  {oldName}()"))
+    x <- c(x, glue::glue("  {originalName}()"))
   } else if (length(newArguments) <= 1) {
-    x <- c(x, glue::glue("  {oldName}({oldArguments} = {newArguments})"))
+    x <- c(x, glue::glue("  {originalName}({originalArguments} = {newArguments})"))
   } else {
-    x <- c(x, glue::glue("  {oldName}("))
+    x <- c(x, glue::glue("  {originalName}("))
     for (k in seq_along(newArguments)) {
-      xk <- glue::glue("    {oldArguments[k]} = {newArguments[k]}")
+      xk <- glue::glue("    {originalArguments[k]} = {newArguments[k]}")
       if (k != length(newArguments)) {
         xk <- paste0(xk, ",")
       }
@@ -164,4 +166,8 @@ documentation <- function(newName, oldName, newArguments, oldArguments, values) 
     x <- c(x, "  )")
   }
   x <- c(x, "}")
+}
+detectArguments <- function(file, start) {
+  f <- readLines(paste0("R/", file))
+  idd
 }
