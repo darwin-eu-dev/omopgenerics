@@ -7,6 +7,8 @@
 #' @param originalCase Casing of functions to be reexported.
 #' @param newCase Casing of the new created functions.
 #'
+#' @export
+#'
 useAlias <- function(originalCase = c("camelCase", "snake_case"),
                      newCase = c("camelCase", "snake_case")) {
   # initial checks
@@ -15,7 +17,10 @@ useAlias <- function(originalCase = c("camelCase", "snake_case"),
   # check that you can load current
   call <- rlang::env_parent()
   tryCatch(
-    devtools::load_all(),
+    {
+      devtools::load_all()
+      devtools::document()
+    },
     error = function(cond) {
       cli::cli_abort(
         "package could not be loaded, please ensure you can run
@@ -25,8 +30,6 @@ useAlias <- function(originalCase = c("camelCase", "snake_case"),
     }
   )
 
-  # use formals!!
-
   # functions to create alias
   newAlias <- aliasToCreate(originalCase = originalCase, newCase = newCase)
 
@@ -35,7 +38,8 @@ useAlias <- function(originalCase = c("camelCase", "snake_case"),
     informAlias(newAlias)
     askConfirmation()
     # create new alias
-    createNewAlias(newAlias, funs)
+    createNewAlias(newAlias)
+    devtools::document()
   } else {
     cli::cli_inform("No alias to create detected")
   }
@@ -95,14 +99,14 @@ askConfirmation <- function() {
     }
   }
 }
-createNewAlias <- function(newAlias, funs) {
+createNewAlias <- function(newAlias) {
   aliasFile <- "R/alias.R"
   initialText <- "# File created using CDMUtilities::useAlias"
   if (!file.exists(aliasFile)) {
     file.create(aliasFile)
-    writeLines(text = c(initialText, ""), con = aliasFile)
+    text <- c(initialText, "")
   } else {
-    x <- readLines(aliasFile)
+    text <- readLines(aliasFile)
     if (x[1] != initialText) {
       cli::cli_abort(
         "alias.R was not generated automatically by `CDMUtilities::useAlias`,
@@ -117,18 +121,25 @@ createNewAlias <- function(newAlias, funs) {
     originalName <- newAlias$original_name[k]
     arguments <- eval(parse(text = glue::glue("formals({originalName})")))
     originalArguments <- names(arguments)
-    if (newCase == "snake_case") {
-      newArguments <- toSnakeCase(originalArguments)
+    if (is.null(originalArguments)) {
+      newArguments <- originalArguments
     } else {
-      newArguments <- toCamelCase(originalArguments)
+      if (newCase == "snake_case") {
+        newArguments <- toSnakeCase(originalArguments)
+      } else {
+        newArguments <- toCamelCase(originalArguments)
+      }
+      newArguments[originalArguments == "..."] <- "..."
     }
+    values <- getValues(arguments)
     doc <- documentation(
       newName = newName, originalName = originalName,
       newArguments = newArguments, originalArguments = originalArguments,
-      arguments = arguments
+      values = values
     )
-    writeLines(text = c("", doc), con = aliasFile)
+    text <- c(text, "", doc)
   }
+  writeLines(text = text, con = aliasFile)
 }
 documentation <- function(newName, originalName, newArguments, originalArguments, values) {
   x <- c(glue::glue("#' @rdname {originalName}"), "#' @export")
@@ -167,7 +178,22 @@ documentation <- function(newName, originalName, newArguments, originalArguments
   }
   x <- c(x, "}")
 }
-detectArguments <- function(file, start) {
-  f <- readLines(paste0("R/", file))
-  idd
+getValues <- function(arguments) {
+  values <- list()
+  for (nm in names(arguments)) {
+    x <- arguments[[nm]]
+    if (missing(x) | nm == "...") {
+      values[[nm]] <- ""
+    } else {
+      if ("call" == class(x) | is.null(x)) {
+        values[[nm]] <- paste0(" = ", capture.output(print(x)))
+      } else {
+        if (is.character(x)) {
+          x <- paste0("\"", x, "\"")
+        }
+        values[[nm]] <- paste0(" = ", capture.output(cat(x)))
+      }
+    }
+  }
+  return(values)
 }

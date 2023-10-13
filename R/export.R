@@ -42,7 +42,11 @@ export.omop_cohort <- function(x) {
       cohort_table_name = attr(x, "tbl_name"),
       cdm_name = cdmName(attr(x, "cdm_reference")),
       result_type = "Summary cohort"
-    )
+    ) |>
+    dplyr::relocate(c(
+      "result_type", "cdm_name", "cohort_table", "cohort_name",
+      "cohort_deifnition_id"
+    ))
 }
 
 #' Export a cdm_reference
@@ -91,6 +95,7 @@ export.cdm_reference <- function(x) {
 
   cdm_source |>
     dplyr::mutate(
+      result_type = "snapshot",
       cdm_name = dplyr::coalesce(attr(x, "cdm_name"), as.character(NA)),
       vocabulary_version = dplyr::coalesce(
         .env$vocab_version, .data$vocabulary_version
@@ -103,6 +108,7 @@ export.cdm_reference <- function(x) {
       snapshot_date = .env$snapshot_date
     ) |>
     dplyr::select(
+      "result_type",
       "cdm_name",
       "cdm_source_name",
       "cdm_description" = "source_description",

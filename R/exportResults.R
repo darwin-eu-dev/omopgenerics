@@ -27,19 +27,23 @@
 exportResults <- function(...,
                           path = here::here(),
                           resultsStem = "results",
-                          zip = FALSE) {
+                          studyId = NULL,
+                          zip = TRUE) {
   # initial checks
   elements <- list(...)
   #checkInput(
-  #  elements = elements, path = path, resultsStem = resultsStem, zip = zip
+  #  elements = elements, path = path, resultsStem = resultsStem, zip = zip,
+  #  studyId = studyId
   #)
 
-  # put names
+  # correct names
   names(elements) <- paste0(resultsStem, names(elements), ".csv")
 
   # export
   for (k in seq_along(elements)) {
-    element <- export(elements[[k]])
+    element <- export(elements[[k]]) %>%
+      dplyr::mutate("study_id" = .env$studyId) %>%
+      dplyr::relocate("study_id")
     readr::write_csv(x = element, file = paste0(path, "/", names(elements)[k]))
   }
 
