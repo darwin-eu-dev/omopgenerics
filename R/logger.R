@@ -43,6 +43,7 @@ writeLogger <- function(cdm, message, warn = FALSE) {
   # write message
   file <- attr(cdm, "logger")
   if (!is.null(file)) {
+    message <- c(readLines(con = file), message)
     writeLines(text = message, con = file)
   } else if (isTRUE(warn)) {
     cli::cli_warn("Logger not found. Message couldn't be written.")
