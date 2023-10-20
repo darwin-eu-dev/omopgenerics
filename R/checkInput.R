@@ -26,7 +26,7 @@
 #' @return Informative error and warnings messages if the inputs don't pass the
 #' desired checks.
 #'
-#' @export
+#' @noRd
 #'
 #' @examples
 #' \donttest{
