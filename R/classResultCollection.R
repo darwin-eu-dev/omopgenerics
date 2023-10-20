@@ -24,6 +24,9 @@
 #'
 newResultsCollection <- function(...) {
   results <- list(...)
+  if (length(results) == 1 & is.null(names(results))) {
+    results <- unlist(results)
+  }
   # initial input check
   checkInput(results = results)
 
@@ -48,17 +51,23 @@ print.results_collection <- function(x, ...) {
       names = paste0(.data$name, collapse = ", "),
       .groups = "drop"
     )
-  mes <- paste0(
-    cli::style_bold("Results collection"), " [", len, " element",
-    ifelse(len>1, "s", ""),"]"
-  )
+  mes <- paste0(cli::style_bold("Results collection"), " [", element(len), "]")
   for (t in tib$type) {
     mes <- c(
       mes,
       "*" = paste0(
-        cli::style_bold(tib$type[k]), " [", tib$count[k], "]: ", tib$names[k]
+        cli::style_bold(tib$type[k]), " [", element(tib$count[k]), "]: ",
+        tib$names[k]
       )
     )
   }
   cli::cli_bullets(mes)
+}
+
+element <- function(n) {
+  if (n == 1) {
+    return("1 element")
+  } else {
+    return(paste0(n, " elements"))
+  }
 }

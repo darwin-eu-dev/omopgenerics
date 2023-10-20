@@ -4,7 +4,7 @@
 \alias{collect.omop_cohort}
 \title{To collect a \code{omop_cohort} object.}
 \usage{
-collect.omop_cohort(x, ...)
+\method{collect}{omop_cohort}(x, ...)
 }
 \arguments{
 \item{x}{\code{omop_cohort} object.}
