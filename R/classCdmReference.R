@@ -25,16 +25,25 @@
 #'
 #' @export
 #'
-newCdmReference <- function(cdmTables, cdmName, cdmVersion) {
+cdmReference <- function(cdmTables, cdmName, cdmVersion) {
   # initial input check
   checkInput(cdmTables = cdmTables, cdmName = cdmName, cdmVersion = cdmVersion)
 
+  # constructor
+  cdm <- newCdmReference(
+    cdmTables = cdmTables, cdmName = cdmName, cdmVersion = cdmVersion
+  )
+
+  # validate
+  cdm <- validateCdmReference(cdm)
+
+  return(cdm)
+}
+
+newCdmReference <- function(cdmTables, cdmName, cdmVersion) {
   attr(cdmTables, "cdm_name") <- cdmName
   attr(cdmTables, "cdm_version") <- cdmVersion
   class(cdmTables) <- "cdm_reference"
-
-  validateCdmReference(cdmTables)
-
   return(cdmTables)
 }
 

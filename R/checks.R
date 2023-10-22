@@ -281,3 +281,29 @@ checkNumberRecords <- function(numberRecords, call = parent.frame()) {
 
   }
 }
+
+checkCdm <- function(cdm, tablesToCheck = NULL, call = parent.frame()) {
+  if (!"cdm_reference" %in% class(cdm)) {
+    cli::cli_abort("cdm is not a cdm_reference.", call = call)
+  }
+  if (!is.null(tablesToCheck)) {
+    tablesToCheck <- tablesToCheck[!tablesToCheck %in% names(cdm)]
+    if (length(tablesToCheck) > 0) {
+      tablesToCheck <- paste0(tablesToCheck, ", ")
+      cli::cli_abort(
+        "The following tables must be part of the cdm object: {tablesToCheck}",
+        call = call
+      )
+    }
+  }
+  invisible(cdm)
+}
+
+checkFile <- function(file, fileExist = FALSE, call = parent.frame()) {
+  assertCharacter(file, length = 1)
+  if (fileExist & !file.exists(file)) {
+    cli::cli_abort("file ({file}) does not exist.")
+  }
+  invisible(file)
+}
+

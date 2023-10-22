@@ -26,15 +26,15 @@ export <- function(x) {
   UseMethod("export")
 }
 
-#' Export a omop_cohort
+#' Export a generated_cohort_set
 #'
-#' @param x A omop_cohort object.
+#' @param x A generated_cohort_set object.
 #'
-#' @return Exported omop_cohort.
+#' @return Exported generated_cohort_set
 #'
 #' @export
 #'
-export.omop_cohort <- function(x) {
+export.generated_cohort_set <- function(x) {
   cohortSet(x) |>
     dplyr::inner_join(cohortAttrition(x), by = "cohort_definition_id") |>
     dplyr::arrange(.data$cohort_definition_id, .data$reason_id) |>
@@ -44,7 +44,7 @@ export.omop_cohort <- function(x) {
       result_type = "Summary cohort"
     ) |>
     dplyr::relocate(c(
-      "result_type", "cdm_name", "cohort_table", "cohort_name",
+      "result_type", "cdm_name", "cohort_table_name", "cohort_name",
       "cohort_deifnition_id"
     ))
 }

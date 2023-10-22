@@ -1,28 +1,4 @@
 
-#' Link a logger file to a cdm object
-#'
-#' @param cdm A cdm reference.
-#' @param file A path to an existing file or place to create it.
-#'
-#' @export
-#'
-#' @return The cdm object with the linked logger.
-#'
-linkLogger <- function(cdm, file) {
-  # initial checks
-  checkInput(cdm = cdm, file = file)
-
-  # create file if it does not exist
-  if (!file.exists(file)) {
-    file.create(file)
-  }
-
-  # link the logger to the cdm
-  attr(cdm, "logger") <- file
-
-  return(cdm)
-}
-
 #' Write message to a logger file associated to a cdm object.
 #'
 #' @param cdm A cdm reference.
@@ -33,12 +9,13 @@ linkLogger <- function(cdm, file) {
 #'
 #' @return Invisible cdm object
 #'
-writeLogger <- function(cdm, message, warn = FALSE) {
+writeLogger <- function(message, warn = FALSE) {
+  logger <- getOption("logger")
   # initial checks
-  checkInput(cdm = cdm, message = message, warn = warn)
+  checkInput(message = message, warn = warn)
 
   # add line break
-  message <- paste0(message, "\n")
+  message <- paste0("[", Sys.time(), "]  ", message, "\n")
 
   # write message
   file <- attr(cdm, "logger")
