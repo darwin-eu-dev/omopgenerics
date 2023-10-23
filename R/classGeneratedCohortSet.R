@@ -191,7 +191,7 @@ validateGeneratedCohortSet <- function(cohort) {
       "reason", "excluded_records", "excluded_subjects"
     ))
 
-  return(invisible(cohortTable))
+  invisible(cohortTable)
 }
 
 equal <- function(...) {
