@@ -1,4 +1,4 @@
-# File created using CDMUtilities::useAlias
+# File created using OMOPUtilities::useAlias
 
 
 #' @rdname assertCharacter

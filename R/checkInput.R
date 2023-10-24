@@ -1,6 +1,6 @@
 # Copyright 2023 DARWIN EU (C)
 #
-# This file is part of CDMUtilities
+# This file is part of OMOPUtilities
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@
 #'
 #' @examples
 #' \donttest{
-#' library(CDMUtilities)
+#' library(OMOPUtilities)
 #' library(dplyr)
 #'
 #'# cdm <- mockCdm()
@@ -115,7 +115,7 @@ performChecks <- function(toCheck, inputs, call = call) {
   for (k in seq_len(nrow(toCheck))) {
     x <- toCheck[k,]
     nam <- ifelse(
-      x$package == "CDMUtilities", x$name, paste0(x$package, "::", x$name)
+      x$package == "OMOPUtilities", x$name, paste0(x$package, "::", x$name)
     )
     eval(parse(text = paste0(nam, "(", paste0(
       unlist(x$available_argument), " = inputs[[\"",
@@ -143,9 +143,9 @@ assertNamedList <- function(input) {
 #' @noRd
 #'
 getAvailableFunctions <- function() {
-  # functions available in CDMUtilities
-  name <- ls(getNamespace("CDMUtilities"), all.names = TRUE)
-  functionsCDMUtilities <- dplyr::tibble(package = "CDMUtilities", name = name)
+  # functions available in OMOPUtilities
+  name <- ls(getNamespace("OMOPUtilities"), all.names = TRUE)
+  functionsOMOPUtilities <- dplyr::tibble(package = "OMOPUtilities", name = name)
 
   # functions available in source package
   packageName <- methods::getPackageName()
@@ -153,7 +153,7 @@ getAvailableFunctions <- function() {
   functionsSourcePackage <- dplyr::tibble(package = packageName, name =  name)
 
   # eliminate standard checks if present in source package
-  functions <- functionsCDMUtilities |>
+  functions <- functionsOMOPUtilities |>
     dplyr::anti_join(functionsSourcePackage, by = "name") |>
     dplyr::union_all(functionsSourcePackage) |>
     dplyr::filter(
@@ -180,7 +180,7 @@ addArgument <- function(functions) {
     dplyr::group_split() |>
     lapply(function(x){
       nam <- ifelse(
-        x$package == "CDMUtilities", x$name, paste0(x$package, "::", x$name)
+        x$package == "OMOPUtilities", x$name, paste0(x$package, "::", x$name)
       )
       argument <- formals(eval(parse(text = nam)))
       requiredArgument <- lapply(argument, function(x){
@@ -203,12 +203,12 @@ addArgument <- function(functions) {
 #'
 #' @examples
 #' \donttest{
-#' library(CDMUtilities)
+#' library(OMOPUtilities)
 #' listInputCheck()
 #' }
 #'
 listInputCheck <- function() {
-  dplyr::tibble(name = ls(getNamespace("CDMUtilities"), all.names = TRUE)) |>
+  dplyr::tibble(name = ls(getNamespace("OMOPUtilities"), all.names = TRUE)) |>
     dplyr::filter(substr(.data$name, 1, 5) == "check") |>
     dplyr::mutate(
       name = toCamelCase(substr(.data$name, 6, nchar(.data$name)))

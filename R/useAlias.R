@@ -101,7 +101,7 @@ askConfirmation <- function() {
 }
 createNewAlias <- function(newAlias) {
   aliasFile <- "R/alias.R"
-  initialText <- "# File created using CDMUtilities::useAlias"
+  initialText <- "# File created using OMOPUtilities::useAlias"
   if (!file.exists(aliasFile)) {
     file.create(aliasFile)
     text <- c(initialText, "")
@@ -109,7 +109,7 @@ createNewAlias <- function(newAlias) {
     text <- readLines(aliasFile)
     if (x[1] != initialText) {
       cli::cli_abort(
-        "alias.R was not generated automatically by `CDMUtilities::useAlias`,
+        "alias.R was not generated automatically by `OMOPUtilities::useAlias`,
         please delete or rename this file."
       )
     }
