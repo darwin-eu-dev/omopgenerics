@@ -78,7 +78,7 @@ generatedCohortSet.tbl <- function(cohortTable,
 newGeneratedCohortSet <- function(cohortTable,
                                   cohortSetTable,
                                   cohortAttritionTable,
-                                  tblName) {
+                                  cohortName) {
   if (is.null(cohortSetTable)) {
     cohortSetTable <- defaultCohortSet(cohortTable)
   }
@@ -109,7 +109,7 @@ validateGeneratedCohortSet <- function(cohort) {
   }
 
   # check name
-  assert_character(attr(cohort, "tbl_name"), length = 1)
+  assertCharacter(attr(cohort, "tbl_name"), length = 1)
 
   # get attributes
   cohort_set <- attr(cohort, "cohort_set")
@@ -177,21 +177,20 @@ validateGeneratedCohortSet <- function(cohort) {
   # column types
 
   # make correct order
-  cohortTable <- cohortTable |>
+  cohort <- cohort |>
     dplyr::relocate(c(
       "cohort_definition_id", "subject_id", "cohort_start_date",
       "cohort_end_date"
     ))
-  attr(cohortTable, "cohort_set") <- attr(cohortTable, "cohort_set") |>
+  attr(cohort, "cohort_set") <- attr(cohort, "cohort_set") |>
     dplyr::relocate(c("cohort_definition_id", "cohort_name"))
-  attr(cohortTable, "cohort_attrition") <-
-    attr(cohortTable, "cohort_attrition") |>
+  attr(cohort, "cohort_attrition") <- attr(cohort, "cohort_attrition") |>
     dplyr::relocate(c(
       "cohort_definition_id", "number_records", "number_subjects", "reason_id",
       "reason", "excluded_records", "excluded_subjects"
     ))
 
-  invisible(cohortTable)
+  invisible(cohort)
 }
 
 equal <- function(...) {

@@ -106,7 +106,7 @@ assertList <- function(x,
     errorNamed(named),
     ifelse(
       !is.null(class),
-      paste0("; elements must have class:", paste0(class, collapse = ", ")),
+      paste("; elements must have class:", paste0(class, collapse = ", ")),
       ""
     ),
     "."

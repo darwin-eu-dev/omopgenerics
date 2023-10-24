@@ -299,6 +299,42 @@ checkCdm <- function(cdm, tablesToCheck = NULL, call = parent.frame()) {
   invisible(cdm)
 }
 
+checkCohortTableTbl <- function(cohortTableTbl, call = parent.frame()) {
+  assertTibble(
+    x = cohortTableTbl,
+    columns = c(
+      "cohort_definition_id", "subject_id", "cohort_start_date",
+      "cohort_end_date"
+    ),
+    call = call
+  )
+}
+
+checkCohortSetTableTbl <- function(cohortSetTableTbl, call = parent.frame()) {
+  assertTibble(
+    x = cohortSetTableTbl,
+    columns = c("cohort_definition_id", "cohort_name"),
+    null = TRUE,
+    call = call
+  )
+}
+
+checkCohortAttritionTableTbl <- function(cohortAttritionTableTbl, call = parent.frame()) {
+  assertTibble(
+    x = cohortAttritionTableTbl,
+    columns = c(
+      "cohort_definition_id", "reason_id", "reason", "number_subjects",
+      "number_records", "excluded_subjects", "excluded_records"
+    ),
+    null = TRUE,
+    call = call
+  )
+}
+
+checkListOfCohorts <- function(listOfCohorts, call = parent.frame()) {
+  assertList(listOfCohorts, class = "generated_cohort_set", call = call)
+}
+
 checkFile <- function(file, fileExist = FALSE, call = parent.frame()) {
   assertCharacter(file, length = 1)
   if (fileExist & !file.exists(file)) {
