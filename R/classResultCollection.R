@@ -22,21 +22,36 @@
 #'
 #' @export
 #'
-newResultsCollection <- function(...) {
-  results <- list(...)
-  if (length(results) == 1 & is.null(names(results))) {
-    results <- unlist(results)
+resultCollection <- function(...) {
+  result <- list(...)
+  if (length(result) == 1 & is.null(names(result))) {
+    result <- ..1
   }
   # initial input check
-  checkInput(results = results)
+  checkInput(result = result)
 
-  class(results) <- "results_collection"
+  result <- newResultCollection(result)
 
- return(results)
+  result <- validateResultCollection(result)
+
+  return(result)
+}
+
+newResultCollection <- function(result) {
+  class(result) <- "result_collection"
+  return(result)
+}
+validateResultCollection <- function(result) {
+  if (!"result_collection" %in% class(result)) {
+    cli::cli_abort(
+      "A result collection must be created with te function `resultCollection`."
+    )
+  }
+  return(result)
 }
 
 #' @export
-print.results_collection <- function(x, ...) {
+print.result_collection <- function(x, ...) {
   len <- length(x)
   types <- lapply(x, function(result) {
     result %>%

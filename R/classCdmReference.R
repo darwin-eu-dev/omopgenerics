@@ -46,6 +46,12 @@ newCdmReference <- function(cdmTables, cdmName, cdmVersion) {
   class(cdmTables) <- "cdm_reference"
   return(cdmTables)
 }
+validateCdmReference <- function(cdm) {
+  if (!("cdm_reference" %in% class(cdm))) {
+    cli::cli_abort("A cdm_reference object must have class cdm_reference.")
+  }
+  return(invisible(cdm))
+}
 
 #' Name of a cdm_reference.
 #'
@@ -58,18 +64,6 @@ newCdmReference <- function(cdmTables, cdmName, cdmVersion) {
 cdmName <- function(cdm) {
   checkInput(cdm = cdm)
   attr(cdm, "cdm_name")
-}
-
-#' Validate a `cdm_reference` object.
-#'
-#' @param cdm A `cdm_reference` object.
-#'
-#' @export
-validateCdmReference <- function(cdm) {
-  if (!("cdm_reference" %in% class(cdm))) {
-    cli::cli_abort("A cdm_reference object must have class cdm_reference.")
-  }
-  return(invisible(cdm))
 }
 
 #' Subset a cdm reference object
@@ -98,6 +92,26 @@ validateCdmReference <- function(cdm) {
 
   attr(tbl, "cdm_reference") <- x
   return(tbl)
+}
+
+#' @export
+`[[<-.cdm_reference` <- function(obj, name, value) {
+  x <- class(obj)
+  attr(value, "cdm_reference") <- NULL
+  obj <- unclass(obj)
+  obj[[name]] <- value
+  class(obj) <- x
+  return(obj)
+}
+
+#' @export
+`$<-.cdm_reference` <- function(obj, name, value) {
+  x <- class(obj)
+  attr(value, "cdm_reference") <- NULL
+  obj <- unclass(obj)
+  obj[[name]] <- value
+  class(obj) <- x
+  return(obj)
 }
 
 #' Print a CDM reference object

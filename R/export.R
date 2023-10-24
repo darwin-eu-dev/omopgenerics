@@ -41,7 +41,7 @@ export.generated_cohort_set <- function(x) {
     dplyr::mutate(
       cohort_table_name = attr(x, "tbl_name"),
       cdm_name = cdmName(attr(x, "cdm_reference")),
-      result_type = "Summary cohort"
+      result_type = "Cohort details"
     ) |>
     dplyr::relocate(c(
       "result_type", "cdm_name", "cohort_table_name", "cohort_name",
@@ -95,7 +95,7 @@ export.cdm_reference <- function(x) {
 
   cdm_source |>
     dplyr::mutate(
-      result_type = "snapshot",
+      result_type = "Snapshot",
       cdm_name = dplyr::coalesce(attr(x, "cdm_name"), as.character(NA)),
       vocabulary_version = dplyr::coalesce(
         .env$vocab_version, .data$vocabulary_version
@@ -135,12 +135,5 @@ export.cdm_reference <- function(x) {
 #' @export
 #'
 export.tbl <- function(x) {
-  # remove attributes ?
-  # attributesNames <- names(attributes(x))
-  # for (at in attributesNames) {
-  #   if (!(at %in% c("class", "row.names", "names"))) {
-  #     attr(x, at) <- NULL
-  #   }
-  # }
   return(x)
 }

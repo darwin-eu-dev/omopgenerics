@@ -24,7 +24,7 @@
 #' @param minNumCharacter Minimum number of characters.
 #' @param call Call argument that will be passed to `cli`.
 #'
-#' @export
+#' @noRd
 #'
 assertCharacter <- function(x,
                             length = NULL,
@@ -87,7 +87,7 @@ assertCharacter <- function(x,
 #' @param class Class that elements must have.
 #' @param call Call argument that will be passed to `cli`.
 #'
-#' @export
+#' @noRd
 #'
 assertList <- function(x,
                        length = NULL,
@@ -157,7 +157,7 @@ assertList <- function(x,
 #' @param named Whether it has to be named.
 #' @param call Call argument that will be passed to `cli`.
 #'
-#' @export
+#' @noRd
 #'
 assertChoice <- function(x,
                          choices,
@@ -217,7 +217,7 @@ assertChoice <- function(x,
 #' @param named Whether it has to be named.
 #' @param call Call argument that will be passed to `cli`.
 #'
-#' @export
+#' @noRd
 #'
 assertLogical <- function(x,
                           length = NULL,
@@ -268,7 +268,7 @@ assertLogical <- function(x,
 #' @param named Whether it has to be named.
 #' @param call Call argument that will be passed to `cli`.
 #'
-#' @export
+#' @noRd
 #'
 assertNumeric <- function(x,
                           integerish = FALSE,
@@ -347,7 +347,7 @@ assertNumeric <- function(x,
 #' @param null Whether it can be null.
 #' @param call Call argument that will be passed to `cli`.
 #'
-#' @export
+#' @noRd
 #'
 assertTibble <- function(x,
                          numberColumns = NULL,

@@ -23,7 +23,7 @@ Imports:
     rlang,
     zip
 Depends: 
-    R (>= 2.10)
+    R (>= 4.1)
 Suggests: 
     testthat (>= 3.0.0)
 URL: https://darwin-eu-dev.github.io/OMOPUtilities/

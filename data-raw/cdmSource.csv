@@ -1,2 +1,0 @@
-cdm_source_name, cdm_source_abbreviation, cdm_holder, source_description, source_documentation_reference, cdm_etl_reference, source_release_date, cdm_release_date, cdm_version, vocabulary_version
-"MOCK CDM", "MOCK CDM", "OMOPUtilities", "mock database to built R packages", "github.com/darwin-eu/OMOPUtilities", "OMOPUtilities", NA, "2023/07/30", "5.3", NA

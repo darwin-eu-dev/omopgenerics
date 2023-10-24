@@ -31,20 +31,20 @@ exportResults <- function(...,
                           zip = TRUE) {
   # initial checks
   elements <- list(...)
-  #checkInput(
-  #  elements = elements, path = path, resultsStem = resultsStem, zip = zip,
-  #  studyId = studyId
-  #)
+  checkInput(
+   elements = elements, path = path, resultsStem = resultsStem, zip = zip,
+   studyId = studyId
+  )
 
   # correct names
   names(elements) <- paste0(resultsStem, names(elements), ".csv")
 
   # export
   for (k in seq_along(elements)) {
-    element <- export(elements[[k]]) %>%
-      dplyr::mutate("study_id" = .env$studyId) %>%
-      dplyr::relocate("study_id")
-    readr::write_csv(x = element, file = paste0(path, "/", names(elements)[k]))
+    export(elements[[k]]) |>
+      dplyr::mutate("study_id" = .env$studyId) |>
+      dplyr::relocate("study_id") |>
+      readr::write_csv(file = paste0(path, "/", names(elements)[k]))
   }
 
   # zip if needed
