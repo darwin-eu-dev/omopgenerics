@@ -20,6 +20,7 @@
 #' @param path Path to save the results.
 #' @param resultsStem Stem to save the results csv files. Name of the zip file
 #' if exported.
+#' @param studyId Identifier for the study.
 #' @param zip Whether or not to create a zip file with all the results.
 #'
 #' @export

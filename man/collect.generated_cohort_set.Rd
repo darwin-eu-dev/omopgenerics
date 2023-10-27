@@ -4,7 +4,7 @@
 \alias{collect.generated_cohort_set}
 \title{To collect a \code{generated_cohort_set} object.}
 \usage{
-\method{collect}{generated_cohort_set}(x, ...)
+collect.generated_cohort_set(x, ...)
 }
 \arguments{
 \item{x}{\code{generated_cohort_set} object.}

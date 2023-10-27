@@ -22,9 +22,6 @@ number_subjects, number_records, reason_id, reason, excluded_subjects,
 excluded_records.}
 
 \item{cohortName}{Name of the generated_cohort_set object.}
-
-\item{cohortCountTable}{Table with at least: cohort_definition_id,
-number_subjects, number_records.}
 }
 \value{
 A generated_cohort_set object

@@ -37,12 +37,12 @@ bind <- function(...) {
 #'
 bind.cdm_reference <- function(..., newCdmName = "BINDED CDM") {
   # initial checks
-  listOfCdm = list(...)
+  cdmList = list(...)
   checkInput(cdmList = cdmList, newCdmName = newCdmName)
 
-  cdm <- listOfCdm[[1]]
-  for (k in 2:length(listOfCdm)) {
-    cdm <- appendCdm(cdm, listOfCdm[[k]])
+  cdm <- cdmList[[1]]
+  for (k in 2:length(cdmList)) {
+    cdm <- appendCdm(cdm, cdmList[[k]])
   }
 
   attr(cdm, "cdm_name") <- newCdmName

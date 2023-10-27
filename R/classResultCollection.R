@@ -54,20 +54,20 @@ validateResultCollection <- function(result) {
 print.result_collection <- function(x, ...) {
   len <- length(x)
   types <- lapply(x, function(result) {
-    result %>%
-      dplyr::select("result_type") %>%
-      dplyr::distinct() %>%
+    result |>
+      dplyr::select("result_type") |>
+      dplyr::distinct() |>
       dplyr::pull()
   })
-  tib <- dplyr::tibble(name = names(x), type = unname(unlist(types))) %>%
-    dplyr::group_by(.data$type) %>%
+  tib <- dplyr::tibble(name = names(x), type = unname(unlist(types))) |>
+    dplyr::group_by(.data$type) |>
     dplyr::summarise(
       count = dplyr::n(),
       names = paste0(.data$name, collapse = ", "),
       .groups = "drop"
     )
   mes <- paste0(cli::style_bold("Results collection"), " [", element(len), "]")
-  for (t in tib$type) {
+  for (k in seq_len(nrow(tib))) {
     mes <- c(
       mes,
       "*" = paste0(

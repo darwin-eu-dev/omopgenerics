@@ -20,6 +20,8 @@ exportResults(
 \item{resultsStem}{Stem to save the results csv files. Name of the zip file
 if exported.}
 
+\item{studyId}{Identifier for the study.}
+
 \item{zip}{Whether or not to create a zip file with all the results.}
 }
 \description{

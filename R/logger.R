@@ -1,7 +1,6 @@
 
-#' Write message to a logger file associated to a cdm object.
+#' Write message to a log file.
 #'
-#' @param cdm A cdm reference.
 #' @param message Message to record in the logger.
 #' @param warn Weather to throw a warning if the logger does not exist.
 #'
@@ -9,22 +8,27 @@
 #'
 #' @return Invisible cdm object
 #'
-writeLogger <- function(message, warn = FALSE) {
+writeLog <- function(message, warn = TRUE) {
   logger <- getOption("logger")
-  # initial checks
-  checkInput(message = message, warn = warn)
 
-  # add line break
-  message <- paste0("[", Sys.time(), "]  ", message, "\n")
+  if (!is.null(logger)) {
+    # initial checks
+    checkInput(message = message, warn = warn, logger = logger)
 
-  # write message
-  file <- attr(cdm, "logger")
-  if (!is.null(file)) {
-    message <- c(readLines(con = file), message)
-    writeLines(text = message, con = file)
+    # add line break
+    message <- paste0("[", Sys.time(), "]  ", message, "\n")
+
+    # write message
+    if (file.exists(logger)) {
+      message <- c(readLines(con = logger), message)
+    }
+    writeLines(text = message, con = logger)
   } else if (isTRUE(warn)) {
-    cli::cli_warn("Logger not found. Message couldn't be written.")
+    cli::cli_warn(c(
+      "Logger not found. Message couldn't be written.",
+      "To create a logger: options(logger = \"path\")"
+    ))
   }
 
-  invisible(cdm)
+  invisible(TRUE)
 }

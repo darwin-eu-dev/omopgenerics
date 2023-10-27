@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(CDMUtilities)
+library(OMOPUtilities)
 
-test_check("CDMUtilities")
+test_check("OMOPUtilities")

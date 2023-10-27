@@ -114,7 +114,7 @@
 #       )
 #     }
 #   }
-#   newAlias <- newAlias %>% dplyr::select(-"original_case")
+#   newAlias <- newAlias |> dplyr::select(-"original_case")
 #   for (k in seq_len(nrow(newAlias))) {
 #     newCase <- newAlias$new_case[k]
 #     newName <- newAlias$new_name[k]

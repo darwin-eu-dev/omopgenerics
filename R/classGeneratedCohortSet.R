@@ -43,8 +43,6 @@ generatedCohortSet <- function(cohortTable,
 #' @param cohortAttritionTable Table with at least: cohort_definition_id,
 #' number_subjects, number_records, reason_id, reason, excluded_subjects,
 #' excluded_records.
-#' @param cohortCountTable Table with at least: cohort_definition_id,
-#' number_subjects, number_records.
 #' @param cohortName Name of the generated_cohort_set object.
 #'
 #' @return A generated_cohort_set object
