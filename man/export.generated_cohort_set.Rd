@@ -4,10 +4,24 @@
 \alias{export.generated_cohort_set}
 \title{Export a generated_cohort_set}
 \usage{
-\method{export}{generated_cohort_set}(x)
+\method{export}{generated_cohort_set}(
+  x,
+  path = here::here(),
+  namePrefix = "",
+  minCellCount = 5,
+  studyId = NULL
+)
 }
 \arguments{
 \item{x}{A generated_cohort_set object.}
+
+\item{path}{Path where to export files.}
+
+\item{namePrefix}{Prefix for the files that are going to be saved.}
+
+\item{minCellCount}{Minimum number of counts to be exported.}
+
+\item{studyId}{Identifier to be added as \code{study_id}.}
 }
 \value{
 Exported generated_cohort_set

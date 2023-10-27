@@ -4,10 +4,12 @@
 \alias{bind.generated_cohort_set}
 \title{Bind multiple generated_cohort_set objects.}
 \usage{
-\method{bind}{generated_cohort_set}(...)
+\method{bind}{generated_cohort_set}(..., cohortName = "bound_cohort")
 }
 \arguments{
 \item{...}{Multiple generated_cohort_set objects.}
+
+\item{cohortName}{Name of the new bound cohort.}
 }
 \value{
 New generated_cohort_set

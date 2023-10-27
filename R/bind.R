@@ -26,53 +26,19 @@ bind <- function(...) {
   UseMethod("bind")
 }
 
-#' Bind multiple cdm_reference objects.
-#'
-#' @param ... Multiple cdm_reference objects.
-#' @param newCdmName Name of the new cdm object.
-#'
-#' @return New cdm_reference.
-#'
-#' @export
-#'
-bind.cdm_reference <- function(..., newCdmName = "BINDED CDM") {
-  # initial checks
-  cdmList = list(...)
-  checkInput(cdmList = cdmList, newCdmName = newCdmName)
-
-  cdm <- cdmList[[1]]
-  for (k in 2:length(cdmList)) {
-    cdm <- appendCdm(cdm, cdmList[[k]])
-  }
-
-  attr(cdm, "cdm_name") <- newCdmName
-
-  return(cdm)
-}
-
-appendCdm <- function(cdm1, cdm2) {
-  for (nam in names(cdm2)) {
-    if (nam %in% names(cdm1)) {
-      cdm1[[nam]] <- dplyr::union_all(cdm1[[nam]], cdm2[[nam]])
-    } else {
-      cdm1[[nam]] <- cdm2[[nam]]
-    }
-  }
-  return(cdm1)
-}
-
 #' Bind multiple generated_cohort_set objects.
 #'
 #' @param ... Multiple generated_cohort_set objects.
+#' @param cohortName Name of the new bound cohort.
 #'
 #' @return New generated_cohort_set
 #'
 #' @export
 #'
-bind.generated_cohort_set <- function(...) {
+bind.generated_cohort_set <- function(..., cohortName = "bound_cohort") {
   # initial checks
   listOfCohorts = list(...)
-  checkInput(listOfCohorts = listOfCohorts)
+  checkInput(listOfCohorts = listOfCohorts, cohortName = cohortName)
 
   # get ids
   ids <- getNewIds(listOfCohorts)
@@ -81,7 +47,7 @@ bind.generated_cohort_set <- function(...) {
   listOfCohorts <- updateIds(listOfCohorts, ids)
 
   # bind cohort
-  newCohort <- bindCohorts(listOfCohorts)
+  newCohort <- bindCohorts(listOfCohorts, cohortName)
 
   return(newCohort)
 }
@@ -89,13 +55,15 @@ bind.generated_cohort_set <- function(...) {
 getNewIds <- function(listOfCohorts) {
   ids <- dplyr::tibble(
     cohort_definition_id = numeric(), cohort_name = character(),
-    cohort = numeric()
+    cohort = numeric(), new_cohort_definition_id = numeric()
   )
+  id <- 0
   for (k in seq_along(listOfCohorts)) {
     cs <- cohortSet(listOfCohorts[[k]])
     ids <- ids |>
       dplyr::union_all(
         ids |>
+          dplyr::select("cohort_name", "new_cohort_definition_id") |>
           dplyr::inner_join(
             cs |>
               dplyr::select("cohort_definition_id", "cohort_name"),
@@ -107,22 +75,28 @@ getNewIds <- function(listOfCohorts) {
         cs |>
           dplyr::anti_join(ids, by = "cohort_name") |>
           dplyr::select("cohort_definition_id", "cohort_name") |>
+          dplyr::arrange(.data$cohort_definition_id) |>
           dplyr::mutate(
             new_cohort_definition_id = dplyr::row_number(), cohort = k
           ) |>
           dplyr::mutate(
-            new_cohort_definition_id = .data$new_cohort_definition_id + max(
-              ids$new_cohort_definition_id
-            )
+            new_cohort_definition_id = .data$new_cohort_definition_id + id
           )
       )
+    if (nrow(ids) > 0) {
+      id <- max(ids$new_cohort_definition_id)
+    } else {
+      id <- 0
+    }
   }
   ids <- ids |> dplyr::select(-"cohort_name")
   return(ids)
 }
 updateIds <- function(listOfCohorts, ids) {
   for (k in seq_along(listOfCohorts)) {
-    id <- ids |> dplyr::filter(.data$cohort == .env$k)
+    id <- ids |>
+      dplyr::filter(.data$cohort == .env$k) |>
+      dplyr::select(-"cohort")
     listOfCohorts[[k]] <- correctId(listOfCohorts[[k]], id)
     attr(listOfCohorts[[k]], "cohort_set") <- correctId(
       attr(listOfCohorts[[k]], "cohort_set"), id
@@ -135,12 +109,12 @@ updateIds <- function(listOfCohorts, ids) {
 }
 correctId <- function(tab, id) {
   tab |>
-    dplyr::inner_join(id, by = "cohort_definition_id") |>
+    dplyr::inner_join(id, by = "cohort_definition_id", copy = TRUE) |>
     dplyr::select(-"cohort_definition_id") |>
     dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") |>
     dplyr::relocate("cohort_definition_id")
 }
-bindCohorts <- function(listOfCohorts) {
+bindCohorts <- function(listOfCohorts, cohortName) {
   cohort <- dplyr::bind_rows(listOfCohorts)
   attr(cohort, "cohort_set") <- dplyr::bind_rows(lapply(
     listOfCohorts, attr, "cohort_set"
@@ -148,5 +122,6 @@ bindCohorts <- function(listOfCohorts) {
   attr(cohort, "cohort_attrition") <- dplyr::bind_rows(lapply(
     listOfCohorts, attr, "cohort_attrition"
   ))
+  attr(cohort, "tbl_name") <- cohortName
   return(cohort)
 }

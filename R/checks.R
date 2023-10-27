@@ -333,6 +333,25 @@ checkCohortAttritionTableTbl <- function(cohortAttritionTableTbl, call = parent.
 
 checkListOfCohorts <- function(listOfCohorts, call = parent.frame()) {
   assertList(listOfCohorts, class = "generated_cohort_set", call = call)
+  x <- lapply(listOfCohorts, function(x) {
+    cohortSet(x) |> dplyr::pull("cohort_name")
+  })
+  pairs <- expand.grid(id1 = seq_along(x), id2 = seq_along(x)) |>
+    dplyr::filter(.data$id2 > .data$id1)
+  error <- "The following cohorts have same cohort name:"
+  for (k in seq_len(nrow(pairs))) {
+    repeated <- intersect(x[[pairs$id1[k]]], x[[pairs$id2[k]]])
+    if (length(repeated) > 0) {
+      error <- c(error, "*" = paste0(
+        "cohort_name: ", paste0(repeated, collapse = ", "), "; in cohort: ",
+        pairs$id1[k], " and ", pairs$id2[k], "."
+      ))
+    }
+  }
+  if (length(error) > 1) {
+    cli::cli_abort(error)
+  }
+  invisible(listOfCohorts)
 }
 
 checkFile <- function(file, fileExist = FALSE, call = parent.frame()) {
@@ -341,5 +360,13 @@ checkFile <- function(file, fileExist = FALSE, call = parent.frame()) {
     cli::cli_abort("file ({file}) does not exist.")
   }
   invisible(file)
+}
+
+checkCohortName <- function(cohortName, call = parent.frame()) {
+  assertCharacter(cohortName, length = 1, call = call)
+}
+
+checkCohort <- function(cohort, call = parent.frame()) {
+  assertClass(cohort, "generated_cohort_set", call = call)
 }
 

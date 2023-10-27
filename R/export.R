@@ -17,24 +17,40 @@
 #' Export an object.
 #'
 #' @param x Object to export.
+#' @param path Path where to export files.
+#' @param namePrefix Prefix for the files that are going to be saved.
+#' @param minCellCount Minimum number of counts to be exported.
+#' @param studyId Identifier to be added as `study_id`.
 #'
 #' @return Exported object in tbl format.
 #'
 #' @export
 #'
-export <- function(x) {
+export <- function(x,
+                   path = here::here(),
+                   namePrefix = "",
+                   minCellCount = 5,
+                   studyId = NULL) {
   UseMethod("export")
 }
 
 #' Export a generated_cohort_set
 #'
 #' @param x A generated_cohort_set object.
+#' @param path Path where to export files.
+#' @param namePrefix Prefix for the files that are going to be saved.
+#' @param minCellCount Minimum number of counts to be exported.
+#' @param studyId Identifier to be added as `study_id`.
 #'
 #' @return Exported generated_cohort_set
 #'
 #' @export
 #'
-export.generated_cohort_set <- function(x) {
+export.generated_cohort_set <- function(x,
+                                        path = here::here(),
+                                        namePrefix = "",
+                                        minCellCount = 5,
+                                        studyId = NULL) {
   cohortSet(x) |>
     dplyr::inner_join(cohortAttrition(x), by = "cohort_definition_id") |>
     dplyr::arrange(.data$cohort_definition_id, .data$reason_id) |>
@@ -45,19 +61,36 @@ export.generated_cohort_set <- function(x) {
     ) |>
     dplyr::relocate(c(
       "result_type", "cdm_name", "cohort_table_name", "cohort_name",
-      "cohort_deifnition_id"
-    ))
+      "cohort_definition_id"
+    )) |>
+    dplyr::mutate(dplyr::across(
+      c("number_subjects", "number_records", "excluded_subjects",
+        "excluded_records"),
+      ~ dplyr::if_else(
+        .x < .env$minCellCount, paste0("<", .env$minCellCount), as.character(.x)
+      )
+    )) |>
+    addStudyId(studyId) |>
+    saveFile(path, namePrefix, studyId, "cohort_details")
 }
 
 #' Export a cdm_reference
 #'
 #' @param x A cdm_reference object.
+#' @param path Path where to export files.
+#' @param namePrefix Prefix for the files that are going to be saved.
+#' @param minCellCount Minimum number of counts to be exported.
+#' @param studyId Identifier to be added as `study_id`.
 #'
 #' @return Exported cdm_reference.
 #'
 #' @export
 #'
-export.cdm_reference <- function(x) {
+export.cdm_reference <- function(x,
+                                 path = here::here(),
+                                 namePrefix = "",
+                                 minCellCount = 5,
+                                 studyId = NULL) {
   person_count <- x[["person"]] |> dplyr::tally() |> dplyr::pull("n")
   observation_period_count <- x[["observation_period"]] |>
     dplyr::tally() |>
@@ -123,17 +156,35 @@ export.cdm_reference <- function(x) {
       "latest_observation_period_end_date",
       "snapshot_date"
     ) |>
-    dplyr::mutate_all(as.character)
+    dplyr::mutate_all(as.character) |>
+    addStudyId(studyId) |>
+    saveFile(path, namePrefix, studyId, "cdm_snapshot")
 }
 
-#' Export a tibble
-#'
-#' @param x A tibble object.
-#'
-#' @return Exported tibble.
-#'
-#' @export
-#'
-export.tbl <- function(x) {
+addStudyId <- function(x, studyId) {
+  if (!is.null(studyId)) {
+    x <- x |>
+      dplyr::mutate("study_id" = .env$studyId) |>
+      dplyr::relocate("study_id")
+  }
   return(x)
+}
+saveFile <- function(x, path, namePrefix, studyId, nam) {
+  readr::write_csv(
+    x = x, file = file.path(path, fileName(x, path, namePrefix, studyId, nam))
+  )
+}
+fileName <- function(x, path, namePrefix, studyId, nam) {
+  n <- nchar(namePrefix)
+  if (n > 0 & substr(namePrefix, n, n) != "_") {
+    namePrefix <- paste0(namePrefix, "_")
+  }
+  if (!is.null(studyId)) {
+    studyId <- paste0("_", studyId)
+  }
+  paste0(
+    namePrefix, nam, "_", paste0(unique(x$cdm_name), collapse = "_"), studyId,
+    ".csv"
+  ) |>
+    toSnakeCase()
 }

@@ -48,5 +48,75 @@ test_that("bind generated_cohort_set", {
 
   # bind both cohorts
   expect_error(bind(cdm$cohort1, 1))
+  expect_error(bind(1, cdm$cohort2))
+  expect_error(bind(cdm$cohort1, cdm$cohort2, cohortName = "new_cohort"))
+
+  attr(cdm$cohort2, "cohort_set") <- attr(cdm$cohort2, "cohort_set") |>
+    dplyr::mutate(cohort_name = paste0("new_", .data$cohort_name))
+
+  expect_error(bind(cdm$cohort1, cdm$cohort2, cohortName = 1))
+  expect_error(bind(cdm$cohort1, cdm$cohort2, cohortName = c("ad", "as")))
+  expect_no_error(cdm$new_cohort <- bind(cdm$cohort1, cdm$cohort2, cohortName = "new_cohort"))
+
+  expect_true(all(colnames(cdm$new_cohort) %in% c(
+    "cohort_definition_id", "subject_id", "cohort_start_date", "cohort_end_date"
+  )))
+  expect_true(all(colnames(cohortSet(cdm$new_cohort)) %in% c(
+    "cohort_definition_id", "cohort_name"
+  )))
+
+  expect_identical(
+    cdm$new_cohort %>% dplyr::tally() %>% dplyr::pull(),
+    cdm$cohort1 %>% dplyr::tally() %>% dplyr::pull() +
+      cdm$cohort2 %>% dplyr::tally() %>% dplyr::pull()
+  )
+  expect_identical(
+    cohortSet(cdm$new_cohort) %>% dplyr::tally() %>% dplyr::pull(),
+    cohortSet(cdm$cohort1) %>% dplyr::tally() %>% dplyr::pull() +
+      cohortSet(cdm$cohort2) %>% dplyr::tally() %>% dplyr::pull()
+  )
+  expect_identical(
+    cohortCount(cdm$new_cohort) %>% dplyr::tally() %>% dplyr::pull(),
+    cohortCount(cdm$cohort1) %>% dplyr::tally() %>% dplyr::pull() +
+      cohortCount(cdm$cohort2) %>% dplyr::tally() %>% dplyr::pull()
+  )
+  expect_identical(
+    cohortAttrition(cdm$new_cohort) %>% dplyr::tally() %>% dplyr::pull(),
+    cohortAttrition(cdm$cohort1) %>% dplyr::tally() %>% dplyr::pull() +
+      cohortAttrition(cdm$cohort2) %>% dplyr::tally() %>% dplyr::pull()
+  )
+
+  attr(cdm$cohort2, "cohort_set") <- attr(cdm$cohort2, "cohort_set") |>
+    dplyr::mutate(limit = "first")
+
+  expect_no_error(cdm$new_cohort <- bind(cdm$cohort1, cdm$cohort2, cohortName = "new_cohort"))
+
+  expect_true(all(colnames(cdm$new_cohort) %in% c(
+    "cohort_definition_id", "subject_id", "cohort_start_date", "cohort_end_date"
+  )))
+  expect_true(all(colnames(cohortSet(cdm$new_cohort)) %in% c(
+    "cohort_definition_id", "cohort_name", "limit"
+  )))
+
+  expect_identical(
+    cdm$new_cohort %>% dplyr::tally() %>% dplyr::pull(),
+    cdm$cohort1 %>% dplyr::tally() %>% dplyr::pull() +
+      cdm$cohort2 %>% dplyr::tally() %>% dplyr::pull()
+  )
+  expect_identical(
+    cohortSet(cdm$new_cohort) %>% dplyr::tally() %>% dplyr::pull(),
+    cohortSet(cdm$cohort1) %>% dplyr::tally() %>% dplyr::pull() +
+      cohortSet(cdm$cohort2) %>% dplyr::tally() %>% dplyr::pull()
+  )
+  expect_identical(
+    cohortCount(cdm$new_cohort) %>% dplyr::tally() %>% dplyr::pull(),
+    cohortCount(cdm$cohort1) %>% dplyr::tally() %>% dplyr::pull() +
+      cohortCount(cdm$cohort2) %>% dplyr::tally() %>% dplyr::pull()
+  )
+  expect_identical(
+    cohortAttrition(cdm$new_cohort) %>% dplyr::tally() %>% dplyr::pull(),
+    cohortAttrition(cdm$cohort1) %>% dplyr::tally() %>% dplyr::pull() +
+      cohortAttrition(cdm$cohort2) %>% dplyr::tally() %>% dplyr::pull()
+  )
 
 })

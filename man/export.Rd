@@ -4,10 +4,24 @@
 \alias{export}
 \title{Export an object.}
 \usage{
-export(x)
+export(
+  x,
+  path = here::here(),
+  namePrefix = "",
+  minCellCount = 5,
+  studyId = NULL
+)
 }
 \arguments{
 \item{x}{Object to export.}
+
+\item{path}{Path where to export files.}
+
+\item{namePrefix}{Prefix for the files that are going to be saved.}
+
+\item{minCellCount}{Minimum number of counts to be exported.}
+
+\item{studyId}{Identifier to be added as \code{study_id}.}
 }
 \value{
 Exported object in tbl format.
