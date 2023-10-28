@@ -4,7 +4,13 @@
 \alias{exportResults}
 \title{Export list of results}
 \usage{
-exportResults(..., path = here::here(), resultsStem = "results", zip = FALSE)
+exportResults(
+  ...,
+  path = here::here(),
+  resultsStem = "results",
+  studyId = NULL,
+  zip = TRUE
+)
 }
 \arguments{
 \item{...}{Named list of results.}
@@ -13,6 +19,8 @@ exportResults(..., path = here::here(), resultsStem = "results", zip = FALSE)
 
 \item{resultsStem}{Stem to save the results csv files. Name of the zip file
 if exported.}
+
+\item{studyId}{Identifier for the study.}
 
 \item{zip}{Whether or not to create a zip file with all the results.}
 }

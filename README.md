@@ -1,1 +1,1 @@
-# CDMUtilities
+# OMOPUtilities

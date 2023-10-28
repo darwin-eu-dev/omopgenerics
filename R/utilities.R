@@ -1,6 +1,6 @@
 # Copyright 2023 DARWIN EU (C)
 #
-# This file is part of CDMUtilities
+# This file is part of OMOPUtilities
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 #'
 #' @examples
 #' \donttest{
-#' library(CDMUtilities)
+#' library(OMOPUtilities)
 #' toSnakeCase(c("foo bar", "fooBar", "FooBar", "foo_bar", "FOOBAR"))
 #' }
 #'
@@ -53,7 +53,7 @@ toSnakeCase <- function(string) {
       x <- paste0(tolower(y), collapse = "")
     }
     return(x)
-  }) %>%
+  }) |>
     unlist()
 
   # eliminate "__"
@@ -87,7 +87,7 @@ toSnakeCase <- function(string) {
 #'
 #' @examples
 #' \donttest{
-#' library(CDMUtilities)
+#' library(OMOPUtilities)
 #' toCamelCase(c("foo bar", "fooBar", "FooBar", "foo_bar", "FOOBAR"))
 #' }
 #'
@@ -106,53 +106,10 @@ toCamelCase <- function(string) {
       x <- paste0(gsub("_", "", x), collapse = "")
     }
     return(x)
-  }) %>%
+  }) |>
     unlist()
   string[is.na(string)] <- ""
   names(string) <- NULL
 
   return(string)
-}
-
-#' Set temporary (or permanent) behavior for compute functions.
-#'
-#' @param intermediateAsTemp Whether intermediate tables should be temporary.
-#' @param cohortAsTemp Whether cohort tables should be temporary.
-#'
-#' @export
-#'
-#' @examples
-#' \donttest{
-#' library(CDMUtilities)
-#' setTemporary(intermediateAsTemp = TRUE, cohortAsTemp = FALSE)
-#' }
-#'
-setTemporary <- function(intermediateAsTemp = TRUE,
-                         cohortAsTemp = FALSE) {
-  # check inputs
-  checkInput(
-    intermediateAsTemp = intermediateAsTemp, cohortAsTemp = cohortAsTemp
-  )
-
-  # set options
-  options("intermediate_as_temp" = intermediateAsTemp)
-  options("cohort_as_temp" = cohortAsTemp)
-
-  # return
-  return(invisible(NULL))
-}
-
-asType <- function(x, type) {
-  if (type == "integer") {
-    x <- as.integer(x)
-  } else if (grepl("date", type)) {
-    x <- as.Date(x)
-  } else if (type == "float") {
-    x <- as.numeric(x)
-  } else if (grepl("varchar", type)) {
-    x <- as.character(x)
-  } else {
-    displayWarningMessage(paste0("Not recognised type: ", type))
-  }
-  return(x)
 }

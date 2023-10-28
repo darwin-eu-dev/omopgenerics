@@ -1,6 +1,6 @@
 # Copyright 2023 DARWIN EU (C)
 #
-# This file is part of CDMUtilities
+# This file is part of OMOPUtilities
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@
 #' @param null Whether it can be null.
 #' @param named Whether it has to be named.
 #' @param minNumCharacter Minimum number of characters.
-#' @param errorMessage Error message to display.
+#' @param call Call argument that will be passed to `cli`.
 #'
-#' @export
+#' @noRd
 #'
 assertCharacter <- function(x,
                             length = NULL,
@@ -32,47 +32,45 @@ assertCharacter <- function(x,
                             null = FALSE,
                             named = FALSE,
                             minNumCharacter = 0,
-                            errorMessage = NULL) {
+                            call = parent.frame()) {
   # create error message
-  if (is.null(errorMessage)) {
-    errorMessage <- paste0(
-      paste0(substitute(x), collapse = ""),
-      " must be a character",
-      errorLength(length),
-      errorNa(na),
-      errorNull(null),
-      errorNamed(named),
-      ifelse(
-        minNumCharacter > 0,
-        paste("; at least", minNumCharacter, "per element"),
-        ""
-      ),
-      "."
-    )
-  }
+  errorMessage <- paste0(
+    paste0(substitute(x), collapse = ""),
+    " must be a character",
+    errorLength(length),
+    errorNa(na),
+    errorNull(null),
+    errorNamed(named),
+    ifelse(
+      minNumCharacter > 0,
+      paste("; at least", minNumCharacter, "per element"),
+      ""
+    ),
+    "."
+  )
 
   # assert null
-  if (assertNull(x, null, errorMessage)) {
+  if (assertNull(x, null, errorMessage, call)) {
     # no NA vector
     xNoNa <- x[!is.na(x)]
 
     # assert class
     if (!is.character(x)) {
-      displayErrorMessage(errorMessage)
+      cli::cli_abort(errorMessage, call = call)
     }
 
     # assert length
-    assertLength(x, length, errorMessage)
+    assertLength(x, length, errorMessage, call)
 
     # assert na
-    assertNa(x, na, errorMessage)
+    assertNa(x, na, errorMessage, call)
 
     # assert named
-    assertNamed(x, named, errorMessage)
+    assertNamed(x, named, errorMessage, call)
 
     # minimum number of characters
     if (any(nchar(xNoNa) < minNumCharacter)) {
-      displayErrorMessage(errorMessage)
+      cli::cli_abort(errorMessage, call = call)
     }
   }
 
@@ -87,9 +85,9 @@ assertCharacter <- function(x,
 #' @param null Whether it can be null.
 #' @param named Whether it has to be named.
 #' @param class Class that elements must have.
-#' @param errorMessage Error message to display.
+#' @param call Call argument that will be passed to `cli`.
 #'
-#' @export
+#' @noRd
 #'
 assertList <- function(x,
                        length = NULL,
@@ -97,53 +95,51 @@ assertList <- function(x,
                        null = FALSE,
                        named = FALSE,
                        class = NULL,
-                       errorMessage = NULL) {
+                       call = parent.frame()) {
   # create error message
-  if (is.null(errorMessage)) {
-    errorMessage <- paste0(
-      paste0(substitute(x), collapse = ""),
-      " must be a list",
-      errorLength(length),
-      errorNa(na),
-      errorNull(null),
-      errorNamed(named),
-      ifelse(
-        !is.null(class),
-        paste0("; elements must have class:", paste0(class, collapse = ", ")),
-        ""
-      ),
-      "."
-    )
-  }
+  errorMessage <- paste0(
+    paste0(substitute(x), collapse = ""),
+    " must be a list",
+    errorLength(length),
+    errorNa(na),
+    errorNull(null),
+    errorNamed(named),
+    ifelse(
+      !is.null(class),
+      paste("; elements must have class:", paste0(class, collapse = ", ")),
+      ""
+    ),
+    "."
+  )
 
   # assert null
-  if (assertNull(x, null, errorMessage)) {
+  if (assertNull(x, null, errorMessage, call)) {
     # no NA vector
     xNoNa <- x[!is.na(x)]
 
     # assert class
     if (!is.list(x)) {
-      displayErrorMessage(errorMessage)
+      cli::cli_abort(errorMessage, call = call)
     }
 
     # assert length
-    assertLength(x, length, errorMessage)
+    assertLength(x, length, errorMessage, call)
 
     # assert na
-    assertNa(x, na, errorMessage)
+    assertNa(x, na, errorMessage, call)
 
     # assert named
-    assertNamed(x, named, errorMessage)
+    assertNamed(x, named, errorMessage, call)
 
     # assert class
     if (!is.null(class)) {
       flag <- lapply(xNoNa, function(y) {
         any(class %in% base::class(y))
-      }) %>%
-        unlist() %>%
+      }) |>
+        unlist() |>
         all()
       if (flag != TRUE) {
-        displayErrorMessage(errorMessage)
+        cli::cli_abort(errorMessage, call = call)
       }
     }
   }
@@ -159,9 +155,9 @@ assertList <- function(x,
 #' @param na Whether it can contain NA values.
 #' @param null Whether it can be null.
 #' @param named Whether it has to be named.
-#' @param errorMessage Error message to display.
+#' @param call Call argument that will be passed to `cli`.
 #'
-#' @export
+#' @noRd
 #'
 assertChoice <- function(x,
                          choices,
@@ -169,44 +165,42 @@ assertChoice <- function(x,
                          na = FALSE,
                          null = FALSE,
                          named = FALSE,
-                         errorMessage = NULL) {
+                         call = parent.frame()) {
   # create error message
-  if (is.null(errorMessage)) {
-    errorMessage <- paste0(
-      paste0(substitute(x), collapse = ""),
-      " must be a choice between: ",
-      paste0(choices, collapse = ", "),
-      errorLength(length),
-      errorNa(na),
-      errorNull(null),
-      errorNamed(named),
-      "."
-    )
-  }
+  errorMessage <- paste0(
+    paste0(substitute(x), collapse = ""),
+    " must be a choice between: ",
+    paste0(choices, collapse = ", "),
+    errorLength(length),
+    errorNa(na),
+    errorNull(null),
+    errorNamed(named),
+    "."
+  )
 
   # assert null
-  if (assertNull(x, null, errorMessage)) {
+  if (assertNull(x, null, errorMessage, call)) {
     # no NA vector
     xNoNa <- x[!is.na(x)]
 
     # assert class
     if (!all(class(x) == class(choices))) {
-      displayErrorMessage(errorMessage)
+      cli::cli_abort(errorMessage, call = call)
     }
 
     # assert length
-    assertLength(x, length, errorMessage)
+    assertLength(x, length, errorMessage, call)
 
     # assert na
-    assertNa(x, na, errorMessage)
+    assertNa(x, na, errorMessage, call)
 
     # assert named
-    assertNamed(x, named, errorMessage)
+    assertNamed(x, named, errorMessage, call)
 
     # assert choices
     if (base::length(xNoNa) > 0) {
       if (!all(xNoNa %in% choices)) {
-        displayErrorMessage(errorMessage)
+        cli::cli_abort(errorMessage, call = call)
       }
     }
   }
@@ -221,44 +215,42 @@ assertChoice <- function(x,
 #' @param na Whether it can contain NA values.
 #' @param null Whether it can be null.
 #' @param named Whether it has to be named.
-#' @param errorMessage Error message to display.
+#' @param call Call argument that will be passed to `cli`.
 #'
-#' @export
+#' @noRd
 #'
 assertLogical <- function(x,
                           length = NULL,
                           na = FALSE,
                           null = FALSE,
                           named = FALSE,
-                          errorMessage = NULL) {
+                          call = parent.frame()) {
   # create error message
-  if (is.null(errorMessage)) {
-    errorMessage <- paste0(
-      paste0(substitute(x), collapse = ""),
-      " must be a logical",
-      errorLength(length),
-      errorNa(na),
-      errorNull(null),
-      errorNamed(named),
-      "."
-    )
-  }
+  errorMessage <- paste0(
+    paste0(substitute(x), collapse = ""),
+    " must be a logical",
+    errorLength(length),
+    errorNa(na),
+    errorNull(null),
+    errorNamed(named),
+    "."
+  )
 
   # assert null
-  if (assertNull(x, null, errorMessage)) {
+  if (assertNull(x, null, errorMessage, call)) {
     # assert class
     if (!is.logical(x)) {
-      displayErrorMessage(errorMessage)
+      cli::cli_abort(errorMessage, call = call)
     }
 
     # assert length
-    assertLength(x, length, errorMessage)
+    assertLength(x, length, errorMessage, call)
 
     # assert na
-    assertNa(x, na, errorMessage)
+    assertNa(x, na, errorMessage, call)
 
     # assert named
-    assertNamed(x, named, errorMessage)
+    assertNamed(x, named, errorMessage, call)
   }
 
   return(invisible(x))
@@ -274,9 +266,9 @@ assertLogical <- function(x,
 #' @param na Whether it can contain NA values.
 #' @param null Whether it can be null.
 #' @param named Whether it has to be named.
-#' @param errorMessage Error message to display.
+#' @param call Call argument that will be passed to `cli`.
 #'
-#' @export
+#' @noRd
 #'
 assertNumeric <- function(x,
                           integerish = FALSE,
@@ -286,63 +278,61 @@ assertNumeric <- function(x,
                           na = FALSE,
                           null = FALSE,
                           named = FALSE,
-                          errorMessage = NULL) {
+                          call = parent.frame()) {
   # create error message
-  if (is.null(errorMessage)) {
-    errorMessage <- paste0(
-      paste0(substitute(x), collapse = ""),
-      " must be a numeric",
-      ifelse(integerish, "; it has to be integerish", ""),
-      ifelse(is.infinite(min), "", paste0("; greater than", min)),
-      ifelse(is.infinite(max), "", paste0("; smaller than", max)),
-      errorLength(length),
-      errorNa(na),
-      errorNull(null),
-      errorNamed(named),
-      "."
-    )
-  }
+  errorMessage <- paste0(
+    paste0(substitute(x), collapse = ""),
+    " must be a numeric",
+    ifelse(integerish, "; it has to be integerish", ""),
+    ifelse(is.infinite(min), "", paste0("; greater than", min)),
+    ifelse(is.infinite(max), "", paste0("; smaller than", max)),
+    errorLength(length),
+    errorNa(na),
+    errorNull(null),
+    errorNamed(named),
+    "."
+  )
 
   # assert null
-  if (assertNull(x, null, errorMessage)) {
+  if (assertNull(x, null, errorMessage, call)) {
     # no NA vector
     xNoNa <- x[!is.na(x)]
 
     # assert class
     if (!is.numeric(x)) {
-      displayErrorMessage(errorMessage)
+      cli::cli_abort(errorMessage, call = call)
     }
 
     # assert integerish
     if (integerish & base::length(xNoNa) > 0) {
       err <- max(abs(xNoNa - round(xNoNa)))
       if (err > 0.0001) {
-        displayErrorMessage(errorMessage)
+        cli::cli_abort(errorMessage, call = call)
       }
     }
 
     # assert lower bound
     if (!is.infinite(min) & base::length(xNoNa) > 0) {
       if (base::min(xNoNa) < min) {
-        displayErrorMessage(errorMessage)
+        cli::cli_abort(errorMessage, call = call)
       }
     }
 
     # assert upper bound
     if (!is.infinite(max) & base::length(xNoNa) > 0) {
       if (base::max(xNoNa) > max) {
-        displayErrorMessage(errorMessage)
+        cli::cli_abort(errorMessage, call = call)
       }
     }
 
     # assert length
-    assertLength(x, length, errorMessage)
+    assertLength(x, length, errorMessage, call)
 
     # assert na
-    assertNa(x, na, errorMessage)
+    assertNa(x, na, errorMessage, call)
 
     # assert named
-    assertNamed(x, named, errorMessage)
+    assertNamed(x, named, errorMessage, call)
   }
 
   return(invisible(x))
@@ -355,54 +345,52 @@ assertNumeric <- function(x,
 #' @param numberRows Number of rows.
 #' @param columns Name of columns that must be present.
 #' @param null Whether it can be null.
-#' @param errorMessage Error message to display.
+#' @param call Call argument that will be passed to `cli`.
 #'
-#' @export
+#' @noRd
 #'
 assertTibble <- function(x,
                          numberColumns = NULL,
                          numberRows = NULL,
                          columns = NULL,
                          null = FALSE,
-                         errorMessage = NULL) {
+                         call = parent.frame()) {
   # create error message
-  if (is.null(errorMessage)) {
-    errorMessage <- paste0(
-      paste0(substitute(x), collapse = ""),
-      " must be a tibble",
-      ifelse(is.null(numberColumns), "", paste0("; with at least ", numberColumns, " columns")),
-      ifelse(is.null(numberRows), "", paste0("; with at least ", numberRows, " rows")),
-      ifelse(is.null(columns), "", paste0("; the following columns must be present: ", paste0(columns, collapse = ", "))),
-      errorNull(null),
-      "."
-    )
-  }
+  errorMessage <- paste0(
+    paste0(substitute(x), collapse = ""),
+    " must be a tibble",
+    ifelse(is.null(numberColumns), "", paste0("; with at least ", numberColumns, " columns")),
+    ifelse(is.null(numberRows), "", paste0("; with at least ", numberRows, " rows")),
+    ifelse(is.null(columns), "", paste0("; the following columns must be present: ", paste0(columns, collapse = ", "))),
+    errorNull(null),
+    "."
+  )
 
   # assert null
-  if (assertNull(x, null, errorMessage)) {
+  if (assertNull(x, null, errorMessage, call)) {
     # assert class
     if (!("tbl" %in% class(x))) {
-      displayErrorMessage(errorMessage)
+      cli::cli_abort(errorMessage, call = call)
     }
 
     # assert numberColumns
     if (!is.null(numberColumns)) {
       if (length(x) != numberColumns) {
-        displayErrorMessage(errorMessage)
+        cli::cli_abort(errorMessage, call = call)
       }
     }
 
     # assert numberRows
     if (!is.null(numberRows)) {
       if (nrow(x) != numberRows) {
-        displayErrorMessage(errorMessage)
+        cli::cli_abort(errorMessage, call = call)
       }
     }
 
     # assert columns
     if (!is.null(columns)) {
       if (!all(columns %in% colnames(x))) {
-        displayErrorMessage(errorMessage)
+        cli::cli_abort(errorMessage, call = call)
       }
     }
   }
@@ -410,9 +398,9 @@ assertTibble <- function(x,
   return(invisible(x))
 }
 
-assertLength <- function(x, length, errorMessage) {
+assertLength <- function(x, length, errorMessage, call) {
   if (!is.null(length) && base::length(x) != length) {
-    displayErrorMessage(errorMessage)
+    cli::cli_abort(errorMessage, call = call)
   }
   invisible(x)
 }
@@ -424,9 +412,9 @@ errorLength <- function(length) {
   }
   return(str)
 }
-assertNa <- function(x, na, errorMessage) {
+assertNa <- function(x, na, errorMessage, call) {
   if (!na && any(is.na(x))) {
-    displayErrorMessage(errorMessage)
+    cli::cli_abort(errorMessage, call = call)
   }
   invisible(x)
 }
@@ -438,9 +426,9 @@ errorNa <- function(na) {
   }
   return(str)
 }
-assertNamed <- function(x, named, errorMessage) {
+assertNamed <- function(x, named, errorMessage, call) {
   if (named && length(names(x)[names(x) != ""]) != length(x)) {
-    displayErrorMessage(errorMessage)
+    cli::cli_abort(errorMessage, call = call)
   }
   invisible(x)
 }
@@ -452,9 +440,9 @@ errorNamed <- function(named) {
   }
   return(str)
 }
-assertNull <- function(x, null, errorMessage) {
+assertNull <- function(x, null, errorMessage, call) {
   if (!null && is.null(x)) {
-    displayErrorMessage(errorMessage)
+    cli::cli_abort(errorMessage, call = call)
   }
   return(!is.null(x))
 }
@@ -465,4 +453,27 @@ errorNull <- function(null) {
     str <- "; it can not be NULL"
   }
   return(str)
+}
+
+#' Assert that an object has a certain class.
+#'
+#' @param x To check.
+#' @param class Expected class or classes.
+#' @param call Call argument that will be passed to `cli`.
+#'
+#' @noRd
+#'
+assertClass <- function(x,
+                        class,
+                        call = parent.frame()) {
+  # create error message
+  errorMessage <- paste0(
+    paste0(substitute(x), collapse = ""), " must have class: ",
+    paste0(class, collapse = ", "), "; but has class: ",
+    paste0(base::class(x), collapse = ", ") ,"."
+  )
+  if (!all(class %in% base::class(x))) {
+    cli::cli_abort(errorMessage, call = call)
+  }
+  invisible(x)
 }

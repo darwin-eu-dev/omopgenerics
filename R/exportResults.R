@@ -1,6 +1,6 @@
 # Copyright 2023 DARWIN EU (C)
 #
-# This file is part of CDMUtilities
+# This file is part of OMOPUtilities
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 #' @param path Path to save the results.
 #' @param resultsStem Stem to save the results csv files. Name of the zip file
 #' if exported.
+#' @param studyId Identifier for the study.
 #' @param zip Whether or not to create a zip file with all the results.
 #'
 #' @export
@@ -27,20 +28,24 @@
 exportResults <- function(...,
                           path = here::here(),
                           resultsStem = "results",
-                          zip = FALSE) {
+                          studyId = NULL,
+                          zip = TRUE) {
   # initial checks
   elements <- list(...)
-  #checkInput(
-  #  elements = elements, path = path, resultsStem = resultsStem, zip = zip
-  #)
+  checkInput(
+   elements = elements, path = path, resultsStem = resultsStem, zip = zip,
+   studyId = studyId
+  )
 
-  # put names
+  # correct names
   names(elements) <- paste0(resultsStem, names(elements), ".csv")
 
   # export
   for (k in seq_along(elements)) {
-    element <- export(elements[[k]])
-    readr::write_csv(x = element, file = paste0(path, "/", names(elements)[k]))
+    export(elements[[k]]) |>
+      dplyr::mutate("study_id" = .env$studyId) |>
+      dplyr::relocate("study_id") |>
+      readr::write_csv(file = paste0(path, "/", names(elements)[k]))
   }
 
   # zip if needed

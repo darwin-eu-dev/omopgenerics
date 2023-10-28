@@ -11,7 +11,7 @@ List available inputs to check
 }
 \examples{
 \donttest{
-library(CDMUtilities)
+library(OMOPUtilities)
 listInputCheck()
 }
 

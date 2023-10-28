@@ -1,6 +1,6 @@
 # Copyright 2023 DARWIN EU (C)
 #
-# This file is part of CDMUtilities
+# This file is part of OMOPUtilities
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,17 +25,32 @@
 #'
 #' @export
 #'
-newCdmReference <- function(cdmTables, cdmName, cdmVersion) {
+cdmReference <- function(cdmTables, cdmName, cdmVersion) {
   # initial input check
   checkInput(cdmTables = cdmTables, cdmName = cdmName, cdmVersion = cdmVersion)
 
+  # constructor
+  cdm <- newCdmReference(
+    cdmTables = cdmTables, cdmName = cdmName, cdmVersion = cdmVersion
+  )
+
+  # validate
+  cdm <- validateCdmReference(cdm)
+
+  return(cdm)
+}
+
+newCdmReference <- function(cdmTables, cdmName, cdmVersion) {
   attr(cdmTables, "cdm_name") <- cdmName
   attr(cdmTables, "cdm_version") <- cdmVersion
   class(cdmTables) <- "cdm_reference"
-
-  validateCdmReference(cdmTables)
-
   return(cdmTables)
+}
+validateCdmReference <- function(cdm) {
+  if (!("cdm_reference" %in% class(cdm))) {
+    cli::cli_abort("A cdm_reference object must have class cdm_reference.")
+  }
+  return(invisible(cdm))
 }
 
 #' Name of a cdm_reference.
@@ -49,18 +64,6 @@ newCdmReference <- function(cdmTables, cdmName, cdmVersion) {
 cdmName <- function(cdm) {
   checkInput(cdm = cdm)
   attr(cdm, "cdm_name")
-}
-
-#' Validate a `cdm_reference` object.
-#'
-#' @param cdm A `cdm_reference` object.
-#'
-#' @export
-validateCdmReference <- function(cdm) {
-  if (!("cdm_reference" %in% class(cdm))) {
-    displayErrorMessage("A cdm_reference object must have class cdm_reference.")
-  }
-  return(invisible(cdm))
 }
 
 #' Subset a cdm reference object
@@ -89,6 +92,26 @@ validateCdmReference <- function(cdm) {
 
   attr(tbl, "cdm_reference") <- x
   return(tbl)
+}
+
+#' @export
+`[[<-.cdm_reference` <- function(obj, name, value) {
+  x <- class(obj)
+  attr(value, "cdm_reference") <- NULL
+  obj <- unclass(obj)
+  obj[[name]] <- value
+  class(obj) <- x
+  return(obj)
+}
+
+#' @export
+`$<-.cdm_reference` <- function(obj, name, value) {
+  x <- class(obj)
+  attr(value, "cdm_reference") <- NULL
+  obj <- unclass(obj)
+  obj[[name]] <- value
+  class(obj) <- x
+  return(obj)
 }
 
 #' Print a CDM reference object

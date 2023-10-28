@@ -22,29 +22,3 @@ test_that("utilities", {
   expect_true(all(camelCase == ""))
 })
 
-test_that("temporary behaviour", {
-  expect_true(is.null(getOption("intermediate_as_temp")))
-  expect_true(is.null(getOption("cohort_as_temp")))
-
-  setTemporary()
-  expect_true(getOption("intermediate_as_temp") == TRUE)
-  expect_true(getOption("cohort_as_temp") == FALSE)
-
-  setTemporary(intermediateAsTemp = FALSE)
-  expect_true(getOption("intermediate_as_temp") == FALSE)
-  expect_true(getOption("cohort_as_temp") == FALSE)
-
-  setTemporary(cohortAsTemp = TRUE)
-  expect_true(getOption("intermediate_as_temp") == TRUE)
-  expect_true(getOption("cohort_as_temp") == TRUE)
-
-  setTemporary(intermediateAsTemp = FALSE, cohortAsTemp = TRUE)
-  expect_true(getOption("intermediate_as_temp") == FALSE)
-  expect_true(getOption("cohort_as_temp") == TRUE)
-
-})
-
-test_that("test asType", {
-  expect_warning(asType(1, "adfsgagd"))
-  expect_true(1 == asType(1, "float"))
-})

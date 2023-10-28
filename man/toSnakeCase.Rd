@@ -14,7 +14,7 @@ Convert a character to snake_case
 }
 \examples{
 \donttest{
-library(CDMUtilities)
+library(OMOPUtilities)
 toSnakeCase(c("foo bar", "fooBar", "FooBar", "foo_bar", "FOOBAR"))
 }
 

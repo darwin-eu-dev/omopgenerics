@@ -14,7 +14,7 @@ Convert a character to camelCase
 }
 \examples{
 \donttest{
-library(CDMUtilities)
+library(OMOPUtilities)
 toCamelCase(c("foo bar", "fooBar", "FooBar", "foo_bar", "FOOBAR"))
 }
 
