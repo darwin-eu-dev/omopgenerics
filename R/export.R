@@ -1,6 +1,6 @@
 # Copyright 2023 DARWIN EU (C)
 #
-# This file is part of OMOPUtilities
+# This file is part of OMOPGenerics
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -185,6 +185,8 @@ fileName <- function(x, path, namePrefix, studyId, nam) {
   paste0(
     namePrefix, nam, "_", paste0(unique(x$cdm_name), collapse = "_"), studyId,
     ".csv"
-  ) |>
-    toSnakeCase()
+  )
+
+  # TODO
+  # toSnakeCase()
 }

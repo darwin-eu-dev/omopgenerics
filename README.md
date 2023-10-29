@@ -1,1 +1,1 @@
-# OMOPUtilities
+# OMOPGenerics

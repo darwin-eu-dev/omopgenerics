@@ -1,14 +1,13 @@
-Package: OMOPUtilities
-Title: Methods, Utilities and Classes for the OMOP Common Data Model
-Version: 0.0.0.9000
+Package: OMOPGenerics
+Title: Methods and Classes for the OMOP Common Data Model
+Version: 0.0.1
 Authors@R: c(
     person(
         "Marti", "Catala", email = "marti.catalasabate@ndorms.ox.ac.uk", 
         role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3308-9905")
     ))
-Description: This package provides methods and utilities functionalities for the
-    OMOP Common Data Model based packages. This package also mantains the core
-    classes.
+Description: This package define classes and provide methods for the OMOP Common 
+    Data Model based packages.
 License: Apache License (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -17,15 +16,13 @@ Imports:
     cli,
     dplyr,
     glue,
-    here,
     methods,
     readr,
-    rlang,
-    zip
+    rlang
 Depends: 
     R (>= 4.1)
 Suggests: 
     testthat (>= 3.0.0)
-URL: https://darwin-eu-dev.github.io/OMOPUtilities/
+URL: https://darwin-eu-dev.github.io/OMOPGenerics/
 Config/testthat/edition: 3
 Config/testthat/parallel: true
