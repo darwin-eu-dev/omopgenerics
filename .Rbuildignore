@@ -5,3 +5,4 @@
 ^data-raw$
 _pkgdown.yml
 ^docs$
+^README\.Rmd$
