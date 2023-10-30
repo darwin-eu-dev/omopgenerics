@@ -187,6 +187,5 @@ fileName <- function(x, path, namePrefix, studyId, nam) {
     ".csv"
   )
 
-  # TODO
-  # toSnakeCase()
+  # TODO toSnakeCase()
 }
