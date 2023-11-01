@@ -17,9 +17,11 @@ Imports:
     dplyr,
     glue,
     here,
+    magrittr,
     methods,
     readr,
-    rlang
+    rlang,
+    snakecase
 Depends: 
     R (>= 4.1)
 Suggests: 
