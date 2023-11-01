@@ -64,6 +64,9 @@
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/participants.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/pipe.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/print.cdm_reference.html</loc>
   </url>
   <url>
@@ -71,5 +74,8 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/sub-sub-.cdm_reference.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/summarisedResult.html</loc>
   </url>
 </urlset>
