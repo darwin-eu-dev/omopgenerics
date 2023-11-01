@@ -4,13 +4,7 @@
 \alias{export}
 \title{Export an object.}
 \usage{
-export(
-  x,
-  path = here::here(),
-  namePrefix = "",
-  minCellCount = 5,
-  studyId = NULL
-)
+export(x, path, namePrefix = "", minCellCount = 5, studyId = NULL)
 }
 \arguments{
 \item{x}{Object to export.}
