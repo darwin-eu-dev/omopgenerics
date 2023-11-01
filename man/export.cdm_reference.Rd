@@ -4,13 +4,7 @@
 \alias{export.cdm_reference}
 \title{Export a cdm_reference}
 \usage{
-\method{export}{cdm_reference}(
-  x,
-  path = here::here(),
-  namePrefix = "",
-  minCellCount = 5,
-  studyId = NULL
-)
+\method{export}{cdm_reference}(x, path, namePrefix = "", minCellCount = 5, studyId = NULL)
 }
 \arguments{
 \item{x}{A cdm_reference object.}

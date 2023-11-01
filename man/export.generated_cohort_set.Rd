@@ -4,13 +4,7 @@
 \alias{export.generated_cohort_set}
 \title{Export a generated_cohort_set}
 \usage{
-\method{export}{generated_cohort_set}(
-  x,
-  path = here::here(),
-  namePrefix = "",
-  minCellCount = 5,
-  studyId = NULL
-)
+\method{export}{generated_cohort_set}(x, path, namePrefix = "", minCellCount = 5, studyId = NULL)
 }
 \arguments{
 \item{x}{A generated_cohort_set object.}

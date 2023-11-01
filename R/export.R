@@ -27,7 +27,7 @@
 #' @export
 #'
 export <- function(x,
-                   path = here::here(),
+                   path,
                    namePrefix = "",
                    minCellCount = 5,
                    studyId = NULL) {
@@ -47,7 +47,7 @@ export <- function(x,
 #' @export
 #'
 export.generated_cohort_set <- function(x,
-                                        path = here::here(),
+                                        path,
                                         namePrefix = "",
                                         minCellCount = 5,
                                         studyId = NULL) {
@@ -87,7 +87,7 @@ export.generated_cohort_set <- function(x,
 #' @export
 #'
 export.cdm_reference <- function(x,
-                                 path = here::here(),
+                                 path,
                                  namePrefix = "",
                                  minCellCount = 5,
                                  studyId = NULL) {
