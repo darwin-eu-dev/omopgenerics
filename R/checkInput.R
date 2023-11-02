@@ -196,3 +196,12 @@ addArgument <- function(functions) {
     }) |>
     dplyr::bind_rows()
 }
+
+#' @noRd
+checkSuppressCellCount <- function(suppressCellCount) {
+  checkmate::assertIntegerish(
+    suppressCellCount,
+    lower = 0, len = 1, any.missing = F
+  )
+}
+
