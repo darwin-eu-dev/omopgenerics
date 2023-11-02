@@ -120,7 +120,7 @@ validateComparedResult <- function(x) {
 
   # assert format of column is character
   checkColumnsFormat <- function(x, cols, format = "character") {
-    if (!all(lapply(x %>% dplyr::select(cols), typeof) %>% unlist() == format)) {
+    if (!all(lapply(x |> dplyr::select(cols), typeof) |> unlist() == format)) {
       cli::cli_abort(paste0(
         "`",
         paste0(cols, collapse = "`, `"),
@@ -134,7 +134,7 @@ validateComparedResult <- function(x) {
 
   # assert column cannot contain NA
   checkNA <- function(x, cols) {
-    if (!all(apply(x %>% dplyr::select(cols), 2, function(x)
+    if (!all(apply(x |> dplyr::select(cols), 2, function(x)
       is.na(x)) == FALSE)) {
       cli::cli_abort(paste0("`",
                             paste0(cols, collapse = "`, `"),
@@ -149,10 +149,10 @@ validateComparedResult <- function(x) {
 
   # assert snake case column
   checkSnake <- function(x, cols) {
-    x <- x %>% dplyr::select(cols) %>% unlist() %>% unique()
+    x <- x |> dplyr::select(cols) |> unlist() |> unique()
 
     y <-
-      x %>% snakecase::to_snake_case()
+      x |> snakecase::to_snake_case()
 
     if (!all(x == y)) {
       cli::cli_abort(paste0("`",
@@ -167,10 +167,10 @@ validateComparedResult <- function(x) {
 
   # assert sentence case column
   checkSentence <- function(x, cols) {
-    x <- x %>% dplyr::select(cols) %>% unlist() %>% unique()
+    x <- x |> dplyr::select(cols) |> unlist() |> unique()
 
     y <-
-      x %>% snakecase::to_sentence_case()
+      x |> snakecase::to_sentence_case()
 
     if (!all(x == y)) {
       cli::cli_abort(paste0(

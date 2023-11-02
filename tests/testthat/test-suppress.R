@@ -18,21 +18,18 @@ test_that("test supress methods", {
   obj <- OMOPGenerics::summarisedResult(x)
 
   result <- OMOPGenerics::suppress(obj,
-                                   minCellCount = 8,
-                                   groupCount = "number records")
+                                   minCellCount = 8)
 
   expect_true(all(result$estimate %in% c("<8", 10)))
 
   result <- OMOPGenerics::suppress(obj,
-                                   minCellCount = 3,
-                                   groupCount = "number records")
+                                   minCellCount = 3)
 
   expect_true(all(result$estimate %in% c(5, 10)))
 
 
   result <- OMOPGenerics::suppress(obj,
-                                   minCellCount = 20,
-                                   groupCount = "number records")
+                                   minCellCount = 20)
 
   expect_true(all(result$estimate %in% c("<20", "<20")))
 

@@ -39,9 +39,22 @@ test_that("bind generated_cohort_set", {
     ),
     cohortName = "cohort2"
   )
+  person <- dplyr::tibble(
+    person_id = c(1, 2), gender_concept_id = 8507, year_of_birth = 1970,
+    race_concept_id = 0, ethnicity_concept_id = 0
+  )
+  observation_period <- dplyr::tibble(
+    observation_period_id = c(1, 2), person_id = c(1, 2),
+    observation_period_start_date = as.Date("1970-01-01"),
+    observation_period_end_date = as.Date("2070-01-01"),
+    period_type_concept_id = 0
+  )
 
   cdm <- cdmReference(
-    cdmTables = list(cohort1 = cohort1, cohort2 = cohort2),
+    cdmTables = list(
+      person = person, observation_period = observation_period,
+      cohort1 = cohort1, cohort2 = cohort2
+    ),
     cdmName = "MOCK CDM",
     cdmVersion = "5.4"
   )
@@ -66,24 +79,24 @@ test_that("bind generated_cohort_set", {
   )))
 
   expect_identical(
-    cdm$new_cohort %>% dplyr::tally() %>% dplyr::pull(),
-    cdm$cohort1 %>% dplyr::tally() %>% dplyr::pull() +
-      cdm$cohort2 %>% dplyr::tally() %>% dplyr::pull()
+    cdm$new_cohort |> dplyr::tally() |> dplyr::pull(),
+    cdm$cohort1 |> dplyr::tally() |> dplyr::pull() +
+      cdm$cohort2 |> dplyr::tally() |> dplyr::pull()
   )
   expect_identical(
-    cohortSet(cdm$new_cohort) %>% dplyr::tally() %>% dplyr::pull(),
-    cohortSet(cdm$cohort1) %>% dplyr::tally() %>% dplyr::pull() +
-      cohortSet(cdm$cohort2) %>% dplyr::tally() %>% dplyr::pull()
+    cohortSet(cdm$new_cohort) |> dplyr::tally() |> dplyr::pull(),
+    cohortSet(cdm$cohort1) |> dplyr::tally() |> dplyr::pull() +
+      cohortSet(cdm$cohort2) |> dplyr::tally() |> dplyr::pull()
   )
   expect_identical(
-    cohortCount(cdm$new_cohort) %>% dplyr::tally() %>% dplyr::pull(),
-    cohortCount(cdm$cohort1) %>% dplyr::tally() %>% dplyr::pull() +
-      cohortCount(cdm$cohort2) %>% dplyr::tally() %>% dplyr::pull()
+    cohortCount(cdm$new_cohort) |> dplyr::tally() |> dplyr::pull(),
+    cohortCount(cdm$cohort1) |> dplyr::tally() |> dplyr::pull() +
+      cohortCount(cdm$cohort2) |> dplyr::tally() |> dplyr::pull()
   )
   expect_identical(
-    cohortAttrition(cdm$new_cohort) %>% dplyr::tally() %>% dplyr::pull(),
-    cohortAttrition(cdm$cohort1) %>% dplyr::tally() %>% dplyr::pull() +
-      cohortAttrition(cdm$cohort2) %>% dplyr::tally() %>% dplyr::pull()
+    cohortAttrition(cdm$new_cohort) |> dplyr::tally() |> dplyr::pull(),
+    cohortAttrition(cdm$cohort1) |> dplyr::tally() |> dplyr::pull() +
+      cohortAttrition(cdm$cohort2) |> dplyr::tally() |> dplyr::pull()
   )
 
   attr(cdm$cohort2, "cohort_set") <- attr(cdm$cohort2, "cohort_set") |>
@@ -99,24 +112,24 @@ test_that("bind generated_cohort_set", {
   )))
 
   expect_identical(
-    cdm$new_cohort %>% dplyr::tally() %>% dplyr::pull(),
-    cdm$cohort1 %>% dplyr::tally() %>% dplyr::pull() +
-      cdm$cohort2 %>% dplyr::tally() %>% dplyr::pull()
+    cdm$new_cohort |> dplyr::tally() |> dplyr::pull(),
+    cdm$cohort1 |> dplyr::tally() |> dplyr::pull() +
+      cdm$cohort2 |> dplyr::tally() |> dplyr::pull()
   )
   expect_identical(
-    cohortSet(cdm$new_cohort) %>% dplyr::tally() %>% dplyr::pull(),
-    cohortSet(cdm$cohort1) %>% dplyr::tally() %>% dplyr::pull() +
-      cohortSet(cdm$cohort2) %>% dplyr::tally() %>% dplyr::pull()
+    cohortSet(cdm$new_cohort) |> dplyr::tally() |> dplyr::pull(),
+    cohortSet(cdm$cohort1) |> dplyr::tally() |> dplyr::pull() +
+      cohortSet(cdm$cohort2) |> dplyr::tally() |> dplyr::pull()
   )
   expect_identical(
-    cohortCount(cdm$new_cohort) %>% dplyr::tally() %>% dplyr::pull(),
-    cohortCount(cdm$cohort1) %>% dplyr::tally() %>% dplyr::pull() +
-      cohortCount(cdm$cohort2) %>% dplyr::tally() %>% dplyr::pull()
+    cohortCount(cdm$new_cohort) |> dplyr::tally() |> dplyr::pull(),
+    cohortCount(cdm$cohort1) |> dplyr::tally() |> dplyr::pull() +
+      cohortCount(cdm$cohort2) |> dplyr::tally() |> dplyr::pull()
   )
   expect_identical(
-    cohortAttrition(cdm$new_cohort) %>% dplyr::tally() %>% dplyr::pull(),
-    cohortAttrition(cdm$cohort1) %>% dplyr::tally() %>% dplyr::pull() +
-      cohortAttrition(cdm$cohort2) %>% dplyr::tally() %>% dplyr::pull()
+    cohortAttrition(cdm$new_cohort) |> dplyr::tally() |> dplyr::pull(),
+    cohortAttrition(cdm$cohort1) |> dplyr::tally() |> dplyr::pull() +
+      cohortAttrition(cdm$cohort2) |> dplyr::tally() |> dplyr::pull()
   )
 
 })
