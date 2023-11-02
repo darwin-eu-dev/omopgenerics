@@ -20,7 +20,7 @@
 #'
 #' @return A `results_collection` object.
 #'
-#' @export
+#' @noRd
 #'
 resultCollection <- function(...) {
   result <- list(...)
@@ -50,7 +50,7 @@ validateResultCollection <- function(result) {
   return(result)
 }
 
-#' @export
+#' @noRd
 print.result_collection <- function(x, ...) {
   len <- length(x)
   types <- lapply(x, function(result) {

@@ -16,7 +16,7 @@ test_that("test SummarisedResult object", {
 
  expect_no_error(OMOPGenerics::summarisedResult(x = x))
 
- class <- x %>% OMOPGenerics::summarisedResult() %>% class()
+ class <- x |> OMOPGenerics::summarisedResult() |> class()
  expect_true(c("summarised_result") %in% class)
 
 
@@ -129,7 +129,7 @@ test_that("test comparedResult object", {
                          "estimate_type"= c("count","count"),
                          "estimate"= c("6","7"))
 
-  class <- x %>% OMOPGenerics::comparedResult() %>% class()
+  class <- x |> OMOPGenerics::comparedResult() |> class()
 
   expect_no_error(OMOPGenerics::comparedResult(x = x))
   expect_true(c("compared_result") %in% class)

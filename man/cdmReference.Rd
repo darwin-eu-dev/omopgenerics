@@ -7,8 +7,8 @@
 cdmReference(cdmTables, cdmName, cdmVersion)
 }
 \arguments{
-\item{cdmTables}{List of tables (tbl_sql, tbl or data.frame) that contains a
-reference to an OMOP Common data model.}
+\item{cdmTables}{List of tables that contains a reference to an OMOP Common
+Data Model.}
 
 \item{cdmName}{Name of the cdm.}
 

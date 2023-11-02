@@ -4,30 +4,12 @@
 \alias{suppress.summarised_result}
 \title{Function to suppress counts in summarised_result objects}
 \usage{
-\method{suppress}{summarised_result}(
-  result,
-  minCellCount = 5,
-  variable = "estimate",
-  estimateType = "count",
-  group = c("group_name", "group_level", "strata_name", "strata_level"),
-  groupCount = c("number subjects", "number records"),
-  linkEstimates = list(count = "percentage")
-)
+\method{suppress}{summarised_result}(result, minCellCount = 5)
 }
 \arguments{
 \item{result}{summarised_result object}
 
 \item{minCellCount}{Minimum count of records to report results.}
-
-\item{variable}{Columns to suppress counts.}
-
-\item{estimateType}{Types to suppress counts.}
-
-\item{group}{Columns to group by and suppress.}
-
-\item{groupCount}{Identifier of the group count.}
-
-\item{linkEstimates}{List of estimates to link.}
 }
 \value{
 Table with suppressed counts
