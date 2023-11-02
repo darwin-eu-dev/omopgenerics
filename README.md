@@ -22,7 +22,21 @@ install.packages("remotes")
 devtools::install_github("darwin-eu-dev/OMOPGenerics")
 ```
 
-## CDM Reference
+## Core classes and methods
+
+### CDM Reference
+
+A cdm reference is a single R object that represents OMOP CDM data. The
+tables in the cdm reference may be in a database, but a cdm reference
+may also contain OMOP CDM tables that are in dataframes/ tibbles or in
+arrow. In the latter case the cdm reference would typically be a subset
+of an original cdm reference that has been derived as part of a
+particular analysis.
+
+OMOPGenerics contains the class definition of a cdm reference and a
+dataframe implementation. For creating a cdm reference using a database,
+see the CDMConnector package
+(<https://darwin-eu.github.io/CDMConnector/>).
 
 ``` r
 OMOPGenerics::cdmReference
@@ -40,13 +54,38 @@ OMOPGenerics::cdmReference
 #> 
 #>   return(cdm)
 #> }
-#> <bytecode: 0x000002092a956e58>
+#> <bytecode: 0x000001e4c677fb08>
 #> <environment: namespace:OMOPGenerics>
 ```
 
-## Concept set
+When the export method is applied to a cdm reference, metadata about
+that cdm will be written to a csv. The csv contains the following
+columns
 
-## Generatred cohort set
+| Variable                               | Description |
+|----------------------------------------|-------------|
+| result_type                            |             |
+| cdm_name                               |             |
+| cdm_source_name                        |             |
+| cdm_description” = “source_description |             |
+| cdm_documentation_reference            |             |
+| cdm_version                            |             |
+| cdm_holder                             |             |
+| cdm_release_date                       |             |
+| vocabulary_version                     |             |
+| person_count                           |             |
+| observation_period_count               |             |
+| earliest_observation_period_start_date |             |
+| latest_observation_period_end_date     |             |
+| snapshot_date                          |             |
+
+export method ….
+
+### Concept set
+
+export method ….
+
+### Generatred cohort set
 
 ``` r
 OMOPGenerics::generatedCohortSet
@@ -56,12 +95,46 @@ OMOPGenerics::generatedCohortSet
 #>                                cohortName = "cohort") {
 #>   UseMethod("generatedCohortSet")
 #> }
-#> <bytecode: 0x000002092a9029c8>
+#> <bytecode: 0x000001e4c674a648>
 #> <environment: namespace:OMOPGenerics>
 ```
 
-## Summarised result
+bind method ….
 
-## Summarised result
+export method ….
 
-## Compared result
+### Summarised result
+
+``` r
+OMOPGenerics::summarisedResult
+#> function(x) {
+#> 
+#>   #inital input check
+#>   assertTibble(x)
+#> 
+#>   #constructer
+#>   x <- newSummarisedResult(x)
+#> 
+#> 
+#>   # validate
+#>   x <- validateSummariseResult(x)
+#> 
+#> 
+#> 
+#>   return(x)
+#> }
+#> <bytecode: 0x000001e4c6d9f838>
+#> <environment: namespace:OMOPGenerics>
+```
+
+bind method ….
+
+export method ….
+
+### Compared result
+
+bind method ….
+
+export method ….
+
+### Participants
