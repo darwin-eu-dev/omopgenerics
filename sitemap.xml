@@ -55,9 +55,6 @@
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/export.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/filterData.html</loc>
-  </url>
-  <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/generatedCohortSet.html</loc>
   </url>
   <url>
@@ -67,25 +64,10 @@
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/obscureGroups.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/obscureLinked.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/obscureRecords.html</loc>
-  </url>
-  <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/participants.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/pipe.html</loc>
-  </url>
-  <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/print.cdm_reference.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/resultCollection.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/sub-sub-.cdm_reference.html</loc>

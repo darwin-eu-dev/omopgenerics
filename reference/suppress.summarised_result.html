@@ -43,15 +43,7 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for summarised_result</span></span>
-<span><span class="fu"><a href="suppress.html">suppress</a></span><span class="op">(</span></span>
-<span>  <span class="va">result</span>,</span>
-<span>  minCellCount <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  variable <span class="op">=</span> <span class="st">"estimate"</span>,</span>
-<span>  estimateType <span class="op">=</span> <span class="st">"count"</span>,</span>
-<span>  group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"group_name"</span>, <span class="st">"group_level"</span>, <span class="st">"strata_name"</span>, <span class="st">"strata_level"</span><span class="op">)</span>,</span>
-<span>  groupCount <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"number subjects"</span>, <span class="st">"number records"</span><span class="op">)</span>,</span>
-<span>  linkEstimates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>count <span class="op">=</span> <span class="st">"percentage"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="suppress.html">suppress</a></span><span class="op">(</span><span class="va">result</span>, minCellCount <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -62,26 +54,6 @@
 
 <dt>minCellCount</dt>
 <dd><p>Minimum count of records to report results.</p></dd>
-
-
-<dt>variable</dt>
-<dd><p>Columns to suppress counts.</p></dd>
-
-
-<dt>estimateType</dt>
-<dd><p>Types to suppress counts.</p></dd>
-
-
-<dt>group</dt>
-<dd><p>Columns to group by and suppress.</p></dd>
-
-
-<dt>groupCount</dt>
-<dd><p>Identifier of the group count.</p></dd>
-
-
-<dt>linkEstimates</dt>
-<dd><p>List of estimates to link.</p></dd>
 
 </dl></div>
     <div class="section level2">
