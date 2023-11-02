@@ -66,8 +66,13 @@
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"darwin-eu-dev/OMOPGenerics"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="cdm-reference">CDM Reference<a class="anchor" aria-label="anchor" href="#cdm-reference"></a>
+<h2 id="core-classes-and-methods">Core classes and methods<a class="anchor" aria-label="anchor" href="#core-classes-and-methods"></a>
 </h2>
+<div class="section level3">
+<h3 id="cdm-reference">CDM Reference<a class="anchor" aria-label="anchor" href="#cdm-reference"></a>
+</h3>
+<p>A cdm reference is a single R object that represents OMOP CDM data. The tables in the cdm reference may be in a database, but a cdm reference may also contain OMOP CDM tables that are in dataframes/ tibbles or in arrow. In the latter case the cdm reference would typically be a subset of an original cdm reference that has been derived as part of a particular analysis.</p>
+<p>OMOPGenerics contains the class definition of a cdm reference and a dataframe implementation. For creating a cdm reference using a database, see the CDMConnector package (<a href="https://darwin-eu.github.io/CDMConnector/" class="external-link uri">https://darwin-eu.github.io/CDMConnector/</a>).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">OMOPGenerics</span><span class="fu">::</span><span class="va"><a href="reference/cdmReference.html">cdmReference</a></span></span>
 <span><span class="co">#&gt; function(cdmTables, cdmName, cdmVersion) {</span></span>
@@ -84,16 +89,83 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   return(cdm)</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x000002092a956e58&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x000001e4c677fb08&gt;</span></span>
 <span><span class="co">#&gt; &lt;environment: namespace:OMOPGenerics&gt;</span></span></code></pre></div>
+<p>When the export method is applied to a cdm reference, metadata about that cdm will be written to a csv. The csv contains the following columns</p>
+<table class="table">
+<thead><tr class="header">
+<th>Variable</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>result_type</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>cdm_name</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>cdm_source_name</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>cdm_description” = “source_description</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>cdm_documentation_reference</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>cdm_version</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>cdm_holder</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>cdm_release_date</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>vocabulary_version</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>person_count</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>observation_period_count</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>earliest_observation_period_start_date</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>latest_observation_period_end_date</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>snapshot_date</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>export method ….</p>
 </div>
-<div class="section level2">
-<h2 id="concept-set">Concept set<a class="anchor" aria-label="anchor" href="#concept-set"></a>
-</h2>
+<div class="section level3">
+<h3 id="concept-set">Concept set<a class="anchor" aria-label="anchor" href="#concept-set"></a>
+</h3>
+<p>export method ….</p>
 </div>
-<div class="section level2">
-<h2 id="generatred-cohort-set">Generatred cohort set<a class="anchor" aria-label="anchor" href="#generatred-cohort-set"></a>
-</h2>
+<div class="section level3">
+<h3 id="generatred-cohort-set">Generatred cohort set<a class="anchor" aria-label="anchor" href="#generatred-cohort-set"></a>
+</h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">OMOPGenerics</span><span class="fu">::</span><span class="va"><a href="reference/generatedCohortSet.html">generatedCohortSet</a></span></span>
 <span><span class="co">#&gt; function(cohortTable,</span></span>
@@ -102,20 +174,47 @@
 <span><span class="co">#&gt;                                cohortName = "cohort") {</span></span>
 <span><span class="co">#&gt;   UseMethod("generatedCohortSet")</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x000002092a9029c8&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x000001e4c674a648&gt;</span></span>
 <span><span class="co">#&gt; &lt;environment: namespace:OMOPGenerics&gt;</span></span></code></pre></div>
+<p>bind method ….</p>
+<p>export method ….</p>
 </div>
-<div class="section level2">
-<h2 id="summarised-result">Summarised result<a class="anchor" aria-label="anchor" href="#summarised-result"></a>
-</h2>
+<div class="section level3">
+<h3 id="summarised-result">Summarised result<a class="anchor" aria-label="anchor" href="#summarised-result"></a>
+</h3>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">OMOPGenerics</span><span class="fu">::</span><span class="va"><a href="reference/summarisedResult.html">summarisedResult</a></span></span>
+<span><span class="co">#&gt; function(x) {</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   #inital input check</span></span>
+<span><span class="co">#&gt;   assertTibble(x)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   #constructer</span></span>
+<span><span class="co">#&gt;   x &lt;- newSummarisedResult(x)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   # validate</span></span>
+<span><span class="co">#&gt;   x &lt;- validateSummariseResult(x)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   return(x)</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x000001e4c6d9f838&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: namespace:OMOPGenerics&gt;</span></span></code></pre></div>
+<p>bind method ….</p>
+<p>export method ….</p>
 </div>
-<div class="section level2">
-<h2 id="summarised-result-1">Summarised result<a class="anchor" aria-label="anchor" href="#summarised-result-1"></a>
-</h2>
+<div class="section level3">
+<h3 id="compared-result">Compared result<a class="anchor" aria-label="anchor" href="#compared-result"></a>
+</h3>
+<p>bind method ….</p>
+<p>export method ….</p>
 </div>
-<div class="section level2">
-<h2 id="compared-result">Compared result<a class="anchor" aria-label="anchor" href="#compared-result"></a>
-</h2>
+<div class="section level3">
+<h3 id="participants">Participants<a class="anchor" aria-label="anchor" href="#participants"></a>
+</h3>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
