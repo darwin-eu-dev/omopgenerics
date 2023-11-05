@@ -16,21 +16,27 @@
 
 #' `cdm_reference` objects constructor
 #'
-#' @param cdmTables List of tables that contains a reference to an OMOP Common
-#' Data Model.
+#' @param cdmTables List of standard tables in the OMOP Common Data Model.
+#' @param cohortTables List of tables that contains `generated_cohort_set`
+#' objects.
+#' @param achillesTables List of tables that contain the achilles references.
 #' @param cdmName Name of the cdm.
-#' @param cdmVersion Version of the cdm ("5.3" or "5.4").
 #'
 #' @return A `cdm_reference` object.
 #'
 #' @export
 #'
-cdmReference <- function(cdmTables, cdmName, cdmVersion) {
+cdmReference <- function(cdmTables, cohortTables, achillesTables, cdmName) {
 
   # inputs
   assertList(cdmTables, named = TRUE, class = "tbl")
+  assertList(cohortTables, named = TRUE, class = "tbl")
+  assertList(achillesTables, named = TRUE, class = "tbl")
   assertChoice(cdmVersion, c("5.3", "5.4"), length = 1)
   assertCharacter(cdmName, length = 1)
+
+  # get cdm version
+  cdmVersion <- getVersion(cdmTables)
 
   # constructor
   cdm <- newCdmReference(
@@ -43,6 +49,16 @@ cdmReference <- function(cdmTables, cdmName, cdmVersion) {
   return(cdm)
 }
 
+getVersion <- function(cdmTables) {
+  version <- tryCatch(
+    {
+    },
+    error = function(e) {
+      return("5.3")
+    }
+  )
+  return(version)
+}
 newCdmReference <- function(cdmTables, cdmName, cdmVersion) {
   attr(cdmTables, "cdm_name") <- cdmName
   attr(cdmTables, "cdm_version") <- cdmVersion
