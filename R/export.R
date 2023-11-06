@@ -20,7 +20,7 @@
 #' @param path Path where to export files.
 #' @param namePrefix Prefix for the files that are going to be saved.
 #' @param minCellCount Minimum number of counts to be exported.
-#' @param studyId Identifier to be added as `study_id`.
+#' @param resultId Unique identifier for your set of results.
 #'
 #' @return Exported object in tbl format.
 #'
@@ -30,7 +30,7 @@ export <- function(x,
                    path,
                    namePrefix = "",
                    minCellCount = 5,
-                   studyId = NULL) {
+                   resultId = NULL) {
   UseMethod("export")
 }
 
@@ -40,7 +40,7 @@ export <- function(x,
 #' @param path Path where to export files.
 #' @param namePrefix Prefix for the files that are going to be saved.
 #' @param minCellCount Minimum number of counts to be exported.
-#' @param studyId Identifier to be added as `study_id`.
+#' @param resultId Unique identifier for your set of results.
 #'
 #' @return Exported generated_cohort_set
 #'
@@ -50,7 +50,7 @@ export.generated_cohort_set <- function(x,
                                         path,
                                         namePrefix = "",
                                         minCellCount = 5,
-                                        studyId = NULL) {
+                                        resultId = NULL) {
   cohortSet(x) |>
     dplyr::inner_join(cohortAttrition(x), by = "cohort_definition_id") |>
     dplyr::arrange(.data$cohort_definition_id, .data$reason_id) |>
@@ -70,8 +70,8 @@ export.generated_cohort_set <- function(x,
         .x < .env$minCellCount, paste0("<", .env$minCellCount), as.character(.x)
       )
     )) |>
-    addStudyId(studyId) |>
-    saveFile(path, namePrefix, studyId, "cohort_details")
+    addResultId(resultId) |>
+    saveFile(path, namePrefix, resultId, "cohort_details")
 }
 
 #' Export a cdm_reference
@@ -80,7 +80,7 @@ export.generated_cohort_set <- function(x,
 #' @param path Path where to export files.
 #' @param namePrefix Prefix for the files that are going to be saved.
 #' @param minCellCount Minimum number of counts to be exported.
-#' @param studyId Identifier to be added as `study_id`.
+#' @param resultId Unique identifier for your set of results.
 #'
 #' @return Exported cdm_reference.
 #'
@@ -90,31 +90,31 @@ export.cdm_reference <- function(x,
                                  path,
                                  namePrefix = "",
                                  minCellCount = 5,
-                                 studyId = NULL) {
+                                 resultId = NULL) {
   person_count <- x[["person"]] |> dplyr::tally() |> dplyr::pull("n")
-  observation_period_count <- x[["observation_period"]] |>
-    dplyr::tally() |>
-    dplyr::pull("n")
-  observation_period_range <- x[["observation_period"]] |>
+  observation_period_info <- x[["observation_period"]] |>
     dplyr::summarise(
+      count = dplyr::n(),
       max = max(.data$observation_period_end_date, na.rm = TRUE),
       min = min(.data$observation_period_start_date, na.rm = TRUE)
     ) |>
     dplyr::collect()
   snapshot_date <- as.character(format(Sys.Date(), "%Y-%m-%d"))
 
-  vocab_version <- x[["vocabulary"]] |>
-    dplyr::filter(.data$vocabulary_id == "None") |>
-    dplyr::pull(.data$vocabulary_version)
+  vocab_version <- getVocabularyVersion(x)
 
-  if (length(vocab_version) == 0) {
-    vocab_version <- NA_character_
+  if (person_count < minCellCount) {
+    person_count <- paste0("<", minCellCount)
   }
 
-  cdm_source_name <- x$cdm_source |> dplyr::pull("cdm_source_name")
+  if (observation_period_info$count < minCellCount) {
+    observation_period_info <- dplyr::tibble(
+      count = paste0("<", minCellCount), max = NA, min = NA
+    )
+  }
 
   cdm_source <- x[["cdm_source"]] |> dplyr::collect()
-  if (nrow(cdm_source) == 0) {
+  if (is.null(cdm_source) || nrow(cdm_source) == 0) {
     cdm_source <- dplyr::tibble(
       vocabulary_version = vocab_version,
       cdm_source_name = "",
@@ -134,10 +134,10 @@ export.cdm_reference <- function(x,
         .env$vocab_version, .data$vocabulary_version
       ),
       person_count = .env$person_count,
-      observation_period_count = .env$observation_period_count,
+      observation_period_count = .env$observation_period_info$count,
       earliest_observation_period_start_date =
-        .env$observation_period_range$min,
-      latest_observation_period_end_date = .env$observation_period_range$max,
+        .env$observation_period_info$min,
+      latest_observation_period_end_date = .env$observation_period_info$max,
       snapshot_date = .env$snapshot_date
     ) |>
     dplyr::select(
@@ -157,35 +157,68 @@ export.cdm_reference <- function(x,
       "snapshot_date"
     ) |>
     dplyr::mutate_all(as.character) |>
-    addStudyId(studyId) |>
-    saveFile(path, namePrefix, studyId, "cdm_snapshot")
+    addResultId(resultId) |>
+    saveFile(path, namePrefix, resultId, "cdm_snapshot")
 }
 
-addStudyId <- function(x, studyId) {
-  if (!is.null(studyId)) {
+#' Export a summarised_result object
+#'
+#' @param x A summarised_result object.
+#' @param path Path where to export files.
+#' @param namePrefix Prefix for the files that are going to be saved.
+#' @param minCellCount Minimum number of counts to be exported.
+#' @param resultId Unique identifier for your set of results.
+#'
+#' @return Exported summarised_result.
+#'
+#' @export
+#'
+export.summarised_result <- function(x,
+                                     path,
+                                     namePrefix = "",
+                                     minCellCount = 5,
+                                     resultId = NULL) {
+  name <- attr(x, "summarised_result_name")
+  suppress(x, minCellCount = minCellCount)
+    addResultId(resultId) |>
+    saveFile(path, namePrefix, resultId, name)
+}
+
+addResultId <- function(x, resultId) {
+  if (!is.null(resultId)) {
     x <- x |>
-      dplyr::mutate("study_id" = .env$studyId) |>
-      dplyr::relocate("study_id")
+      dplyr::mutate("result_id" = .env$resultId) |>
+      dplyr::relocate("result_id")
   }
   return(x)
 }
-saveFile <- function(x, path, namePrefix, studyId, nam) {
+saveFile <- function(x, path, namePrefix, resultId, nam) {
   readr::write_csv(
-    x = x, file = file.path(path, fileName(x, path, namePrefix, studyId, nam))
+    x = x, file = file.path(path, fileName(x, path, namePrefix, resultId, nam))
   )
 }
-fileName <- function(x, path, namePrefix, studyId, nam) {
+fileName <- function(x, path, namePrefix, resultId, nam) {
   n <- nchar(namePrefix)
   if (n > 0 & substr(namePrefix, n, n) != "_") {
     namePrefix <- paste0(namePrefix, "_")
   }
-  if (!is.null(studyId)) {
-    studyId <- paste0("_", studyId)
+  if (!is.null(resultId)) {
+    resultId <- paste0("_", resultId)
   }
   paste0(
-    namePrefix, nam, "_", paste0(unique(x$cdm_name), collapse = "_"), studyId,
+    namePrefix, nam, "_", paste0(unique(x$cdm_name), collapse = "_"), resultId,
     ".csv"
   )
-
-  # TODO toSnakeCase()
+}
+getVocabularyVersion <- function(x) {
+  vocabVersion <- NULL
+  if ("vocabulary_version" %in% colnames(x[["vocabulary"]])) {
+    vocabVersion <- x[["vocabulary"]] |>
+      dplyr::filter(.data$vocabulary_id == "None") |>
+      dplyr::pull(.data$vocabulary_version)
+  }
+  if (length(vocabVersion) == 0) {
+    vocabVersion <- NA_character_
+  }
+  return(vocabVersion)
 }

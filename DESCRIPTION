@@ -19,7 +19,8 @@ Imports:
     methods,
     readr,
     rlang,
-    snakecase
+    snakecase,
+    stringr
 Depends: 
     R (>= 4.1)
 Suggests: 
