@@ -16,9 +16,6 @@
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/OMOPGenerics-package.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/bind.generated_cohort_set.html</loc>
-  </url>
-  <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/bind.html</loc>
   </url>
   <url>
@@ -53,6 +50,9 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/export.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/export.summarised_result.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/generatedCohortSet.html</loc>
