@@ -140,30 +140,30 @@ checkColumnPairs <- function(x, pairs, sep, case) {
   for (k in seq_along(pairs)) {
     group <- names(pairs)[k]
     level <- unname(pairs)[k]
-    distinctPairs <- x %>%
+    distinctPairs <- x |>
       dplyr::select(
         "group" = dplyr::all_of(group), "level" = dplyr::all_of(level)
-      ) %>%
-      dplyr::distinct() %>%
+      ) |>
+      dplyr::distinct() |>
       dplyr::mutate(dplyr::across(
         c("group", "level"),
         list(elements = ~ stringr::str_split(.x, pattern = sep))
-      )) %>%
+      )) |>
       dplyr::mutate(dplyr::across(
         dplyr::ends_with("elements"),
         list(length = ~ lengths(.x))
       ))
-    notMatch <- distinctPairs %>%
+    notMatch <- distinctPairs |>
       dplyr::filter(
         .data$group_elements_length != .data$level_elements_length
       )
     if (nrow(notMatch) > 0) {
-      unmatch <- notMatch %>%
-        utils::head(5) %>%
-        dplyr::select("group", "level") %>%
+      unmatch <- notMatch |>
+        utils::head(5) |>
+        dplyr::select("group", "level") |>
         dplyr::mutate("group_and_level" = paste0(
           .env$group, ": ", .data$group, "; ", .env$level, ": ", .data$level
-        )) %>%
+        )) |>
         dplyr::pull("group_and_level")
       names(unmatch) <- rep("*", length(unmatch))
       mes <- "group: {group} and level {level} does not match in number of
@@ -171,11 +171,11 @@ checkColumnPairs <- function(x, pairs, sep, case) {
       cli::cli_warn(c(mes, unmatch))
     }
 
-    groupCase <- distinctPairs[["group_elements"]] %>% unlist() %>% unique()
+    groupCase <- distinctPairs[["group_elements"]] |> unlist() |> unique()
     if (!all(isCase(groupCase, case))) {
       cli::cli_warn("elements in {group} are not {case} case")
     }
-    levelCase <- distinctPairs[["level_elements"]] %>% unlist() %>% unique()
+    levelCase <- distinctPairs[["level_elements"]] |> unlist() |> unique()
     if (!all(isCase(levelCase, case))) {
       cli::cli_warn("elements in {level} are not {case} case")
     }

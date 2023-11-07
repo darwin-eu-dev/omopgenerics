@@ -119,7 +119,7 @@ validateGeneratedCohortSet <- function(cohort) {
   cohort_attrition <- attr(cohort, "cohort_attrition")
 
   # assert columns
-  checkColumns <- function(x, cols, nam) {
+  checkColumnsCohort <- function(x, cols, nam) {
     if (!all(cols %in% colnames(x))) {
       cli::cli_abort(paste0(
         "`", paste0(cols, collapse = "`, `"), "` must be column names of ",
@@ -128,7 +128,7 @@ validateGeneratedCohortSet <- function(cohort) {
     }
     invisible(NULL)
   }
-  checkColumns(
+  checkColumnsCohort(
     cohort,
     c(
       "cohort_definition_id", "subject_id", "cohort_start_date",
@@ -136,10 +136,10 @@ validateGeneratedCohortSet <- function(cohort) {
     ),
     "the cohort"
   )
-  checkColumns(
+  checkColumnsCohort(
     cohort_set, c("cohort_definition_id", "cohort_name"), "the cohort_set"
   )
-  checkColumns(
+  checkColumnsCohort(
     cohort_attrition,
     c(
       "cohort_definition_id", "number_records", "number_subjects", "reason_id",
@@ -291,11 +291,11 @@ cohortCount <- function(cohort) {
   attr(cohort, "cohort_attrition") |>
     dplyr::group_by(.data$cohort_definition_id) |>
     dplyr::filter(.data$reason_id == max(.data$reason_id, na.rm = TRUE)) |>
+    dplyr::ungroup() |>
     dplyr::select(
       "cohort_definition_id", "number_records", "number_subjects"
     ) |>
     dplyr::collect() |>
-    dplyr::ungroup() |>
     dplyr::arrange(.data$cohort_definition_id)
 }
 
