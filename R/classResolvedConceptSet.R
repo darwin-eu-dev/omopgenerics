@@ -23,7 +23,7 @@
 #'
 #' @export
 #'
-resolvedConceptSet <- function(cohortTable) {
+resolvedConceptSet <- function(codelist) {
   UseMethod("resolvedConceptSet")
 }
 

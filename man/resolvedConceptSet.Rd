@@ -4,7 +4,7 @@
 \alias{resolvedConceptSet}
 \title{\code{resolved_concept_set} objects constructor.}
 \usage{
-resolvedConceptSet(cohortTable)
+resolvedConceptSet(codelist)
 }
 \arguments{
 \item{codelist}{List with each item containing either a vector of concept IDs
