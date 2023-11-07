@@ -35,6 +35,11 @@ generatedCohortSet <- function(cohortTable,
   UseMethod("generatedCohortSet")
 }
 
+# column names
+# same ids
+#
+
+
 #' `generated_cohort_set` objects constructor.
 #'
 #' @param cohortTable Table with at least: cohort_definition_id, subject_id,
@@ -155,9 +160,9 @@ validateGeneratedCohortSet <- function(cohort) {
   if (!equal(clCohort, clCohortSet, clCohortAttrition)) {
     cli::cli_abort(c(
       "class of cohort objects must be the same:",
-      paste0("** class(cohort) = ", clCohort),
-      paste0("** class(cohort_set) = ", clCohortSet),
-      paste0("** class(cohort_attrition) = ", clCohortAttrition)
+      "*" = "class(cohort) = {clCohort}",
+      "*" = "class(cohort_set) = {clCohortSet}",
+      "*" = "class(cohort_attrition) = {clCohortAttrition}"
     ))
   }
 
@@ -168,16 +173,11 @@ validateGeneratedCohortSet <- function(cohort) {
   if (!equal(cdiCohort, cdiCohortSet, cdiCohortAttrition)) {
     cli::cli_abort(c(
       "Present cohort_definition_id must be the same in all elements",
-      paste0("** cohort: ", cdiCohort),
-      paste0("** cohort_set: ", cdiCohortSet),
-      paste0("** cohort_attrition: ", cdiCohortAttrition)
+      "*" = "cohort: {cdiCohort}",
+      "*" = "cohort_set: {cdiCohortSet}",
+      "*" = "cohort_attrition: {cdiCohortAttrition}"
     ))
   }
-
-  # TODO
-  # validate cohort overlap?
-  # in observation?
-  # column types
 
   # make correct order
   cohort <- cohort |>
