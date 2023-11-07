@@ -113,17 +113,32 @@ export.cdm_reference <- function(x,
     )
   }
 
-  cdm_source <- x[["cdm_source"]] |> dplyr::collect()
-  if (is.null(cdm_source) || nrow(cdm_source) == 0) {
-    cdm_source <- dplyr::tibble(
-      vocabulary_version = vocab_version,
-      cdm_source_name = "",
-      cdm_holder = "",
-      cdm_release_date = "",
-      cdm_version = attr(x, "cdm_version"),
-      source_description = "",
-      source_documentation_reference = ""
-    )
+  # get cdm source
+  defCdmSource <- dplyr::tibble(
+    vocabulary_version = vocab_version,
+    cdm_source_name = "",
+    cdm_holder = "",
+    cdm_release_date = "",
+    cdm_version = attr(x, "cdm_version"),
+    source_description = "",
+    source_documentation_reference = ""
+  )
+  cdm_source <- tryCatch({
+    cdm_source <- x[["cdm_source"]] |>dplyr::collect()
+    if (nrow(cdm_source) != 1) {defCdmSource} else {cdm_source}
+    },
+    error = function(e) {
+      defCdmSource
+    }
+  )
+
+  if (!"vocabulary_version" %in% colnames(cdm_source)) {
+    cdm_source <- cdm_source |>
+      dplyr::mutate("vocabulary_version" = .env$vocab_version)
+  }
+  if (!"cdm_version" %in% colnames(cdm_source)) {
+    cdm_source <- cdm_source |>
+      dplyr::mutate("cdm_version" = attr(x, "cdm_version"))
   }
 
   cdm_source |>
