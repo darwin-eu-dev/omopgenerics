@@ -207,11 +207,7 @@ cdmName <- function(cdm) {
 
 #' @export
 `$<-.cdm_reference` <- function(obj, name, value) {
-  x <- class(obj)
-  attr(value, "cdm_reference") <- NULL
-  obj <- unclass(obj)
   obj[[name]] <- value
-  class(obj) <- x
   return(obj)
 }
 

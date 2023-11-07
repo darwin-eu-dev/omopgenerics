@@ -49,13 +49,13 @@ test_that("test cdm_reference", {
     cdmTables = cdmUpper, cohortTables = list(), cdmName = "mock"
   ))
 
-  cdmTables$person <- cdmTables$person %>%
+  cdmTables$person <- cdmTables$person |>
     dplyr::rename("PERSON_ID" = "person_id")
   expect_error(cdmReference(
     cdmTables = cdmTables, cohortTables = list(), cdmName = "mock"
   ))
 
-  cdmTables$person <- cdmTables$person %>%
+  cdmTables$person <- cdmTables$person |>
     dplyr::select(-"PERSON_ID")
   expect_error(cdmReference(
     cdmTables = cdmTables, cohortTables = list(), cdmName = "mock"

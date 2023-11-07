@@ -67,7 +67,9 @@ export.generated_cohort_set <- function(x,
       c("number_subjects", "number_records", "excluded_subjects",
         "excluded_records"),
       ~ dplyr::if_else(
-        .x < .env$minCellCount, paste0("<", .env$minCellCount), as.character(.x)
+        .x < .env$minCellCount & .x > 0,
+        paste0("<", .env$minCellCount),
+        as.character(.x)
       )
     )) |>
     addResultId(resultId) |>
@@ -113,17 +115,32 @@ export.cdm_reference <- function(x,
     )
   }
 
-  cdm_source <- x[["cdm_source"]] |> dplyr::collect()
-  if (is.null(cdm_source) || nrow(cdm_source) == 0) {
-    cdm_source <- dplyr::tibble(
-      vocabulary_version = vocab_version,
-      cdm_source_name = "",
-      cdm_holder = "",
-      cdm_release_date = "",
-      cdm_version = attr(x, "cdm_version"),
-      source_description = "",
-      source_documentation_reference = ""
-    )
+  # get cdm source
+  defCdmSource <- dplyr::tibble(
+    vocabulary_version = vocab_version,
+    cdm_source_name = "",
+    cdm_holder = "",
+    cdm_release_date = "",
+    cdm_version = attr(x, "cdm_version"),
+    source_description = "",
+    source_documentation_reference = ""
+  )
+  cdm_source <- tryCatch({
+    cdm_source <- x[["cdm_source"]] |>dplyr::collect()
+    if (nrow(cdm_source) != 1) {defCdmSource} else {cdm_source}
+    },
+    error = function(e) {
+      defCdmSource
+    }
+  )
+
+  if (!"vocabulary_version" %in% colnames(cdm_source)) {
+    cdm_source <- cdm_source |>
+      dplyr::mutate("vocabulary_version" = .env$vocab_version)
+  }
+  if (!"cdm_version" %in% colnames(cdm_source)) {
+    cdm_source <- cdm_source |>
+      dplyr::mutate("cdm_version" = attr(x, "cdm_version"))
   }
 
   cdm_source |>
@@ -179,7 +196,7 @@ export.summarised_result <- function(x,
                                      minCellCount = 5,
                                      resultId = NULL) {
   name <- attr(x, "summarised_result_name")
-  suppress(x, minCellCount = minCellCount)
+  suppress(x, minCellCount = minCellCount) |>
     addResultId(resultId) |>
     saveFile(path, namePrefix, resultId, name)
 }
