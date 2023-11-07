@@ -74,7 +74,7 @@ test_that("test SummarisedResult object", {
 
   # check NA
   x <- dplyr::tibble(
-    "cdm_name" = NA,
+    "cdm_name" = as.character(NA),
     "result_type" = "Summarised characteristics",
     "package" = "patientProfiles",
     "package_version" = "0.4.0",
@@ -89,4 +89,22 @@ test_that("test SummarisedResult object", {
     "estimate" = "5"
   )
   expect_error(summarisedResult(x = x))
+
+  # check wrong case
+  x <- dplyr::tibble(
+    "cdm_name" = "mock",
+    "result_type" = "Summarised characteristics",
+    "package" = "patientProfiles",
+    "package_version" = "0.4.0",
+    "group_name" = "sex and cohort_name",
+    "group_level" = "male",
+    "strata_name" = "sex",
+    "strata_level" = "male and cohort1",
+    "variable" = "age_group",
+    "variable_level" = "10 to 50",
+    "variable_type" = "date",
+    "estimate_type" = "count",
+    "estimate" = "5"
+  )
+  expect_warning(expect_warning(summarisedResult(x = x)))
 })

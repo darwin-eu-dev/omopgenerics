@@ -166,7 +166,7 @@ checkColumnPairs <- function(x, pairs, sep, case) {
         )) |>
         dplyr::pull("group_and_level")
       names(unmatch) <- rep("*", length(unmatch))
-      mes <- "group: {group} and level {level} does not match in number of
+      mes <- "group: `{group}` and level: `{level}` does not match in number of
       arguments, first 5 unmatch:"
       cli::cli_warn(c(mes, unmatch))
     }
