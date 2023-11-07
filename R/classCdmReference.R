@@ -16,25 +16,31 @@
 
 #' `cdm_reference` objects constructor
 #'
-#' @param cdmTables List of tables that contains a reference to an OMOP Common
-#' Data Model.
+#' @param cdmTables List of standard tables in the OMOP Common Data Model.
+#' @param cohortTables List of tables that contains `generated_cohort_set`
+#' objects.
 #' @param cdmName Name of the cdm.
-#' @param cdmVersion Version of the cdm ("5.3" or "5.4").
 #'
 #' @return A `cdm_reference` object.
 #'
 #' @export
 #'
-cdmReference <- function(cdmTables, cdmName, cdmVersion) {
+cdmReference <- function(cdmTables, cohortTables, cdmName) {
 
   # inputs
   assertList(cdmTables, named = TRUE, class = "tbl")
-  assertChoice(cdmVersion, c("5.3", "5.4"), length = 1)
+  assertList(
+    cohortTables, named = TRUE, class = c("generated_cohort_set", "tbl")
+  )
   assertCharacter(cdmName, length = 1)
+
+  # get cdm version
+  cdmVersion <- getVersion(cdmTables)
 
   # constructor
   cdm <- newCdmReference(
-    cdmTables = cdmTables, cdmName = cdmName, cdmVersion = cdmVersion
+    cdmTables = cdmTables, cohortTables = cohortTables, cdmName = cdmName,
+    cdmVersion = cdmVersion
   )
 
   # validate
@@ -43,11 +49,19 @@ cdmReference <- function(cdmTables, cdmName, cdmVersion) {
   return(cdm)
 }
 
-newCdmReference <- function(cdmTables, cdmName, cdmVersion) {
-  attr(cdmTables, "cdm_name") <- cdmName
-  attr(cdmTables, "cdm_version") <- cdmVersion
-  class(cdmTables) <- "cdm_reference"
-  return(cdmTables)
+getVersion <- function(cdm) {
+  version <- tryCatch(
+    cdm[["cdm_source"]] |> dplyr::pull("cdm_version"),
+    error = function(e) {"5.3"}
+  )
+  return(version)
+}
+newCdmReference <- function(cdmTables, cohortTables, cdmName, cdmVersion) {
+  cdm <- c(cdmTables, cohortTables)
+  attr(cdm, "cdm_name") <- cdmName
+  attr(cdm, "cdm_version") <- cdmVersion
+  class(cdm) <- "cdm_reference"
+  return(cdm)
 }
 validateCdmReference <- function(cdm) {
   # assert class
@@ -78,10 +92,9 @@ validateCdmReference <- function(cdm) {
   }
 
   cdmTables <- fieldsTables$cdmTableName |> unique()
-  cdmTables <- cdmTables[cdmTables %in% names(cdm)]
 
   # assertions for all the cdm tables
-  for (nm in cdmTables) {
+  for (nm in names(cdm)) {
     # assert lowercase columns
     cols <- colnames(cdm[[nm]])
     x <- cols[cols != tolower(cols)]
@@ -91,30 +104,19 @@ validateCdmReference <- function(cdm) {
       )
     }
 
-    # assert columnames match version
-    specifications <- fieldsTables |>
-      dplyr::filter(
-        grepl(.env$cdmVersion, .data$cdm_version) &
-          .data$cdmTableName == .env$nm
-      ) |>
-      dplyr::select(
-        "colname" = "cdmFieldName", "required" = "isRequired",
-        "type" = "cdmDatatype"
-      )
-    checkColumns(cdm, nm, specifications)
-
-  }
-
-  # assertions for cohort tables
-  cohortTables <- names(cdm)[!names(cdm) %in% cdmTables]
-  x <- character()
-  for (nm in cohortTables) {
-    if (!"generated_cohort_set" %in% class(cdm[[nm]])) {
-      x <- c(x, nm)
+    if (nm %in% cdmTables) {
+      # assert columnames match version
+      specifications <- fieldsTables |>
+        dplyr::filter(
+          grepl(.env$cdmVersion, .data$cdm_version) &
+            .data$cdmTableName == .env$nm
+        ) |>
+        dplyr::select(
+          "colname" = "cdmFieldName", "required" = "isRequired",
+          "type" = "cdmDatatype"
+        )
+      checkColumnsCdm(cdm, nm, specifications)
     }
-  }
-  if (length(x) > 0) {
-    cli::cli_abort("Table{plural(x)} {verb(x)} not standard cdm table{plural(x)} or cohort{plural(x)}")
   }
 
   return(invisible(cdm))
@@ -134,7 +136,7 @@ verb <- function(x) {
 plural <- function(x) {
   ifelse(length(x) == 1, "", "s")
 }
-checkColumns <- function(cdm, nm, specifications, call = parent.frame()) {
+checkColumnsCdm <- function(cdm, nm, specifications, call = parent.frame()) {
   columns <- colnames(cdm[[nm]])
 
   # check required
@@ -147,16 +149,6 @@ checkColumns <- function(cdm, nm, specifications, call = parent.frame()) {
       "{combine(x)} {verb(x)} not present in table {nm}", call = call
     )
   }
-
-  # check extra
-  allCols <- specifications |> dplyr::pull("colname")
-  x <- columns[!columns %in% allCols]
-  if (length(x) > 0) {
-    cli::cli_abort("Column{plural(x)} {verb(x)} not allowed in table {nm}")
-  }
-
-  # TODO
-  # check type
 
   return(invisible(TRUE))
 }

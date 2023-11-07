@@ -4,7 +4,7 @@
 \alias{export}
 \title{Export an object.}
 \usage{
-export(x, path, namePrefix = "", minCellCount = 5, studyId = NULL)
+export(x, path, namePrefix = "", minCellCount = 5, resultId = NULL)
 }
 \arguments{
 \item{x}{Object to export.}
@@ -15,7 +15,7 @@ export(x, path, namePrefix = "", minCellCount = 5, studyId = NULL)
 
 \item{minCellCount}{Minimum number of counts to be exported.}
 
-\item{studyId}{Identifier to be added as \code{study_id}.}
+\item{resultId}{Unique identifier for your set of results.}
 }
 \value{
 Exported object in tbl format.

@@ -4,10 +4,12 @@
 \alias{summarisedResult}
 \title{'summarised_results' object constructor}
 \usage{
-summarisedResult(x)
+summarisedResult(x, name = "summarised_result")
 }
 \arguments{
-\item{x}{input must be a tibble}
+\item{x}{input must be a tibble.}
+
+\item{name}{Name of the summarised result object}
 }
 \value{
 A summarisedResult object
