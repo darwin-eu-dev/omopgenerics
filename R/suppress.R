@@ -105,10 +105,13 @@ obscureLinked <- function(result, linkEstimates, variable) {
             .data$obscure_record == 1,
             .data$obscure_group != 1
           ) |>
-          dplyr::inner_join(dplyr::tibble(
-            estimate_type = names(linkEstimates)[k],
-            new_estimate_type = linkEstimates[[k]]
-          )) |>
+          dplyr::inner_join(
+            dplyr::tibble(
+              estimate_type = names(linkEstimates)[k],
+              new_estimate_type = linkEstimates[[k]]
+            ),
+            by = "estimate_type"
+          ) |>
           dplyr::select(-dplyr::all_of(c("estimate_type", variable, "obscure_linked"))) |>
           dplyr::rename("estimate_type" = "new_estimate_type") |>
           dplyr::mutate(obscure_linked_k = 1),

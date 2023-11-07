@@ -67,7 +67,9 @@ export.generated_cohort_set <- function(x,
       c("number_subjects", "number_records", "excluded_subjects",
         "excluded_records"),
       ~ dplyr::if_else(
-        .x < .env$minCellCount, paste0("<", .env$minCellCount), as.character(.x)
+        .x < .env$minCellCount & .x > 0,
+        paste0("<", .env$minCellCount),
+        as.character(.x)
       )
     )) |>
     addResultId(resultId) |>
@@ -194,7 +196,7 @@ export.summarised_result <- function(x,
                                      minCellCount = 5,
                                      resultId = NULL) {
   name <- attr(x, "summarised_result_name")
-  suppress(x, minCellCount = minCellCount)
+  suppress(x, minCellCount = minCellCount) |>
     addResultId(resultId) |>
     saveFile(path, namePrefix, resultId, name)
 }

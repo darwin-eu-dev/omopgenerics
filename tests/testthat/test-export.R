@@ -1,3 +1,7 @@
+test_that("export random class", {
+  expect_error(export(x = 1, path = tempdir()))
+})
+
 test_that("export a cdm object", {
   person <- dplyr::tibble(
     person_id = 1:10, gender_concept_id = 0, year_of_birth = 1990,
@@ -116,13 +120,107 @@ test_that("export a cdm object", {
   x <- list.files(path)
   expect_true("cdm_snapshot_mock2.csv" %in% x)
 
+  # remove files
+  unlink(x[grepl("cdm_snapshot", x)])
 })
 
 test_that("export a cohort object", {
   # create a cohort object
-  cohort = generatedCohortSet(dplyr::tibble(
-    cohort_definition_id = 1, subject_id = 1,
+  person <- dplyr::tibble(
+    person_id = 1:10, gender_concept_id = 0, year_of_birth = 1990,
+    race_concept_id = 0, ethnicity_concept_id = 0
+  )
+  observation_period <- dplyr::tibble(
+    person_id = c(1:10, 1),
+    observation_period_start_date = as.Date(c(rep("1990-01-01", 10), "2020-01-01")),
+    observation_period_end_date = as.Date(c(rep("2015-01-01", 10), "2022-01-01")),
+    period_type_concept_id = 0
+  ) |>
+    dplyr::mutate(observation_period_id = dplyr::row_number())
+  cohorts = list("cohort1" = generatedCohortSet(dplyr::tibble(
+    cohort_definition_id = 1, subject_id = 1:20,
     cohort_start_date = as.Date("2020-01-01"),
     cohort_end_date = as.Date("2020-12-31")
+  )))
+  cdmTables <- list(
+    "person" = person, "observation_period" = observation_period
+  )
+  cdm <- cdmReference(
+    cdmTables = cdmTables, cohortTables = cohorts, cdmName = "mock"
+  )
+
+  path <- tempdir()
+  expect_no_error(export(x = cdm$cohort1, path = path))
+  x <- list.files(path)
+  expect_true("cohort_details_mock.csv" %in% x)
+  result <- readr::read_csv(
+    file = file.path(path, "cohort_details_mock.csv"),
+    col_types = readr::cols(.default = "c")
+  )
+  expect_identical(result$number_records, "20")
+  expect_identical(result$number_subjects, "20")
+  expect_identical(result$excluded_records, "0")
+  expect_identical(result$excluded_subjects, "0")
+
+  # supress counts
+  expect_no_error(export(x = cdm$cohort1, path = path, minCellCount = 21))
+  x <- list.files(path)
+  expect_true("cohort_details_mock.csv" %in% x)
+  result <- readr::read_csv(
+    file = file.path(path, "cohort_details_mock.csv"),
+    col_types = readr::cols(.default = "c")
+  )
+  expect_identical(result$number_records, "<21")
+  expect_identical(result$number_subjects, "<21")
+  expect_identical(result$excluded_records, "0")
+  expect_identical(result$excluded_subjects, "0")
+
+  # remove files
+  unlink(x[grepl("cohort_details", x)])
+})
+
+test_that("export a summarised result object", {
+  path <- tempdir()
+
+  # create summarised result
+  x <- summarisedResult(dplyr::tibble(
+    "cdm_name" = "cprd",
+    "result_type" = "Summarised characteristics",
+    "package" = "PatientProfiles",
+    "package_version" = "0.4.0",
+    "group_name" = "sex",
+    "group_level" = "male",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable" = "number subjects",
+    "variable_level" = as.character(NA),
+    "variable_type" = "numeric",
+    "estimate_type" = "count",
+    "estimate" = "5"
   ))
+
+  # export
+  expect_no_error(export(x, path = path))
+  files <- list.files(path)
+  expect_true("summarised_result_cprd.csv" %in% files)
+  result <- readr::read_csv(
+    file = file.path(path, "summarised_result_cprd.csv"),
+    col_types = readr::cols(.default = "c")
+  )
+  expect_true(all(colnames(x) == colnames(result)))
+  expect_identical(result$estimate, "5")
+
+  # supress counts
+  expect_no_error(export(x, path = path, minCellCount = 6))
+  files <- list.files(path)
+  expect_true("summarised_result_cprd.csv" %in% files)
+  result <- readr::read_csv(
+    file = file.path(path, "summarised_result_cprd.csv"),
+    col_types = readr::cols(.default = "c")
+  )
+  expect_true(all(colnames(x) == colnames(result)))
+  expect_identical(result$estimate, "<6")
+
+  # remove files
+  unlink(files[grepl("cohort_details", files)])
 })
