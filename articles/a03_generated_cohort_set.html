@@ -79,12 +79,19 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://darwin-eu-dev.github.io/OMOPGenerics/" class="external-link">OMOPGenerics</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">OMOPGenerics</span><span class="fu">::</span><span class="va"><a href="../reference/generatedCohortSet.html">generatedCohortSet</a></span></span>
-<span><span class="co">#&gt; function (cohortTable, cohortSetTable = NULL, cohortAttritionTable = NULL, </span></span>
-<span><span class="co">#&gt;     cohortName = "cohort") </span></span>
+<span><span class="co">#&gt; function (cohortRef, cohortSetRef, cohortAttritionRef, cohortName) </span></span>
 <span><span class="co">#&gt; {</span></span>
-<span><span class="co">#&gt;     UseMethod("generatedCohortSet")</span></span>
+<span><span class="co">#&gt;     assertClass(cohortRef, "tbl")</span></span>
+<span><span class="co">#&gt;     assertClass(cohortSetRef, "tbl")</span></span>
+<span><span class="co">#&gt;     assertClass(cohortAttritionRef, "tbl")</span></span>
+<span><span class="co">#&gt;     assertCharacter(cohortName, length = 1, minNumCharacter = 1)</span></span>
+<span><span class="co">#&gt;     cohort &lt;- constructGeneratedCohortSet(cohortRef = cohortRef, </span></span>
+<span><span class="co">#&gt;         cohortSetRef = cohortSetRef, cohortAttritionRef = cohortAttritionRef, </span></span>
+<span><span class="co">#&gt;         cohortName = cohortName)</span></span>
+<span><span class="co">#&gt;     cohort &lt;- validateGeneratedCohortSet(cohort)</span></span>
+<span><span class="co">#&gt;     return(cohort)</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x56318bc90268&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x560ae29ea898&gt;</span></span>
 <span><span class="co">#&gt; &lt;environment: namespace:OMOPGenerics&gt;</span></span></code></pre></div>
 <p>bind method ….</p>
 <p>export method ….</p>

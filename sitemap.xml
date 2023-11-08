@@ -79,10 +79,13 @@
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/generatedCohortSet.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/generatedCohortSet.tbl.html</loc>
+    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/index.html</loc>
+    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/newGeneratedCohortSet.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/newGeneratedCohortSet.tbl.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/participants.html</loc>
