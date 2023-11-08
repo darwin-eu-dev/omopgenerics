@@ -27,6 +27,9 @@
 #' @export
 #'
 cdmReference <- function(cdmTables, cohortTables, cdmName, ...) {
+  if (!is.list(cdmTables) || length(cdmTables) == 0) {
+    cli::cli_abort("cdmTables must be a list with cdm tables.")
+  }
   UseMethod("cdmReference", cdmTables[[1]])
 }
 
