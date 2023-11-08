@@ -330,7 +330,7 @@ defaultCohortAttrition <- function(cohort) {
       number_subjects = dplyr::n_distinct(.data$subject_id)
     )
   if (!is.null(attr(cohort, "cohort_set"))) {
-    cohort <- cohort %>%
+    cohort <- cohort |>
       dplyr::left_join(
         attr(cohort, "cohort_set") |> dplyr::select("cohort_definition_id"),
         by = "cohort_definition_id"
