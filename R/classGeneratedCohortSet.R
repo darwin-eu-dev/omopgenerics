@@ -16,10 +16,10 @@
 
 #' `generated_cohort_set` objects constructor.
 #'
-#' @param cohortTable Table with at least: cohort_definition_id, subject_id,
+#' @param cohortRef Table with at least: cohort_definition_id, subject_id,
 #' cohort_start_date, cohort_end_date.
-#' @param cohortSetTable Table with at least: cohort_definition_id, cohort_name
-#' @param cohortAttritionTable Table with at least: cohort_definition_id,
+#' @param cohortSetRef Table with at least: cohort_definition_id, cohort_name
+#' @param cohortAttritionRef Table with at least: cohort_definition_id,
 #' number_subjects, number_records, reason_id, reason, excluded_subjects,
 #' excluded_records.
 #' @param cohortName Name of the generated_cohort_set object.
@@ -28,85 +28,185 @@
 #'
 #' @export
 #'
-generatedCohortSet <- function(cohortTable,
-                               cohortSetTable = NULL,
-                               cohortAttritionTable = NULL,
-                               cohortName = "cohort") {
-  UseMethod("generatedCohortSet")
-}
-
-# column names
-# same ids
-#
-
-
-#' `generated_cohort_set` objects constructor.
-#'
-#' @param cohortTable Table with at least: cohort_definition_id, subject_id,
-#' cohort_start_date, cohort_end_date.
-#' @param cohortSetTable Table with at least: cohort_definition_id, cohort_name
-#' @param cohortAttritionTable Table with at least: cohort_definition_id,
-#' number_subjects, number_records, reason_id, reason, excluded_subjects,
-#' excluded_records.
-#' @param cohortName Name of the generated_cohort_set object.
-#'
-#' @return A generated_cohort_set object
-#'
-#' @export
-#'
-generatedCohortSet.tbl <- function(cohortTable,
-                                   cohortSetTable = NULL,
-                                   cohortAttritionTable = NULL,
-                                   cohortName = "cohort") {
-  # initial input check
-  checkInput(
-    cohortTableTbl = cohortTable, cohortSetTableTbl = cohortSetTable,
-    cohortAttritionTableTbl = cohortAttritionTable
-  )
+generatedCohortSet <- function(cohortRef,
+                               cohortSetRef,
+                               cohortAttritionRef,
+                               cohortName) {
+  # initial checks
+  assertClass(cohortRef, "tbl")
+  assertClass(cohortSetRef, "tbl")
+  assertClass(cohortAttritionRef, "tbl")
+  assertCharacter(cohortName, length = 1, minNumCharacter = 1)
 
   # constructor
-  cohort <- newGeneratedCohortSet(
-    cohortTable = cohortTable,
-    cohortSetTable = cohortSetTable,
-    cohortAttritionTable = cohortAttritionTable,
+  cohort <- constructGeneratedCohortSet(
+    cohortRef = cohortRef,
+    cohortSetRef = cohortSetRef,
+    cohortAttritionRef = cohortAttritionRef,
     cohortName = cohortName
   )
 
   # validate
   cohort <- validateGeneratedCohortSet(cohort)
 
+  # return
   return(cohort)
 }
 
-newGeneratedCohortSet <- function(cohortTable,
-                                  cohortSetTable,
-                                  cohortAttritionTable,
-                                  cohortName) {
-  if (is.null(cohortSetTable)) {
-    cohortSetTable <- defaultCohortSet(cohortTable)
-  }
-  attr(cohortTable, "cohort_set") <- cohortSetTable
+#' `generated_cohort_set` objects constructor helper.
+#'
+#' @param cohortRef Table with at least: cohort_definition_id, subject_id,
+#' cohort_start_date, cohort_end_date.
+#' @param cohortSetRef Table with at least: cohort_definition_id, cohort_name.
+#' If NULL, it will be automatically populated.
+#' @param cohortAttritionRef Table with at least: cohort_definition_id,
+#' number_subjects, number_records, reason_id, reason, excluded_subjects,
+#' excluded_records. If NULL, it will be automatically populated.
+#' @param cohortName Name of the generated_cohort_set object.
+#' @param ... Other arguments for the method.
+#'
+#' @return A generated_cohort_set object
+#'
+#' @export
+#'
+newGeneratedCohortSet <- function(cohortRef,
+                                  cohortSetRef = NULL,
+                                  cohortAttritionRef = NULL,
+                                  cohortName = "cohort",
+                                  ...) {
+  UseMethod("newGeneratedCohortSet")
+}
 
-  if (is.null(cohortAttritionTable)) {
-    cohortAttritionTable <- defaultCohortAttrition(cohortTable)
-  }
-  attr(cohortTable, "cohort_attrition") <- cohortAttritionTable
 
-  newClass <- c("generated_cohort_set", "GeneratedCohortSet")
-  class(cohortTable) <- c(
-    newClass, class(cohortTable)[!(class(cohortTable) %in% newClass)]
+#' `generated_cohort_set` objects constructor helper.
+#'
+#' @param cohortRef Table with at least: cohort_definition_id, subject_id,
+#' cohort_start_date, cohort_end_date.
+#' @param cohortSetRef Table with at least: cohort_definition_id, cohort_name.
+#' If NULL, it will be automatically populated.
+#' @param cohortAttritionRef Table with at least: cohort_definition_id,
+#' number_subjects, number_records, reason_id, reason, excluded_subjects,
+#' excluded_records. If NULL, it will be automatically populated.
+#' @param cohortName Name of the generated_cohort_set object.
+#' @param ... For compatibility..
+#'
+#' @return A generated_cohort_set object
+#'
+#' @export
+#'
+newGeneratedCohortSet.tbl <- function(cohortRef,
+                                      cohortSetRef = NULL,
+                                      cohortAttritionRef = NULL,
+                                      cohortName = "cohort",
+                                      ...) {
+  # initial checks
+  assertClass(cohortSetRef, "tbl", null = TRUE)
+  assertClass(cohortAttritionRef, "tbl", null = TRUE)
+  rlang::check_dots_empty()
+
+  # populate
+  if (is.null(cohortSetRef)) {
+    cohortSetRef <- defaultCohortSet(cohortRef)
+  }
+  if (is.null(cohortAttritionRef)) {
+    cohortAttritionRef <- defaultCohortAttrition(cohortRef)
+  }
+
+  cohort <- generatedCohortSet(
+    cohortRef = cohortRef,
+    cohortSetRef = cohortSetRef,
+    cohortAttritionRef = cohortAttritionRef,
+    cohortName = cohortName
   )
 
-  attr(cohortTable, "tbl_name") <- cohortName
+  # return
+  return(cohort)
+}
 
-  return(cohortTable)
+#' To collect a `generated_cohort_set` object.
+#'
+#' @param x `generated_cohort_set` object.
+#' @param ... Not used (for compatibility).
+#'
+#' @return A data frame with yhe `generated_cohort_set`
+#'
+#' @export
+#'
+#' @importFrom dplyr collect
+#'
+collect.generated_cohort_set <- function(x, ...) {
+  attrib <- attributes(x)
+  class(x) <- class(x)[class(x) != "generated_cohort_set"]
+  x <- x |> dplyr::collect()
+  attr(x, "cohort_set") <- dplyr::collect(attrib$cohort_set)
+  attr(x, "cohort_attrition") <- dplyr::collect(attrib$cohort_attrition)
+  class(x) <- c("generated_cohort_set", class(x))
+  return(x)
+}
+
+#' Get cohort settings from a generated_cohort_set object.
+#'
+#' @param cohort A generated_cohort_set object.
+#'
+#' @return A table with the details of the cohort set.
+#'
+#' @export
+cohortSet <- function(cohort) {
+  checkInput(cohort = cohort)
+  attr(cohort, "cohort_set") |>
+    dplyr::collect() |>
+    dplyr::arrange(.data$cohort_definition_id)
+}
+
+#' Get cohort counts from a generated_cohort_set object.
+#'
+#' @param cohort A generated_cohort_set object.
+#'
+#' @return A table with the counts.
+#'
+#' @export
+cohortCount <- function(cohort) {
+  checkInput(cohort = cohort)
+  attr(cohort, "cohort_attrition") |>
+    dplyr::group_by(.data$cohort_definition_id) |>
+    dplyr::filter(.data$reason_id == max(.data$reason_id, na.rm = TRUE)) |>
+    dplyr::ungroup() |>
+    dplyr::select(
+      "cohort_definition_id", "number_records", "number_subjects"
+    ) |>
+    dplyr::collect() |>
+    dplyr::arrange(.data$cohort_definition_id)
+}
+
+#' Get cohort attrition from a generated_cohort_set object.
+#'
+#' @param cohort A generated_cohort_set object.
+#'
+#' @return A table with the attrition.
+#'
+#' @export
+cohortAttrition <- function(cohort) {
+  checkInput(cohort = cohort)
+  attr(cohort, "cohort_attrition") |>
+    dplyr::collect() |>
+    dplyr::arrange(.data$cohort_definition_id, .data$reason_id)
+}
+
+constructGeneratedCohortSet <- function(cohortRef,
+                                        cohortSetRef,
+                                        cohortAttritionRef,
+                                        cohortName) {
+  attr(cohortRef, "cohort_set") <- cohortSetRef
+  attr(cohortRef, "cohort_attrition") <- cohortAttritionRef
+  newClass <- c("generated_cohort_set", "GeneratedCohortSet")
+  class(cohortRef) <- c(
+    newClass, class(cohortRef)[!(class(cohortRef) %in% newClass)]
+  )
+  attr(cohortRef, "tbl_name") <- cohortName
+
+  return(cohortRef)
 }
 validateGeneratedCohortSet <- function(cohort) {
-  # class
-  if (!"generated_cohort_set" %in% class(cohort)) {
-    cli::cli_abort("cohort has not generated_cohort_set class")
-  }
-
   # attributes exist
   if (!all(c("cohort_set", "cohort_attrition", "tbl_name") %in%
            names(attributes(cohort)))) {
@@ -195,7 +295,6 @@ validateGeneratedCohortSet <- function(cohort) {
 
   invisible(cohort)
 }
-
 equal <- function(...) {
   x <- list(...)
   flag <- TRUE
@@ -217,23 +316,6 @@ cdi <- function(x) {
     sort() |>
     paste0(collapse = ", ")
 }
-
-#' To collect a `generated_cohort_set` object.
-#'
-#' @param x `generated_cohort_set` object.
-#' @param ... Not used (for compatibility).
-#'
-#' @export
-collect.generated_cohort_set <- function(x, ...) {
-  attrib <- attributes(x)
-  class(x) <- class(x)[class(x) != "generated_cohort_set"]
-  x <- x |> dplyr::collect()
-  attr(x, "cohort_set") <- dplyr::collect(attrib$cohort_set)
-  attr(x, "cohort_attrition") <- dplyr::collect(attrib$cohort_attrition)
-  class(x) <- c("generated_cohort_set", class(x))
-  return(x)
-}
-
 defaultCohortSet <- function(cohort) {
   cohort |>
     dplyr::select("cohort_definition_id") |>
@@ -241,16 +323,20 @@ defaultCohortSet <- function(cohort) {
     dplyr::mutate("cohort_name" = paste0("cohort_", .data$cohort_definition_id))
 }
 defaultCohortAttrition <- function(cohort) {
-  cohort |>
+  cohort <- cohort |>
     dplyr::group_by(.data$cohort_definition_id) |>
     dplyr::summarise(
       number_records = dplyr::n(),
       number_subjects = dplyr::n_distinct(.data$subject_id)
-    ) |>
-    dplyr::left_join(
-      attr(cohort, "cohort_set") |> dplyr::select("cohort_definition_id"),
-      by = "cohort_definition_id"
-    ) |>
+    )
+  if (!is.null(attr(cohort, "cohort_set"))) {
+    cohort <- cohort %>%
+      dplyr::left_join(
+        attr(cohort, "cohort_set") |> dplyr::select("cohort_definition_id"),
+        by = "cohort_definition_id"
+      )
+  }
+  cohort |>
     dplyr::mutate(
       "number_records" = dplyr::if_else(
         is.na(.data$number_records), 0, .data$number_records
@@ -263,52 +349,4 @@ defaultCohortAttrition <- function(cohort) {
       "excluded_records" = 0,
       "excluded_subjects" = 0
     )
-}
-
-#' Get cohort settings from a generated_cohort_set object.
-#'
-#' @param cohort A generated_cohort_set object.
-#'
-#' @return A table with the details of the cohort set.
-#'
-#' @export
-cohortSet <- function(cohort) {
-  checkInput(cohort = cohort)
-  attr(cohort, "cohort_set") |>
-    dplyr::collect() |>
-    dplyr::arrange(.data$cohort_definition_id)
-}
-
-#' Get cohort counts from a generated_cohort_set object.
-#'
-#' @param cohort A generated_cohort_set object.
-#'
-#' @return A table with the counts.
-#'
-#' @export
-cohortCount <- function(cohort) {
-  checkInput(cohort = cohort)
-  attr(cohort, "cohort_attrition") |>
-    dplyr::group_by(.data$cohort_definition_id) |>
-    dplyr::filter(.data$reason_id == max(.data$reason_id, na.rm = TRUE)) |>
-    dplyr::ungroup() |>
-    dplyr::select(
-      "cohort_definition_id", "number_records", "number_subjects"
-    ) |>
-    dplyr::collect() |>
-    dplyr::arrange(.data$cohort_definition_id)
-}
-
-#' Get cohort attrition from a generated_cohort_set object.
-#'
-#' @param cohort A generated_cohort_set object.
-#'
-#' @return A table with the attrition.
-#'
-#' @export
-cohortAttrition <- function(cohort) {
-  checkInput(cohort = cohort)
-  attr(cohort, "cohort_attrition") |>
-    dplyr::collect() |>
-    dplyr::arrange(.data$cohort_definition_id, .data$reason_id)
 }

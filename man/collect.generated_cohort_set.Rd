@@ -4,12 +4,15 @@
 \alias{collect.generated_cohort_set}
 \title{To collect a \code{generated_cohort_set} object.}
 \usage{
-collect.generated_cohort_set(x, ...)
+\method{collect}{generated_cohort_set}(x, ...)
 }
 \arguments{
 \item{x}{\code{generated_cohort_set} object.}
 
 \item{...}{Not used (for compatibility).}
+}
+\value{
+A data frame with yhe \code{generated_cohort_set}
 }
 \description{
 To collect a \code{generated_cohort_set} object.

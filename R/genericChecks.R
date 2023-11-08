@@ -459,12 +459,14 @@ errorNull <- function(null) {
 #'
 #' @param x To check.
 #' @param class Expected class or classes.
+#' @param null Whether it can be null.
 #' @param call Call argument that will be passed to `cli`.
 #'
 #' @noRd
 #'
 assertClass <- function(x,
                         class,
+                        null = FALSE,
                         call = parent.frame()) {
   # create error message
   errorMessage <- paste0(
@@ -472,6 +474,13 @@ assertClass <- function(x,
     paste0(class, collapse = ", "), "; but has class: ",
     paste0(base::class(x), collapse = ", ") ,"."
   )
+  if (is.null(x)) {
+    if (null) {
+      return(invisible(x))
+    } else {
+      cli::cli_abort("{parse(substitute(x))} can not be NULL.", call = call)
+    }
+  }
   if (!all(class %in% base::class(x))) {
     cli::cli_abort(errorMessage, call = call)
   }
