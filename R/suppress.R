@@ -62,6 +62,7 @@ filterData <- function(result, minCellCount, variable, estimateType) {
   return(result)
 }
 obscureGroups <- function(result, minCellCount, variable, estimateType, group, groupCount) {
+  result <- result |> dplyr::mutate(obscure_group = 0)
   if (!is.null(group) & all(group %in% colnames(result))) {
     groupsToObscure <- result |>
       dplyr::select(dplyr::all_of(c(group, variable, "variable", "estimate_type"))) |>
@@ -71,12 +72,11 @@ obscureGroups <- function(result, minCellCount, variable, estimateType, group, g
       dplyr::distinct() |>
       dplyr::mutate(obscure_group = 1)
     result <- result |>
+      dplyr::select(-"obscure_group") |>
       dplyr::left_join(groupsToObscure, by = group) |>
       dplyr::mutate(
         obscure_group = dplyr::if_else(is.na(.data$obscure_group), 0, 1)
       )
-  } else {
-    result <- result |> dplyr::mutate(obscure_group = 0)
   }
   return(result)
 }

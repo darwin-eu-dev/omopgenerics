@@ -38,103 +38,12 @@ dataframe implementation. For creating a cdm reference using a database,
 see the CDMConnector package
 (<https://darwin-eu.github.io/CDMConnector/>).
 
-``` r
-OMOPGenerics::cdmReference
-#> function(cdmTables, cdmName, cdmVersion) {
-#>   # initial input check
-#>   checkInput(cdmTables = cdmTables, cdmName = cdmName, cdmVersion = cdmVersion)
-#> 
-#>   # constructor
-#>   cdm <- newCdmReference(
-#>     cdmTables = cdmTables, cdmName = cdmName, cdmVersion = cdmVersion
-#>   )
-#> 
-#>   # validate
-#>   cdm <- validateCdmReference(cdm)
-#> 
-#>   return(cdm)
-#> }
-#> <bytecode: 0x000001e4c677fb08>
-#> <environment: namespace:OMOPGenerics>
-```
-
-When the export method is applied to a cdm reference, metadata about
-that cdm will be written to a csv. The csv contains the following
-columns
-
-| Variable                               | Description |
-|----------------------------------------|-------------|
-| result_type                            |             |
-| cdm_name                               |             |
-| cdm_source_name                        |             |
-| cdm_description” = “source_description |             |
-| cdm_documentation_reference            |             |
-| cdm_version                            |             |
-| cdm_holder                             |             |
-| cdm_release_date                       |             |
-| vocabulary_version                     |             |
-| person_count                           |             |
-| observation_period_count               |             |
-| earliest_observation_period_start_date |             |
-| latest_observation_period_end_date     |             |
-| snapshot_date                          |             |
-
-export method ….
-
 ### Concept set
-
-export method ….
 
 ### Generatred cohort set
 
-``` r
-OMOPGenerics::generatedCohortSet
-#> function(cohortTable,
-#>                                cohortSetTable = NULL,
-#>                                cohortAttritionTable = NULL,
-#>                                cohortName = "cohort") {
-#>   UseMethod("generatedCohortSet")
-#> }
-#> <bytecode: 0x000001e4c674a648>
-#> <environment: namespace:OMOPGenerics>
-```
-
-bind method ….
-
-export method ….
-
 ### Summarised result
 
-``` r
-OMOPGenerics::summarisedResult
-#> function(x) {
-#> 
-#>   #inital input check
-#>   assertTibble(x)
-#> 
-#>   #constructer
-#>   x <- newSummarisedResult(x)
-#> 
-#> 
-#>   # validate
-#>   x <- validateSummariseResult(x)
-#> 
-#> 
-#> 
-#>   return(x)
-#> }
-#> <bytecode: 0x000001e4c6d9f838>
-#> <environment: namespace:OMOPGenerics>
-```
-
-bind method ….
-
-export method ….
-
 ### Compared result
-
-bind method ….
-
-export method ….
 
 ### Participants

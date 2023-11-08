@@ -38,7 +38,6 @@ summarisedResult <- function(x, name = "summarised_result") {
   return(x)
 }
 
-
 newSummarisedResult <- function(x, name) {
 
   class(x) <- c("summarised_result", class(x))
@@ -46,15 +45,7 @@ newSummarisedResult <- function(x, name) {
 
   return(x)
 }
-
-
 validateSummariseResult <- function(x) {
-
-  # class
-  if (!"summarised_result" %in% class(x)) {
-    cli::cli_abort("The tibble does not has the summarised_result class")
-  }
-
   # compulsory columns
   compulsoryCols <- c(
     "cdm_name", "result_type", "package", "package_version", "group_name",
@@ -73,18 +64,16 @@ validateSummariseResult <- function(x) {
   )
   checkNA(x = x, cols = notNaCols)
 
-  #Sentence case column
+  # Sentence case column
   sentenceCaseCols <- c("result_type")
   checkSentence(x = x, cols = sentenceCaseCols)
 
   # columPairs
   columnPairs <- c("group_name" = "group_level", "strata_name" = "strata_level")
-  checkColumnPairs(x, columnPairs, " and ", "NA")
+  checkColumnPairs(x, columnPairs, " and ", "snake")
 
   return(x)
 }
-
-# assert columns
 checkColumns <- function(x, cols) {
   if (!all(cols %in% colnames(x))) {
     cli::cli_abort(
@@ -97,7 +86,6 @@ checkColumns <- function(x, cols) {
   }
   invisible(NULL)
 }
-# assert sentence case column
 checkSentence <- function(x, cols) {
   for (col in cols) {
     if (!all(isSentenceCase(unique(x[[col]])))) {
@@ -106,16 +94,6 @@ checkSentence <- function(x, cols) {
   }
   invisible(NULL)
 }
-# assert snake case column
-checkSnake <- function(x, cols) {
-  for (col in cols) {
-    if (!all(isSnakeCase(unique(x[[col]])))) {
-      cli::cli_abort("`{col}`` must be in snakecase.")
-    }
-  }
-  invisible(NULL)
-}
-# assert column cannot contain NA
 checkNA <- function(x, cols) {
   for (col in cols) {
     if (all(is.na(unique(x[[col]])))) {
@@ -124,7 +102,6 @@ checkNA <- function(x, cols) {
   }
   invisible(NULL)
 }
-# assert format of column is character
 checkColumnsFormat <- function(x, cols, format = "character") {
   if (!all(lapply(x |> dplyr::select(dplyr::all_of(cols)), typeof) |> unlist() == format)) {
     cli::cli_abort(paste0(
@@ -135,7 +112,6 @@ checkColumnsFormat <- function(x, cols, format = "character") {
   }
   invisible(NULL)
 }
-# assert that we have pairs of values
 checkColumnPairs <- function(x, pairs, sep, case) {
   for (k in seq_along(pairs)) {
     group <- names(pairs)[k]
@@ -159,25 +135,24 @@ checkColumnPairs <- function(x, pairs, sep, case) {
       )
     if (nrow(notMatch) > 0) {
       unmatch <- notMatch |>
-        utils::head(5) |>
         dplyr::select("group", "level") |>
         dplyr::mutate("group_and_level" = paste0(
           .env$group, ": ", .data$group, "; ", .env$level, ": ", .data$level
         )) |>
         dplyr::pull("group_and_level")
-      names(unmatch) <- rep("*", length(unmatch))
+      num <- length(unmatch)
+      nun <- min(num, 5)
+      unmatch <- unmatch[1:nun]
+      names(unmatch) <- rep("*", nun)
+
       mes <- "group: `{group}` and level: `{level}` does not match in number of
-      arguments, first 5 unmatch:"
-      cli::cli_warn(c(mes, unmatch))
+      arguments ({num} unmatch), first {nun} unmatch:"
+      cli::cli_abort(c(mes, unmatch))
     }
 
     groupCase <- distinctPairs[["group_elements"]] |> unlist() |> unique()
     if (!all(isCase(groupCase, case))) {
-      cli::cli_warn("elements in {group} are not {case} case")
-    }
-    levelCase <- distinctPairs[["level_elements"]] |> unlist() |> unique()
-    if (!all(isCase(levelCase, case))) {
-      cli::cli_warn("elements in {level} are not {case} case")
+      cli::cli_abort("elements in {group} are not {case} case")
     }
   }
 }

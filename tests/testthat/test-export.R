@@ -112,13 +112,22 @@ test_that("export a cdm object", {
     ) %in% colnames(result)
   ))
 
-  cdmTables$cdm_source <- NULL
+  cdmTables$vocabulary <- cdmTables$vocabulary %>%
+    dplyr::filter(.data$vocabulary_id != "None")
   cdm <- cdmReference(
     cdmTables = cdmTables, cohortTables = list(), cdmName = "mock2"
   )
   expect_no_error(export(x = cdm, path = path))
   x <- list.files(path)
   expect_true("cdm_snapshot_mock2.csv" %in% x)
+
+  cdmTables$cdm_source <- NULL
+  cdm <- cdmReference(
+    cdmTables = cdmTables, cohortTables = list(), cdmName = "mock3"
+  )
+  expect_no_error(export(x = cdm, path = path))
+  x <- list.files(path)
+  expect_true("cdm_snapshot_mock3.csv" %in% x)
 
   # remove files
   unlink(x[grepl("cdm_snapshot", x)])
@@ -137,7 +146,7 @@ test_that("export a cohort object", {
     period_type_concept_id = 0
   ) |>
     dplyr::mutate(observation_period_id = dplyr::row_number())
-  cohorts = list("cohort1" = newGeneratedCohortSet(dplyr::tibble(
+  cohorts = list("cohort1" = generatedCohortSet(dplyr::tibble(
     cohort_definition_id = 1, subject_id = 1:20,
     cohort_start_date = as.Date("2020-01-01"),
     cohort_end_date = as.Date("2020-12-31")

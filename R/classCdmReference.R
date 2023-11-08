@@ -20,12 +20,29 @@
 #' @param cohortTables List of tables that contains `generated_cohort_set`
 #' objects.
 #' @param cdmName Name of the cdm.
+#' @param ... For compatibility.
 #'
 #' @return A `cdm_reference` object.
 #'
 #' @export
 #'
-cdmReference <- function(cdmTables, cohortTables, cdmName) {
+cdmReference <- function(cdmTables, cohortTables, cdmName, ...) {
+  UseMethod("cdmReference", cdmTables[[1]])
+}
+
+#' `cdm_reference` objects constructor
+#'
+#' @param cdmTables List of standard tables in the OMOP Common Data Model.
+#' @param cohortTables List of tables that contains `generated_cohort_set`
+#' objects.
+#' @param cdmName Name of the cdm.
+#' @param ... For compatibility.
+#'
+#' @return A `cdm_reference` object.
+#'
+#' @export
+#'
+cdmReference.tbl <- function(cdmTables, cohortTables, cdmName, ...) {
 
   # inputs
   assertList(cdmTables, named = TRUE, class = "tbl")
@@ -64,11 +81,6 @@ newCdmReference <- function(cdmTables, cohortTables, cdmName, cdmVersion) {
   return(cdm)
 }
 validateCdmReference <- function(cdm) {
-  # assert class
-  if (!("cdm_reference" %in% class(cdm))) {
-    cli::cli_abort("A cdm_reference object must have class cdm_reference.")
-  }
-
   # assert name
   assertCharacter(attr(cdm, "cdm_name"), length = 1)
 
@@ -121,9 +133,6 @@ validateCdmReference <- function(cdm) {
 
   return(invisible(cdm))
 }
-isLowerCase <- function(x) {
-  all(x == tolower(x))
-}
 combine <- function(x) {
   if (length(x) < 2) {
     return(x)
@@ -153,7 +162,6 @@ checkColumnsCdm <- function(cdm, nm, specifications, call = parent.frame()) {
   return(invisible(TRUE))
 }
 
-
 #' Name of a cdm_reference.
 #'
 #' @param cdm A cdm_reference object.
@@ -163,7 +171,18 @@ checkColumnsCdm <- function(cdm, nm, specifications, call = parent.frame()) {
 #' @export
 #'
 cdmName <- function(cdm) {
-  checkInput(cdm = cdm)
+  UseMethod("cdmName")
+}
+
+#' Name of a cdm_reference.
+#'
+#' @param cdm A cdm_reference object.
+#'
+#' @return Name of the cdm_reference.
+#'
+#' @export
+#'
+cdmName.cdm_reference <- function(cdm) {
   attr(cdm, "cdm_name")
 }
 

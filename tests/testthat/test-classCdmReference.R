@@ -1,5 +1,5 @@
 test_that("test cdm_reference", {
-  cohorts <- list("cohort1" = newGeneratedCohortSet(dplyr::tibble(
+  cohorts <- list("cohort1" = generatedCohortSet(dplyr::tibble(
     cohort_definition_id = 1, subject_id = 1,
     cohort_start_date = as.Date("2020-01-01"),
     cohort_end_date = as.Date("2020-12-31")
