@@ -137,7 +137,7 @@ test_that("export a cohort object", {
     period_type_concept_id = 0
   ) |>
     dplyr::mutate(observation_period_id = dplyr::row_number())
-  cohorts = list("cohort1" = generatedCohortSet(dplyr::tibble(
+  cohorts = list("cohort1" = newGeneratedCohortSet(dplyr::tibble(
     cohort_definition_id = 1, subject_id = 1:20,
     cohort_start_date = as.Date("2020-01-01"),
     cohort_end_date = as.Date("2020-12-31")
