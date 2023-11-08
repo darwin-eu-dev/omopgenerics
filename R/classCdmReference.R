@@ -106,7 +106,7 @@ validateCdmReference <- function(cdm) {
     cli::cli_abort("{combine(x)} {verb(x)} not included in the cdm object")
   }
 
-  cdmTables <- fieldsTables$cdmTableName |> unique()
+  cdmTables <- standardOmopCdmTables(version = cdmVersion)
 
   # assertions for all the cdm tables
   for (nm in names(cdm)) {
@@ -121,16 +121,8 @@ validateCdmReference <- function(cdm) {
 
     if (nm %in% cdmTables) {
       # assert columnames match version
-      specifications <- fieldsTables |>
-        dplyr::filter(
-          grepl(.env$cdmVersion, .data$cdm_version) &
-            .data$cdmTableName == .env$nm
-        ) |>
-        dplyr::select(
-          "colname" = "cdmFieldName", "required" = "isRequired",
-          "type" = "cdmDatatype"
-        )
-      checkColumnsCdm(cdm, nm, specifications)
+      cols <- requiredOmopCdmColumns(table = nm, version = cdmVersion)
+      checkColumnsCdm(cdm, nm, cols)
     }
   }
 
@@ -148,13 +140,10 @@ verb <- function(x) {
 plural <- function(x) {
   ifelse(length(x) == 1, "", "s")
 }
-checkColumnsCdm <- function(cdm, nm, specifications, call = parent.frame()) {
+checkColumnsCdm <- function(cdm, nm, required, call = parent.frame()) {
   columns <- colnames(cdm[[nm]])
 
   # check required
-  required <- specifications |>
-    dplyr::filter(.data$required == TRUE) |>
-    dplyr::pull("colname")
   x <- required[!required %in% columns]
   if (length(x) > 0) {
     cli::cli_abort(
@@ -246,4 +235,49 @@ print.cdm_reference <- function(x, ...) {
   cli::cat_line("")
   cli::cat_line(paste("Tables:", paste(names(x), collapse = ", ")))
   invisible(x)
+}
+
+#' Standard tables that a cdm reference can contain in the OMOP Common Data
+#' Model.
+#'
+#' @param version Version of the OMOP Common Data Model.
+#'
+#' @return Standard tables
+#'
+#' @export
+#'
+standardOmopCdmTables <- function(version = "5.3") {
+  # check inputs
+  assertChoice(version, c("5.3", "5.4"))
+
+  # filter
+  tables <- fieldsTables$cdmTableName[grepl(version, fieldsTables$cdm_version)] |>
+    unique()
+
+  return(tables)
+}
+
+#' Required columns that the standard tables in the OMOP Common Data Model must
+#' have.
+#'
+#' @param table Table to see required columns.
+#' @param version Version of the OMOP Common Data Model.
+#'
+#' @return Required columns
+#'
+#' @export
+#'
+requiredOmopCdmColumns <- function(table, version = "5.3") {
+  # check input
+  assertChoice(x = version, choices = c("5.3", "5.4"))
+  assertChoice(x = table, choices = standardOmopCdmTables(version = version))
+
+  # filter
+  columns <- fieldsTables$cdmFieldName[
+    grepl(version, fieldsTables$cdm_version) &
+      fieldsTables$cdmTableName == table &
+      fieldsTables$isRequired == TRUE
+  ]
+
+  return(columns)
 }
