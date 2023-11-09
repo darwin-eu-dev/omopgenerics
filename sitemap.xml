@@ -43,16 +43,31 @@
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cash-.cdm_reference.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cdmName.cdm_reference.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cdmName.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cdmReference.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cdmReference.tbl.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cohortAttrition.generated_cohort_set.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cohortAttrition.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cohortCount.generated_cohort_set.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cohortCount.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cohortSet.generated_cohort_set.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cohortSet.html</loc>
@@ -79,19 +94,22 @@
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/generatedCohortSet.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/generatedCohortSet.tbl.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/newGeneratedCohortSet.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/newGeneratedCohortSet.tbl.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/participants.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/print.cdm_reference.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/requiredOmopCdmColumns.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/standardOmopCdmTables.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/sub-sub-.cdm_reference.html</loc>
