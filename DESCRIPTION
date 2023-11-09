@@ -6,8 +6,8 @@ Authors@R: c(
         "Marti", "Catala", email = "marti.catalasabate@ndorms.ox.ac.uk", 
         role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3308-9905")
     ))
-Description: This package define classes and provide methods for the OMOP Common 
-    Data Model based packages.
+Description: The OMOPGenerics package provides definitions of core classes and 
+    methods used by analytic pipelines that query the OMOP common data model.
 License: Apache License (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -16,7 +16,6 @@ Imports:
     cli,
     dplyr,
     glue,
-    methods,
     readr,
     rlang,
     snakecase,

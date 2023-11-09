@@ -1,5 +1,4 @@
 test_that("test SummarisedResult object", {
-
   x <- dplyr::tibble(
     "cdm_name" = "cprd",
     "result_type" = "Summarised characteristics",
@@ -90,7 +89,7 @@ test_that("test SummarisedResult object", {
   )
   expect_error(summarisedResult(x = x))
 
-  # check wrong case
+  # check wrong paired
   x <- dplyr::tibble(
     "cdm_name" = "mock",
     "result_type" = "Summarised characteristics",
@@ -106,5 +105,55 @@ test_that("test SummarisedResult object", {
     "estimate_type" = "count",
     "estimate" = "5"
   )
-  expect_warning(expect_warning(summarisedResult(x = x)))
+  expect_error(summarisedResult(x = x))
+
+  # check wrong case
+  x <- dplyr::tibble(
+    "cdm_name" = "mock",
+    "result_type" = "Summarised characteristics",
+    "package" = "patientProfiles",
+    "package_version" = "0.4.0",
+    "group_name" = "sex and cohort_Name",
+    "group_level" = "male and acetaminophen",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable" = "age_group",
+    "variable_level" = "10 to 50",
+    "variable_type" = "date",
+    "estimate_type" = "count",
+    "estimate" = "5"
+  )
+  expect_error(summarisedResult(x = x))
+  x <- dplyr::tibble(
+    "cdm_name" = "mock",
+    "result_type" = "Summarised characteristics",
+    "package" = "patientProfiles",
+    "package_version" = "0.4.0",
+    "group_name" = "sex and cohort_name",
+    "group_level" = "male and acetaminophen",
+    "strata_name" = "Sex",
+    "strata_level" = "male",
+    "variable" = "age_group",
+    "variable_level" = "10 to 50",
+    "variable_type" = "date",
+    "estimate_type" = "count",
+    "estimate" = "5"
+  )
+  expect_error(summarisedResult(x = x))
+  x <- dplyr::tibble(
+    "cdm_name" = "mock",
+    "result_type" = "Summarised characteristics",
+    "package" = "patientProfiles",
+    "package_version" = "0.4.0",
+    "group_name" = "sex and cohort_name",
+    "group_level" = "male and acetaminophen",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable" = "age_group",
+    "variable_level" = "10 to 50",
+    "variable_type" = "date",
+    "estimate_type" = "count",
+    "estimate" = "5"
+  )
+  expect_error(expect_warning(summarisedResult(x = x)))
 })

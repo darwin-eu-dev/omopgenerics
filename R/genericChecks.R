@@ -478,7 +478,9 @@ assertClass <- function(x,
     if (null) {
       return(invisible(x))
     } else {
-      cli::cli_abort("{parse(substitute(x))} can not be NULL.", call = call)
+      cli::cli_abort(
+        "{paste0(substitute(x), collapse = '')} can not be NULL.", call = call
+      )
     }
   }
   if (!all(class %in% base::class(x))) {

@@ -21,6 +21,13 @@ The OMOPGenerics package provides definitions of core classes and methods used b
 
 ## Installation
 
+You can install the CRAN version of the [OMOPGenerics](https://CRAN.R-project.org/package=OMOPGenerics) from CRAN:
+
+```{r, eval = FALSE}
+install.packages("OMOPGenerics")
+```
+
+
 You can install the development version of OMOPGenerics from [GitHub](https://github.com/) with:
 
 ```{r, eval=FALSE}
@@ -28,13 +35,44 @@ install.packages("remotes")
 devtools::install_github("darwin-eu-dev/OMOPGenerics")
 ```
 
+And load it using the library command:
+```{r}
+library(OMOPGenerics)
+```
+
+
 ## Core classes and methods
 
 ### CDM Reference
 
-A cdm reference is a single R object that represents OMOP CDM data. The tables in the cdm reference may be in a database, but a cdm reference may also contain OMOP CDM tables that are in dataframes/ tibbles or in arrow. In the latter case the cdm reference would typically be a subset of an original cdm reference that has been derived as part of a particular analysis.
+A cdm reference is a single R object that represents OMOP CDM data. The tables in the cdm reference may be in a database, but a cdm reference may also contain OMOP CDM tables that are in dataframes/tibbles or in arrow. In the latter case the cdm reference would typically be a subset of an original cdm reference that has been derived as part of a particular analysis.
 
 OMOPGenerics contains the class definition of a cdm reference and a dataframe implementation. For creating a cdm reference using a database, see the CDMConnector package (<https://darwin-eu.github.io/CDMConnector/>).
+
+A cdm object can contain three type of tables:
+
+* Standard tables:
+```{r}
+standardOmopCdmTables()
+```
+Each one of the tables has a required columns. For example, for the `person` table this are the required columns:
+```{r}
+requiredOmopCdmColumns(table = "person")
+```
+
+* Cohort tables (see `generatedCohortSet`).
+
+* Other tables, these other tables can have any format. 
+
+Any table to be part of a cdm object has to fulfill 4 conditions:
+
+- All must share a common source.
+
+- The name of the tables must be lowercase.
+
+- The name of the column names of each table must be lowercase.
+
+- `person` and `observation_period` must be present.
 
 
 ### Concept set

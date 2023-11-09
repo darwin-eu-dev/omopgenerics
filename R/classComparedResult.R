@@ -37,7 +37,6 @@ comparedResult <- function(x, name = "compared_result") {
   return(x)
 }
 
-
 newComparedResult <- function(x, name) {
 
   class(x) <- c("compared_result", class(x))
@@ -46,14 +45,7 @@ newComparedResult <- function(x, name) {
   return(x)
 }
 
-
 validateComparedResult <- function(x) {
-
-  # class
-  if (!"compared_result" %in% class(x)) {
-    cli::cli_abort("The tibble does not has the summarised_result class")
-  }
-
   # compulsory columns
   compulsoryCols <- c(
     "cdm_name", "result_type", "package", "package_version",
@@ -88,7 +80,7 @@ validateComparedResult <- function(x) {
     "group_name_comparator" = "group_level_comparator",
     "strata_name_comparator" = "strata_level_comparator"
   )
-  checkColumnPairs(x, columnPairs, " and ", "NA")
+  checkColumnPairs(x, columnPairs, " and ", "snake")
 
   return(x)
 }

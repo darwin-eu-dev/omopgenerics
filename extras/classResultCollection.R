@@ -28,7 +28,7 @@ resultCollection <- function(...) {
     result <- ..1
   }
   # initial input check
-  checkInput(result = result)
+  assertTibble(result)
 
   result <- newResultCollection(result)
 

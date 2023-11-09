@@ -14,6 +14,14 @@ model.
 
 ## Installation
 
+You can install the CRAN version of the
+[OMOPGenerics](https://CRAN.R-project.org/package=OMOPGenerics) from
+CRAN:
+
+``` r
+install.packages("OMOPGenerics")
+```
+
 You can install the development version of OMOPGenerics from
 [GitHub](https://github.com/) with:
 
@@ -22,13 +30,19 @@ install.packages("remotes")
 devtools::install_github("darwin-eu-dev/OMOPGenerics")
 ```
 
+And load it using the library command:
+
+``` r
+library(OMOPGenerics)
+```
+
 ## Core classes and methods
 
 ### CDM Reference
 
 A cdm reference is a single R object that represents OMOP CDM data. The
 tables in the cdm reference may be in a database, but a cdm reference
-may also contain OMOP CDM tables that are in dataframes/ tibbles or in
+may also contain OMOP CDM tables that are in dataframes/tibbles or in
 arrow. In the latter case the cdm reference would typically be a subset
 of an original cdm reference that has been derived as part of a
 particular analysis.
@@ -38,103 +52,56 @@ dataframe implementation. For creating a cdm reference using a database,
 see the CDMConnector package
 (<https://darwin-eu.github.io/CDMConnector/>).
 
+A cdm object can contain three type of tables:
+
+- Standard tables:
+
 ``` r
-OMOPGenerics::cdmReference
-#> function(cdmTables, cdmName, cdmVersion) {
-#>   # initial input check
-#>   checkInput(cdmTables = cdmTables, cdmName = cdmName, cdmVersion = cdmVersion)
-#> 
-#>   # constructor
-#>   cdm <- newCdmReference(
-#>     cdmTables = cdmTables, cdmName = cdmName, cdmVersion = cdmVersion
-#>   )
-#> 
-#>   # validate
-#>   cdm <- validateCdmReference(cdm)
-#> 
-#>   return(cdm)
-#> }
-#> <bytecode: 0x000001e4c677fb08>
-#> <environment: namespace:OMOPGenerics>
+standardOmopCdmTables()
+#>  [1] "person"                "observation_period"    "visit_occurrence"     
+#>  [4] "visit_detail"          "condition_occurrence"  "drug_exposure"        
+#>  [7] "procedure_occurrence"  "device_exposure"       "measurement"          
+#> [10] "observation"           "death"                 "note"                 
+#> [13] "note_nlp"              "specimen"              "fact_relationship"    
+#> [16] "location"              "care_site"             "provider"             
+#> [19] "payer_plan_period"     "cost"                  "drug_era"             
+#> [22] "dose_era"              "condition_era"         "metadata"             
+#> [25] "cdm_source"            "concept"               "vocabulary"           
+#> [28] "domain"                "concept_class"         "concept_relationship" 
+#> [31] "relationship"          "concept_synonym"       "concept_ancestor"     
+#> [34] "source_to_concept_map" "drug_strength"         "cohort_definition"    
+#> [37] "attribute_definition"
 ```
 
-When the export method is applied to a cdm reference, metadata about
-that cdm will be written to a csv. The csv contains the following
-columns
+Each one of the tables has a required columns. For example, for the
+`person` table this are the required columns:
 
-| Variable                               | Description |
-|----------------------------------------|-------------|
-| result_type                            |             |
-| cdm_name                               |             |
-| cdm_source_name                        |             |
-| cdm_description” = “source_description |             |
-| cdm_documentation_reference            |             |
-| cdm_version                            |             |
-| cdm_holder                             |             |
-| cdm_release_date                       |             |
-| vocabulary_version                     |             |
-| person_count                           |             |
-| observation_period_count               |             |
-| earliest_observation_period_start_date |             |
-| latest_observation_period_end_date     |             |
-| snapshot_date                          |             |
+``` r
+requiredOmopCdmColumns(table = "person")
+#> [1] "person_id"            "gender_concept_id"    "year_of_birth"       
+#> [4] "race_concept_id"      "ethnicity_concept_id"
+```
 
-export method ….
+- Cohort tables (see `generatedCohortSet`).
+
+- Other tables, these other tables can have any format.
+
+Any table to be part of a cdm object has to fulfill 4 conditions:
+
+- All must share a common source.
+
+- The name of the tables must be lowercase.
+
+- The name of the column names of each table must be lowercase.
+
+- `person` and `observation_period` must be present.
 
 ### Concept set
 
-export method ….
-
 ### Generatred cohort set
-
-``` r
-OMOPGenerics::generatedCohortSet
-#> function(cohortTable,
-#>                                cohortSetTable = NULL,
-#>                                cohortAttritionTable = NULL,
-#>                                cohortName = "cohort") {
-#>   UseMethod("generatedCohortSet")
-#> }
-#> <bytecode: 0x000001e4c674a648>
-#> <environment: namespace:OMOPGenerics>
-```
-
-bind method ….
-
-export method ….
 
 ### Summarised result
 
-``` r
-OMOPGenerics::summarisedResult
-#> function(x) {
-#> 
-#>   #inital input check
-#>   assertTibble(x)
-#> 
-#>   #constructer
-#>   x <- newSummarisedResult(x)
-#> 
-#> 
-#>   # validate
-#>   x <- validateSummariseResult(x)
-#> 
-#> 
-#> 
-#>   return(x)
-#> }
-#> <bytecode: 0x000001e4c6d9f838>
-#> <environment: namespace:OMOPGenerics>
-```
-
-bind method ….
-
-export method ….
-
 ### Compared result
-
-bind method ….
-
-export method ….
 
 ### Participants
