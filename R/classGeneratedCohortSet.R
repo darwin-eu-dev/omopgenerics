@@ -23,7 +23,6 @@
 #' number_subjects, number_records, reason_id, reason, excluded_subjects,
 #' excluded_records.
 #' @param cohortName Name of the generated_cohort_set object.
-#' @param ... Other parameters.
 #'
 #' @return A generated_cohort_set object
 #'
@@ -32,33 +31,9 @@
 generatedCohortSet <- function(cohortRef,
                                cohortSetRef = NULL,
                                cohortAttritionRef = NULL,
-                               cohortName = "cohort",
+                               cohortName = attr(cohortRef, "tbl_name"),
                                ...) {
-  UseMethod("generatedCohortSet", cohortRef)
-}
-
-#' `generated_cohort_set` objects constructor.
-#'
-#' @param cohortRef Table with at least: cohort_definition_id, subject_id,
-#' cohort_start_date, cohort_end_date.
-#' @param cohortSetRef Table with at least: cohort_definition_id, cohort_name
-#' @param cohortAttritionRef Table with at least: cohort_definition_id,
-#' number_subjects, number_records, reason_id, reason, excluded_subjects,
-#' excluded_records.
-#' @param cohortName Name of the generated_cohort_set object.
-#' @param ... For compatibility.
-#'
-#' @return A generated_cohort_set object
-#'
-#' @export
-#'
-generatedCohortSet.tbl <- function(cohortRef,
-                                   cohortSetRef = NULL,
-                                   cohortAttritionRef = NULL,
-                                   cohortName = "cohort",
-                                   ...) {
   # initial checks
-  rlang::check_dots_empty()
   assertClass(cohortRef, "tbl")
   assertClass(cohortSetRef, "tbl", null = TRUE)
   assertClass(cohortAttritionRef, "tbl", null = TRUE)
@@ -66,10 +41,10 @@ generatedCohortSet.tbl <- function(cohortRef,
 
   # populate
   if (is.null(cohortSetRef)) {
-    cohortSetRef <- defaultCohortSet(cohortRef)
+    cohortSetRef <- defaultCohortSet(cohortRef, cohortName)
   }
   if (is.null(cohortAttritionRef)) {
-    cohortAttritionRef <- defaultCohortAttrition(cohortRef, cohortSetRef)
+    cohortAttritionRef <- defaultCohortAttrition(cohortRef, cohortSetRef, cohortName)
   }
 
   # constructor
@@ -322,11 +297,16 @@ cdi <- function(x) {
     sort() |>
     paste0(collapse = ", ")
 }
-defaultCohortSet <- function(cohort) {
+defaultCohortSet <- function(cohort, cohortName) {
   cohort |>
     dplyr::select("cohort_definition_id") |>
     dplyr::distinct() |>
-    dplyr::mutate("cohort_name" = paste0("cohort_", .data$cohort_definition_id))
+    dplyr::mutate(
+      "cohort_name" = paste0("cohort_", .data$cohort_definition_id)
+    ) |>
+    dplyr::compute(
+      name = paste0(cohortName, "_set"), temporary = FALSE
+    )
 }
 defaultCohortAttrition <- function(cohort, set = NULL) {
   cohort <- cohort |>
@@ -355,4 +335,16 @@ defaultCohortAttrition <- function(cohort, set = NULL) {
       "excluded_records" = 0,
       "excluded_subjects" = 0
     )
+}
+
+#' To add a new class that will go to the begining.
+#'
+#' @export
+#'
+#' @return Same object with the new clas added.
+#'
+addClass <- function(x, class) {
+  base::class(x) <- base::class(x)[!(base::class(x) %in% class)]
+  base::class(x) <- c(class, base::clas(x))
+  return(x)
 }
