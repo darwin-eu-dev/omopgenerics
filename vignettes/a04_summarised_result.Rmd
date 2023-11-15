@@ -1,5 +1,5 @@
 ---
-title: "a04_summarised_result"
+title: "Summarised result"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{a04_summarised_result}
@@ -14,12 +14,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(OMOPGenerics)
-```
+A summarised result is a table that contains aggregated summary statistics (that is, a result set that contains no patient-level data). The table with a summarised result contains the following columns (although there can be additional ones):
 
-```{r}
-OMOPGenerics::summarisedResult
-```
+## Additional attributes
+### Extra aggregated results
+A summarised result may also contain other aggregated results as attributes of the main result.
 
-bind method ....
+### Participants
+A summarised result may, as an optional attribute, contain a reference to the patients that informed the result. The participans will contain a "subject_id" column which can be used to identify individuals in the person table (or other tables in the cdm reference).
+
+## Exporting summarised result
+
