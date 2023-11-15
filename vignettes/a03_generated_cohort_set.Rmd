@@ -1,5 +1,5 @@
 ---
-title: "a03_generated_cohort_set"
+title: "Generated cohort set"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{a03_generated_cohort_set}
@@ -14,14 +14,21 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(OMOPGenerics)
-```
+A generated cohort set is a cohort table contained in a cdm reference. These study-specific cohort tables are generally created during the course of performing a particular analysis.
 
+A table containing a generated cohort set must have the following columns: 
 ```{r}
-OMOPGenerics::generatedCohortSet
+library(OMOPGenerics)
+# TO ADD
 ```
 
-bind method ....
+## Combining generated cohort sets
+### Binding
+TO ADD
 
-export method ....
+## Export metadata about a generated cohort set
+Two tables will be created when exporting a generating a cohort set. 
+
+The first table contains the cohort set.
+
+The second table contains information about cohort attrition.
