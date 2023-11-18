@@ -20,13 +20,12 @@
 #' @param cohortTables List of tables that contains `generated_cohort_set`
 #' objects.
 #' @param cdmName Name of the cdm.
-#' @param ... For compatibility.
 #'
 #' @return A `cdm_reference` object.
 #'
 #' @export
 #'
-cdmReference <- function(cdmTables, cohortTables, cdmName, ...) {
+cdmReference <- function(cdmTables, cohortTables, cdmName) {
   if (!is.list(cdmTables) || length(cdmTables) == 0) {
     cli::cli_abort("cdmTables must be a list with cdm tables.")
   }
@@ -39,13 +38,12 @@ cdmReference <- function(cdmTables, cohortTables, cdmName, ...) {
 #' @param cohortTables List of tables that contains `generated_cohort_set`
 #' objects.
 #' @param cdmName Name of the cdm.
-#' @param ... For compatibility.
 #'
 #' @return A `cdm_reference` object.
 #'
 #' @export
 #'
-cdmReference.tbl <- function(cdmTables, cohortTables, cdmName, ...) {
+cdmReference.tbl <- function(cdmTables, cohortTables, cdmName) {
 
   # inputs
   assertList(cdmTables, named = TRUE, class = "tbl")
@@ -204,16 +202,6 @@ cdmName.cdm_reference <- function(cdm) {
 
   attr(tbl, "cdm_reference") <- x
   return(tbl)
-}
-
-#' @export
-`[[<-.cdm_reference` <- function(obj, name, value) {
-  x <- class(obj)
-  attr(value, "cdm_reference") <- NULL
-  obj <- unclass(obj)
-  obj[[name]] <- value
-  class(obj) <- x
-  return(obj)
 }
 
 #' @export

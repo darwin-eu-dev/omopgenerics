@@ -1,3 +1,37 @@
+# packages can not depend on DBI/CDMConnector
+
+#' @export
+`[[<-.cdm_reference` <- function(obj, name, value) {
+  if (!"cdm_table" %in% value) {
+    value <- cdmTable(cdm = obj, x = value, name = name)
+  }
+  x <- class(obj)
+  attr(value, "cdm_reference") <- NULL
+  obj <- unclass(obj)
+  obj[[name]] <- value
+  class(obj) <- x
+  return(obj)
+}
+
+# CDM TABLE
+cdmTable <- function(cdm, x, name) {
+  UseMethod("cdmTable")
+}
+cdmTable.cdm_reference <- function(cdm, x, name) {
+  addClass(x, "cdm_table")
+}
+cdmTable.cdm_reference_from_con <- function(cdm, x, name) {
+  if (!"tbl_df" %in% class(x)) {
+    cli::cli_abort("x must be a tbl_df table.")
+  }
+  fullName <- CDMConnector::inSchema(schema = attr(cdm, "write_schema"), table = name)
+  con <- attr(cdm, "dbcon")
+  DBI::dbWriteTable(conn = con, name = fullName, value = x)
+  x <- dplyr::tbl(src = con, fullName)
+  attr(x, "tbl_name") <- name
+  x <- addClass(x, c("cdm_table_from_con", "cdm_table"))
+  return(x)
+}
 
 #' Compute a cdm_table
 #'
