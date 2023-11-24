@@ -118,6 +118,9 @@ validateCdmReference <- function(cdm) {
     }
   }
 
+  # TODO
+  # assertions for cohort tables
+
   return(invisible(cdm))
 }
 combine <- function(x) {
