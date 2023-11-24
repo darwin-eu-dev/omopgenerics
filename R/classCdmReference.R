@@ -176,38 +176,66 @@ cdmName.cdm_reference <- function(cdm) {
   attr(cdm, "cdm_name")
 }
 
-#' Subset a cdm reference object
+#' Subset a cdm reference object.
 #'
-#' @param x A cdm reference
-#' @param name The name of the table to extract from the cdm object
+#' @param x A cdm reference.
+#' @param name The name of the table to extract from the cdm object.
 #'
 #' @return A single cdm table reference
 #' @export
 `$.cdm_reference` <- function(x, name) {
-  x[[name]]
+  cdmTable(x, name)
 }
 
-#' Subset a cdm reference object
+#' Subset a cdm reference object.
 #'
 #' @param x A cdm reference
-#' @param i The name or index of the table to extract from the cdm object
+#' @param name The name or index of the table to extract from the cdm object.
 #'
 #' @return A single cdm table reference
 #' @export
-`[[.cdm_reference` <- function(x, i) {
-  x_raw <- unclass(x)
-  tbl <- x_raw[[i]]
-
-  if(is.null(tbl)) return(NULL)
-
-  attr(tbl, "cdm_reference") <- x
-  return(tbl)
+`[[.cdm_reference` <- function(x, name) {
+  cdmTable(x, name)
 }
 
+#' Assign an table to a cdm reference.
+#'
+#' @param cdm A cdm reference.
+#' @param name Name where to assign the new table.
+#' @param table Table with the same source than the cdm object.
+#'
+#' @return The cdm reference.
+#'
 #' @export
-`$<-.cdm_reference` <- function(obj, name, value) {
-  obj[[name]] <- value
-  return(obj)
+#'
+`$<-.cdm_reference` <- function(cdm, name, table) {
+  cdm[[name]] <- table
+  return(cdm)
+}
+
+#' Assign an table to a cdm reference.
+#'
+#' @param cdm A cdm reference.
+#' @param name Name where to assign the new table.
+#' @param table Table with the same source than the cdm object.
+#'
+#' @return The cdm reference.
+#'
+#' @export
+#'
+`[[<-.cdm_reference` <- function(cdm, name, table) {
+  if (!identical(getCdmSource(table), getCdmSource(cdm))) {
+    cli::cli_abort("Table and cdm does not share a common source, please insert table to the cdm_source")
+  }
+  remoteName <- attr(table, "tbl_name")
+  if (!is.na(remoteName) & name != remoteName) {
+    cli::cli_abort("You can't assign a table named {remoteName} to {name}. Please use computeTable to change table name.")
+  }
+  originalClass <- class(cdm)
+  cdm <- unclass(cdm)
+  cdm[[name]] <- table
+  class(cdm) <- originalClass
+  return(cdm)
 }
 
 #' Print a CDM reference object
@@ -218,8 +246,10 @@ cdmName.cdm_reference <- function(cdm) {
 #' @return Invisibly returns the input
 #' @export
 print.cdm_reference <- function(x, ...) {
-  type <- class(x[[1]])[[1]]
-  cli::cat_line(glue::glue("# OMOP CDM reference ({type})"))
+  src <- getCdmSource(x)
+  type <- attr(src, "source_type")
+  ref <- attr(src, "source_name")
+  cli::cat_line(glue::glue("# OMOP CDM reference ({type}) of {ref}"))
   cli::cat_line("")
   cli::cat_line(paste("Tables:", paste(names(x), collapse = ", ")))
   invisible(x)

@@ -9,7 +9,10 @@
 #' @return The table in the cdm reference.
 #'
 insertTable <- function(src, name, table) {
-  UseMethod("insertTable")
+  assertCharacter(name, length = 1, minNumCharacter = 1, na = TRUE)
+  table <- UseMethod("insertTable")
+  attr(table, "tbl_name") <- name
+  return(table)
 }
 
 #' @export
@@ -19,5 +22,5 @@ insertTable.cdm_reference <- function(src, name, table) {
 
 #' @export
 insertTable.local_cdm <- function(src, name, table) {
-
+  return(table)
 }

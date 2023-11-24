@@ -1,12 +1,16 @@
 #' Create a cdm source object.
 #'
-#' @param src Source to a cdm object
+#' @param src Source to a cdm object.
+#' @param sourceName Name of the source.
+#' @param sourceType Type of the source object.
 #'
 #' @export
 #'
 #' @return A validated cdm source object.
 #'
-cdmSource <- function(src) {
+cdmSource <- function(src, sourceName, sourceType) {
+  # check source
+  {
   # toy data
   name <- paste0(c(sample(letters, 5, replace = TRUE), "_test_table"), collapse = "")
   value <- cars
@@ -24,24 +28,21 @@ cdmSource <- function(src) {
 
   # drop table
   dropTable(src = src, name = name)
+  }
+  assertCharacter(sourceName, length = 1, minNumCharacter = 1)
+  assertCharacter(sourceType, length = 1, minNumCharacter = 1)
 
   # assign class
   class(src) <- addClass(src, "cdm_source")
+  attr(src, "source_name") <- sourceName
+  attr(src, "source_type") <- sourceType
 
   return(src)
 }
 
-#' Source of a local cdm.
-#'
-#' @param name Name of the local cdm
-#'
-localCdm <- function(name) {
-  checkmate::checkCharacter(name, len = 1, any.missing = FALSE)
-  class(name) <- "local_cdm"
-  return(name)
-}
-
 #' @export
-print.local_cdm <- function(x) {
-  cli::cli_inform("This is a local cdm connection to: {unclass(x)}")
+print.cdm_source <- function(x) {
+  cli::cli_inform(
+    "This is a {attr(x, 'source_type')} cdm connection to: {attr(x, 'source_name')}"
+  )
 }

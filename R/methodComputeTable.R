@@ -7,11 +7,14 @@
 #'
 #' @return The table in the cdm reference.
 #'
-computeCdmTable <- function(x, name) {
-  UseMethod("insertCdmTable", cdmSource(x))
+computeTable <- function(x, name = NA_character_) {
+  assertCharacter(name, length = 1, minNumCharacter = 1, na = TRUE)
+  x <- UseMethod("computeTable", cdmSource(x))
+  attr(x, "tbl_name") <- name
+  return(x)
 }
 
 #' @export
-computeCdmTable.local_cdm <- function(x, name) {
-
+computeTable.local_cdm <- function(x, name) {
+  return(x)
 }
