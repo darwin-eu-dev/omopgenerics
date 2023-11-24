@@ -4,7 +4,7 @@
 \alias{cdmReference}
 \title{\code{cdm_reference} objects constructor}
 \usage{
-cdmReference(cdmTables, cohortTables, cdmName, ...)
+cdmReference(cdmTables, cohortTables, cdmName)
 }
 \arguments{
 \item{cdmTables}{List of standard tables in the OMOP Common Data Model.}
@@ -13,8 +13,6 @@ cdmReference(cdmTables, cohortTables, cdmName, ...)
 objects.}
 
 \item{cdmName}{Name of the cdm.}
-
-\item{...}{For compatibility.}
 }
 \value{
 A \code{cdm_reference} object.

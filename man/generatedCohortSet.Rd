@@ -8,7 +8,7 @@ generatedCohortSet(
   cohortRef,
   cohortSetRef = NULL,
   cohortAttritionRef = NULL,
-  cohortName = "cohort",
+  cohortName = attr(cohortRef, "tbl_name"),
   ...
 )
 }
@@ -23,8 +23,6 @@ number_subjects, number_records, reason_id, reason, excluded_subjects,
 excluded_records.}
 
 \item{cohortName}{Name of the generated_cohort_set object.}
-
-\item{...}{Other parameters.}
 }
 \value{
 A generated_cohort_set object
