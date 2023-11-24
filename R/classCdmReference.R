@@ -20,30 +20,13 @@
 #' @param cohortTables List of tables that contains `generated_cohort_set`
 #' objects.
 #' @param cdmName Name of the cdm.
+#' @param cdmSource
 #'
 #' @return A `cdm_reference` object.
 #'
 #' @export
 #'
 cdmReference <- function(cdmTables, cohortTables, cdmName) {
-  if (!is.list(cdmTables) || length(cdmTables) == 0) {
-    cli::cli_abort("cdmTables must be a list with cdm tables.")
-  }
-  UseMethod("cdmReference", cdmTables[[1]])
-}
-
-#' `cdm_reference` objects constructor
-#'
-#' @param cdmTables List of standard tables in the OMOP Common Data Model.
-#' @param cohortTables List of tables that contains `generated_cohort_set`
-#' objects.
-#' @param cdmName Name of the cdm.
-#'
-#' @return A `cdm_reference` object.
-#'
-#' @export
-#'
-cdmReference.tbl <- function(cdmTables, cohortTables, cdmName) {
 
   # inputs
   assertList(cdmTables, named = TRUE, class = "tbl")
@@ -264,12 +247,14 @@ print.cdm_reference <- function(x, ...) {
 #'
 #' @export
 #'
-standardOmopCdmTables <- function(version = "5.3") {
+standardTables <- function(version = "5.3") {
   # check inputs
   assertChoice(version, c("5.3", "5.4"))
 
   # filter
-  tables <- fieldsTables$cdmTableName[grepl(version, fieldsTables$cdm_version)] |>
+  tables <- fieldsTables$cdm_table_name[
+    grepl(version, fieldsTables$cdm_version)
+  ] |>
     unique()
 
   return(tables)
@@ -285,16 +270,40 @@ standardOmopCdmTables <- function(version = "5.3") {
 #'
 #' @export
 #'
-requiredOmopCdmColumns <- function(table, version = "5.3") {
+requiredTableColumns <- function(table, version = "5.3") {
   # check input
   assertChoice(x = version, choices = c("5.3", "5.4"))
   assertChoice(x = table, choices = standardOmopCdmTables(version = version))
 
   # filter
-  columns <- fieldsTables$cdmFieldName[
+  columns <- fieldsTables$cdm_field_name[
     grepl(version, fieldsTables$cdm_version) &
-      fieldsTables$cdmTableName == table &
-      fieldsTables$isRequired == TRUE
+      fieldsTables$cdm_table_name == table &
+      fieldsTables$is_required == TRUE
+  ]
+
+  return(columns)
+}
+
+#' Required columns for a generated cohort set.
+#'
+#' @param table Either `cohort`, `cohort_set` or `cohort_attrition`
+#' @param version Version of the OMOP Common Data Model.
+#'
+#' @return Required columns
+#'
+#' @export
+#'
+requiredCohortColumns <- function(table, version = "5.3") {
+  # check input
+  assertChoice(x = version, choices = c("5.3", "5.4"))
+  assertChoice(x = table, choices = unique(fieldsCohorts$cdm_table_name))
+
+  # filter
+  columns <- fieldsCohorts$cdm_field_name[
+    grepl(version, fieldsCohorts$cdm_version) &
+      fieldsCohorts$cdm_table_name == table &
+      fieldsCohorts$is_required == TRUE
   ]
 
   return(columns)

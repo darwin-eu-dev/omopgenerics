@@ -13,6 +13,8 @@ cdmReference(cdmTables, cohortTables, cdmName)
 objects.}
 
 \item{cdmName}{Name of the cdm.}
+
+\item{cdmSource}{}
 }
 \value{
 A \code{cdm_reference} object.
