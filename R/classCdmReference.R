@@ -20,13 +20,13 @@
 #' @param cohortTables List of tables that contains `generated_cohort_set`
 #' objects.
 #' @param cdmName Name of the cdm.
-#' @param cdmSource
+#' @param cdmSource Source of the cdm object.
 #'
 #' @return A `cdm_reference` object.
 #'
 #' @export
 #'
-cdmReference <- function(cdmTables, cohortTables, cdmName) {
+cdmReference <- function(cdmTables, cohortTables, cdmName, cdmSource) {
 
   # inputs
   assertList(cdmTables, named = TRUE, class = "tbl")
@@ -34,6 +34,13 @@ cdmReference <- function(cdmTables, cohortTables, cdmName) {
     cohortTables, named = TRUE, class = c("generated_cohort_set", "tbl")
   )
   assertCharacter(cdmName, length = 1)
+  assertClass(cdmSource, "cdm_source", null = TRUE)
+
+  if (is.null(cdmSource) & "tbl_df" %in% class(cdmTables[[1]])) {
+    cdmSource <- localSource(cdmName)
+  } else {
+    cli::cli_abort("cdmSource must be provided, create a cdmSource with the cdmSource() function.")
+  }
 
   # get cdm version
   cdmVersion <- getVersion(cdmTables)
@@ -41,7 +48,7 @@ cdmReference <- function(cdmTables, cohortTables, cdmName) {
   # constructor
   cdm <- newCdmReference(
     cdmTables = cdmTables, cohortTables = cohortTables, cdmName = cdmName,
-    cdmVersion = cdmVersion
+    cdmVersion = cdmVersion, cdmSource = cdmSource
   )
 
   # validate
@@ -57,10 +64,11 @@ getVersion <- function(cdm) {
   )
   return(version)
 }
-newCdmReference <- function(cdmTables, cohortTables, cdmName, cdmVersion) {
+newCdmReference <- function(cdmTables, cohortTables, cdmName, cdmVersion, cdmSource) {
   cdm <- c(cdmTables, cohortTables)
   attr(cdm, "cdm_name") <- cdmName
   attr(cdm, "cdm_version") <- cdmVersion
+  attr(cdm, "cdm_source") <- cdmSource
   class(cdm) <- "cdm_reference"
   return(cdm)
 }
@@ -71,6 +79,9 @@ validateCdmReference <- function(cdm) {
   # assert version
   cdmVersion <- attr(cdm, "cdm_version")
   assertChoice(cdmVersion, c("5.3", "5.4"), length = 1)
+
+  # assert source
+  assertClass(attr(cdm, "cdm_source"), "cdm_source")
 
   # assert lowercase names
   x <- names(cdm)[names(cdm) != tolower(names(cdm))]
