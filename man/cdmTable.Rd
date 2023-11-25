@@ -4,12 +4,10 @@
 \alias{cdmTable}
 \title{Extract a table from a cdm reference.}
 \usage{
-cdmTable(cdm, name)
+cdmTable(table)
 }
 \arguments{
-\item{cdm}{A cdm reference object.}
-
-\item{name}{The name of the element that you want to extract.}
+\item{table}{}
 }
 \value{
 A table from the cdm reference

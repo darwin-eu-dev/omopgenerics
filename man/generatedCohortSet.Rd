@@ -8,8 +8,7 @@ generatedCohortSet(
   cohortRef,
   cohortSetRef = NULL,
   cohortAttritionRef = NULL,
-  cohortName = attr(cohortRef, "tbl_name"),
-  ...
+  cohortName = attr(cohortRef, "tbl_name")
 )
 }
 \arguments{

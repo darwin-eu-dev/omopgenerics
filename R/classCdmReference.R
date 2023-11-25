@@ -111,10 +111,18 @@ validateCdmReference <- function(cdm) {
       )
     }
 
+    # assert columnames match version
     if (nm %in% cdmTables) {
-      # assert columnames match version
       cols <- requiredOmopCdmColumns(table = nm, version = cdmVersion)
-      checkColumnsCdm(cdm, nm, cols)
+      checkColumnsCdm(cdm[[nm]], nm, cols)
+    } else if ("generated_cohort_set" %in% class(cdm[[nm]])) {
+      cohort <- cdm[[nm]]
+      cols <- requiredOmopCdmColumns(table = "cohort", version = cdmVersion)
+      checkColumnsCdm(cohort, nm, cols)
+      cols <- requiredOmopCdmColumns(table = "cohort_set", version = cdmVersion)
+      checkColumnsCdm(cohortSet(cohort), paste0(nm, "_set"), cols)
+      cols <- requiredOmopCdmColumns(table = "cohort_attrition", version = cdmVersion)
+      checkColumnsCdm(cohortAttrition(cohort), paste0(nm, "_attrition"), cols)
     }
   }
 
@@ -135,8 +143,8 @@ verb <- function(x) {
 plural <- function(x) {
   ifelse(length(x) == 1, "", "s")
 }
-checkColumnsCdm <- function(cdm, nm, required, call = parent.frame()) {
-  columns <- colnames(cdm[[nm]])
+checkColumnsCdm <- function(table, nm, required, call = parent.frame()) {
+  columns <- colnames(table)
 
   # check required
   x <- required[!required %in% columns]
@@ -205,7 +213,7 @@ cdmVersion.cdm_reference <- function(cdm) {
 #' @return A single cdm table reference
 #' @export
 `$.cdm_reference` <- function(x, name) {
-  cdmTable(x, name)
+  x[[name]]
 }
 
 #' Subset a cdm reference object.
@@ -216,7 +224,10 @@ cdmVersion.cdm_reference <- function(cdm) {
 #' @return A single cdm table reference
 #' @export
 `[[.cdm_reference` <- function(x, name) {
-  cdmTable(x, name)
+  x_raw <- unclass(x)
+  tbl <- x_raw[[i]]
+  attr(tbl, "cdm_reference") <- cdm
+  return(tbl)
 }
 
 #' Assign an table to a cdm reference.

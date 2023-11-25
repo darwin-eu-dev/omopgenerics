@@ -33,7 +33,7 @@ cdmSource <- function(src, sourceName, sourceType) {
   assertCharacter(sourceType, length = 1, minNumCharacter = 1)
 
   # assign class
-  class(src) <- addClass(src, "cdm_source")
+  addClass(src) <- "cdm_source"
   attr(src, "source_name") <- sourceName
   attr(src, "source_type") <- sourceType
 

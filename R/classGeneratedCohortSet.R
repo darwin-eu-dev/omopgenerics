@@ -31,8 +31,7 @@
 generatedCohortSet <- function(cohortRef,
                                cohortSetRef = NULL,
                                cohortAttritionRef = NULL,
-                               cohortName = attr(cohortRef, "tbl_name"),
-                               ...) {
+                               cohortName = attr(cohortRef, "tbl_name")) {
   # initial checks
   assertClass(cohortRef, "tbl")
   assertClass(cohortSetRef, "tbl", null = TRUE)
@@ -41,10 +40,10 @@ generatedCohortSet <- function(cohortRef,
 
   # populate
   if (is.null(cohortSetRef)) {
-    cohortSetRef <- defaultCohortSet(cohortRef, cohortName)
+    cohortSetRef <- defaultCohortSet(cohortRef)
   }
   if (is.null(cohortAttritionRef)) {
-    cohortAttritionRef <- defaultCohortAttrition(cohortRef, cohortSetRef, cohortName)
+    cohortAttritionRef <- defaultCohortAttrition(cohortRef, cohortSetRef)
   }
 
   # constructor
@@ -102,6 +101,9 @@ cohortSet <- function(cohort) {
 #'
 #' @export
 cohortSet.generated_cohort_set <- function(cohort) {
+  if (is.null(attr(cohort, "cohort_set"))) {
+    cli::cli_abort("Cohort set does not exist for this cohort.")
+  }
   attr(cohort, "cohort_set") |>
     dplyr::collect() |>
     dplyr::arrange(.data$cohort_definition_id)
@@ -126,6 +128,9 @@ cohortCount <- function(cohort) {
 #'
 #' @export
 cohortCount.generated_cohort_set <- function(cohort) {
+  if (is.null(attr(cohort, "cohort_attrition"))) {
+    cli::cli_abort("Cohort count does not exist for this cohort.")
+  }
   attr(cohort, "cohort_attrition") |>
     dplyr::group_by(.data$cohort_definition_id) |>
     dplyr::filter(.data$reason_id == max(.data$reason_id, na.rm = TRUE)) |>
@@ -156,6 +161,9 @@ cohortAttrition <- function(cohort) {
 #'
 #' @export
 cohortAttrition.generated_cohort_set <- function(cohort) {
+  if (is.null(attr(cohort, "cohort_attrition"))) {
+    cli::cli_abort("Cohort attrition does not exist for this cohort.")
+  }
   attr(cohort, "cohort_attrition") |>
     dplyr::collect() |>
     dplyr::arrange(.data$cohort_definition_id, .data$reason_id)
@@ -165,12 +173,10 @@ constructGeneratedCohortSet <- function(cohortRef,
                                         cohortSetRef,
                                         cohortAttritionRef,
                                         cohortName) {
-  attr(cohortRef, "cohort_set") <- cohortSetRef
-  attr(cohortRef, "cohort_attrition") <- cohortAttritionRef
-  newClass <- c("generated_cohort_set", "GeneratedCohortSet")
-  class(cohortRef) <- c(
-    newClass, class(cohortRef)[!(class(cohortRef) %in% newClass)]
-  )
+
+  attr(cohortRef, "cohort_set") <- cdmTable(cohortSetRef)
+  attr(cohortRef, "cohort_attrition") <- cdmTable(cohortAttritionRef)
+  addClass(cohortRef) <- c("generated_cohort_set", "GeneratedCohortSet")
   attr(cohortRef, "tbl_name") <- cohortName
 
   return(cohortRef)
@@ -274,6 +280,9 @@ validateGeneratedCohortSet <- function(cohort) {
       "reason", "excluded_records", "excluded_subjects"
     ))
 
+  # TODO
+  # check tbl names
+
   invisible(cohort)
 }
 equal <- function(...) {
@@ -297,32 +306,28 @@ cdi <- function(x) {
     sort() |>
     paste0(collapse = ", ")
 }
-defaultCohortSet <- function(cohort, cohortName) {
+defaultCohortSet <- function(cohort) {
+  cohortName <- attr(cohort, "tbl_name")
   cohort |>
     dplyr::select("cohort_definition_id") |>
     dplyr::distinct() |>
     dplyr::mutate(
-      "cohort_name" = paste0("cohort_", .data$cohort_definition_id)
+      "cohort_name" = paste0("cohort_", as.character(.data$cohort_definition_id))
     ) |>
-    dplyr::compute(
-      name = paste0(cohortName, "_set"), temporary = FALSE
-    )
+    dplyr::compute(name = paste0(cohortName, "_set"))
 }
-defaultCohortAttrition <- function(cohort, set = NULL) {
+defaultCohortAttrition <- function(cohort, set) {
+  cohortName <- attr(cohort, "tbl_name")
   cohort <- cohort |>
     dplyr::group_by(.data$cohort_definition_id) |>
     dplyr::summarise(
       number_records = dplyr::n(),
       number_subjects = dplyr::n_distinct(.data$subject_id)
-    )
-  if (!is.null(set)) {
-    cohort <- cohort |>
-      dplyr::left_join(
-        set |> dplyr::select("cohort_definition_id"),
-        by = "cohort_definition_id"
-      )
-  }
-  cohort |>
+    ) |>
+    dplyr::left_join(
+      set |> dplyr::select("cohort_definition_id"),
+      by = "cohort_definition_id"
+    ) |>
     dplyr::mutate(
       "number_records" = dplyr::if_else(
         is.na(.data$number_records), 0, .data$number_records
@@ -334,5 +339,6 @@ defaultCohortAttrition <- function(cohort, set = NULL) {
       "reason" = "Initial qualifying events",
       "excluded_records" = 0,
       "excluded_subjects" = 0
-    )
+    ) |>
+    dplyr::compute(name = paste0(cohortName, "_attrition"))
 }

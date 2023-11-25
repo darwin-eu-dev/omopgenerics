@@ -1,28 +1,17 @@
 #' Extract a table from a cdm reference.
 #'
-#' @param cdm A cdm reference object.
-#' @param name The name of the element that you want to extract.
+#' @param table
 #'
 #' @return A table from the cdm reference
 #'
 #' @export
 #'
-cdmTable <- function(cdm, name) {
-  # initial checks
-  assertClass(cdm, "cdm_reference")
-  assertCharacter(name, length = 1, minNumCharacter = 1)
-
-  if (!name %in% names(cdm)) {
-    cli::cli_warn("{name} is not present in the cdm reference.")
-    return(NULL)
+cdmTable <- function(table) {
+  addClass(table) <- "cdm_table"
+  if ("generated_cohort_set" %in% class(table)) {
+    addClass(attr(table, "cohort_set")) <- "cdm_table"
+    addClass(attr(table, "cohort_attrition")) <- "cdm_table"
   }
-
-  # extract table
-  x_raw <- unclass(x)
-  tbl <- x_raw[[i]]
-  attr(tbl, "cdm_reference") <- cdm
-  tbl <- addClass(tbl, "cdm_table")
-
   return(tbl)
 }
 
