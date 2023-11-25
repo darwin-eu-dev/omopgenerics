@@ -173,6 +173,30 @@ cdmName.cdm_reference <- function(cdm) {
   attr(cdm, "cdm_name")
 }
 
+#' Version of a cdm_reference.
+#'
+#' @param cdm A cdm_reference object.
+#'
+#' @return Version of the cdm_reference.
+#'
+#' @export
+#'
+cdmVersion <- function(cdm) {
+  UseMethod("cdmVersion")
+}
+
+#' Version of a cdm_reference.
+#'
+#' @param cdm A cdm_reference object.
+#'
+#' @return Version of the cdm_reference.
+#'
+#' @export
+#'
+cdmVersion.cdm_reference <- function(cdm) {
+  attr(cdm, "cdm_name")
+}
+
 #' Subset a cdm reference object.
 #'
 #' @param x A cdm reference.
