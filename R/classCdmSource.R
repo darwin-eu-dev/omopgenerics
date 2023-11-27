@@ -15,6 +15,8 @@ cdmSource <- function(src, sourceName, sourceType) {
   name <- paste0(c(sample(letters, 5, replace = TRUE), "_test_table"), collapse = "")
   value <- cars
 
+  # TODO insert a cohort
+
   # insert table
   x <- insertTable(src = src, name = name, value = value)
 
