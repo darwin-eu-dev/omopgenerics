@@ -30,13 +30,11 @@
 #'
 generatedCohortSet <- function(cohortRef,
                                cohortSetRef = NULL,
-                               cohortAttritionRef = NULL,
-                               cohortName = attr(cohortRef, "tbl_name")) {
+                               cohortAttritionRef = NULL) {
   # initial checks
   assertClass(cohortRef, "tbl")
   assertClass(cohortSetRef, "tbl", null = TRUE)
   assertClass(cohortAttritionRef, "tbl", null = TRUE)
-  assertCharacter(cohortName, length = 1, minNumCharacter = 1)
 
   # populate
   if (is.null(cohortSetRef)) {
@@ -73,13 +71,12 @@ generatedCohortSet <- function(cohortRef,
 #' @importFrom dplyr collect
 #'
 collect.generated_cohort_set <- function(x, ...) {
-  attrib <- attributes(x)
-  class(x) <- class(x)[class(x) != "generated_cohort_set"]
-  x <- x |> dplyr::collect()
-  attr(x, "cohort_set") <- dplyr::collect(attrib$cohort_set)
-  attr(x, "cohort_attrition") <- dplyr::collect(attrib$cohort_attrition)
-  class(x) <- c("generated_cohort_set", class(x))
-  return(x)
+  removeClass(x) <- "generated_cohort_set"
+  y <- x |> dplyr::collect()
+  attr(y, "cohort_set") <- attr(x, "cohort_set") |> dplyr::collect()
+  attr(y, "cohort_attrition") <- attr(x, "cohort_attrition") |> dplyr::collect()
+  addClass(y) <- "generated_cohort_set"
+  return(y)
 }
 
 #' Get cohort settings from a generated_cohort_set object.
@@ -90,7 +87,7 @@ collect.generated_cohort_set <- function(x, ...) {
 #'
 #' @export
 cohortSet <- function(cohort) {
-  UseMethod("cohortSet", cohort)
+  UseMethod("cohortSet")
 }
 
 #' Get cohort settings from a generated_cohort_set object.
@@ -117,7 +114,7 @@ cohortSet.generated_cohort_set <- function(cohort) {
 #'
 #' @export
 cohortCount <- function(cohort) {
-  UseMethod("cohortCount", cohort)
+  UseMethod("cohortCount")
 }
 
 #' Get cohort counts from a generated_cohort_set object.
@@ -150,7 +147,7 @@ cohortCount.generated_cohort_set <- function(cohort) {
 #'
 #' @export
 cohortAttrition <- function(cohort) {
-  UseMethod("cohortAttrition", )
+  UseMethod("cohortAttrition")
 }
 
 #' Get cohort attrition from a generated_cohort_set object.
@@ -173,7 +170,6 @@ constructGeneratedCohortSet <- function(cohortRef,
                                         cohortSetRef,
                                         cohortAttritionRef,
                                         cohortName) {
-
   attr(cohortRef, "cohort_set") <- cdmTable(cohortSetRef)
   attr(cohortRef, "cohort_attrition") <- cdmTable(cohortAttritionRef)
   addClass(cohortRef) <- c("generated_cohort_set", "GeneratedCohortSet")
