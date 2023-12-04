@@ -1,12 +1,12 @@
-#' Get cohort settings from a generated_cohort_set object.
+#' Get settings from an object.
 #'
-#' @param cohort A generated_cohort_set object.
+#' @param x x
 #'
 #' @return A table with the details of the cohort set.
 #'
 #' @export
-cohortSet <- function(cohort) {
-  UseMethod("cohortSet")
+set <- function(x) {
+  UseMethod("set")
 }
 
 #' Get cohort settings from a generated_cohort_set object.
@@ -16,7 +16,7 @@ cohortSet <- function(cohort) {
 #' @return A table with the details of the cohort set.
 #'
 #' @export
-cohortSet.generated_cohort_set <- function(cohort) {
+set.generated_cohort_set <- function(cohort) {
   if (is.null(attr(cohort, "cohort_set"))) {
     cli::cli_abort("Cohort set does not exist for this cohort.")
   }
