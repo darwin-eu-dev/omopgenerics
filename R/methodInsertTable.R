@@ -10,7 +10,7 @@
 #'
 insertTable <- function(src, name, table) {
   assertCharacter(name, length = 1, minNumCharacter = 1, na = TRUE)
-  assertClass(table, "tbl_df")
+  assertClass(table, "data.frame")
   UseMethod("insertTable")
 }
 

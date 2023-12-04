@@ -9,7 +9,7 @@
 #'
 computeTable <- function(x, name = NA_character_) {
   assertCharacter(name, length = 1, minNumCharacter = 1, na = TRUE)
-  x <- UseMethod("computeTable", cdmSource(x))
+  x <- UseMethod("computeTable", getCdmSource(x))
   attr(x, "tbl_name") <- name
   return(x)
 }

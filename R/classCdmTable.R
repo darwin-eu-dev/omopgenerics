@@ -12,11 +12,24 @@ cdmTable <- function(table) {
     addClass(attr(table, "cohort_set")) <- "cdm_table"
     addClass(attr(table, "cohort_attrition")) <- "cdm_table"
   }
-  return(tbl)
+  return(table)
 }
 
 #' @importFrom dplyr compute
 #' @export
 compute.cdm_table <- function(x, name) {
   computeTable(x = x, name = name)
+}
+
+#' @export
+#' @importFrom dplyr arrange
+arrange.cdm_table <- function(.data, ...) {
+  if ("tbl_lazy" %in% class(.data)) {
+    x <- dbplyr::window_order(.data, ...)
+  } else {
+    removeClass(.data) <- "cdm_table"
+    x <- dplyr::arrange(.data, ...)
+    addClass(.data) <- "cdm_table"
+  }
+  return(x)
 }

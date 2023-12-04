@@ -31,19 +31,20 @@ newCdmSource <- function(src, sourceName, sourceType) {
 validateCdmSource <- function(src) {
   # toy data
   name <- paste0(c(sample(letters, 5, replace = TRUE), "_test_table"), collapse = "")
-  value <- cars
+  table <- cars
 
   # insert table
-  x <- insertTable(src = src, name = name, value = value)
+  x <- insertTable(src = src, name = name, table = table)
   validateX(x = x, name = name, fun = "insertTable")
 
   # check inserted table
-  if (!identical(unclass(dplyr::collect(x)), unclass(value))) {
+  attr(table, "tbl_name") <- name
+  if (!identical(unclass(dplyr::collect(x)), unclass(table))) {
     cli::cli_abort("The inserted table was not the same than the provided one.")
   }
 
   # compute inserted table
-  x <- x |> computeTable(x)
+  x <- x |> computeTable(name = name)
   validateX(x = x, name = name, fun = "computeTable")
 
   # drop table
@@ -89,6 +90,6 @@ validateX <- function(x, name, fun) {
 #' @export
 print.cdm_source <- function(x) {
   cli::cli_inform(
-    "This is a {attr(x, 'source_type')} cdm connection to: {attr(x, 'source_name')}"
+    "This is a {attr(x, 'source_type')} cdm source of {attr(x, 'source_name')}"
   )
 }
