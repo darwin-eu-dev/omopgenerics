@@ -25,10 +25,9 @@ insertTable <- function(src, name, table) {
 #' @return The cdm reference.
 #'
 insertTable.cdm_reference <- function(src, name, table) {
-  src[[name]] <- insertTable(
-    src = getCdmSource(src), name = name, table = table
-  )
-  return(src)
+  table <- insertTable(src = getCdmSource(src), name = name, table = table)
+  attr(table, "cdm_reference") <- src
+  return(table)
 }
 
 #' Insert a table to a local cdm object.

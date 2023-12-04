@@ -13,7 +13,7 @@ dbSource <- function(con, writeSchema) {
     ))
   }
   assertCharacter(writeSchema, minNumCharacter = 1, named = TRUE)
-  assertChoice(x = names(writeSchema), choices = c("schema", "ctalog", "prefix"))
+  assertChoice(x = names(writeSchema), choices = c("schema", "catalog", "prefix"))
   source <- list(con = con, write_schema = writeSchema)
   addClass(source) <- "db_source"
   source <- cdmSource(source, sourceType = dbms(con))
@@ -29,3 +29,4 @@ computeTable.db_source <- function() {
 dropTable.db_source <- function() {
 
 }
+

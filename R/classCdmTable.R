@@ -17,6 +17,6 @@ cdmTable <- function(table) {
 
 #' @importFrom dplyr compute
 #' @export
-compute.cdm_table <- function(x, name = NA_character_) {
-  computeTable(x)
+compute.cdm_table <- function(x, name) {
+  computeTable(x = x, name = name)
 }
