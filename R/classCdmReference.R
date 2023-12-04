@@ -26,7 +26,7 @@
 #'
 #' @export
 #'
-cdmReference <- function(cdmTables, cohortTables, cdmName, cdmSource) {
+cdmReference <- function(cdmTables, cohortTables = list(), cdmName, cdmSource = NULL) {
 
   # inputs
   assertList(cdmTables, named = TRUE, class = "tbl")
@@ -36,10 +36,12 @@ cdmReference <- function(cdmTables, cohortTables, cdmName, cdmSource) {
   assertCharacter(cdmName, length = 1)
   assertClass(cdmSource, "cdm_source", null = TRUE)
 
-  if (is.null(cdmSource) & "tbl_df" %in% class(cdmTables[[1]])) {
-    cdmSource <- localSource(cdmName)
-  } else {
-    cli::cli_abort("cdmSource must be provided, create a cdmSource with the cdmSource() function.")
+  if (is.null(cdmSource)){
+    if ("tbl_df" %in% class(cdmTables[[1]])) {
+      cdmSource <- localSource(cdmName)
+    } else {
+      cli::cli_abort("cdmSource must be provided, create a cdmSource with the cdmSource() function.")
+    }
   }
 
   # get cdm version
@@ -98,7 +100,7 @@ validateCdmReference <- function(cdm) {
     cli::cli_abort("{combine(x)} {verb(x)} not included in the cdm object")
   }
 
-  cdmTables <- standardOmopCdmTables(version = cdmVersion)
+  cdmTables <- standardTables(version = cdmVersion)
 
   # assertions for all the cdm tables
   for (nm in names(cdm)) {
@@ -113,15 +115,15 @@ validateCdmReference <- function(cdm) {
 
     # assert columnames match version
     if (nm %in% cdmTables) {
-      cols <- requiredOmopCdmColumns(table = nm, version = cdmVersion)
+      cols <- requiredTableColumns(table = nm, version = cdmVersion)
       checkColumnsCdm(cdm[[nm]], nm, cols)
     } else if ("generated_cohort_set" %in% class(cdm[[nm]])) {
       cohort <- cdm[[nm]]
-      cols <- requiredOmopCdmColumns(table = "cohort", version = cdmVersion)
+      cols <- requiredTableColumns(table = "cohort", version = cdmVersion)
       checkColumnsCdm(cohort, nm, cols)
-      cols <- requiredOmopCdmColumns(table = "cohort_set", version = cdmVersion)
+      cols <- requiredTableColumns(table = "cohort_set", version = cdmVersion)
       checkColumnsCdm(cohortSet(cohort), paste0(nm, "_set"), cols)
-      cols <- requiredOmopCdmColumns(table = "cohort_attrition", version = cdmVersion)
+      cols <- requiredTableColumns(table = "cohort_attrition", version = cdmVersion)
       checkColumnsCdm(cohortAttrition(cohort), paste0(nm, "_attrition"), cols)
     }
   }
@@ -225,8 +227,8 @@ cdmVersion.cdm_reference <- function(cdm) {
 #' @export
 `[[.cdm_reference` <- function(x, name) {
   x_raw <- unclass(x)
-  tbl <- x_raw[[i]]
-  attr(tbl, "cdm_reference") <- cdm
+  tbl <- x_raw[[name]]
+  attr(tbl, "cdm_reference") <- x
   return(tbl)
 }
 
@@ -249,23 +251,25 @@ cdmVersion.cdm_reference <- function(cdm) {
 #'
 #' @param cdm A cdm reference.
 #' @param name Name where to assign the new table.
-#' @param table Table with the same source than the cdm object.
+#' @param value Table with the same source than the cdm object.
 #'
 #' @return The cdm reference.
 #'
 #' @export
 #'
-`[[<-.cdm_reference` <- function(cdm, name, table) {
-  if (!identical(getCdmSource(table), getCdmSource(cdm))) {
-    cli::cli_abort("Table and cdm does not share a common source, please insert table to the cdm_source")
-  }
-  remoteName <- attr(table, "tbl_name")
-  if (!is.na(remoteName) & name != remoteName) {
-    cli::cli_abort("You can't assign a table named {remoteName} to {name}. Please use computeTable to change table name.")
+`[[<-.cdm_reference` <- function(cdm, name, value) {
+  if (!is.null(value)) {
+    if (!identical(getCdmSource(value), getCdmSource(cdm))) {
+      cli::cli_abort("Table and cdm does not share a common source, please insert table to the cdm_source")
+    }
+    remoteName <- attr(value, "tbl_name")
+    if (!is.na(remoteName) & name != remoteName) {
+      cli::cli_abort("You can't assign a table named {remoteName} to {name}. Please use computeTable to change table name.")
+    }
   }
   originalClass <- class(cdm)
   cdm <- unclass(cdm)
-  cdm[[name]] <- table
+  cdm[[name]] <- value
   class(cdm) <- originalClass
   return(cdm)
 }
@@ -322,7 +326,7 @@ standardTables <- function(version = "5.3") {
 requiredTableColumns <- function(table, version = "5.3") {
   # check input
   assertChoice(x = version, choices = c("5.3", "5.4"))
-  assertChoice(x = table, choices = standardOmopCdmTables(version = version))
+  assertChoice(x = table, choices = standardTables(version = version))
 
   # filter
   columns <- fieldsTables$cdm_field_name[

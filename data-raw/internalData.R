@@ -40,7 +40,7 @@ fieldsTables <- fieldsTables53 |>
   select(
     "cdm_table_name" = "cdmTableName",
     "cdm_field_name" = "cdmFieldName",
-    "isRequired" = "isRequired",
+    "is_required" = "isRequired",
     "cdm_datatype" = "cdmDatatype",
     "cdm_version"
   )

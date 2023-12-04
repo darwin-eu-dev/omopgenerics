@@ -32,7 +32,7 @@ standardOmopCdmTables()
 ```
 Each one of the tables has a required columns. For example, for the `person` table this are the required columns:
 ```{r}
-requiredOmopCdmColumns(table = "person")
+requiredTableColumns(table = "person")
 ```
 
 * Cohort tables (see `generatedCohortSet`).
@@ -59,7 +59,7 @@ for (tab in c("person", "observation_period")) {
     mes, 
     "*" = paste0(
       cli::col_blue(cli::style_bold(tab)), ": ", paste0(
-        requiredOmopCdmColumns(table = tab, version = version), collapse = ", "
+        requiredTableColumns(table = tab, version = version), collapse = ", "
       )
     )
   )
@@ -71,7 +71,7 @@ for (tab in tables) {
     mes, 
     "*" = paste0(
       cli::col_blue(tab), ": ", paste0(
-        requiredOmopCdmColumns(table = tab, version = version), collapse = ", "
+        requiredTableColumns(table = tab, version = version), collapse = ", "
       )
     )
   )
@@ -87,7 +87,7 @@ for (tab in c("person", "observation_period")) {
     mes, 
     "*" = paste0(
       cli::col_blue(cli::style_bold(tab)), ": ", paste0(
-        requiredOmopCdmColumns(table = tab, version = version), collapse = ", "
+        requiredTableColumns(table = tab, version = version), collapse = ", "
       )
     )
   )
@@ -99,7 +99,7 @@ for (tab in tables) {
     mes, 
     "*" = paste0(
       cli::col_blue(tab), ": ", paste0(
-        requiredOmopCdmColumns(table = tab, version = version), collapse = ", "
+        requiredTableColumns(table = tab, version = version), collapse = ", "
       )
     )
   )

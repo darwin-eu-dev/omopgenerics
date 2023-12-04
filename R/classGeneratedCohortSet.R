@@ -36,10 +36,10 @@ generatedCohortSet <- function(cohortRef,
   assertClass(cohortAttritionRef, "tbl", null = TRUE)
 
   # comes from a cdm
-  if (!"cdm_table" %in% class(cohortRef)) {
+  if (!"cdm_reference" %in% names(attributes(cohortRef))) {
     cli::cli_abort(
       "The cohort does not come from a cdm object, please insert it with
-      insertTable first"
+      insertTable or computaTable first."
     )
   }
 
@@ -55,8 +55,7 @@ generatedCohortSet <- function(cohortRef,
   cohort <- constructGeneratedCohortSet(
     cohortRef = cohortRef,
     cohortSetRef = cohortSetRef,
-    cohortAttritionRef = cohortAttritionRef,
-    cohortName = cohortName
+    cohortAttritionRef = cohortAttritionRef
   )
 
   # validate
@@ -88,13 +87,10 @@ collect.generated_cohort_set <- function(x, ...) {
 
 constructGeneratedCohortSet <- function(cohortRef,
                                         cohortSetRef,
-                                        cohortAttritionRef,
-                                        cohortName) {
-  attr(cohortRef, "cohort_set") <- cdmTable(cohortSetRef)
-  attr(cohortRef, "cohort_attrition") <- cdmTable(cohortAttritionRef)
+                                        cohortAttritionRef) {
+  attr(cohortRef, "cohort_set") <- cohortSetRef
+  attr(cohortRef, "cohort_attrition") <- cohortAttritionRef
   addClass(cohortRef) <- c("generated_cohort_set", "GeneratedCohortSet")
-  attr(cohortRef, "tbl_name") <- cohortName
-
   return(cohortRef)
 }
 validateGeneratedCohortSet <- function(cohort) {
@@ -112,9 +108,14 @@ validateGeneratedCohortSet <- function(cohort) {
   cohort_attrition <- attr(cohort, "cohort_attrition")
 
   # check name
-  assertCharacter(attr(cohort, "tbl_name"), length = 1)
-  assertCharacter(attr(cohort_set, "tbl_name"), length = 1)
-  assertCharacter(attr(cohort_atrition, "tbl_name"), length = 1)
+  assertCharacter(attr(cohort, "tbl_name"), length = 1, na = TRUE)
+  assertCharacter(attr(cohort_set, "tbl_name"), length = 1, na = TRUE)
+  assertCharacter(attr(cohort_attrition, "tbl_name"), length = 1, na = TRUE)
+  consistentNaming(
+    cohortName = attr(cohort, "tbl_name"),
+    cohortSetName = attr(cohort_set, "tbl_name"),
+    cohortAttritionName = attr(cohort_attrition, "tbl_name")
+  )
 
   # assert columns
   checkColumnsCohort <- function(x, nam) {
@@ -128,8 +129,8 @@ validateGeneratedCohortSet <- function(cohort) {
     invisible(NULL)
   }
   checkColumnsCohort(cohort, "cohort")
-  checkColumnsCohort(cohort, "cohort_set")
-  checkColumnsCohort(cohort, "cohort_attrition")
+  checkColumnsCohort(cohort_set, "cohort_set")
+  checkColumnsCohort(cohort_attrition, "cohort_attrition")
 
   # classes attributes
   clCohort <- cl(cohort)
@@ -171,17 +172,11 @@ validateGeneratedCohortSet <- function(cohort) {
 
   # make correct order
   cohort <- cohort |>
-    dplyr::relocate(c(
-      "cohort_definition_id", "subject_id", "cohort_start_date",
-      "cohort_end_date"
-    ))
+    dplyr::relocate(dplyr::all_of(requiredCohortColumns("cohort")))
   attr(cohort, "cohort_set") <- attr(cohort, "cohort_set") |>
-    dplyr::relocate(c("cohort_definition_id", "cohort_name"))
+    dplyr::relocate(dplyr::all_of(requiredCohortColumns("cohort_set")))
   attr(cohort, "cohort_attrition") <- attr(cohort, "cohort_attrition") |>
-    dplyr::relocate(c(
-      "cohort_definition_id", "number_records", "number_subjects", "reason_id",
-      "reason", "excluded_records", "excluded_subjects"
-    ))
+    dplyr::relocate(dplyr::all_of(requiredCohortColumns("cohort_attrition")))
 
   # check NA
   checkNaCohort(cohort)
@@ -217,17 +212,21 @@ cdi <- function(x) {
 }
 defaultCohortSet <- function(cohort) {
   cohortName <- attr(cohort, "tbl_name")
+  cdm <- attr(cohort, "cdm_reference")
+  name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
   cohort |>
     dplyr::select("cohort_definition_id") |>
     dplyr::distinct() |>
     dplyr::mutate(
       "cohort_name" = paste0("cohort_", as.character(.data$cohort_definition_id))
     ) |>
-    dplyr::compute(name = paste0(cohortName, "_set"))
+    computeTable(cdm = cdm, name = name)
 }
 defaultCohortAttrition <- function(cohort, set) {
   cohortName <- attr(cohort, "tbl_name")
-  cohort <- cohort |>
+  cdm <- attr(cohort, "cdm_reference")
+  name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
+  x <- cohort |>
     dplyr::group_by(.data$cohort_definition_id) |>
     dplyr::summarise(
       number_records = dplyr::n(),
@@ -249,11 +248,12 @@ defaultCohortAttrition <- function(cohort, set) {
       "excluded_records" = 0,
       "excluded_subjects" = 0
     ) |>
-    dplyr::compute(name = paste0(cohortName, "_attrition"))
+    computeTable(cdm = cdm, name = name)
+  return(x)
 }
 checkOverlap <- function(cohort) {
   x <- cohort |>
-    dplyr::group_by(.data$cohort_definition_id, .data$subjet_id) |>
+    dplyr::group_by(.data$cohort_definition_id, .data$subject_id) |>
     dplyr::arrange(.data$cohort_start_date) |>
     dplyr::mutate(
       "next_cohort_start_date" = dplyr::lead(.data$cohort_start_date)
@@ -331,4 +331,11 @@ checkObservationPeriod <- function(cohort) {
     )
   }
   return(invisible(TRUE))
+}
+consistentNaming <- function(cohortName, cohortSetName, cohortAttritionName) {
+  if (is.na(cohortName)) {
+    if (!is.na(cohortSetName) | !is.na(cohortAttritionName)) {
+      cli::cli_abort("cohort is a temp table, cohort name and cohort attrition should be a temp table too")
+    }
+  }
 }
