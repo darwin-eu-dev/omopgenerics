@@ -1,123 +1,153 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/404.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/404.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/LICENSE.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/articles/a01_cdm_reference.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/articles/a01_cdm_reference.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/articles/a02_concept_set.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/articles/a02_concept_set.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/articles/a03_generated_cohort_set.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/articles/a03_generated_cohort_set.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/articles/a04_summarised_result.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/articles/a04_summarised_result.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/articles/a05_compared_result.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/articles/a05_compared_result.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/articles/index.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/articles/index.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/authors.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/authors.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/index.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/index.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/OMOPGenerics-package.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/OMOPGenerics-package.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/bind.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/attrition.generated_cohort_set.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cash-.cdm_reference.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/attrition.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cdmName.cdm_reference.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/bind.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cdmName.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cash-.cdm_reference.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cdmReference.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cash-set-.cdm_reference.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cdmReference.tbl.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmName.cdm_reference.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cohortAttrition.generated_cohort_set.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmName.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cohortAttrition.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmReference.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cohortCount.generated_cohort_set.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmSource.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cohortCount.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmVersion.cdm_reference.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cohortSet.generated_cohort_set.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmVersion.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/cohortSet.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cohortCount.generated_cohort_set.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/collect.generated_cohort_set.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cohortCount.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/comparedResult.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/collect.generated_cohort_set.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/export.cdm_reference.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/comparedResult.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/export.generated_cohort_set.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/computeTable.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/export.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/dropTable.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/export.summarised_result.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/export.cdm_reference.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/generatedCohortSet.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/export.generated_cohort_set.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/generatedCohortSet.tbl.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/export.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/index.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/export.summarised_result.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/participants.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/generatedCohortSet.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/print.cdm_reference.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/requiredOmopCdmColumns.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/insertTable.cdm_reference.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/standardOmopCdmTables.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/insertTable.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/sub-sub-.cdm_reference.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/insertTable.local_cdm.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/summarisedResult.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/localSource.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/suppress.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/participants.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/CDMUtilities/reference/suppress.summarised_result.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/print.cdm_reference.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/requiredCohortColumns.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/requiredTableColumns.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/set.generated_cohort_set.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/set.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/standardTables.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/sub-sub-.cdm_reference.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/sub-subset-.cdm_reference.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/summarisedResult.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/suppress.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/suppress.summarised_result.html</loc>
   </url>
 </urlset>
