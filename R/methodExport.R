@@ -51,8 +51,8 @@ export.generated_cohort_set <- function(x,
                                         namePrefix = "",
                                         minCellCount = 5,
                                         resultId = NULL) {
-  cohortSet(x) |>
-    dplyr::inner_join(cohortAttrition(x), by = "cohort_definition_id") |>
+  set(x) |>
+    dplyr::inner_join(attrition(x), by = "cohort_definition_id") |>
     dplyr::arrange(.data$cohort_definition_id, .data$reason_id) |>
     dplyr::mutate(
       cohort_table_name = attr(x, "tbl_name"),

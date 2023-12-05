@@ -57,7 +57,7 @@ standardOmopCdmTables()
 ```
 Each one of the tables has a required columns. For example, for the `person` table this are the required columns:
 ```{r}
-requiredOmopCdmColumns(table = "person")
+requiredTableColumns(table = "person")
 ```
 
 * Cohort tables (see `generatedCohortSet`).
