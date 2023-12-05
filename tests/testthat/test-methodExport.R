@@ -146,17 +146,15 @@ test_that("export a cohort object", {
     period_type_concept_id = 0
   ) |>
     dplyr::mutate(observation_period_id = dplyr::row_number())
-  cohorts = list("cohort1" = generatedCohortSet(dplyr::tibble(
-    cohort_definition_id = 1, subject_id = 1:20,
-    cohort_start_date = as.Date("2020-01-01"),
-    cohort_end_date = as.Date("2020-12-31")
-  )))
   cdmTables <- list(
     "person" = person, "observation_period" = observation_period
   )
-  cdm <- cdmReference(
-    cdmTables = cdmTables, cohortTables = cohorts, cdmName = "mock"
-  )
+  cdm <- cdmReference(cdmTables = cdmTables, cdmName = "mock")
+  cdm$cohort1 <- generatedCohortSet(insertTable(src = cdm, name = "cohort1", table =  dplyr::tibble(
+    cohort_definition_id = 1, subject_id = 1:5,
+    cohort_start_date = as.Date("2010-01-01"),
+    cohort_end_date = as.Date("2010-12-31")
+  )))
 
   path <- tempdir()
   expect_no_error(export(x = cdm$cohort1, path = path))
@@ -166,21 +164,21 @@ test_that("export a cohort object", {
     file = file.path(path, "cohort_details_mock.csv"),
     col_types = readr::cols(.default = "c")
   )
-  expect_identical(result$number_records, "20")
-  expect_identical(result$number_subjects, "20")
+  expect_identical(result$number_records, "5")
+  expect_identical(result$number_subjects, "5")
   expect_identical(result$excluded_records, "0")
   expect_identical(result$excluded_subjects, "0")
 
   # supress counts
-  expect_no_error(export(x = cdm$cohort1, path = path, minCellCount = 21))
+  expect_no_error(export(x = cdm$cohort1, path = path, minCellCount = 6))
   x <- list.files(path)
   expect_true("cohort_details_mock.csv" %in% x)
   result <- readr::read_csv(
     file = file.path(path, "cohort_details_mock.csv"),
     col_types = readr::cols(.default = "c")
   )
-  expect_identical(result$number_records, "<21")
-  expect_identical(result$number_subjects, "<21")
+  expect_identical(result$number_records, "<6")
+  expect_identical(result$number_subjects, "<6")
   expect_identical(result$excluded_records, "0")
   expect_identical(result$excluded_subjects, "0")
 

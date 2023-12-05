@@ -4,13 +4,7 @@
 \alias{generatedCohortSet}
 \title{\code{generated_cohort_set} objects constructor.}
 \usage{
-generatedCohortSet(
-  cohortRef,
-  cohortSetRef = NULL,
-  cohortAttritionRef = NULL,
-  cohortName = "cohort",
-  ...
-)
+generatedCohortSet(cohortRef, cohortSetRef = NULL, cohortAttritionRef = NULL)
 }
 \arguments{
 \item{cohortRef}{Table with at least: cohort_definition_id, subject_id,
@@ -21,10 +15,6 @@ cohort_start_date, cohort_end_date.}
 \item{cohortAttritionRef}{Table with at least: cohort_definition_id,
 number_subjects, number_records, reason_id, reason, excluded_subjects,
 excluded_records.}
-
-\item{cohortName}{Name of the generated_cohort_set object.}
-
-\item{...}{Other parameters.}
 }
 \value{
 A generated_cohort_set object

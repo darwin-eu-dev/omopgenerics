@@ -26,21 +26,87 @@ There are multiple versions of the OMOP CDM. The list of tables included in vers
 
 ```{r}
 library(OMOPGenerics)
-standardOmopCdmTables(version = "5.3")
+standardTables()
 ```
 
 Each one of these tables is associated with a set of fields. For example, for the `person` table has includes:
 
 ```{r}
-requiredOmopCdmColumns(table = "person", version = "5.3")
+
+requiredTableColumns(table = "person")
 ```
 
-Meanwhile the observation period table includes
+* Cohort tables (see `generatedCohortSet`).
 
-```{r}
-print(requiredOmopCdmColumns(table = "observation_period", version = "5.3"))
+* Other tables, these other tables can have any format. 
+
+Any table to be part of a cdm object has to fulfill 4 conditions:
+
+- All must share a common source.
+
+- The name of the tables must be lowercase.
+
+- The name of the column names of each table must be lowercase.
+
+- `person` and `observation_period` must be present.
+
+### Required columns
+
+```{r, echo = FALSE}
+version = "5.3"
+mes <- cli::col_green(cli::style_bold("OMOP CDM version: \"{version}\""))
+for (tab in c("person", "observation_period")) {
+  mes <- c(
+    mes, 
+    "*" = paste0(
+      cli::col_blue(cli::style_bold(tab)), ": ", paste0(
+        requiredTableColumns(table = tab, version = version), collapse = ", "
+      )
+    )
+  )
+}
+tables <- standardTables(version = version)
+tables <- sort(tables[!tables %in% c("person", "observation_period")])
+for (tab in tables) {
+  mes <- c(
+    mes, 
+    "*" = paste0(
+      cli::col_blue(tab), ": ", paste0(
+        requiredTableColumns(table = tab, version = version), collapse = ", "
+      )
+    )
+  )
+}
+cli::cli_inform(mes)
 ```
 
+```{r, echo = FALSE}
+version = "5.4"
+mes <- cli::col_green(cli::style_bold("OMOP CDM version: \"{version}\""))
+for (tab in c("person", "observation_period")) {
+  mes <- c(
+    mes, 
+    "*" = paste0(
+      cli::col_blue(cli::style_bold(tab)), ": ", paste0(
+        requiredTableColumns(table = tab, version = version), collapse = ", "
+      )
+    )
+  )
+}
+tables <- standardTables(version = version)
+tables <- sort(tables[!tables %in% c("person", "observation_period")])
+for (tab in tables) {
+  mes <- c(
+    mes, 
+    "*" = paste0(
+      cli::col_blue(tab), ": ", paste0(
+        requiredTableColumns(table = tab, version = version), collapse = ", "
+      )
+    )
+  )
+}
+cli::cli_inform(mes)
+```
 All of these tables may contain additional fields.
 
 ### 2) Cohort tables
@@ -50,7 +116,9 @@ Studies using the OMOP CDM often create study-specific cohort tables. We also co
 As with the standard OMOP CDM tables, cohort tables are expected to contain a specific set of fields (with no restriction placed on whether they include additional fields or not).
 
 ```{r}
-# requiredOmopCdmColumns(table = "cohort", version = "5.3")
+requiredCohortColumns(table = "cohort", version = "5.3")
+requiredCohortColumns(table = "cohort_set", version = "5.3")
+requiredCohortColumns(table = "cohort_attrition", version = "5.3")
 ```
 
 ### 3) Other tables

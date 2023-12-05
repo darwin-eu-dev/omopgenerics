@@ -2,18 +2,18 @@
 % Please edit documentation in R/classCdmReference.R
 \name{[[.cdm_reference}
 \alias{[[.cdm_reference}
-\title{Subset a cdm reference object}
+\title{Subset a cdm reference object.}
 \usage{
-\method{[[}{cdm_reference}(x, i)
+\method{[[}{cdm_reference}(x, name)
 }
 \arguments{
 \item{x}{A cdm reference}
 
-\item{i}{The name or index of the table to extract from the cdm object}
+\item{name}{The name or index of the table to extract from the cdm object.}
 }
 \value{
 A single cdm table reference
 }
 \description{
-Subset a cdm reference object
+Subset a cdm reference object.
 }

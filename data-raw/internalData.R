@@ -37,6 +37,43 @@ fieldsTables <- fieldsTables53 |>
       is.na(cdm_version_53) & cdm_version_54 == 1 ~ "5.4"
     )
   ) |>
-  select(-"cdm_version_53", -"cdm_version_54")
+  select(
+    "cdm_table_name" = "cdmTableName",
+    "cdm_field_name" = "cdmFieldName",
+    "is_required" = "isRequired",
+    "cdm_datatype" = "cdmDatatype",
+    "cdm_version"
+  )
 
-usethis::use_data(fieldsTables, internal = TRUE, overwrite = TRUE)
+fieldsCohorts <- tibble(
+  cdm_table_name = "cohort",
+  cdm_field_name = c(
+    "cohort_definition_id", "subject_id", "cohort_start_date", "cohort_end_date"
+  ),
+  is_required = TRUE,
+  cdm_datatype = c("integer", "integer", "date", "date"),
+  cdm_version = "5.3; 5.4"
+) |>
+  union_all(tibble(
+    cdm_table_name = "cohort_set",
+    cdm_field_name = c("cohort_definition_id", "cohort_name"),
+    is_required = TRUE,
+    cdm_datatype = c("integer", "varchar(255"),
+    cdm_version = "5.3; 5.4"
+  )) |>
+  union_all(tibble(
+    cdm_table_name = "cohort_attrition",
+    cdm_field_name = c(
+      "cohort_definition_id", "number_records", "number_subjects", "reason_id",
+      "reason", "excluded_records", "excluded_subjects"
+    ),
+    is_required = TRUE,
+    cdm_datatype = c(
+      "integer", "integer", "integer", "integer", "varchar(255", "integer",
+      "integer"
+    ),
+    cdm_version = "5.3; 5.4"
+  ))
+
+
+usethis::use_data(fieldsTables, fieldsCohorts, internal = TRUE, overwrite = TRUE)
