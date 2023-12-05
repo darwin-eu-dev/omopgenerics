@@ -28,7 +28,7 @@ A cdm object can contain three type of tables:
 
 * Standard tables:
 ```{r}
-standardOmopCdmTables()
+standardTables()
 ```
 Each one of the tables has a required columns. For example, for the `person` table this are the required columns:
 ```{r}
@@ -64,7 +64,7 @@ for (tab in c("person", "observation_period")) {
     )
   )
 }
-tables <- standardOmopCdmTables(version = version)
+tables <- standardTables(version = version)
 tables <- sort(tables[!tables %in% c("person", "observation_period")])
 for (tab in tables) {
   mes <- c(
@@ -92,7 +92,7 @@ for (tab in c("person", "observation_period")) {
     )
   )
 }
-tables <- standardOmopCdmTables(version = version)
+tables <- standardTables(version = version)
 tables <- sort(tables[!tables %in% c("person", "observation_period")])
 for (tab in tables) {
   mes <- c(

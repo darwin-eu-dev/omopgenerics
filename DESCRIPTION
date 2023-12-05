@@ -19,7 +19,9 @@ Imports:
     readr,
     rlang,
     snakecase,
-    stringr
+    stringr,
+    tidyr,
+    tidyselect
 Depends: 
     R (>= 4.1)
 Suggests: 

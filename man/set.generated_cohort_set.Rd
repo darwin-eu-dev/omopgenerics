@@ -4,10 +4,10 @@
 \alias{set.generated_cohort_set}
 \title{Get cohort settings from a generated_cohort_set object.}
 \usage{
-\method{set}{generated_cohort_set}(cohort)
+\method{set}{generated_cohort_set}(x)
 }
 \arguments{
-\item{cohort}{A generated_cohort_set object.}
+\item{x}{A generated_cohort_set object.}
 }
 \value{
 A table with the details of the cohort set.

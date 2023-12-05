@@ -122,9 +122,9 @@ validateCdmReference <- function(cdm) {
       cols <- requiredTableColumns(table = "cohort", version = cdmVersion)
       checkColumnsCdm(cohort, nm, cols)
       cols <- requiredTableColumns(table = "cohort_set", version = cdmVersion)
-      checkColumnsCdm(cohortSet(cohort), paste0(nm, "_set"), cols)
+      checkColumnsCdm(set(cohort), paste0(nm, "_set"), cols)
       cols <- requiredTableColumns(table = "cohort_attrition", version = cdmVersion)
-      checkColumnsCdm(cohortAttrition(cohort), paste0(nm, "_attrition"), cols)
+      checkColumnsCdm(attrition(cohort), paste0(nm, "_attrition"), cols)
     }
   }
 
@@ -236,14 +236,14 @@ cdmVersion.cdm_reference <- function(cdm) {
 #'
 #' @param cdm A cdm reference.
 #' @param name Name where to assign the new table.
-#' @param table Table with the same source than the cdm object.
+#' @param value Table with the same source than the cdm object.
 #'
 #' @return The cdm reference.
 #'
 #' @export
 #'
-`$<-.cdm_reference` <- function(cdm, name, table) {
-  cdm[[name]] <- table
+`$<-.cdm_reference` <- function(cdm, name, value) {
+  cdm[[name]] <- value
   return(cdm)
 }
 
@@ -263,10 +263,14 @@ cdmVersion.cdm_reference <- function(cdm) {
       cli::cli_abort("Table and cdm does not share a common source, please insert table to the cdm_source")
     }
     remoteName <- attr(value, "tbl_name")
+    if (is.null(remoteName)) {
+      cli::cli_abort("The table that you are tying to assign does not have a name, please insert it to the cdm with insertTable or compute it with computeTable")
+    }
     if (!is.na(remoteName) & name != remoteName) {
       cli::cli_abort("You can't assign a table named {remoteName} to {name}. Please use computeTable to change table name.")
     }
   }
+  attr(value, "cdm_reference") <- NULL
   originalClass <- class(cdm)
   cdm <- unclass(cdm)
   cdm[[name]] <- value

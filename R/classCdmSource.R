@@ -31,7 +31,7 @@ newCdmSource <- function(src, sourceName, sourceType) {
 validateCdmSource <- function(src) {
   # toy data
   name <- paste0(c(sample(letters, 5, replace = TRUE), "_test_table"), collapse = "")
-  table <- cars
+  table <- datasets::cars
 
   # create mock cdm
   cdm <- cdmReference(
@@ -52,7 +52,6 @@ validateCdmSource <- function(src) {
   )
 
   # insert table
-  validateX(x = x, name = name, fun = "insertTable")
   cdm[[name]] <- insertTable(src = cdm, name = name, table = table)
   validateX(x = cdm[[name]], name = name, fun = "insertTable")
 
@@ -108,7 +107,7 @@ validateX <- function(x, name, fun) {
 }
 
 #' @export
-print.cdm_source <- function(x) {
+print.cdm_source <- function(x, ...) {
   cli::cli_inform(
     "This is a {attr(x, 'source_type')} cdm source of {attr(x, 'source_name')}"
   )

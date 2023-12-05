@@ -42,13 +42,21 @@ generatedCohortSet <- function(cohortRef,
       insertTable or computaTable first."
     )
   }
+  cdm <- attr(cohortRef, "cdm_reference")
+  cohortName <- attr(cohortRef, "tbl_name")
 
   # populate
   if (is.null(cohortSetRef)) {
     cohortSetRef <- defaultCohortSet(cohortRef)
+  } else if ("data.frame" %in% class(cohortSetRef)) {
+    name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
+    cohortSetRef <- insertTable(src = cdm, name = name, table = cohortSetRef)
   }
   if (is.null(cohortAttritionRef)) {
     cohortAttritionRef <- defaultCohortAttrition(cohortRef, cohortSetRef)
+  } else if ("data.frame" %in% class(cohortAttritionRef)) {
+    name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
+    cohortAttritionRef <- insertTable(src = cdm, name = name, table = cohortAttritionRef)
   }
 
   # constructor
@@ -269,8 +277,8 @@ checkOverlap <- function(cohort) {
       utils::head(5)
     cli::cli_abort(
       "There is overlap between entries in the cohort, {nrow(x)} overlaps
-      detected{ifelse(nrow(x)<=5), ':', ' first 5:')}",
-      capture.output(print(x5, width = Inf))
+      detected{ifelse(nrow(x)<=5, ':', ' first 5:')}",
+      utils::capture.output(print(x5, width = Inf))
     )
   }
   return(invisible(TRUE))
@@ -326,8 +334,8 @@ checkObservationPeriod <- function(cohort) {
     x5 <- x |> utils::head(5)
     cli::cli_abort(
       "Some observations are not during observation period, {nrow(x)}
-      detected{ifelse(nrow(x)<=5), ':', ' first 5:')}",
-      capture.output(print(x5, width = Inf))
+      detected{ifelse(nrow(x)<=5, ':', ' first 5:')}",
+      utils::capture.output(print(x5, width = Inf))
     )
   }
   return(invisible(TRUE))

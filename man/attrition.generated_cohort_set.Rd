@@ -4,10 +4,10 @@
 \alias{attrition.generated_cohort_set}
 \title{Get cohort attrition from a generated_cohort_set object.}
 \usage{
-\method{attrition}{generated_cohort_set}(cohort)
+\method{attrition}{generated_cohort_set}(x)
 }
 \arguments{
-\item{cohort}{A generated_cohort_set object.}
+\item{x}{A generated_cohort_set object.}
 }
 \value{
 A table with the attrition.
