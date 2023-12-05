@@ -106,15 +106,7 @@ for (tab in tables) {
   )
 }
 cli::cli_inform(mes)
-requiredOmopCdmColumns(table = "person", version = "5.3")
 ```
-
-Meanwhile the observation period table includes
-
-```{r}
-print(requiredOmopCdmColumns(table = "observation_period", version = "5.3"))
-```
-
 All of these tables may contain additional fields.
 
 ### 2) Cohort tables
@@ -124,7 +116,9 @@ Studies using the OMOP CDM often create study-specific cohort tables. We also co
 As with the standard OMOP CDM tables, cohort tables are expected to contain a specific set of fields (with no restriction placed on whether they include additional fields or not).
 
 ```{r}
-# requiredOmopCdmColumns(table = "cohort", version = "5.3")
+requiredCohortColumns(table = "cohort", version = "5.3")
+requiredCohortColumns(table = "cohort_set", version = "5.3")
+requiredCohortColumns(table = "cohort_attrition", version = "5.3")
 ```
 
 ### 3) Other tables
