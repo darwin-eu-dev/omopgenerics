@@ -17,9 +17,8 @@
 
 #' 'codelist' object constructor
 #'
-#' @param x a named list where each element contains either a vector of concept
-#' IDs or a tibble with a column concept_id that contains concept IDs
-#' representing the codelist
+#' @param x a named list where each element contains a vector of concept
+#' IDs
 #'
 #' @return A codelist
 #' @export
@@ -27,7 +26,7 @@
 #' @examples
 codelist <- function(x) {
 
-  #constructer
+  #constructor
   x <- newCodelist(x)
 
   # validate
@@ -38,23 +37,29 @@ codelist <- function(x) {
 
 newCodelist <- function(x) {
 
-  class(x) <- c("codelist", class(x))
+  class(x) <- c("codelist", class(x)[which(class(x) != "codelist")])
 
   return(x)
 }
 
 validateCodelist <- function(x) {
 
-
-  # must be a named list
-
-  # names in the list must be snake case with a maximum length of ??
-
-  # either a vector of concept ids (numeric) or a tibble with a column that
-  # is concept ids
-
-  # none can be NA
-
+  assertList(x, named = TRUE, class = "numeric")
 
   return(x)
+}
+
+#' @export
+print.codelist <- function(x, ...) {
+  cli::cli_text("{length(x)} codelist{?s}")
+  cli::cat_line("")
+  if(length(x) <= 20){
+  cli::cat_line(paste("Codelists:",
+                      paste(names(x), collapse = ", ")))
+  } else {
+    cli::cat_line(paste("Codelists:",
+                        paste(names(x[1:10]), collapse = ", ")))
+  }
+  invisible(x)
+
 }
