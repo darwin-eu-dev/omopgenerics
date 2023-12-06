@@ -1,5 +1,5 @@
 ---
-title: "a02_concept_set"
+title: "Codelists"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{a02_concept_set}
@@ -16,4 +16,13 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(OMOPGenerics)
+```
+
+A codelist is a named list, with each item of the list containing concept IDs. 
+```{r}
+condition_codes <- list("diabetes" = c(201820, 4087682, 3655269),
+                        "asthma" = 317009)
+condition_codes <- codelist(condition_codes)
+
+condition_codes
 ```
