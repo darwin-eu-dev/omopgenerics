@@ -4,14 +4,12 @@
 \alias{codelist}
 \title{'codelist' object constructor}
 \usage{
-codelist(x, name = "codelist")
+codelist(x)
 }
 \arguments{
 \item{x}{a named list where each element contains either a vector of concept
 IDs or a tibble with a column concept_id that contains concept IDs
 representing the codelist}
-
-\item{name}{}
 }
 \value{
 A codelist
