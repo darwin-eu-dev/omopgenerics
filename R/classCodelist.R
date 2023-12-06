@@ -22,7 +22,7 @@
 #' representing the codelist
 #' @param name
 #'
-#' @return
+#' @return A codelist
 #' @export
 #'
 #' @examples
