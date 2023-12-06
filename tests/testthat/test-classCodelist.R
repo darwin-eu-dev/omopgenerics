@@ -5,15 +5,15 @@ test_that("test codelist works", {
   expect_no_error(codes <- codelist(codes))
   class <- codes |> codelist() |> class()
   expect_true(c("codelist") %in% class)
-  print(codes)
+  expect_no_error(print(codes))
 
   # multiple codelists
   codes <- list("disease X" = c(1,2,3),
-                "disease Y" = c(4,5,6))
+                "disease Y" = c(4,5))
   expect_no_error(codes <- codelist(codes))
   class <- codes |> codelist() |> class()
   expect_true(c("codelist") %in% class)
-  print(codes)
+  expect_no_error(print(codes))
 
   # expected errors
   expect_error(codelist(c(1,2,3)))

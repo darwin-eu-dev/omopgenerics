@@ -44,21 +44,24 @@ newCodelist <- function(x) {
 
 validateCodelist <- function(x) {
 
-  assertList(x, named = TRUE, class = "numeric")
+  assertList(x, named = TRUE, class = c("numeric", "integer"))
 
   return(x)
 }
 
 #' @export
 print.codelist <- function(x, ...) {
-  cli::cli_text("{length(x)} codelist{?s}")
+  cli::cli_h1("{length(x)} codelist{?s}")
   cli::cat_line("")
-  if(length(x) <= 20){
-  cli::cat_line(paste("Codelists:",
-                      paste(names(x), collapse = ", ")))
+  if(length(x) <= 6){
+    for(i in seq_along(x)){
+      cli::cat_line(paste0("- ", names(x)[i], " (", length(x[[i]]), " codes)"))
+    }
   } else {
-    cli::cat_line(paste("Codelists:",
-                        paste(names(x[1:10]), collapse = ", ")))
+    for(i in seq_along(x[1:10])){
+      cli::cat_line(paste0("- ", names(x[1:10])[i], " (", length(x[[i]]), " codes)"))
+    }
+    cli::cat_line(paste0("along with ", length(x)-10, " more codelists"))
   }
   invisible(x)
 
