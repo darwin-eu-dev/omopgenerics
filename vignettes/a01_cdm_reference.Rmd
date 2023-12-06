@@ -36,19 +36,19 @@ Each one of these tables is associated with a set of fields. For example, for th
 requiredTableColumns(table = "person")
 ```
 
-* Cohort tables (see `generatedCohortSet`).
+-   Cohort tables (see `generatedCohortSet`).
 
-* Other tables, these other tables can have any format. 
+-   Other tables, these other tables can have any format.
 
 Any table to be part of a cdm object has to fulfill 4 conditions:
 
-- All must share a common source.
+-   All must share a common source.
 
-- The name of the tables must be lowercase.
+-   The name of the tables must be lowercase.
 
-- The name of the column names of each table must be lowercase.
+-   The name of the column names of each table must be lowercase.
 
-- `person` and `observation_period` must be present.
+-   `person` and `observation_period` must be present.
 
 ### Required columns
 
@@ -107,6 +107,7 @@ for (tab in tables) {
 }
 cli::cli_inform(mes)
 ```
+
 All of these tables may contain additional fields.
 
 ### 2) Cohort tables
@@ -121,7 +122,18 @@ requiredCohortColumns(table = "cohort_set", version = "5.3")
 requiredCohortColumns(table = "cohort_attrition", version = "5.3")
 ```
 
-### 3) Other tables
+### 3) Achilles result tables
+
+The [Achilles R](https://ohdsi.github.io/Achilles) package provides descriptive statistics on an OMOP CDM database. The results from Achilles are stored in tables in the database. The following tables are created with the given columns.
+
+```{r}
+achillesTables()
+requiredAchillesColumns("achilles_analysis")
+requiredAchillesColumns("achilles_results")
+requiredAchillesColumns("achilles_results_dist")
+```
+
+### 4) Other tables
 
 Beyond the standard OMOP CDM tables and cohort tables, additional tables can be added to the cdm reference. These tables could, for example, be OMOP extension/ expansion tables or extra tables containing data required to perform a study but not normally included as part of the OMOP CDM. These tables could contain any set of fields.
 
@@ -144,7 +156,7 @@ Any table to be part of a cdm object has to fulfill the following conditions:
 When the export method is applied to a cdm reference, metadata about that cdm will be written to a csv. The csv contains the following columns
 
 | Variable                               | Description                                                                                             | Datatype  | Required |
-|:---------------|:------------------|:---------------|:---------------------|
+|:----------------|:-----------------|:----------------|:--------------------|
 | result_type                            | Always "Snapshot". Identifies this result as a summary of a cdm reference.                              | Character | Yes      |
 | cdm_name                               | The name of the data source.                                                                            | Character | Yes      |
 | cdm_source_name                        | Value of cdm source name taken from the cdm source table (if present in the cdm reference).             | Character | No       |
