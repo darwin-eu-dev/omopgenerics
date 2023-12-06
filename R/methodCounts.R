@@ -28,5 +28,8 @@ cohortCount.generated_cohort_set <- function(cohort) {
       "cohort_definition_id", "number_records", "number_subjects"
     ) |>
     dplyr::collect() |>
-    dplyr::arrange(.data$cohort_definition_id)
+    dplyr::arrange(.data$cohort_definition_id) |>
+    dplyr::mutate(cohort_definition_id = as.integer(.data$cohort_definition_id),
+                  number_records = as.integer(.data$number_records),
+                  number_subjects = as.integer(.data$number_subjects))
 }
