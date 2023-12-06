@@ -20,16 +20,15 @@
 #' @param x a named list where each element contains either a vector of concept
 #' IDs or a tibble with a column concept_id that contains concept IDs
 #' representing the codelist
-#' @param name
 #'
 #' @return A codelist
 #' @export
 #'
 #' @examples
-codelist <- function(x, name = "codelist") {
+codelist <- function(x) {
 
   #constructer
-  x <- newCodelist(x, name)
+  x <- newCodelist(x)
 
   # validate
   x <- validateCodelist(x)
@@ -37,10 +36,9 @@ codelist <- function(x, name = "codelist") {
   return(x)
 }
 
-newCodelist <- function(x, name) {
+newCodelist <- function(x) {
 
   class(x) <- c("codelist", class(x))
-  attr(x, "codelist") <- name
 
   return(x)
 }
