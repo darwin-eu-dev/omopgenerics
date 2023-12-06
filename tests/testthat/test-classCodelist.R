@@ -16,9 +16,8 @@ test_that("test codelist works", {
   print(codes)
 
   # expected errors
-  codelist(c(1,2,3))
-  codelist(list(c(1,2,3)))
-  codelist(list("disease" = dplyr::tibble("disease" = c(1,2,3))))
-
+  expect_error(codelist(c(1,2,3)))
+  expect_error(codelist(list(c(1,2,3))))
+  expect_error(codelist(list("disease" = dplyr::tibble("disease" = c(1,2,3)))))
 
 })
