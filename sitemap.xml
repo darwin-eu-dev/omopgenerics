@@ -10,7 +10,7 @@
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/articles/a01_cdm_reference.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/articles/a02_concept_set.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/articles/a02_codelist.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/articles/a03_generated_cohort_set.html</loc>
@@ -65,6 +65,9 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmVersion.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/codelist.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cohortCount.generated_cohort_set.html</loc>

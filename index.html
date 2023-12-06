@@ -44,7 +44,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="articles/a01_cdm_reference.html">The cdm reference</a>
-    <a class="dropdown-item" href="articles/a02_concept_set.html">a02_concept_set</a>
+    <a class="dropdown-item" href="articles/a02_codelist.html">Codelists</a>
     <a class="dropdown-item" href="articles/a03_generated_cohort_set.html">Generated cohort set</a>
     <a class="dropdown-item" href="articles/a04_summarised_result.html">Summarised result</a>
     <a class="dropdown-item" href="articles/a05_compared_result.html">a05_compared_result</a>
@@ -94,7 +94,7 @@
 <li>Standard tables:</li>
 </ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">standardOmopCdmTables</span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/standardTables.html">standardTables</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "person"                "observation_period"    "visit_occurrence"     </span></span>
 <span><span class="co">#&gt;  [4] "visit_detail"          "condition_occurrence"  "drug_exposure"        </span></span>
 <span><span class="co">#&gt;  [7] "procedure_occurrence"  "device_exposure"       "measurement"          </span></span>
@@ -126,8 +126,20 @@
 </ul>
 </div>
 <div class="section level3">
-<h3 id="concept-set">Concept set<a class="anchor" aria-label="anchor" href="#concept-set"></a>
+<h3 id="codelist">Codelist<a class="anchor" aria-label="anchor" href="#codelist"></a>
 </h3>
+<p>A codelist is a named list, with each item of the list containing concept IDs.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">condition_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"diabetes"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">201820</span>, <span class="fl">4087682</span>, <span class="fl">3655269</span><span class="op">)</span>,</span>
+<span>                        <span class="st">"asthma"</span> <span class="op">=</span> <span class="fl">317009</span><span class="op">)</span></span>
+<span><span class="va">condition_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/codelist.html">codelist</a></span><span class="op">(</span><span class="va">condition_codes</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">condition_codes</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ── 2 codelists ─────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; - diabetes (3 codes)</span></span>
+<span><span class="co">#&gt; - asthma (1 codes)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="generatred-cohort-set">Generatred cohort set<a class="anchor" aria-label="anchor" href="#generatred-cohort-set"></a>
