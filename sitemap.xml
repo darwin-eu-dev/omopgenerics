@@ -34,6 +34,9 @@
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/OMOPGenerics-package.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/achillesTables.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/attrition.generated_cohort_set.html</loc>
   </url>
   <url>
@@ -122,6 +125,9 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/print.cdm_reference.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/requiredAchillesColumns.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/requiredCohortColumns.html</loc>
