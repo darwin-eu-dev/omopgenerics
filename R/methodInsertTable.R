@@ -10,7 +10,7 @@
 #'
 insertTable <- function(src, name, table) {
   assertCharacter(name, length = 1, minNumCharacter = 1, na = TRUE)
-  assertClass(table, "tbl_df")
+  assertClass(table, "data.frame")
   UseMethod("insertTable")
 }
 
@@ -25,10 +25,9 @@ insertTable <- function(src, name, table) {
 #' @return The cdm reference.
 #'
 insertTable.cdm_reference <- function(src, name, table) {
-  src[[name]] <- insertTable(
-    src = getCdmSource(src), name = name, table = table
-  )
-  return(src)
+  table <- insertTable(src = getCdmSource(src), name = name, table = table)
+  attr(table, "cdm_reference") <- src
+  return(table)
 }
 
 #' Insert a table to a local cdm object.
@@ -42,7 +41,6 @@ insertTable.cdm_reference <- function(src, name, table) {
 #' @return The table in the cdm reference.
 #'
 insertTable.local_cdm <- function(src, name, table) {
-  table <- cdmTable(table)
   attr(table, "tbl_name") <- name
   return(table)
 }

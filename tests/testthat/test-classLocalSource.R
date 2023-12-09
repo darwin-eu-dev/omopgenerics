@@ -1,3 +1,6 @@
 test_that("multiplication works", {
-  expect_equal(2 * 2, 4)
+  expect_no_error(localSource("test"))
+  expect_error(localSource(c("test", "test2")))
+  expect_error(localSource(1))
+  expect_error(localSource("test", "x"))
 })

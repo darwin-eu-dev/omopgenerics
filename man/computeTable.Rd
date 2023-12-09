@@ -4,12 +4,14 @@
 \alias{computeTable}
 \title{Compute a cdm table.}
 \usage{
-computeTable(x, name = NA_character_)
+computeTable(x, cdm, name = NA_character_)
 }
 \arguments{
-\item{name}{Name of the table to insert.}
+\item{x}{A table.}
 
 \item{cdm}{A cdm reference.}
+
+\item{name}{Name of the table to insert.}
 }
 \value{
 The table in the cdm reference.

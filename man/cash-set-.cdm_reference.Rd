@@ -4,14 +4,14 @@
 \alias{$<-.cdm_reference}
 \title{Assign an table to a cdm reference.}
 \usage{
-\method{$}{cdm_reference}(cdm, name, table) <- value
+\method{$}{cdm_reference}(cdm, name) <- value
 }
 \arguments{
 \item{cdm}{A cdm reference.}
 
 \item{name}{Name where to assign the new table.}
 
-\item{table}{Table with the same source than the cdm object.}
+\item{value}{Table with the same source than the cdm object.}
 }
 \value{
 The cdm reference.
