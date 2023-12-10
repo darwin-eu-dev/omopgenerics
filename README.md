@@ -96,6 +96,35 @@ Any table to be part of a cdm object has to fulfill 4 conditions:
 
 - `person` and `observation_period` must be present.
 
+### Concept set
+
+A concept set
+
+``` r
+condition_cs <- list(
+  "diabetes" = dplyr::tibble(
+    "concept_id" = c(201820, 4087682),
+    "excluded" = c(FALSE,FALSE),
+    "descendants" = c(TRUE,FALSE),
+    "mapped" = c(FALSE, FALSE)
+  ),
+  "asthma" = dplyr::tibble(
+    "concept_id" = 317009,
+    "excluded" = FALSE,
+    "descendants" = FALSE,
+    "mapped" = FALSE
+  )
+)
+condition_cs <- conceptSet(condition_cs)
+
+condition_cs
+#> 
+#> ── 2 conceptSets ───────────────────────────────────────────────────────────────
+#> 
+#> - diabetes (2 concept criteria)
+#> - asthma (1 concept criteria)
+```
+
 ### Codelist
 
 A codelist is a named list, with each item of the list containing
