@@ -4,11 +4,12 @@
 \alias{requiredAchillesColumns}
 \title{Required columns for achilles result tables}
 \usage{
-requiredAchillesColumns(table)
+requiredAchillesColumns(table, version = "5.3")
 }
 \arguments{
-\item{table}{Either achilles_analysis, achilles_results,
-achilles_results_dist}
+\item{table}{Table to see required columns.}
+
+\item{version}{Version of the OMOP Common Data Model.}
 }
 \value{
 Names of columns for achilles result tables
