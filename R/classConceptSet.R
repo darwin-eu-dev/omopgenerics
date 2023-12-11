@@ -26,52 +26,31 @@
 #' @examples
 conceptSet <- function(x) {
 
-  #constructor
-  x <- newConceptSet(x)
+  # constructor
+  x <- newconceptSet(x)
 
   # validate
-  x <- validateConceptSet(x)
+  x <- validateconceptSet(x)
 
   return(x)
 }
 
-newConceptSet <- function(x) {
+newconceptSet <- function(x) {
 
-  class(x) <- c("conceptSet", class(x)[which(class(x) != "conceptSet")])
-
-  return(x)
-}
-
-validateConceptSet <- function(x) {
-
-  assertList(x, named = TRUE, class = c("tbl"))
-
-  for(i in seq_along(x)){
-    assertTibble(x[[i]],
-                 columns = c("concept_id", "excluded", "descendants", "mapped"))
-    assertNumeric(x[[i]]$concept_id, integerish = TRUE)
-    assertLogical(x[[i]]$excluded)
-    assertLogical(x[[i]]$descendants)
-    assertLogical(x[[i]]$mapped)
-  }
+  class(x) <- c("conceptSet",
+                class(x)[which(class(x) != "conceptSet")])
 
   return(x)
 }
 
-#' @export
-print.conceptSet <- function(x, ...) {
-  cli::cli_h1("{length(x)} conceptSet{?s}")
-  cli::cat_line("")
-  if(length(x) <= 6){
-    for(i in seq_along(x)){
-      cli::cat_line(paste0("- ", names(x)[i], " (", nrow(x[[i]]), " concept criteria)"))
-    }
+validateconceptSet <- function(x) {
+
+  if("conceptSetExpression" %in% class(x)){
+    validateconceptSetExpression()
   } else {
-    for(i in seq_along(x[1:10])){
-      cli::cat_line(paste0("- ", names(x[1:10])[i], " (", nrow(x[[i]]), " concept criteria)"))
-    }
-    cli::cat_line(paste0("along with ", length(x)-10, " more concept sets"))
+    validateCodelist(x)
   }
-  invisible(x)
 
-}
+  }
+
+
