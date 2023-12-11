@@ -14,29 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Get settings from an object.
-#'
-#' @param x x
-#'
-#' @return A table with the details of the cohort set.
-#'
 #' @export
-set <- function(x) {
-  UseMethod("set")
-}
-
-#' Get cohort settings from a generated_cohort_set object.
-#'
-#' @param x A generated_cohort_set object.
-#'
-#' @return A table with the details of the cohort set.
-#'
-#' @export
-set.generated_cohort_set <- function(x) {
-  if (is.null(attr(x, "cohort_set"))) {
-    cli::cli_abort("Cohort set does not exist for this cohort.")
+#' @importFrom dplyr arrange
+arrange.cdm_table <- function(.data, ...) {
+  if ("tbl_lazy" %in% class(.data)) {
+    removeClass(.data) <- "cdm_table"
+    x <- dbplyr::window_order(.data, ...)
+    addClass(.data) <- "cdm_table"
+  } else {
+    removeClass(.data) <- "cdm_table"
+    x <- dplyr::arrange(.data, ...)
+    addClass(.data) <- "cdm_table"
   }
-  attr(x, "cohort_set") |>
-    dplyr::collect() |>
-    dplyr::arrange(.data$cohort_definition_id)
+  return(x)
 }

@@ -14,29 +14,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Get settings from an object.
-#'
-#' @param x x
-#'
-#' @return A table with the details of the cohort set.
-#'
 #' @export
-set <- function(x) {
-  UseMethod("set")
+#' @importFrom dplyr group_by
+group_by.cdm_table <- function(.data, ...) {
+  removeClass(.data) <- "cdm_table"
+  .data <- dplyr::group_by(.data, ...)
+  addClass(.data) <- "cdm_table"
+  return(.data)
 }
 
-#' Get cohort settings from a generated_cohort_set object.
-#'
-#' @param x A generated_cohort_set object.
-#'
-#' @return A table with the details of the cohort set.
-#'
 #' @export
-set.generated_cohort_set <- function(x) {
-  if (is.null(attr(x, "cohort_set"))) {
-    cli::cli_abort("Cohort set does not exist for this cohort.")
-  }
-  attr(x, "cohort_set") |>
-    dplyr::collect() |>
-    dplyr::arrange(.data$cohort_definition_id)
+#' @importFrom dplyr summarise
+summarise.cdm_table <- function(.data, ...) {
+  removeClass(.data) <- "cdm_table"
+  cdm <- attr(.data, "cdm_reference")
+  tblName <- attr(.data, "cdm_reference")
+  .data <- dplyr::summarise(.data, ...)
+  addClass(.data) <- "cdm_table"
+  attr(.data, "cdm_reference") <- cdm
+  attr(.data, "tbl_name") <- tblName
+  return(.data)
 }

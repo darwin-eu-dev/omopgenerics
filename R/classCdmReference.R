@@ -229,6 +229,7 @@ cdmVersion.cdm_reference <- function(cdm) {
   x_raw <- unclass(x)
   tbl <- x_raw[[name]]
   attr(tbl, "cdm_reference") <- x
+  tbl <- cdmTable(tbl)
   return(tbl)
 }
 
@@ -260,14 +261,14 @@ cdmVersion.cdm_reference <- function(cdm) {
 `[[<-.cdm_reference` <- function(cdm, name, value) {
   if (!is.null(value)) {
     if (!identical(getCdmSource(value), getCdmSource(cdm))) {
-      cli::cli_abort("Table and cdm does not share a common source, please insert table to the cdm_source")
+      cli::cli_abort("Table and cdm does not share a common source, please insert table to the cdm with insertTable")
     }
     remoteName <- attr(value, "tbl_name")
     if (is.null(remoteName)) {
-      cli::cli_abort("The table that you are tying to assign does not have a name, please insert it to the cdm with insertTable or compute it with computeTable")
+      cli::cli_abort("The table that you are tying to assign does not have a name.")
     }
-    if (!is.na(remoteName) & name != remoteName) {
-      cli::cli_abort("You can't assign a table named {remoteName} to {name}. Please use computeTable to change table name.")
+    if (!is.na(remoteName) && name != remoteName) {
+      cli::cli_abort("You can't assign a table named {remoteName} to {name}. Please use compute to change table name.")
     }
   }
   attr(value, "cdm_reference") <- NULL
