@@ -64,6 +64,9 @@
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmSource.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmTable.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmVersion.cdm_reference.html</loc>
   </url>
   <url>
@@ -85,22 +88,10 @@
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/comparedResult.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/computeTable.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/compute.cdm_table.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/dropTable.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/export.cdm_reference.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/export.generated_cohort_set.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/export.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/export.summarised_result.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/generatedCohortSet.html</loc>
@@ -109,13 +100,7 @@
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/insertTable.cdm_reference.html</loc>
-  </url>
-  <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/insertTable.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/insertTable.local_cdm.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/localSource.html</loc>
@@ -152,6 +137,12 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/summarisedResult.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/summary.cdm_reference.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/summary.generated_cohort_set.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/suppress.html</loc>
