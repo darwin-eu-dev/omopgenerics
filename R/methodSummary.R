@@ -22,6 +22,7 @@
 #' @export
 #'
 summary.cdm_reference <- function(object, ...) {
+  x <- object
   person_count <- x[["person"]] |> dplyr::tally() |> dplyr::pull("n")
   observation_period_info <- x[["observation_period"]] |>
     dplyr::summarise(
@@ -33,16 +34,6 @@ summary.cdm_reference <- function(object, ...) {
   snapshot_date <- as.character(format(Sys.Date(), "%Y-%m-%d"))
 
   vocab_version <- getVocabularyVersion(x)
-
-  if (person_count < minCellCount) {
-    person_count <- paste0("<", minCellCount)
-  }
-
-  if (observation_period_info$count < minCellCount) {
-    observation_period_info <- dplyr::tibble(
-      count = paste0("<", minCellCount), max = NA, min = NA
-    )
-  }
 
   # get cdm source
   defCdmSource <- dplyr::tibble(
@@ -113,6 +104,7 @@ summary.cdm_reference <- function(object, ...) {
 #' @export
 #'
 summary.generated_cohort_set <- function(object, ...) {
+  x <- object
   set(x) |>
     dplyr::inner_join(attrition(x), by = "cohort_definition_id") |>
     dplyr::arrange(.data$cohort_definition_id, .data$reason_id) |>
@@ -124,16 +116,5 @@ summary.generated_cohort_set <- function(object, ...) {
     dplyr::relocate(c(
       "result_type", "cdm_name", "cohort_table_name", "cohort_name",
       "cohort_definition_id"
-    )) |>
-    dplyr::mutate(dplyr::across(
-      c("number_subjects", "number_records", "excluded_subjects",
-        "excluded_records"),
-      ~ dplyr::if_else(
-        .x < .env$minCellCount & .x > 0,
-        paste0("<", .env$minCellCount),
-        as.character(.x)
-      )
-    )) |>
-    addResultId(resultId) |>
-    saveFile(path, namePrefix, resultId, "cohort_details")
+    ))
 }

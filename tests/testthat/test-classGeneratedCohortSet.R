@@ -13,62 +13,70 @@ test_that("test create cohort", {
     )
   )
   cdm <- cdmReference(cdmTables = cdmTables, cdmName = "mock", cdmSource = src)
-  x <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
+  cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
     cohort_definition_id = 1, subject_id = 1,
     cohort_start_date = as.Date("2020-01-01"),
     cohort_end_date = as.Date("2020-01-10")
   ))
-  set <- defaultCohortSet(x)
-  attrition <- defaultCohortAttrition(x, set)
+  set <- defaultCohortSet(cdm$cohort1)
+  attrition <- defaultCohortAttrition(cdm$cohort1, set)
 
   expect_error(cohort <- generatedCohortSet(cohortSetRef = set, cohortAttritionRef = attrition))
-  expect_no_error(cohort <- generatedCohortSet(cohortRef = x, cohortSetRef = set, cohortAttritionRef = attrition))
+  expect_no_error(cohort <- generatedCohortSet(cohortRef = cdm$cohort1, cohortSetRef = set, cohortAttritionRef = attrition))
   expect_true("generated_cohort_set" %in% class(cohort))
   expect_true("GeneratedCohortSet" %in% class(cohort)) # to be removed
   expect_true(all(
     c("cohort_set", "cohort_attrition") %in% names(attributes(cohort))
   ))
-  expect_equal(set(cohort), attr(cohort, "cohort_set"))
+  expect_equal(
+    set(cohort) |> unclass(), attr(cohort, "cohort_set") |> unclass()
+  )
   expect_no_error(cohortCount(cohort))
-  expect_equal(attrition(cohort), attr(cohort, "cohort_attrition"))
+  expect_equal(
+    attrition(cohort) |> unclass(), attr(cohort, "cohort_attrition") |> unclass()
+  )
 
   set$cohort_name <- "Cohort 1"
   expect_error(generatedCohortSet(cohortRef = x, cohortSetRef = set, cohortAttritionRef = attrition))
 
-  x <- insertTable(cdm, name = "cohort2", table = dplyr::tibble(
+  cdm <- insertTable(cdm, name = "cohort2", table = dplyr::tibble(
     cohort_definition_id = c(1, 2), subject_id = 1,
     cohort_start_date = as.Date("2020-01-01"),
     cohort_end_date = as.Date("2020-01-10")
   ))
-  set <- defaultCohortSet(x)
-  attrition <- defaultCohortAttrition(x, set)
-  expect_no_error(generatedCohortSet(cohortRef = x, cohortSetRef = set, cohortAttritionRef = attrition))
+  set <- defaultCohortSet(cdm$cohort2)
+  attrition <- defaultCohortAttrition(cdm$cohort2, set)
+  expect_no_error(generatedCohortSet(cohortRef = cdm$cohort2, cohortSetRef = set, cohortAttritionRef = attrition))
   set$cohort_name <- "cohort_1"
-  expect_error(generatedCohortSet(cohortRef = x, cohortSetRef = set, cohortAttritionRef = attrition))
+  expect_error(generatedCohortSet(cohortRef = cdm$cohort2, cohortSetRef = set, cohortAttritionRef = attrition))
 
-  x <- insertTable(cdm, name = "cohort3", table = dplyr::tibble(
+  cdm <- insertTable(cdm, name = "cohort3", table = dplyr::tibble(
     cohort_definition_id = 1, subject_id = 1,
     cohort_start_date = as.Date("2020-01-01"),
     cohort_end_date = as.Date("2020-01-10")
   ))
-  set <- defaultCohortSet(x)
-  attrition <- defaultCohortAttrition(x, set)
+  set <- defaultCohortSet(cdm$cohort3)
+  attrition <- defaultCohortAttrition(cdm$cohort3, set)
 
-  expect_no_error(cohort <- generatedCohortSet(cohortRef = x, cohortSetRef = set, cohortAttritionRef = attrition))
-  expect_no_error(cohort <- generatedCohortSet(cohortRef = x, cohortSetRef = set))
-  expect_no_error(cohort <- generatedCohortSet(cohortRef = x, cohortAttritionRef = attrition))
+  expect_no_error(cohort <- generatedCohortSet(cohortRef = cdm$cohort3, cohortSetRef = set, cohortAttritionRef = attrition))
+  expect_no_error(cohort <- generatedCohortSet(cohortRef = cdm$cohort3, cohortSetRef = set))
+  expect_no_error(cohort <- generatedCohortSet(cohortRef = cdm$cohort3, cohortAttritionRef = attrition))
   expect_error(cohort <- generatedCohortSet(cohortSetRef = set, cohortAttritionRef = attrition))
-  expect_no_error(cohort <- generatedCohortSet(cohortRef = x, cohortSetRef = set, cohortAttritionRef = attrition))
-  expect_no_error(cohort <- generatedCohortSet(x))
+  expect_no_error(cohort <- generatedCohortSet(cohortRef = cdm$cohort3, cohortSetRef = set, cohortAttritionRef = attrition))
+  expect_no_error(cohort <- generatedCohortSet(cdm$cohort3))
 
   expect_true("generated_cohort_set" %in% class(cohort))
   expect_true("GeneratedCohortSet" %in% class(cohort)) # to be removed
   expect_true(all(
     c("cohort_set", "cohort_attrition") %in% names(attributes(cohort))
   ))
-  expect_equal(set(cohort), attr(cohort, "cohort_set"))
+  expect_equal(
+    set(cohort) |> unclass(), attr(cohort, "cohort_set") |> unclass()
+  )
   expect_no_error(cohortCount(cohort))
-  expect_equal(attrition(cohort), attr(cohort, "cohort_attrition"))
+  expect_equal(
+    attrition(cohort) |> unclass(), attr(cohort, "cohort_attrition") |> unclass()
+  )
 
   # check cohort set
   cohort_set1 <- dplyr::tibble(cohort_definition_id = 1)
@@ -80,13 +88,12 @@ test_that("test create cohort", {
     cohort_definition_id = c(1, 2), cohort_name = c("hi", "ha")
   )
   cohort_set5 <- dplyr::tibble(cohort_definition_id = 2, cohort_name = c("ha"))
-  expect_error(cohort1 <- generatedCohortSet(x, cohort_set1))
-  expect_no_error(cohort2 <- generatedCohortSet(x, cohort_set2))
-  expect_no_error(cohort3 <- generatedCohortSet(x, cohort_set3))
-  expect_error(cohort4 <- generatedCohortSet(x, cohort_set4))
-  expect_error(cohort5 <- generatedCohortSet(x, cohort_set5))
-  # TODO
-  # expect_equal(set(cohort2), cohort_set2)
+  expect_error(cohort1 <- generatedCohortSet(cdm$cohort3, cohort_set1))
+  expect_no_error(cohort2 <- generatedCohortSet(cdm$cohort3, cohort_set2))
+  expect_no_error(cohort3 <- generatedCohortSet(cdm$cohort3, cohort_set3))
+  expect_error(cohort4 <- generatedCohortSet(cdm$cohort3, cohort_set4))
+  expect_error(cohort5 <- generatedCohortSet(cdm$cohort3, cohort_set5))
+  # expect_equal(set(cohort2) |> unclass(), cohort_set2 |> unclass())
   # expect_equal(set(cohort3), cohort_set3)
 
   # check cohort attrition
@@ -108,11 +115,11 @@ test_that("test create cohort", {
     cohort_definition_id = 2, number_records = 2, number_subjects = 1,
     reason_id = 1, reason = "a", excluded_records = 0, excluded_subjects = 0
   )
-  expect_error(cohort1 <- generatedCohortSet(x, cohortAttritionRef = cohort_attrition1))
-  expect_no_error(cohort2 <- generatedCohortSet(x, cohortAttritionRef = cohort_attrition2))
-  expect_no_error(cohort3 <- generatedCohortSet(x, cohortAttritionRef = cohort_attrition3))
-  expect_error(cohort4 <- generatedCohortSet(x, cohortAttritionRef = cohort_attrition4))
-  expect_error(cohort5 <- generatedCohortSet(x, cohortAttritionRef = cohort_attrition5))
+  expect_error(cohort1 <- generatedCohortSet(cdm$cohort3, cohortAttritionRef = cohort_attrition1))
+  expect_no_error(cohort2 <- generatedCohortSet(cdm$cohort3, cohortAttritionRef = cohort_attrition2))
+  expect_no_error(cohort3 <- generatedCohortSet(cdm$cohort3, cohortAttritionRef = cohort_attrition3))
+  expect_error(cohort4 <- generatedCohortSet(cdm$cohort3, cohortAttritionRef = cohort_attrition4))
+  expect_error(cohort5 <- generatedCohortSet(cdm$cohort3, cohortAttritionRef = cohort_attrition5))
   # TODO
   # expect_equal(attrition(cohort2), cohort_attrition2)
   # expect_equal(attrition(cohort3), cohort_attrition3)
@@ -134,7 +141,7 @@ test_that("test create cohort", {
   expect_equal(cohort, dplyr::collect(cohort))
 
   # classes
-  expect_no_error(cohort <- generatedCohortSet(x, cohort_set2))
+  expect_no_error(cohort <- generatedCohortSet(cdm$cohort3, cohort_set2))
   class(cohort_set2) <- c("tbl_sql", class(cohort_set2))
   expect_error(cohort <- generatedCohortSet(x, cohort_set2))
 
@@ -145,9 +152,10 @@ test_that("test create cohort", {
   expect_error(validateGeneratedCohortSet(cohort3))
 
   # remove attribute
-  expect_no_error(cohort2 <- generatedCohortSet(x, cohortAttritionRef = cohort_attrition2))
+  expect_no_error(cohort2 <- generatedCohortSet(cdm$cohort3, cohortAttritionRef = cohort_attrition2))
   expect_no_error(validateGeneratedCohortSet(cohort2))
   attr(cohort2, "cohort_set") <- NULL
   expect_error(validateGeneratedCohortSet(cohort2))
 
 })
+

@@ -4,17 +4,17 @@
 \alias{insertTable}
 \title{Insert a table to a cdm object.}
 \usage{
-insertTable(src, name, table)
+insertTable(cdm, name, table)
 }
 \arguments{
-\item{src}{A cdm reference or the source of a cdm reference.}
+\item{cdm}{A cdm reference or the source of a cdm reference.}
 
 \item{name}{Name of the table to insert.}
 
 \item{table}{Table to insert to the cdm.}
 }
 \value{
-The table in the cdm reference or the cdm reference.
+The cdm raference.
 }
 \description{
 Insert a table to a cdm object.

@@ -16,7 +16,7 @@
 
 #' Drop a table from a cdm object.
 #'
-#' @param src A cdm reference or the source of a cdm reference.
+#' @param cdm A cdm reference.
 #' @param name Name(s) of the table(s) to insert. Tidyselect statments are
 #' supported.
 #'
@@ -24,14 +24,13 @@
 #'
 #' @return The table in the cdm reference.
 #'
-dropTable <- function(src, name) {
+dropTable <- function(cdm, name) {
   UseMethod("dropTable")
 }
 
 #' @export
-dropTable.cdm_reference <- function(src, name) {
-  cdm <- src
-  dropTable(src = getCdmSource(cdm), name = name)
+dropTable.cdm_reference <- function(cdm, name) {
+  dropTable(getCdmSource(cdm), name = name)
   allTables <- names(cdm)
   names(allTables) <- names(cdm)
   toDrop <- names(tidyselect::eval_select(rlang::enquo(name), data = allTables))
@@ -40,6 +39,6 @@ dropTable.cdm_reference <- function(src, name) {
 }
 
 #' @export
-dropTable.local_cdm <- function(src, name) {
+dropTable.local_cdm <- function(cdm, name) {
   return(invisible(TRUE))
 }

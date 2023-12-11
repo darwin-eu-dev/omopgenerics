@@ -14,25 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Compute a cdm table.
-#'
-#' @param x A table.
-#' @param cdm A cdm reference.
-#' @param name Name of the table to insert.
-#'
 #' @export
-#'
-#' @return The table in the cdm reference.
-#'
-computeTable <- function(x, cdm, name = NA_character_) {
-  assertCharacter(name, length = 1, minNumCharacter = 1, na = TRUE)
-  assertClass(cdm, "cdm_reference")
-  UseMethod("computeTable", getCdmSource(cdm))
+#' @importFrom dplyr compute
+compute.cdm_table <- function(x, name, temporary = TRUE, overwrite = TRUE) {
+  cdm <- attr(x, "cdm_reference")
+  if (is.null(attr(x, "cdm_reference"))) {
+    cli::cli_abort("x does not com from a cdm object.")
+  }
+  src <- getCdmSource(x)
+  addClass(x) <- class(src)
+  x <- dplyr::compute(x = x, name = name, temporary = temporary, overwrite = overwrite)
+  removeClass(x) <- class(src)
+  return(x)
 }
 
 #' @export
-computeTable.local_cdm <- function(x, cdm, name) {
+compute.local_cdm <- function(x, name, temporary, overwrite) {
   attr(x, "tbl_name") <- name
-  attr(x, "cdm_reference") <- cdm
   return(x)
 }

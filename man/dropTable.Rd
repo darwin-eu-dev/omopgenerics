@@ -4,10 +4,10 @@
 \alias{dropTable}
 \title{Drop a table from a cdm object.}
 \usage{
-dropTable(src, name)
+dropTable(cdm, name)
 }
 \arguments{
-\item{src}{A cdm reference or the source of a cdm reference.}
+\item{cdm}{A cdm reference.}
 
 \item{name}{Name(s) of the table(s) to insert. Tidyselect statments are
 supported.}

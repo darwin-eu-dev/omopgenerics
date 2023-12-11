@@ -14,22 +14,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Extract a table from a cdm reference.
-#'
-#' @param table A table that it is part of a cdm.
-#'
-#' @return A table from the cdm reference
-#'
 #' @export
-#'
-cdmTable <- function(table) {
-  if (!"cdm_reference" %in% names(attributes(table))) {
-    cli::cli_abort("table is not part of a cdm_reference")
-  }
-  addClass(table) <- "cdm_table"
-  if ("generated_cohort_set" %in% class(table)) {
-    addClass(attr(table, "cohort_set")) <- "cdm_table"
-    addClass(attr(table, "cohort_attrition")) <- "cdm_table"
-  }
-  return(table)
+#' @importFrom dplyr group_by
+group_by.cdm_table <- function(.data, ...) {
+  removeClass(.data) <- "cdm_table"
+  .data <- dplyr::group_by(.data, ...)
+  addClass(.data) <- "cdm_table"
+  return(.data)
+}
+
+#' @export
+#' @importFrom dplyr summarise
+summarise.cdm_table <- function(.data, ...) {
+  removeClass(.data) <- "cdm_table"
+  cdm <- attr(.data, "cdm_reference")
+  tblName <- attr(.data, "cdm_reference")
+  .data <- dplyr::summarise(.data, ...)
+  addClass(.data) <- "cdm_table"
+  attr(.data, "cdm_reference") <- cdm
+  attr(.data, "tbl_name") <- tblName
+  return(.data)
 }
