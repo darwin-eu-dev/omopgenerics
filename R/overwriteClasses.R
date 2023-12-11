@@ -17,20 +17,20 @@
 #' @export
 #' @importFrom dplyr group_by
 group_by.cdm_table <- function(.data, ...) {
-  removeClass(.data) <- "cdm_table"
+  .data <- removeClass(.data, "cdm_table")
   .data <- dplyr::group_by(.data, ...)
-  addClass(.data) <- "cdm_table"
+  .data <- addClass(.data, "cdm_table")
   return(.data)
 }
 
 #' @export
 #' @importFrom dplyr summarise
 summarise.cdm_table <- function(.data, ...) {
-  removeClass(.data) <- "cdm_table"
+  .data <- removeClass(.data, "cdm_table")
   cdm <- attr(.data, "cdm_reference")
   tblName <- attr(.data, "cdm_reference")
   .data <- dplyr::summarise(.data, ...)
-  addClass(.data) <- "cdm_table"
+  .data <- addClass(.data, "cdm_table")
   attr(.data, "cdm_reference") <- cdm
   attr(.data, "tbl_name") <- tblName
   return(.data)

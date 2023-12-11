@@ -50,7 +50,7 @@ newSummarisedResult <- function(x, name) {
     cs <- "summarised_result"
   }
 
-  addClass(x) <- cs
+  x <- addClass(x, cs)
   attr(x, "summarised_result_name") <- name
 
   return(x)

@@ -14,15 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-`addClass<-` <- function(x, value) {
-  removeClass(x) <- value
+addClass <- function(x, value) {
+  if (value %in% class(x)) x <- removeClass(x, value)
+
   base::class(x) <- c(value, base::class(x))
   return(x)
 }
-`removeClass<-` <- function(x, value) {
+
+removeClass <- function(x, value) {
   base::class(x) <- base::class(x)[!(base::class(x) %in% value)]
   return(x)
 }
+
 getCdmSource <- function(x) {
   if ("cdm_reference" %in% class(x)) {
     cdm <- x

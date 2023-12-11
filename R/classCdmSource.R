@@ -39,7 +39,7 @@ cdmSource <- function(src, sourceName, sourceType) {
 }
 
 newCdmSource <- function(src, sourceName, sourceType) {
-  addClass(src) <- "cdm_source"
+  src <- addClass(src, "cdm_source")
   attr(src, "source_name") <- sourceName
   attr(src, "source_type") <- sourceType
   return(src)
