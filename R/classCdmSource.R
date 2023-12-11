@@ -83,7 +83,7 @@ validateCdmSource <- function(src) {
   validateX(x = cdm[[name]], name = name, fun = "compute")
 
   # drop table
-  cdm <- dropTable(cdm = cdm, name = name)
+  cdm <- dropTable(cdm = cdm, name = dplyr::all_of(name))
 
   return(invisible(src))
 }

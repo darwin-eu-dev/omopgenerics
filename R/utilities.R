@@ -15,7 +15,7 @@
 # limitations under the License.
 
 addClass <- function(x, value) {
-  if (value %in% class(x)) x <- removeClass(x, value)
+  if (any(value %in% class(x))) x <- removeClass(x, value)
 
   base::class(x) <- c(value, base::class(x))
   return(x)
