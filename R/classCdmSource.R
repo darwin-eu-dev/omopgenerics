@@ -1,3 +1,19 @@
+# Copyright 2023 DARWIN EU (C)
+#
+# This file is part of OMOPGenerics
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 #' Create a cdm source object.
 #'
 #' @param src Source to a cdm object.
@@ -52,46 +68,22 @@ validateCdmSource <- function(src) {
   )
 
   # insert table
-  cdm[[name]] <- insertTable(src = cdm, name = name, table = table)
+  cdm <- insertTable(cdm = cdm, name = name, table = table)
   validateX(x = cdm[[name]], name = name, fun = "insertTable")
 
   # check inserted table
   attr(table, "tbl_name") <- name
   attr(table, "cdm_reference") <- cdm
   if (!identical(unclass(dplyr::collect(cdm[[name]])), unclass(table))) {
-    cli::cli_abort("The inserted table was not the same than the provided one.")
+    cli::cli_abort("The inserted table was not the same than the original one.")
   }
 
   # compute inserted table
-  cdm[[name]] <- cdm[[name]] |> computeTable(cdm = cdm, name = name)
-  validateX(x = cdm[[name]], name = name, fun = "computeTable")
+  cdm[[name]] <- cdm[[name]] |> compute(name = name)
+  validateX(x = cdm[[name]], name = name, fun = "compute")
 
   # drop table
-  cdm <- dropTable(src = cdm, name = name)
-
-  # check that a cohort can be inserted and computed
-  cdm[[name]] <- insertTable(src = cdm, name = name, table = dplyr::tibble(
-    "cohort_definition_id" = 1,
-    "subject_id" = 1,
-    "cohort_start_date" = as.Date("2020-01-01"),
-    "cohort_end_date" = as.Date("2020-01-01")
-  ))
-  value <- generatedCohortSet(cohortRef = cdm[[name]]) # it will be a cohort without a source
-  # insert table
-  x <- insertTable(src = src, name = name, table = value)
-  validateX(x = x, name = name, fun = "insertTable")
-
-  # check inserted table
-  if (!identical(unclass(dplyr::collect(x)), unclass(value))) {
-    cli::cli_abort("The inserted table was not the same than the provided one.")
-  }
-
-  # compute inserted table
-  x <- x |> computeTable(cdm = cdm, name = name)
-  validateX(x = x, name = name, fun = "computeTable")
-
-  # drop table
-  dropTable(src = src, name = name)
+  cdm <- dropTable(cdm = cdm, name = name)
 
   return(invisible(src))
 }
@@ -100,9 +92,9 @@ validateX <- function(x, name, fun) {
   if (!identical(attr(x, "tbl_name"), name)) {
     cli::cli_abort("table name is not correctly assigned in {fun}")
   }
-  # if (!"cdm_table" %in% class(x)) {
-  #   cli::cli_abort("cdm_table class is not correctly assigned in {fun}")
-  # }
+  if (!"cdm_table" %in% class(x)) {
+    cli::cli_abort("cdm_table class is not correctly assigned in {fun}")
+  }
   return(invisible(TRUE))
 }
 

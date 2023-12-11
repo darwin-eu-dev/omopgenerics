@@ -23,7 +23,7 @@
 #' insertTable.db_source <- function() {
 #'
 #' }
-#' computeTable.db_source <- function() {
+#' compute.db_source <- function() {
 #'
 #' }
 #' dropTable.db_source <- function() {

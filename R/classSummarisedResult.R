@@ -40,7 +40,17 @@ summarisedResult <- function(x, name = "summarised_result") {
 
 newSummarisedResult <- function(x, name) {
 
-  class(x) <- c("summarised_result", class(x))
+  if (!is.null(x[["result_type"]])) {
+    cs <- unique(x[["result_type"]]) |>
+      strsplit(split = " and ") |>
+      unlist() |>
+      unique()
+    cs <- c(cs, "summarised_result")
+  } else {
+    cs <- "summarised_result"
+  }
+
+  addClass(x) <- cs
   attr(x, "summarised_result_name") <- name
 
   return(x)
