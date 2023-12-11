@@ -53,7 +53,7 @@ A cdm object can contain three type of tables:
 
 * Standard tables:
 ```{r}
-standardOmopCdmTables()
+standardTables()
 ```
 Each one of the tables has a required columns. For example, for the `person` table this are the required columns:
 ```{r}
@@ -75,8 +75,15 @@ Any table to be part of a cdm object has to fulfill 4 conditions:
 - `person` and `observation_period` must be present.
 
 
-### Concept set
+### Codelist
+A codelist is a named list, with each item of the list containing concept IDs. 
+```{r}
+condition_codes <- list("diabetes" = c(201820, 4087682, 3655269),
+                        "asthma" = 317009)
+condition_codes <- codelist(condition_codes)
 
+condition_codes
+```
 
 ### Generatred cohort set
 

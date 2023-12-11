@@ -366,3 +366,54 @@ requiredCohortColumns <- function(table, version = "5.3") {
 
   return(columns)
 }
+
+
+#' Tables containing the results of achilles analyses
+#'
+#' @return Names of tables returned by achilles analyses
+#' @export
+#'
+#' @examples
+achillesTables <- function(){
+
+c("achilles_analysis",
+  "achilles_results",
+  "achilles_results_dist")
+
+}
+
+#' Required columns for achilles result tables
+#'
+#' @param table Either achilles_analysis, achilles_results,
+#' achilles_results_dist
+#'
+#' @return Names of columns for achilles result tables
+#' @export
+#'
+#' @examples
+requiredAchillesColumns <- function(table) {
+
+  assertChoice(x = table,
+               choices = c("achilles_analysis",
+                           "achilles_results",
+                           "achilles_results_dist"))
+
+if(table == "achilles_analysis"){
+  return(c("analysis_id","analysis_name", "stratum_1_name",
+  "stratum_2_name", "stratum_3_name", "stratum_4_name",
+  "stratum_5_name", "is_default", "category"))
+} else if (table == "achilles_results"){
+  return(c("analysis_id", "stratum_1", "stratum_2", "stratum_3",
+           "stratum_4", "stratum_5", "count_value"))
+} else {
+  c("analysis_id", "stratum_1", "stratum_2", "stratum_3",
+    "stratum_4", "stratum_5", "count_value", "min_value",
+    "max_value", "avg_value", "stdev_value", "median_value",
+    "p10_value", "p25_value", "p75_value", "p90_value")
+}
+
+}
+
+
+
+

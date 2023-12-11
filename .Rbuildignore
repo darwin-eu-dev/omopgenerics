@@ -9,3 +9,5 @@ _pkgdown.yml
 ^extras$
 ^doc$
 ^Meta$
+^_pkgdown\.yml$
+^pkgdown$

@@ -124,12 +124,25 @@ test_that("test create cohort", {
   # expect_equal(attrition(cohort2), cohort_attrition2)
   # expect_equal(attrition(cohort3), cohort_attrition3)
 
+  expect_true(is.integer(attrition(cohort2)$cohort_definition_id))
+  expect_true(is.integer(attrition(cohort2)$number_records))
+  expect_true(is.integer(attrition(cohort2)$number_subjects))
+  expect_true(is.integer(attrition(cohort2)$reason_id))
+  expect_true(is.character(attrition(cohort2)$reason))
+  expect_true(is.integer(attrition(cohort2)$excluded_records))
+  expect_true(is.integer(attrition(cohort2)$excluded_subjects))
+
   expect_equal(
     cohortCount(cohort2),
     dplyr::tibble(
       cohort_definition_id = 1, number_records = 2, number_subjects = 1
     )
   )
+  expect_true(is.integer(cohortCount(cohort2)$cohort_definition_id))
+  expect_true(is.integer(cohortCount(cohort2)$number_records))
+  expect_true(is.integer(cohortCount(cohort2)$number_subjects))
+
+
   expect_equal(
     cohortCount(cohort3),
     dplyr::tibble(
