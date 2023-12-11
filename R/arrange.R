@@ -18,7 +18,9 @@
 #' @importFrom dplyr arrange
 arrange.cdm_table <- function(.data, ...) {
   if ("tbl_lazy" %in% class(.data)) {
+    removeClass(.data) <- "cdm_table"
     x <- dbplyr::window_order(.data, ...)
+    addClass(.data) <- "cdm_table"
   } else {
     removeClass(.data) <- "cdm_table"
     x <- dplyr::arrange(.data, ...)
