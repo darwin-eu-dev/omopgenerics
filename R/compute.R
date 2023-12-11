@@ -14,9 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#' Store results in a table.
+#'
+#' @param x Table in the cdm.
+#' @param name Name to store the table with.
+#' @param temporary Whether to store table temporarily (TRUE) or permanent
+#' (FALSE).
+#' @param overwrite Whether to overwrite previosly existing table with name
+#' same.
+#' @param ... For compatibility (not used).
+#'
 #' @export
 #' @importFrom dplyr compute
-compute.cdm_table <- function(x, name, temporary = TRUE, overwrite = TRUE) {
+compute.cdm_table <- function(x, name, temporary = TRUE, overwrite = TRUE, ...) {
   cdm <- attr(x, "cdm_reference")
   if (is.null(attr(x, "cdm_reference"))) {
     cli::cli_abort("x does not com from a cdm object.")
@@ -29,7 +39,7 @@ compute.cdm_table <- function(x, name, temporary = TRUE, overwrite = TRUE) {
 }
 
 #' @export
-compute.local_cdm <- function(x, name, temporary, overwrite) {
+compute.local_cdm <- function(x, name, temporary, overwrite, ...) {
   attr(x, "tbl_name") <- name
   return(x)
 }
