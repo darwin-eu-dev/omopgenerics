@@ -168,18 +168,7 @@ checkColumnsCdm <- function(table, nm, required, call = parent.frame()) {
 #' @export
 #'
 cdmName <- function(cdm) {
-  UseMethod("cdmName")
-}
-
-#' Name of a cdm_reference.
-#'
-#' @param cdm A cdm_reference object.
-#'
-#' @return Name of the cdm_reference.
-#'
-#' @export
-#'
-cdmName.cdm_reference <- function(cdm) {
+  assertClass(cdm, "cdm_reference")
   attr(cdm, "cdm_name")
 }
 
@@ -192,19 +181,8 @@ cdmName.cdm_reference <- function(cdm) {
 #' @export
 #'
 cdmVersion <- function(cdm) {
-  UseMethod("cdmVersion")
-}
-
-#' Version of a cdm_reference.
-#'
-#' @param cdm A cdm_reference object.
-#'
-#' @return Version of the cdm_reference.
-#'
-#' @export
-#'
-cdmVersion.cdm_reference <- function(cdm) {
-  attr(cdm, "cdm_name")
+  assertClass(cdm, "cdm_reference")
+  attr(cdm, "cdm_version")
 }
 
 #' Subset a cdm reference object.
