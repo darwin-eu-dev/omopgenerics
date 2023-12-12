@@ -52,9 +52,6 @@
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cash-set-.cdm_reference.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmName.cdm_reference.html</loc>
-  </url>
-  <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmName.html</loc>
   </url>
   <url>
@@ -67,19 +64,16 @@
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmTable.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmVersion.cdm_reference.html</loc>
-  </url>
-  <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cdmVersion.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/codelist.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cohortCount.generated_cohort_set.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cohortCount.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cohortCount.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cohortTables.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/collect.generated_cohort_set.html</loc>
