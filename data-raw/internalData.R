@@ -75,5 +75,47 @@ fieldsCohorts <- tibble(
     cdm_version = "5.3; 5.4"
   ))
 
+fieldsAchilles <- dplyr::tibble(
+  cdm_table_name = "achilles_analysis",
+  cdm_field_name = c(
+    "analysis_id","analysis_name", "stratum_1_name", "stratum_2_name",
+    "stratum_3_name", "stratum_4_name", "stratum_5_name", "is_default",
+    "category"
+  ),
+  is_required = TRUE,
+  cdm_datatype = NA,
+  cdm_version = "5.3; 5.4"
+) %>%
+  dplyr::union_all(dplyr::tibble(
+    cdm_table_name = "achilles_results",
+    cdm_field_name = c(
+      "analysis_id", "stratum_1", "stratum_2", "stratum_3", "stratum_4",
+      "stratum_5", "count_value"
+    ),
+    is_required = TRUE,
+    cdm_datatype = NA,
+    cdm_version = "5.3; 5.4"
+  )) %>%
+  dplyr::union_all(dplyr::tibble(
+    cdm_table_name = "achilles_results_dist",
+    cdm_field_name = c(
+      "analysis_id", "stratum_1", "stratum_2", "stratum_3", "stratum_4",
+      "stratum_5", "count_value", "min_value", "max_value", "avg_value",
+      "stdev_value", "median_value", "p10_value", "p25_value", "p75_value",
+      "p90_value"
+    ),
+    is_required = TRUE,
+    cdm_datatype = NA,
+    cdm_version = "5.3; 5.4"
+  ))
 
-usethis::use_data(fieldsTables, fieldsCohorts, internal = TRUE, overwrite = TRUE)
+fieldsTables <- fieldsTables %>%
+  dplyr::mutate(type = "cdm_table") %>%
+  dplyr::union_all(
+    fieldsCohorts %>% dplyr::mutate(type = "cohort")
+  ) %>%
+  dplyr::union_all(
+    fieldsAchilles %>% dplyr::mutate(type = "achilles")
+  )
+
+usethis::use_data(fieldsTables, internal = TRUE, overwrite = TRUE)
