@@ -39,25 +39,12 @@ newComparedResult <- function(x) {
   x <- getClass(x, "compared_result")
   return(x)
 }
-
 validateComparedResult <- function(x) {
   # compulsory columns
-  compulsoryCols <- c(
-    "cdm_name",
-    "result_type",
-    "package_name", "package_version",
-    "group_name_reference", "group_level_reference",
-    "strata_name_reference", "strata_level_reference",
-    "group_name_comparator", "group_level_comparator",
-    "strata_name_comparator", "strata_level_comparator",
-    "variable_name", "variable_level", "variable_type",
-    "estimate_name", "estimate_type", "estimate_value",
-    "additional_name", "additional_level"
-  )
-  x <- checkColumns(x = x, cols = compulsoryCols, "compared_result")
+  x <- checkColumns(x = x, "compared_result")
 
   # all columns should be character
-  checkColumnsFormat(x = x, cols = compulsoryCols, format = "character")
+  checkColumnsFormat(x = x, "compared_result")
 
   # Cannot contain NA columns
   notNaCols <- c(
@@ -66,13 +53,12 @@ validateComparedResult <- function(x) {
     "group_name_comparator", "group_level_comparator",
     "strata_name_comparator", "strata_level_comparator",
     "variable_name", "variable_type", "estimate_name", "estimate_type",
-    "additional_name", "additional_level"
+    "additional_name_reference", "additional_level_reference",
+    "additional_name_comparator", "additional_level_comparator"
   )
   checkNA(x = x, cols = notNaCols)
 
-  #Sentence case column
-  sentenceCaseCols <- c("variable_name", "variable_level")
-  checkSentence(x = x, cols = sentenceCaseCols)
+  checkResultType(x = x)
 
   # columPairs
   columnPairs <- c(
@@ -80,7 +66,8 @@ validateComparedResult <- function(x) {
     "strata_name_reference" = "strata_level_reference",
     "group_name_comparator" = "group_level_comparator",
     "strata_name_comparator" = "strata_level_comparator",
-    "additonal_name" = "additional_level"
+    "additional_name_reference" = "additional_level_reference",
+    "additional_name_comparator" = "additional_level_comparator"
   )
   checkColumnPairs(x, columnPairs, " and ", "snake")
 

@@ -33,7 +33,7 @@ dropTable.cdm_reference <- function(cdm, name) {
   dropTable(getCdmSource(cdm), name = name)
   allTables <- names(cdm)
   names(allTables) <- names(cdm)
-  toDrop <- names(tidyselect::eval_select(rlang::enquo(name), data = allTables))
+  toDrop <- names(tidyselect::eval_select(dplyr::all_of(name), data = allTables))
   cdm[[toDrop]] <- NULL
   return(invisible(cdm))
 }

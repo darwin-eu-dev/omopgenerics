@@ -33,7 +33,7 @@ restoreAttributes <- function(x, at) {
   return(x)
 }
 restoreClass <- function(x) {
-  addClass(x) <- "cdm_reference"
+  addClass(x) <- "cdm_table"
   return(x)
 }
 
@@ -54,7 +54,7 @@ summarise.cdm_table <- function(.data, ...) {
   x <- dplyr::summarise(.data, ...)
   x <- restoreClass(x)
   x <- restoreAttributes(x, keepAttributes(.data))
-  return(.data)
+  return(x)
 }
 
 # add_count
