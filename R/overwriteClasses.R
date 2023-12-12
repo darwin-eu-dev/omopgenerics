@@ -28,7 +28,7 @@ group_by.cdm_table <- function(.data, ...) {
 summarise.cdm_table <- function(.data, ...) {
   removeClass(.data) <- "cdm_table"
   cdm <- attr(.data, "cdm_reference")
-  tblName <- attr(.data, "cdm_reference")
+  tblName <- attr(.data, "tbl_name")
   .data <- dplyr::summarise(.data, ...)
   addClass(.data) <- "cdm_table"
   attr(.data, "cdm_reference") <- cdm

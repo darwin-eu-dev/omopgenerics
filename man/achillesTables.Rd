@@ -4,7 +4,10 @@
 \alias{achillesTables}
 \title{Tables containing the results of achilles analyses}
 \usage{
-achillesTables()
+achillesTables(version = "5.3")
+}
+\arguments{
+\item{version}{Version of the OMOP Common Data Model.}
 }
 \value{
 Names of tables returned by achilles analyses
