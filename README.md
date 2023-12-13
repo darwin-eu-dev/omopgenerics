@@ -34,6 +34,11 @@ And load it using the library command:
 
 ``` r
 library(OMOPGenerics)
+#> 
+#> Attaching package: 'OMOPGenerics'
+#> The following object is masked from 'package:stats':
+#> 
+#>     aggregate
 ```
 
 ## Core classes and methods
@@ -57,7 +62,7 @@ A cdm object can contain three type of tables:
 - Standard tables:
 
 ``` r
-standardTables()
+omopTables()
 #>  [1] "person"                "observation_period"    "visit_occurrence"     
 #>  [4] "visit_detail"          "condition_occurrence"  "drug_exposure"        
 #>  [7] "procedure_occurrence"  "device_exposure"       "measurement"          

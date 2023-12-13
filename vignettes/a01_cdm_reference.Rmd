@@ -26,16 +26,84 @@ There are multiple versions of the OMOP CDM. The list of tables included in vers
 
 ```{r}
 library(OMOPGenerics)
-standardTables(version = "5.3")
+omopTables()
 ```
 
 The standard OMOP tables have required fields. We can check the required column of the person table, for example, like so 
 ```{r}
-requiredTableColumns(table = "person", version = "5.3")
+requiredTableColumns(table = "person")
 ```
 
-```{r}
-requiredTableColumns(table = "observation_period", version = "5.3")
+-   Cohort tables (see `generatedCohortSet`).
+
+-   Other tables, these other tables can have any format.
+
+Any table to be part of a cdm object has to fulfill 4 conditions:
+
+-   All must share a common source.
+
+-   The name of the tables must be lowercase.
+
+-   The name of the column names of each table must be lowercase.
+
+-   `person` and `observation_period` must be present.
+
+### Required columns
+
+```{r, echo = FALSE}
+version = "5.3"
+mes <- cli::col_green(cli::style_bold("OMOP CDM version: \"{version}\""))
+for (tab in c("person", "observation_period")) {
+  mes <- c(
+    mes, 
+    "*" = paste0(
+      cli::col_blue(cli::style_bold(tab)), ": ", paste0(
+        requiredTableColumns(table = tab, version = version), collapse = ", "
+      )
+    )
+  )
+}
+tables <- omopTables(version = version)
+tables <- sort(tables[!tables %in% c("person", "observation_period")])
+for (tab in tables) {
+  mes <- c(
+    mes, 
+    "*" = paste0(
+      cli::col_blue(tab), ": ", paste0(
+        requiredTableColumns(table = tab, version = version), collapse = ", "
+      )
+    )
+  )
+}
+cli::cli_inform(mes)
+```
+
+```{r, echo = FALSE}
+version = "5.4"
+mes <- cli::col_green(cli::style_bold("OMOP CDM version: \"{version}\""))
+for (tab in c("person", "observation_period")) {
+  mes <- c(
+    mes, 
+    "*" = paste0(
+      cli::col_blue(cli::style_bold(tab)), ": ", paste0(
+        requiredTableColumns(table = tab, version = version), collapse = ", "
+      )
+    )
+  )
+}
+tables <- omopTables(version = version)
+tables <- sort(tables[!tables %in% c("person", "observation_period")])
+for (tab in tables) {
+  mes <- c(
+    mes, 
+    "*" = paste0(
+      cli::col_blue(tab), ": ", paste0(
+        requiredTableColumns(table = tab, version = version), collapse = ", "
+      )
+    )
+  )
+}
+cli::cli_inform(mes)
 ```
 
 
