@@ -10,7 +10,6 @@ test_that("test supress methods", {
     "strata_level" = c("overall", "male"),
     "variable_name" = c("number records", "age_group"),
     "variable_level" = c(NA, "10 to 50"),
-    "variable_type" = c("numeric", "numeric"),
     "estimate_name" = c("count", "count"),
     "estimate_type" = c("numeric", "numeric"),
     "estimate_value" = c("10", "5"),
