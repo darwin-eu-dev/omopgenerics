@@ -37,10 +37,16 @@
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/achillesTables.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/aggregate.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/attrition.generated_cohort_set.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/attrition.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/bind.generated_cohort_set.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/bind.html</loc>
@@ -112,6 +118,9 @@
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/requiredCohortColumns.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/requiredResultColumns.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/requiredTableColumns.html</loc>
   </url>
   <url>
@@ -143,5 +152,8 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/suppress.summarised_result.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/unAggregate.html</loc>
   </url>
 </urlset>
