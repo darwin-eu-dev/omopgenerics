@@ -45,10 +45,12 @@ bind.generated_cohort_set <- function(..., name) {
       "Only {length(cohorts)} cohort provided, at least 2 must be provided."
     )
   }
-  if (is.null(name)) {
-    name <- attr(cohorts[[1]], "tbl_name")
-  }
   assertCharacter(name, length = 1)
 
   # bind
+  sets <- lapply(seq_along(cohorts), function(x) {
+    dplyr::tibble(
+      "old_cohort_definition_id" = x |> dplyr::pull("cohort_definition_id")
+    )
+  })
 }
