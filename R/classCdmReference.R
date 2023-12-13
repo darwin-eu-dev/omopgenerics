@@ -327,7 +327,7 @@ cohortTables <- function(version = "5.3") {
 #'
 #' @export
 #'
-requiredCohortColumns <- function(table, version = "5.3") {
+cohortColumns <- function(table, version = "5.3") {
   assertVersion(version = version)
   assertTable(table = table, version = version, type = "cohort")
   requiredColumns(table = table, version = version, type = "cohort")
@@ -355,7 +355,7 @@ achillesTables <- function(version = "5.3"){
 #' @export
 #'
 #' @examples
-requiredAchillesColumns <- function(table, version = "5.3") {
+achillesColumns <- function(table, version = "5.3") {
   assertVersion(version = version)
   assertTable(table = table, version = version, type = "achilles")
   requiredColumns(table = table, version = version, type = "achilles")

@@ -75,7 +75,7 @@ validateSummariseResult <- function(x) {
   return(x)
 }
 checkColumns <- function(x, resultName) {
-  cols <- requiredResultColumns(table = resultName)
+  cols <- resultColumns(table = resultName)
   notPresent <- cols[!cols %in% colnames(x)]
   if (length(notPresent) > 0) {
     cli::cli_abort(
@@ -113,7 +113,7 @@ checkNA <- function(x, cols) {
   invisible(NULL)
 }
 checkColumnsFormat <- function(x, resultName) {
-  cols <- requiredResultColumns(resultName)
+  cols <- resultColumns(resultName)
   expectedFormat <- fieldsResults$datatype[fieldsResults$result == resultName]
   formats <- lapply(x, typeof) |> unlist()
   id <- formats != expectedFormat
@@ -223,7 +223,7 @@ checkColumnContent <- function(x, col, content) {
 #'
 #' @export
 #'
-requiredResultColumns <- function(table) {
+resultColumns <- function(table) {
   assertChoice(table, unique(fieldsResults$result))
   fieldsResults$result_field_name[fieldsResults$result == table]
 }
