@@ -17,19 +17,17 @@
 #' 'compared_results' object constructor
 #'
 #' @param x input must be a tibble
-#' @param name Name of the compared result object
 #'
 #' @return A compared_result object
 #' @export
 #'
-comparedResult <- function(x, name = "compared_result") {
+comparedResult <- function(x) {
 
   #inital input check
-  assertTibble(x)
-  assertCharacter(name, length = 1, minNumCharacter = 1)
+  assertClass(x, "data.frame")
 
   #constructer
-  x <- newComparedResult(x, name)
+  x <- newComparedResult(x)
 
   # validate
   x <- validateComparedResult(x)
@@ -37,50 +35,44 @@ comparedResult <- function(x, name = "compared_result") {
   return(x)
 }
 
-newComparedResult <- function(x, name) {
-
-  class(x) <- c("compared_result", class(x))
-  attr(x, "compared_result_name") <- name
-
+newComparedResult <- function(x) {
+  x <- getClass(x, "compared_result")
   return(x)
 }
-
 validateComparedResult <- function(x) {
   # compulsory columns
-  compulsoryCols <- c(
-    "cdm_name", "result_type", "package", "package_version",
-    "group_name_reference", "group_level_reference", "strata_name_reference",
-    "strata_level_reference", "group_name_comparator", "group_level_comparator",
-    "strata_name_comparator", "strata_level_comparator", "variable",
-    "variable_level", "variable_type", "estimate_type", "estimate"
-  )
-  checkColumns(x = x, cols = compulsoryCols)
+  x <- checkColumns(x = x, "compared_result")
 
   # all columns should be character
-  checkColumnsFormat(x = x, cols = compulsoryCols, format = "character")
+  checkColumnsFormat(x = x, "compared_result")
 
   # Cannot contain NA columns
   notNaCols <- c(
     "cdm_name", "group_name_reference", "group_level_reference",
-    "strata_name_reference", "strata_level_reference", "group_name_comparator",
-    "group_level_comparator", "strata_name_comparator",
-    "strata_level_comparator", "variable", "variable_type", "estimate_type",
-    "estimate"
+    "strata_name_reference", "strata_level_reference",
+    "group_name_comparator", "group_level_comparator",
+    "strata_name_comparator", "strata_level_comparator",
+    "variable_name", "variable_type", "estimate_name", "estimate_type",
+    "additional_name_reference", "additional_level_reference",
+    "additional_name_comparator", "additional_level_comparator"
   )
   checkNA(x = x, cols = notNaCols)
 
-  #Sentence case column
-  sentenceCaseCols <- c("result_type")
-  checkSentence(x = x, cols = sentenceCaseCols)
+  checkResultType(x = x)
 
   # columPairs
   columnPairs <- c(
     "group_name_reference" = "group_level_reference",
     "strata_name_reference" = "strata_level_reference",
     "group_name_comparator" = "group_level_comparator",
-    "strata_name_comparator" = "strata_level_comparator"
+    "strata_name_comparator" = "strata_level_comparator",
+    "additional_name_reference" = "additional_level_reference",
+    "additional_name_comparator" = "additional_level_comparator"
   )
   checkColumnPairs(x, columnPairs, " and ", "snake")
+
+  # estimate_type
+  checkColumnContent(x, "estimate_type", c("numeric", "date", "character"))
 
   return(x)
 }

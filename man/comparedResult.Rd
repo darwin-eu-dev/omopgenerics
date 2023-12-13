@@ -4,12 +4,10 @@
 \alias{comparedResult}
 \title{'compared_results' object constructor}
 \usage{
-comparedResult(x, name = "compared_result")
+comparedResult(x)
 }
 \arguments{
 \item{x}{input must be a tibble}
-
-\item{name}{Name of the compared result object}
 }
 \value{
 A compared_result object
