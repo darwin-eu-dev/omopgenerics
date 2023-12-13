@@ -45,6 +45,13 @@ newCodelist <- function(x) {
 validateCodelist <- function(x) {
 
   assertList(x, named = TRUE, class = c("numeric", "integer"))
+for(i in seq_along(x)){
+  if(sum(is.na(x[[i]])) != 0){
+    cli::cli_abort("{names(x)[i]} contains NA elements")
+  }
+
+}
+
 
   return(x)
 }
