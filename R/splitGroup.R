@@ -14,44 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Aggregate one or more columns in name-level format.
-#'
-#' @param x Tibble or data.frame.
-#' @param cols Columns to aggregate.
-#' @param name Column name of the `name` column.
-#' @param level Column name of the `level` column.
-#' @param keep Whether to keep the original columns.
-#'
-#' @return A Tibble with the new columns.
-#'
-#' @export
-#'
-aggregate <- function(x,
-                      cols,
-                      name = "group_name",
-                      level = "group_level",
-                      keep = FALSE) {
-  # initial checks
-  assertCharacter(cols)
-  assertCharacter(name, length = 1)
-  assertCharacter(level, length = 1)
-  assertLogical(keep, length = 1)
-  assertTibble(x, columns = cols)
-
-  originalCols <- colnames(x)
-  if (!keep) {
-    originalCols <- originalCols[!originalCols %in% cols]
-  }
-
-  x |>
-    dplyr::mutate(!!name := paste0(cols, collapse = " and ")) |>
-    tidyr::unite(
-      col = !!level, dplyr::all_of(cols), sep = " and ", remove = !keep
-    ) |>
-    dplyr::select(dplyr::all_of(c(originalCols, name, level)))
-}
-
-#' Expand a pair of columns in name-level format to several columns.
+#' Split a pair of columns in name-level format to several columns.
 #'
 #' @param x Tibble or data.frame.
 #' @param name Column name of the `name` column.
@@ -62,10 +25,10 @@ aggregate <- function(x,
 #'
 #' @export
 #'
-unAggregate <- function(x,
-                        name = "group_name",
-                        level = "group_level",
-                        keep = FALSE) {
+splitGroup <- function(x,
+                       name = "group_name",
+                       level = "group_level",
+                       keep = FALSE) {
   # initial checks
   assertCharacter(name, length = 1)
   assertCharacter(level, length = 1)
