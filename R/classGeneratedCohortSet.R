@@ -132,7 +132,7 @@ validateGeneratedCohortSet <- function(cohort) {
 
   # assert columns
   checkColumnsCohort <- function(x, nam) {
-    cols <- requiredCohortColumns(nam)
+    cols <- cohortColumns(nam)
     if (!all(cols %in% colnames(x))) {
       cli::cli_abort(paste0(
         "`", paste0(cols, collapse = "`, `"), "` must be column names of the ",
@@ -185,11 +185,11 @@ validateGeneratedCohortSet <- function(cohort) {
 
   # make correct order
   cohort <- cohort |>
-    dplyr::relocate(dplyr::all_of(requiredCohortColumns("cohort")))
+    dplyr::relocate(dplyr::all_of(cohortColumns("cohort")))
   attr(cohort, "cohort_set") <- attr(cohort, "cohort_set") |>
-    dplyr::relocate(dplyr::all_of(requiredCohortColumns("cohort_set")))
+    dplyr::relocate(dplyr::all_of(cohortColumns("cohort_set")))
   attr(cohort, "cohort_attrition") <- attr(cohort, "cohort_attrition") |>
-    dplyr::relocate(dplyr::all_of(requiredCohortColumns("cohort_attrition")))
+    dplyr::relocate(dplyr::all_of(cohortColumns("cohort_attrition")))
 
   # check NA
   checkNaCohort(cohort)
@@ -318,7 +318,7 @@ checkObservationPeriod <- function(cohort) {
   x <- cohort |>
     dplyr::anti_join(
       cohort |>
-        dplyr::select(dplyr::all_of(requiredCohortColumns("cohort"))) |>
+        dplyr::select(dplyr::all_of(cohortColumns("cohort"))) |>
         dplyr::left_join(
           cdm[["observation_period"]] |>
             dplyr::select(
@@ -333,7 +333,7 @@ checkObservationPeriod <- function(cohort) {
             .data$cohort_end_date >= .data$observation_period_start_date &
             .data$cohort_end_date <= .data$observation_period_end_date
         ),
-      by = requiredCohortColumns("cohort")
+      by = cohortColumns("cohort")
     ) |>
     dplyr::collect()
   if (nrow(x) > 0) {
