@@ -26,7 +26,7 @@ There are multiple versions of the OMOP CDM. The list of tables included in vers
 
 ```{r}
 library(OMOPGenerics)
-standardTables()
+omopTables()
 ```
 
 Each one of these tables is associated with a set of fields. For example, for the `person` table has includes:
@@ -65,7 +65,7 @@ for (tab in c("person", "observation_period")) {
     )
   )
 }
-tables <- standardTables(version = version)
+tables <- omopTables(version = version)
 tables <- sort(tables[!tables %in% c("person", "observation_period")])
 for (tab in tables) {
   mes <- c(
@@ -93,7 +93,7 @@ for (tab in c("person", "observation_period")) {
     )
   )
 }
-tables <- standardTables(version = version)
+tables <- omopTables(version = version)
 tables <- sort(tables[!tables %in% c("person", "observation_period")])
 for (tab in tables) {
   mes <- c(
