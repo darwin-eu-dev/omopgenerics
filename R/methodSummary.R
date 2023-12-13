@@ -22,51 +22,81 @@
 #' @export
 #'
 summary.cdm_reference <- function(object, ...) {
-  x <- object
-  person_count <- x[["person"]] |> dplyr::tally() |> dplyr::pull("n")
-  observation_period_info <- x[["observation_period"]] |>
+  # snapshot date
+  snapshotDate <- dplyr::tibble(
+    "variable_name" = "snapshot_date",
+    "estimate_name" = "value",
+    "estimate_type" = "date",
+    "estimate_value" = as.character(format(Sys.Date(), "%Y-%m-%d"))
+  )
+
+  # person count
+  personCount <- dplyr::tibble(
+    "variable_name" = "person_count",
+    "estimate_name" = "count",
+    "estimate_type" = "integer",
+    "estimate_value" = object[["person"]] |>
+      dplyr::tally() |>
+      dplyr::pull("n") |>
+      as.character()
+  )
+
+  # observation period info
+  observation_period_info <- object[["observation_period"]] |>
     dplyr::summarise(
       count = dplyr::n(),
       max = max(.data$observation_period_end_date, na.rm = TRUE),
       min = min(.data$observation_period_start_date, na.rm = TRUE)
     ) |>
     dplyr::collect()
-  snapshot_date <- as.character(format(Sys.Date(), "%Y-%m-%d"))
 
-  vocab_version <- getVocabularyVersion(x)
+  # observation period count
+  observationPeriodCount <- dplyr::tibble(
+    "variable_name" = "observation_period_count",
+    "estimate_name" = "count",
+    "estimate_type" = "integer",
+    "estimate_value" = as.character(observation_period_info$count)
+  )
+
+  # cdm source data
+  vocab_version <- getVocabularyVersion(object)
+  if ("cdm_source" %in% names(object) &&
+      object[["cdm_source"]] |> dplyr::tally() |> dplyr::pull("n") == 1) {
+
+  } else {
+    cdmSource <- dplyr::tibble(
+      vocabulary_version = vocab_version,
+      cdm_source_name = "",
+      cdm_holder_name = "",
+      cdm_release_date = "",
+      cdm_version = dplyr::coalesce(attr(object, "cdm_version"), ""),
+      cdm_description = "",
+      cdm_documentation_reference = ""
+    )
+  }
 
   # get cdm source
-  defCdmSource <- dplyr::tibble(
-    vocabulary_version = vocab_version,
-    cdm_source_name = "",
-    cdm_holder = "",
-    cdm_release_date = "",
-    cdm_version = attr(x, "cdm_version"),
-    source_description = "",
-    source_documentation_reference = ""
-  )
-  cdm_source <- tryCatch({
-    cdm_source <- x[["cdm_source"]] |>dplyr::collect()
-    if (nrow(cdm_source) != 1) {defCdmSource} else {cdm_source}
-  },
-  error = function(e) {
-    defCdmSource
-  }
-  )
 
+  cdm_source <- tryCatch(
+    expr = {
+      cdm_source <- object[["cdm_source"]] |> dplyr::collect()
+      if (nrow(cdm_source) != 1) {defCdmSource} else {cdm_source}
+    },
+    error = function(e) {defCdmSource}
+  )
   if (!"vocabulary_version" %in% colnames(cdm_source)) {
     cdm_source <- cdm_source |>
       dplyr::mutate("vocabulary_version" = .env$vocab_version)
   }
   if (!"cdm_version" %in% colnames(cdm_source)) {
     cdm_source <- cdm_source |>
-      dplyr::mutate("cdm_version" = attr(x, "cdm_version"))
+      dplyr::mutate("cdm_version" = attr(object, "cdm_version"))
   }
 
   cdm_source |>
     dplyr::mutate(
       result_type = "Snapshot",
-      cdm_name = dplyr::coalesce(attr(x, "cdm_name"), as.character(NA)),
+      cdm_name = dplyr::coalesce(attr(object, "cdm_name"), as.character(NA)),
       vocabulary_version = dplyr::coalesce(
         .env$vocab_version, .data$vocabulary_version
       ),
