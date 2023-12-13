@@ -122,7 +122,7 @@ validateCdmReference <- function(cdm) {
       cols <- omopColumns(table = "cohort", version = cdmVersion)
       checkColumnsCdm(cohort, nm, cols)
       cols <- omopColumns(table = "cohort_set", version = cdmVersion)
-      checkColumnsCdm(set(cohort), paste0(nm, "_set"), cols)
+      checkColumnsCdm(settings(cohort), paste0(nm, "_set"), cols)
       cols <- omopColumns(table = "cohort_attrition", version = cdmVersion)
       checkColumnsCdm(attrition(cohort), paste0(nm, "_attrition"), cols)
     }
