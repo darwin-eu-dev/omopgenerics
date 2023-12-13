@@ -38,5 +38,6 @@ settings.generated_cohort_set <- function(x) {
   }
   attr(x, "cohort_set") |>
     dplyr::collect() |>
+    dplyr::relocate(c("cohort_definition_id", "cohort_name")) |>
     dplyr::arrange(.data$cohort_definition_id)
 }
