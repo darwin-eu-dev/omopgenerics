@@ -126,18 +126,18 @@ fieldsResults <- dplyr::tibble(
     "package_name", "package_version",
     "group_name", "group_level",
     "strata_name", "strata_level",
-    "variable_name", "variable_level", "variable_type",
+    "variable_name", "variable_level",
     "estimate_name", "estimate_type", "estimate_value",
     "additional_name", "additional_level"
   ),
   is_required = TRUE,
   datatype = "character",
   na_allowed = c(
-    FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE,
+    FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE,
     FALSE, FALSE, TRUE, FALSE, FALSE
   ),
   pair = c(
-    rep(NA, 4), "name1", "level1", "name2", "level2", rep(NA, 6), "name3",
+    rep(NA, 4), "name1", "level1", "name2", "level2", rep(NA, 5), "name3",
     "level3"
   )
 ) %>%
@@ -151,7 +151,7 @@ fieldsResults <- dplyr::tibble(
       "strata_name_reference", "strata_level_reference",
       "group_name_comparator", "group_level_comparator",
       "strata_name_comparator", "strata_level_comparator",
-      "variable_name", "variable_level", "variable_type",
+      "variable_name", "variable_level",
       "estimate_name", "estimate_type", "estimate_value",
       "additional_name_reference", "additional_level_reference",
       "additional_name_comparator", "additional_level_comparator"
@@ -160,11 +160,11 @@ fieldsResults <- dplyr::tibble(
     datatype = "character",
     na_allowed = c(
       FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
-      FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE
+      FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE
     ),
     pair = c(
       rep(NA, 4), "name1", "level1", "name2", "level2", "name3", "level3",
-      "name4", "level4", rep(NA, 6), "name5", "level5", "name6", "level6"
+      "name4", "level4", rep(NA, 5), "name5", "level5", "name6", "level6"
     )
   ))
 
