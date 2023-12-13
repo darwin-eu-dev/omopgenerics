@@ -115,15 +115,15 @@ validateCdmReference <- function(cdm) {
 
     # assert columnames match version
     if (nm %in% cdmTables) {
-      cols <- requiredTableColumns(table = nm, version = cdmVersion)
+      cols <- omopColumns(table = nm, version = cdmVersion)
       checkColumnsCdm(cdm[[nm]], nm, cols)
     } else if ("generated_cohort_set" %in% class(cdm[[nm]])) {
       cohort <- cdm[[nm]]
-      cols <- requiredTableColumns(table = "cohort", version = cdmVersion)
+      cols <- omopColumns(table = "cohort", version = cdmVersion)
       checkColumnsCdm(cohort, nm, cols)
-      cols <- requiredTableColumns(table = "cohort_set", version = cdmVersion)
+      cols <- omopColumns(table = "cohort_set", version = cdmVersion)
       checkColumnsCdm(settings(cohort), paste0(nm, "_set"), cols)
-      cols <- requiredTableColumns(table = "cohort_attrition", version = cdmVersion)
+      cols <- omopColumns(table = "cohort_attrition", version = cdmVersion)
       checkColumnsCdm(attrition(cohort), paste0(nm, "_attrition"), cols)
     }
   }
@@ -298,7 +298,7 @@ omopTables <- function(version = "5.3") {
 #'
 #' @export
 #'
-requiredTableColumns <- function(table, version = "5.3") {
+omopColumns <- function(table, version = "5.3") {
   assertVersion(version = version)
   assertTable(table = table, version = version, type = "cdm_table")
   requiredColumns(table = table, version = version, type = "cdm_table")
