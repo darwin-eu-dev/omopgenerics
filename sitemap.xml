@@ -34,6 +34,9 @@
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/OMOPGenerics-package.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/achillesColumns.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/achillesTables.html</loc>
   </url>
   <url>
@@ -71,6 +74,9 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/codelist.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cohortColumns.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/cohortCount.html</loc>
@@ -118,13 +124,7 @@
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/print.cdm_reference.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/requiredAchillesColumns.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/requiredCohortColumns.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/requiredResultColumns.html</loc>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/resultColumns.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/settings.generated_cohort_set.html</loc>

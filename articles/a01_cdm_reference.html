@@ -130,12 +130,12 @@ vignette. As with the standard OMOP CDM tables, cohort tables are
 expected to contain a specific set of fields (with no restriction placed
 on whether they include additional fields or not).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/requiredCohortColumns.html">requiredCohortColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"cohort"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cohortColumns.html">cohortColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"cohort"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "cohort_definition_id" "subject_id"           "cohort_start_date"   </span></span>
 <span><span class="co">#&gt; [4] "cohort_end_date"</span></span>
-<span><span class="fu"><a href="../reference/requiredCohortColumns.html">requiredCohortColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"cohort_set"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/cohortColumns.html">cohortColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"cohort_set"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "cohort_definition_id" "cohort_name"</span></span>
-<span><span class="fu"><a href="../reference/requiredCohortColumns.html">requiredCohortColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"cohort_attrition"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/cohortColumns.html">cohortColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"cohort_attrition"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "cohort_definition_id" "number_records"       "number_subjects"     </span></span>
 <span><span class="co">#&gt; [4] "reason_id"            "reason"               "excluded_records"    </span></span>
 <span><span class="co">#&gt; [7] "excluded_subjects"</span></span></code></pre></div>
@@ -149,14 +149,14 @@ database. The following tables are created with the given columns.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/achillesTables.html">achillesTables</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "achilles_analysis"     "achilles_results"      "achilles_results_dist"</span></span>
-<span><span class="fu"><a href="../reference/requiredAchillesColumns.html">requiredAchillesColumns</a></span><span class="op">(</span><span class="st">"achilles_analysis"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/achillesColumns.html">achillesColumns</a></span><span class="op">(</span><span class="st">"achilles_analysis"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "analysis_id"    "analysis_name"  "stratum_1_name" "stratum_2_name"</span></span>
 <span><span class="co">#&gt; [5] "stratum_3_name" "stratum_4_name" "stratum_5_name" "is_default"    </span></span>
 <span><span class="co">#&gt; [9] "category"</span></span>
-<span><span class="fu"><a href="../reference/requiredAchillesColumns.html">requiredAchillesColumns</a></span><span class="op">(</span><span class="st">"achilles_results"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/achillesColumns.html">achillesColumns</a></span><span class="op">(</span><span class="st">"achilles_results"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "analysis_id" "stratum_1"   "stratum_2"   "stratum_3"   "stratum_4"  </span></span>
 <span><span class="co">#&gt; [6] "stratum_5"   "count_value"</span></span>
-<span><span class="fu"><a href="../reference/requiredAchillesColumns.html">requiredAchillesColumns</a></span><span class="op">(</span><span class="st">"achilles_results_dist"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/achillesColumns.html">achillesColumns</a></span><span class="op">(</span><span class="st">"achilles_results_dist"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "analysis_id"  "stratum_1"    "stratum_2"    "stratum_3"    "stratum_4"   </span></span>
 <span><span class="co">#&gt;  [6] "stratum_5"    "count_value"  "min_value"    "max_value"    "avg_value"   </span></span>
 <span><span class="co">#&gt; [11] "stdev_value"  "median_value" "p10_value"    "p25_value"    "p75_value"   </span></span>
