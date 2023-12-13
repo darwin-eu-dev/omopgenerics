@@ -104,17 +104,128 @@ summary.cdm_reference <- function(object, ...) {
 #' @export
 #'
 summary.generated_cohort_set <- function(object, ...) {
-  x <- object
-  settings(x) |>
-    dplyr::inner_join(attrition(x), by = "cohort_definition_id") |>
-    dplyr::arrange(.data$cohort_definition_id, .data$reason_id) |>
-    dplyr::mutate(
-      cohort_table_name = attr(x, "tbl_name"),
-      cdm_name = cdmName(attr(x, "cdm_reference")),
-      result_type = "Cohort details"
+  if (is.null(attr(object, "cdm_reference"))) {
+    cli::cli_abort(
+      "Can't find the cdm that this cohort comes from
+      (attr(cohort, 'cdm_reference') is NULL)."
+    )
+  }
+  if (is.null(attr(object, "tbl_name"))) {
+    cli::cli_abort(
+      "Can't find the table name of this cohort (attr(cohort, 'tbl_name') is
+      NULL)."
+    )
+  }
+
+  # settings part
+  settingsSummary <- settings(object) |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+    tidyr::pivot_longer(
+      cols = !"cohort_name", names_to = "variable_name",
+      values_to = "estimate_value"
     ) |>
-    dplyr::relocate(c(
-      "result_type", "cdm_name", "cohort_table_name", "cohort_name",
-      "cohort_definition_id"
-    ))
+    dplyr::left_join(getTypes(settings(object)), by = "variable_name") |>
+    dplyr::mutate(
+      "result_type" = "cohort_settings",
+      "variable_level" = NA_character_,
+      "estimate_name" = "value"
+    )
+
+  # counts summary
+  countsSummary <- cohortCount(object) |>
+    dplyr::inner_join(
+      settings(object) |> dplyr::select("cohort_name", "cohort_definition_id"),
+      by = "cohort_definition_id"
+    ) |>
+    dplyr::select(-"cohort_definition_id") |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+    tidyr::pivot_longer(
+      cols = !"cohort_name", names_to = "variable_name",
+      values_to = "estimate_value"
+    ) |>
+    dplyr::mutate(
+      "result_type" = "cohort_count",
+      "variable_level" = NA_character_,
+      "estimate_name" = "count",
+      "estimate_type" = "integer"
+    )
+
+  # attrition summary
+  attritionSummary <- attrition(object) |>
+    dplyr::inner_join(
+      settings(object) |> dplyr::select("cohort_name", "cohort_definition_id"),
+      by = "cohort_definition_id"
+    ) |>
+    dplyr::select(-"cohort_definition_id") |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+    tidyr::pivot_longer(
+      cols = c(
+        "number_records", "number_subjects", "excluded_records",
+        "excluded_subjects"
+      ),
+      names_to = "variable_name", values_to = "estimate_value"
+    ) |>
+    dplyr::mutate(
+      "result_type" = "cohort_attrition",
+      "estimate_name" = "count",
+      "variable_level" = NA_character_,
+      "estimate_type" = "integer"
+    ) |>
+    uniteGroup(
+      cols = c("reason_id", "reason"), name = "additional_name", level = "additional_level"
+    )
+
+  # final join
+  x <- settingsSummary |>
+    dplyr::union_all(countsSummary) |>
+    dplyr::mutate(
+      "additional_name" = "overall", "additional_level" = "overall"
+    ) |>
+    dplyr::union_all(attritionSummary) |>
+    uniteGroup(
+      cols = "cohort_name", name = "strata_name", level = "strata_level"
+    ) |>
+    dplyr::mutate(
+      "cdm_name" = cdmName(attr(object, "cdm_reference")),
+      "package_name" = "OMOPGenerics",
+      "package_version" = as.character(utils::packageVersion("OMOPGenerics")),
+      "group_name" = "cohort_table_name",
+      "group_level" = attr(object, "tbl_name")
+    ) |>
+    dplyr::select(dplyr::all_of(requiredResultColumns("summarised_result"))) |>
+    summarisedResult()
+
+  return(x)
+}
+
+getTypes <- function(x) {
+  for (col in colnames(x)) {
+    x <- x |> dplyr::mutate(!!col := getType(x[[col]]))
+  }
+  x |>
+    utils::head(1) |>
+    tidyr::pivot_longer(
+      cols = dplyr::everything(), names_to = "variable_name",
+      values_to = "estimate_type"
+    )
+}
+getType <- function(x) {
+  if (is.numeric(x)) {
+    if (all(round(x) == floor(x))) {
+      return("integer")
+    } else {
+      return("numeric")
+    }
+  } else if (is.logical(x)) {
+    return("logical")
+  } else if (inherits(x, "date")) {
+    return("date")
+  } else if (is.character(x)) {
+    return("character")
+  } else {
+    cli::cli_abort(
+      "I can't assign the type of {x}, please report it if you think it is
+      mistake."
+    )
+  }
 }

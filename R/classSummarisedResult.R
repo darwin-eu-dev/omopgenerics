@@ -70,7 +70,12 @@ validateSummariseResult <- function(x) {
   checkColumnPairs(x, columnPairs, " and ", "snake")
 
   # estimate_type
-  checkColumnContent(x, "estimate_type", c("numeric", "date", "character"))
+  checkColumnContent(
+    x = x, col = "estimate_type", content = c(
+      "numeric", "integer", "date", "character", "proportion", "percentage",
+      "logical"
+    )
+  )
 
   return(x)
 }
