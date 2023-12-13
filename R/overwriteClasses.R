@@ -21,7 +21,7 @@ keepAttributes <- function(x) {
   )
 }
 keepClass <- function(x) {
-  removeClass(x) <- "cdm_table"
+  x <- removeClass(x, "cdm_table")
   return(x)
 }
 restoreAttributes <- function(x, at) {
@@ -33,7 +33,7 @@ restoreAttributes <- function(x, at) {
   return(x)
 }
 restoreClass <- function(x) {
-  addClass(x) <- "cdm_table"
+  x <- addClass(x, "cdm_table")
   return(x)
 }
 

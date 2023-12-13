@@ -90,11 +90,11 @@ generatedCohortSet <- function(cohortRef,
 #' @importFrom dplyr collect
 #'
 collect.generated_cohort_set <- function(x, ...) {
-  removeClass(x) <- "generated_cohort_set"
+  x <- removeClass(x, "generated_cohort_set")
   y <- x |> dplyr::collect()
   attr(y, "cohort_set") <- attr(x, "cohort_set") |> dplyr::collect()
   attr(y, "cohort_attrition") <- attr(x, "cohort_attrition") |> dplyr::collect()
-  addClass(y) <- "generated_cohort_set"
+  y <- addClass(y, "generated_cohort_set")
   return(y)
 }
 
@@ -103,7 +103,7 @@ constructGeneratedCohortSet <- function(cohortRef,
                                         cohortAttritionRef) {
   attr(cohortRef, "cohort_set") <- cohortSetRef
   attr(cohortRef, "cohort_attrition") <- cohortAttritionRef
-  addClass(cohortRef) <- c("generated_cohort_set", "GeneratedCohortSet")
+  cohortRef <- addClass(cohortRef, c("generated_cohort_set", "GeneratedCohortSet"))
   return(cohortRef)
 }
 validateGeneratedCohortSet <- function(cohort) {

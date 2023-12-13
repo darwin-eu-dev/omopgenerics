@@ -26,10 +26,10 @@ cdmTable <- function(table) {
   if (!"cdm_reference" %in% names(attributes(table))) {
     cli::cli_abort("table is not part of a cdm_reference")
   }
-  addClass(table) <- "cdm_table"
+  table <- addClass(table, "cdm_table")
   if ("generated_cohort_set" %in% class(table)) {
-    addClass(attr(table, "cohort_set")) <- "cdm_table"
-    addClass(attr(table, "cohort_attrition")) <- "cdm_table"
+    attr(table, "cohort_set") <- addClass(attr(table, "cohort_set"), "cdm_table")
+    attr(table, "cohort_attrition") <- addClass(attr(table, "cohort_attrition"), "cdm_table")
   }
   return(table)
 }

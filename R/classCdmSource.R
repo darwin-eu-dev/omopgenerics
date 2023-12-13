@@ -39,7 +39,7 @@ cdmSource <- function(src, sourceName, sourceType) {
 }
 
 newCdmSource <- function(src, sourceName, sourceType) {
-  addClass(src) <- "cdm_source"
+  src <- addClass(src, "cdm_source")
   attr(src, "source_name") <- sourceName
   attr(src, "source_type") <- sourceType
   return(src)
@@ -83,7 +83,7 @@ validateCdmSource <- function(src) {
   validateX(x = cdm[[name]], name = name, fun = "compute")
 
   # drop table
-  cdm <- dropTable(cdm = cdm, name = name)
+  cdm <- dropTable(cdm = cdm, name = dplyr::all_of(name))
 
   return(invisible(src))
 }

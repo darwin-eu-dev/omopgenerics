@@ -90,7 +90,7 @@ checkColumns <- function(x, resultName) {
       {resultName} object."
     )
   }
-  x %>% dplyr::select(dplyr::all_of(cols))
+  x |> dplyr::select(dplyr::all_of(cols))
 }
 checkResultType <- function(x) {
   x <- unique(x$result_type) |> strsplit(split = " and ") |> unlist() |> unique()
@@ -198,7 +198,7 @@ getClass <- function(x, def) {
   } else {
     cs <- def
   }
-  addClass(x) <- cs
+  x <- addClass(x, cs)
   return(x)
 }
 checkColumnContent <- function(x, col, content) {

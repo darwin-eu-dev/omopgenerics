@@ -30,18 +30,17 @@ bind <- function(...) {
 #'
 #' @param ... Generated cohort set objects to bind. At least two must be
 #' provided.
-#' @param name Name of the new generated cohort set. If not provided The name of
-#' the first cohort is used instead.
+#' @param name Name of the new generated cohort set.
 #'
 #' @return New generated cohort set
 #'
 #' @export
 #'
-bind.generated_cohort_set <- function(..., name = NULL) {
+bind.generated_cohort_set <- function(..., name) {
   # initial checks
   cohorts <- list(...)
-  assertList(cohort, class = "generated_cohort_set")
-  if (length(cohort) < 2) {
+  assertList(cohorts, class = "generated_cohort_set")
+  if (length(cohorts) < 2) {
     cli::cli_abort(
       "Only {length(cohorts)} cohort provided, at least 2 must be provided."
     )
