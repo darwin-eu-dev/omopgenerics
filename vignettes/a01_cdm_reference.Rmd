@@ -29,10 +29,8 @@ library(OMOPGenerics)
 omopTables()
 ```
 
-Each one of these tables is associated with a set of fields. For example, for the `person` table has includes:
-
+The standard OMOP tables have required fields. We can check the required column of the person table, for example, like so 
 ```{r}
-
 requiredTableColumns(table = "person")
 ```
 
@@ -108,13 +106,10 @@ for (tab in tables) {
 cli::cli_inform(mes)
 ```
 
-All of these tables may contain additional fields.
 
 ### 2) Cohort tables
 
-Studies using the OMOP CDM often create study-specific cohort tables. We also consider these as part of the cdm reference once created. Each cohort table is associated with a specific class of its own, a `generatedCohortSet`, which is described more in a subsequent vignette.
-
-As with the standard OMOP CDM tables, cohort tables are expected to contain a specific set of fields (with no restriction placed on whether they include additional fields or not).
+Studies using the OMOP CDM often create study-specific cohort tables. We also consider these as part of the cdm reference once created. Each cohort table is associated with a specific class of its own, a `generatedCohortSet`, which is described more in a subsequent vignette. As with the standard OMOP CDM tables, cohort tables are expected to contain a specific set of fields (with no restriction placed on whether they include additional fields or not).
 
 ```{r}
 requiredCohortColumns(table = "cohort", version = "5.3")
@@ -124,7 +119,7 @@ requiredCohortColumns(table = "cohort_attrition", version = "5.3")
 
 ### 3) Achilles result tables
 
-The [Achilles R](https://ohdsi.github.io/Achilles) package provides descriptive statistics on an OMOP CDM database. The results from Achilles are stored in tables in the database. The following tables are created with the given columns.
+The Achilles R package provides descriptive statistics on an OMOP CDM database. The results from Achilles are stored in tables in the database. The following tables are created with the given columns.
 
 ```{r}
 achillesTables()

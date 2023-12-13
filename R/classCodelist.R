@@ -45,6 +45,7 @@ newCodelist <- function(x) {
 validateCodelist <- function(x) {
 
   assertList(x, named = TRUE, class = c("numeric", "integer"))
+  checkNA(x, names(x))
 
   return(x)
 }

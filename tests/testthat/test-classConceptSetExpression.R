@@ -98,5 +98,20 @@ expect_error(conceptSetExpression(list("asthma_narrow" = dplyr::tibble(
   "mapped" = "not logical"
 ))))
 
+expect_error(conceptSetExpression(list(
+  "diabetes" = dplyr::tibble(
+    "concept_id" = c(201820, NA),
+    "excluded" = c(FALSE, FALSE),
+    "descendants" = c(TRUE, FALSE),
+    "mapped" = c(FALSE, FALSE)
+  ),
+  "asthma" = dplyr::tibble(
+    "concept_id" = 317009,
+    "excluded" = FALSE,
+    "descendants" = FALSE,
+    "mapped" = FALSE
+  )
+)))
+
 
 })
