@@ -48,7 +48,8 @@ summary.cdm_reference <- function(object, ...) {
       max = max(.data$observation_period_end_date, na.rm = TRUE),
       min = min(.data$observation_period_start_date, na.rm = TRUE)
     ) |>
-    dplyr::collect()
+    dplyr::collect() |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
 
   # observation period count
   observationPeriodCount <- dplyr::tibble(
@@ -62,9 +63,35 @@ summary.cdm_reference <- function(object, ...) {
   vocab_version <- getVocabularyVersion(object)
   if ("cdm_source" %in% names(object) &&
       object[["cdm_source"]] |> dplyr::tally() |> dplyr::pull("n") == 1) {
-
+    cdmSourceSummary <- object[["cdm_source"]] |>
+      dplyr::collect() |>
+      dplyr::select(dplyr::any_of(c(
+        "vocabulary_version", "cdm_source_name",
+        "cdm_holder_name" = "cdm_holder", "cdm_release_date", "cdm_version",
+        "cdm_description" = "source_description",
+        "cdm_documentation_reference" = "source_documentation_reference"
+      )))
+    if (!"vocabulary_version" %in% colnames(cdmSourceSummary)) {
+      cdmSourceSummary <- cdmSourceSummary |>
+        dplyr::mutate("vocabulary_version" = vocab_version)
+    }
+    if (!"cdm_version" %in% colnames(cdmSourceSummary)) {
+      cdmSourceSummary <- cdmSourceSummary |>
+        dplyr::mutate(
+          "cdm_version" = dplyr::coalesce(attr(object, "cdm_version"), "")
+        )
+    }
+    cols <- c(
+      "cdm_source_name", "cdm_holder_name", "cdm_release_date",
+      "cdm_description", "cdm_documentation_reference"
+    )
+    for (col in cols) {
+      if (!col %in% colnames(cdmSourceSummary)) {
+        cdmSourceSummary <- cdmSourceSummary |> dplyr::mutate(!!col := "")
+      }
+    }
   } else {
-    cdmSource <- dplyr::tibble(
+    cdmSourceSummary <- dplyr::tibble(
       vocabulary_version = vocab_version,
       cdm_source_name = "",
       cdm_holder_name = "",
@@ -74,56 +101,60 @@ summary.cdm_reference <- function(object, ...) {
       cdm_documentation_reference = ""
     )
   }
+  cdmSourceSummary <- cdmSourceSummary |>
+    dplyr::select(dplyr::all_of(c(
+      "cdm_source_name", "vocabulary_version", "cdm_version", "cdm_holder_name",
+      "cdm_release_date", "cdm_description", "cdm_documentation_reference"
+    ))) |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+    tidyr::pivot_longer(
+      cols = dplyr::everything(), names_to = "variable",
+      values_to = "estimate_value"
+    ) |>
+    tidyr::separate_wider_delim(
+      cols = c("variable"),
+      delim = "_",
+      names = c("variable_name", "estimate_name"),
+      too_many = "merge",
+      cols_remove = TRUE
+    ) |>
+    dplyr::mutate(estimate_type = "character")
 
-  # get cdm source
-
-  cdm_source <- tryCatch(
-    expr = {
-      cdm_source <- object[["cdm_source"]] |> dplyr::collect()
-      if (nrow(cdm_source) != 1) {defCdmSource} else {cdm_source}
-    },
-    error = function(e) {defCdmSource}
+  # observation periods values
+  observationPeriodValues <- dplyr::tibble(
+    "variable_name" = c(
+      "observation_period_start_date", "observation_period_end_date"
+    ),
+    "estimate_name" = c("min", "max"),
+    "estimate_type" = "date",
+    "estimate_value" = c(
+      observation_period_info$min, observation_period_info$max
+    )
   )
-  if (!"vocabulary_version" %in% colnames(cdm_source)) {
-    cdm_source <- cdm_source |>
-      dplyr::mutate("vocabulary_version" = .env$vocab_version)
-  }
-  if (!"cdm_version" %in% colnames(cdm_source)) {
-    cdm_source <- cdm_source |>
-      dplyr::mutate("cdm_version" = attr(object, "cdm_version"))
-  }
 
-  cdm_source |>
+  # merge snapshot
+  x <- snapshotDate |>
+    dplyr::union_all(personCount) |>
+    dplyr::union_all(observationPeriodCount) |>
+    dplyr::union_all(cdmSourceSummary) |>
+    dplyr::union_all(observationPeriodValues) |>
     dplyr::mutate(
-      result_type = "Snapshot",
-      cdm_name = dplyr::coalesce(attr(object, "cdm_name"), as.character(NA)),
-      vocabulary_version = dplyr::coalesce(
-        .env$vocab_version, .data$vocabulary_version
-      ),
-      person_count = .env$person_count,
-      observation_period_count = .env$observation_period_info$count,
-      earliest_observation_period_start_date =
-        .env$observation_period_info$min,
-      latest_observation_period_end_date = .env$observation_period_info$max,
-      snapshot_date = .env$snapshot_date
+      "cdm_name" = cdmName(object),
+      "package_name" = "OMOPGenerics",
+      "package_version" = as.character(utils::packageVersion("OMOPGenerics")),
+      "result_type" = "cdm_snapshot",
+      "variable_level" = NA_character_,
+      "group_name" = "overall",
+      "group_level" = "overall",
+      "strata_name" = "overall",
+      "strata_level" = "overall",
+      "additional_name" = "overall",
+      "additional_level" = "overall"
     ) |>
-    dplyr::select(
-      "result_type",
-      "cdm_name",
-      "cdm_source_name",
-      "cdm_description" = "source_description",
-      "cdm_documentation_reference" = "source_documentation_reference",
-      "cdm_version",
-      "cdm_holder",
-      "cdm_release_date",
-      "vocabulary_version",
-      "person_count",
-      "observation_period_count",
-      "earliest_observation_period_start_date",
-      "latest_observation_period_end_date",
-      "snapshot_date"
-    ) |>
-    dplyr::mutate_all(as.character)
+    dplyr::select(dplyr::all_of(requiredResultColumns("summarised_result"))) |>
+    summarisedResult()
+
+  return(x)
 }
 
 #' Summary a generated cohort set
