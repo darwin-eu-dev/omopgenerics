@@ -42,7 +42,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/a01_cdm_reference.html">The cdm reference</a>
-    <a class="dropdown-item" href="../articles/a02_codelist.html">Codelists</a>
+    <a class="dropdown-item" href="../articles/a02_concept_set.html">Concept set</a>
     <a class="dropdown-item" href="../articles/a03_generated_cohort_set.html">Generated cohort set</a>
     <a class="dropdown-item" href="../articles/a04_summarised_result.html">Summarised result</a>
     <a class="dropdown-item" href="../articles/a05_compared_result.html">a05_compared_result</a>
@@ -98,7 +98,7 @@ included in version 5.3 are as follows.</p>
 <span><span class="co">#&gt; The following object is masked from 'package:stats':</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     aggregate</span></span>
-<span><span class="fu"><a href="../reference/standardTables.html">standardTables</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/standardTables.html">standardTables</a></span><span class="op">(</span>version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "person"                "observation_period"    "visit_occurrence"     </span></span>
 <span><span class="co">#&gt;  [4] "visit_detail"          "condition_occurrence"  "drug_exposure"        </span></span>
 <span><span class="co">#&gt;  [7] "procedure_occurrence"  "device_exposure"       "measurement"          </span></span>
@@ -112,166 +112,17 @@ included in version 5.3 are as follows.</p>
 <span><span class="co">#&gt; [31] "relationship"          "concept_synonym"       "concept_ancestor"     </span></span>
 <span><span class="co">#&gt; [34] "source_to_concept_map" "drug_strength"         "cohort_definition"    </span></span>
 <span><span class="co">#&gt; [37] "attribute_definition"</span></span></code></pre></div>
-<p>Each one of these tables is associated with a set of fields. For
-example, for the <code>person</code> table has includes:</p>
+<p>The standard OMOP tables have required fields. We can check the
+required column of the person table, for example, like so</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="../reference/requiredTableColumns.html">requiredTableColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"person"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/requiredTableColumns.html">requiredTableColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"person"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "person_id"            "gender_concept_id"    "year_of_birth"       </span></span>
 <span><span class="co">#&gt; [4] "race_concept_id"      "ethnicity_concept_id"</span></span></code></pre></div>
-<ul>
-<li><p>Cohort tables (see <code>generatedCohortSet</code>).</p></li>
-<li><p>Other tables, these other tables can have any format.</p></li>
-</ul>
-<p>Any table to be part of a cdm object has to fulfill 4 conditions:</p>
-<ul>
-<li><p>All must share a common source.</p></li>
-<li><p>The name of the tables must be lowercase.</p></li>
-<li><p>The name of the column names of each table must be
-lowercase.</p></li>
-<li><p><code>person</code> and <code>observation_period</code> must be
-present.</p></li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="required-columns">Required columns<a class="anchor" aria-label="anchor" href="#required-columns"></a>
-</h3>
-<pre><code><span><span class="co">#&gt; <span style="color: #00BB00; font-weight: bold;">OMOP CDM version: "5.3"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB; font-weight: bold;">person</span>: person_id, gender_concept_id, year_of_birth, race_concept_id,</span></span>
-<span><span class="co">#&gt;   ethnicity_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB; font-weight: bold;">observation_period</span>: observation_period_id, person_id,</span></span>
-<span><span class="co">#&gt;   observation_period_start_date, observation_period_end_date,</span></span>
-<span><span class="co">#&gt;   period_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">attribute_definition</span>: attribute_definition_id, attribute_name,</span></span>
-<span><span class="co">#&gt;   attribute_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">care_site</span>: care_site_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">cdm_source</span>: cdm_source_name</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">cohort_definition</span>: cohort_definition_id, cohort_definition_name,</span></span>
-<span><span class="co">#&gt;   definition_type_concept_id, subject_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">concept</span>: concept_id, concept_name, domain_id, vocabulary_id,</span></span>
-<span><span class="co">#&gt;   concept_class_id, concept_code, valid_start_date, valid_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">concept_ancestor</span>: ancestor_concept_id, descendant_concept_id,</span></span>
-<span><span class="co">#&gt;   min_levels_of_separation, max_levels_of_separation</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">concept_class</span>: concept_class_id, concept_class_name, concept_class_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">concept_relationship</span>: concept_id_1, concept_id_2, relationship_id,</span></span>
-<span><span class="co">#&gt;   valid_start_date, valid_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">concept_synonym</span>: concept_id, concept_synonym_name, language_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">condition_era</span>: condition_era_id, person_id, condition_concept_id,</span></span>
-<span><span class="co">#&gt;   condition_era_start_date, condition_era_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">condition_occurrence</span>: condition_occurrence_id, person_id,</span></span>
-<span><span class="co">#&gt;   condition_concept_id, condition_start_date, condition_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">cost</span>: cost_id, cost_event_id, cost_domain_id, cost_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">death</span>: person_id, death_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">device_exposure</span>: device_exposure_id, person_id, device_concept_id,</span></span>
-<span><span class="co">#&gt;   device_exposure_start_date, device_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">domain</span>: domain_id, domain_name, domain_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">dose_era</span>: dose_era_id, person_id, drug_concept_id, unit_concept_id,</span></span>
-<span><span class="co">#&gt;   dose_value, dose_era_start_date, dose_era_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">drug_era</span>: drug_era_id, person_id, drug_concept_id, drug_era_start_date,</span></span>
-<span><span class="co">#&gt;   drug_era_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">drug_exposure</span>: drug_exposure_id, person_id, drug_concept_id,</span></span>
-<span><span class="co">#&gt;   drug_exposure_start_date, drug_exposure_end_date, drug_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">drug_strength</span>: drug_concept_id, ingredient_concept_id, valid_start_date,</span></span>
-<span><span class="co">#&gt;   valid_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">fact_relationship</span>: domain_concept_id_1, fact_id_1, domain_concept_id_2,</span></span>
-<span><span class="co">#&gt;   fact_id_2, relationship_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">location</span>: location_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">measurement</span>: measurement_id, person_id, measurement_concept_id,</span></span>
-<span><span class="co">#&gt;   measurement_date, measurement_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">metadata</span>: metadata_concept_id, metadata_type_concept_id, name</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">note</span>: note_id, person_id, note_date, note_type_concept_id,</span></span>
-<span><span class="co">#&gt;   note_class_concept_id, note_text, encoding_concept_id, language_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">note_nlp</span>: note_nlp_id, note_id, lexical_variant, nlp_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">observation</span>: observation_id, person_id, observation_concept_id,</span></span>
-<span><span class="co">#&gt;   observation_date, observation_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">payer_plan_period</span>: payer_plan_period_id, person_id,</span></span>
-<span><span class="co">#&gt;   payer_plan_period_start_date, payer_plan_period_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">procedure_occurrence</span>: procedure_occurrence_id, person_id,</span></span>
-<span><span class="co">#&gt;   procedure_concept_id, procedure_date, procedure_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">provider</span>: provider_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">relationship</span>: relationship_id, relationship_name, is_hierarchical,</span></span>
-<span><span class="co">#&gt;   defines_ancestry, reverse_relationship_id, relationship_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">source_to_concept_map</span>: source_code, source_concept_id, source_vocabulary_id,</span></span>
-<span><span class="co">#&gt;   target_concept_id, target_vocabulary_id, valid_start_date, valid_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">specimen</span>: specimen_id, person_id, specimen_concept_id,</span></span>
-<span><span class="co">#&gt;   specimen_type_concept_id, specimen_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">visit_detail</span>: visit_detail_id, person_id, visit_detail_concept_id,</span></span>
-<span><span class="co">#&gt;   visit_detail_start_date, visit_detail_end_date, visit_detail_type_concept_id,</span></span>
-<span><span class="co">#&gt;   visit_occurrence_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">visit_occurrence</span>: visit_occurrence_id, person_id, visit_concept_id,</span></span>
-<span><span class="co">#&gt;   visit_start_date, visit_end_date, visit_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">vocabulary</span>: vocabulary_id, vocabulary_name, vocabulary_reference,</span></span>
-<span><span class="co">#&gt;   vocabulary_concept_id</span></span></code></pre>
-<pre><code><span><span class="co">#&gt; <span style="color: #00BB00; font-weight: bold;">OMOP CDM version: "5.4"</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB; font-weight: bold;">person</span>: person_id, gender_concept_id, year_of_birth, race_concept_id,</span></span>
-<span><span class="co">#&gt;   ethnicity_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB; font-weight: bold;">observation_period</span>: observation_period_id, person_id,</span></span>
-<span><span class="co">#&gt;   observation_period_start_date, observation_period_end_date,</span></span>
-<span><span class="co">#&gt;   period_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">care_site</span>: care_site_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">cdm_source</span>: cdm_source_name, cdm_source_abbreviation, cdm_holder,</span></span>
-<span><span class="co">#&gt;   source_release_date, cdm_release_date, cdm_version_concept_id,</span></span>
-<span><span class="co">#&gt;   vocabulary_version</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">cohort</span>: cohort_definition_id, subject_id, cohort_start_date, cohort_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">cohort_definition</span>: cohort_definition_id, cohort_definition_name,</span></span>
-<span><span class="co">#&gt;   definition_type_concept_id, subject_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">concept</span>: concept_id, concept_name, domain_id, vocabulary_id,</span></span>
-<span><span class="co">#&gt;   concept_class_id, concept_code, valid_start_date, valid_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">concept_ancestor</span>: ancestor_concept_id, descendant_concept_id,</span></span>
-<span><span class="co">#&gt;   min_levels_of_separation, max_levels_of_separation</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">concept_class</span>: concept_class_id, concept_class_name, concept_class_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">concept_relationship</span>: concept_id_1, concept_id_2, relationship_id,</span></span>
-<span><span class="co">#&gt;   valid_start_date, valid_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">concept_synonym</span>: concept_id, concept_synonym_name, language_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">condition_era</span>: condition_era_id, person_id, condition_concept_id,</span></span>
-<span><span class="co">#&gt;   condition_era_start_date, condition_era_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">condition_occurrence</span>: condition_occurrence_id, person_id,</span></span>
-<span><span class="co">#&gt;   condition_concept_id, condition_start_date, condition_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">cost</span>: cost_id, cost_event_id, cost_domain_id, cost_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">death</span>: person_id, death_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">device_exposure</span>: device_exposure_id, person_id, device_concept_id,</span></span>
-<span><span class="co">#&gt;   device_exposure_start_date, device_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">domain</span>: domain_id, domain_name, domain_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">dose_era</span>: dose_era_id, person_id, drug_concept_id, unit_concept_id,</span></span>
-<span><span class="co">#&gt;   dose_value, dose_era_start_date, dose_era_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">drug_era</span>: drug_era_id, person_id, drug_concept_id, drug_era_start_date,</span></span>
-<span><span class="co">#&gt;   drug_era_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">drug_exposure</span>: drug_exposure_id, person_id, drug_concept_id,</span></span>
-<span><span class="co">#&gt;   drug_exposure_start_date, drug_exposure_end_date, drug_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">drug_strength</span>: drug_concept_id, ingredient_concept_id, valid_start_date,</span></span>
-<span><span class="co">#&gt;   valid_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">episode</span>: episode_id, person_id, episode_concept_id, episode_start_date,</span></span>
-<span><span class="co">#&gt;   episode_object_concept_id, episode_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">episode_event</span>: episode_id, event_id, episode_event_field_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">fact_relationship</span>: domain_concept_id_1, fact_id_1, domain_concept_id_2,</span></span>
-<span><span class="co">#&gt;   fact_id_2, relationship_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">location</span>: location_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">measurement</span>: measurement_id, person_id, measurement_concept_id,</span></span>
-<span><span class="co">#&gt;   measurement_date, measurement_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">metadata</span>: metadata_concept_id, metadata_type_concept_id, name, metadata_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">note</span>: note_id, person_id, note_date, note_type_concept_id,</span></span>
-<span><span class="co">#&gt;   note_class_concept_id, note_text, encoding_concept_id, language_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">note_nlp</span>: note_nlp_id, note_id, lexical_variant, nlp_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">observation</span>: observation_id, person_id, observation_concept_id,</span></span>
-<span><span class="co">#&gt;   observation_date, observation_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">payer_plan_period</span>: payer_plan_period_id, person_id,</span></span>
-<span><span class="co">#&gt;   payer_plan_period_start_date, payer_plan_period_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">procedure_occurrence</span>: procedure_occurrence_id, person_id,</span></span>
-<span><span class="co">#&gt;   procedure_concept_id, procedure_date, procedure_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">provider</span>: provider_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">relationship</span>: relationship_id, relationship_name, is_hierarchical,</span></span>
-<span><span class="co">#&gt;   defines_ancestry, reverse_relationship_id, relationship_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">source_to_concept_map</span>: source_code, source_concept_id, source_vocabulary_id,</span></span>
-<span><span class="co">#&gt;   target_concept_id, target_vocabulary_id, valid_start_date, valid_end_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">specimen</span>: specimen_id, person_id, specimen_concept_id,</span></span>
-<span><span class="co">#&gt;   specimen_type_concept_id, specimen_date</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">visit_detail</span>: visit_detail_id, person_id, visit_detail_concept_id,</span></span>
-<span><span class="co">#&gt;   visit_detail_start_date, visit_detail_end_date, visit_detail_type_concept_id,</span></span>
-<span><span class="co">#&gt;   visit_occurrence_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">visit_occurrence</span>: visit_occurrence_id, person_id, visit_concept_id,</span></span>
-<span><span class="co">#&gt;   visit_start_date, visit_end_date, visit_type_concept_id</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> <span style="color: #0000BB;">vocabulary</span>: vocabulary_id, vocabulary_name, vocabulary_concept_id</span></span></code></pre>
-<p>All of these tables may contain additional fields.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/requiredTableColumns.html">requiredTableColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"observation_period"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "observation_period_id"         "person_id"                    </span></span>
+<span><span class="co">#&gt; [3] "observation_period_start_date" "observation_period_end_date"  </span></span>
+<span><span class="co">#&gt; [5] "period_type_concept_id"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="cohort-tables">2) Cohort tables<a class="anchor" aria-label="anchor" href="#cohort-tables"></a>
@@ -280,11 +131,10 @@ present.</p></li>
 We also consider these as part of the cdm reference once created. Each
 cohort table is associated with a specific class of its own, a
 <code>generatedCohortSet</code>, which is described more in a subsequent
-vignette.</p>
-<p>As with the standard OMOP CDM tables, cohort tables are expected to
-contain a specific set of fields (with no restriction placed on whether
-they include additional fields or not).</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+vignette. As with the standard OMOP CDM tables, cohort tables are
+expected to contain a specific set of fields (with no restriction placed
+on whether they include additional fields or not).</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/requiredCohortColumns.html">requiredCohortColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"cohort"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "cohort_definition_id" "subject_id"           "cohort_start_date"   </span></span>
 <span><span class="co">#&gt; [4] "cohort_end_date"</span></span>
@@ -298,11 +148,10 @@ they include additional fields or not).</p>
 <div class="section level3">
 <h3 id="achilles-result-tables">3) Achilles result tables<a class="anchor" aria-label="anchor" href="#achilles-result-tables"></a>
 </h3>
-<p>The <a href="https://ohdsi.github.io/Achilles" class="external-link">Achilles R</a> package
-provides descriptive statistics on an OMOP CDM database. The results
-from Achilles are stored in tables in the database. The following tables
-are created with the given columns.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p>The Achilles R package provides descriptive statistics on an OMOP CDM
+database. The results from Achilles are stored in tables in the
+database. The following tables are created with the given columns.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/achillesTables.html">achillesTables</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "achilles_analysis"     "achilles_results"      "achilles_results_dist"</span></span>
 <span><span class="fu"><a href="../reference/requiredAchillesColumns.html">requiredAchillesColumns</a></span><span class="op">(</span><span class="st">"achilles_analysis"</span><span class="op">)</span></span>
