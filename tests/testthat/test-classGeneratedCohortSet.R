@@ -29,7 +29,7 @@ test_that("test create cohort", {
     c("cohort_set", "cohort_attrition") %in% names(attributes(cohort))
   ))
   expect_equal(
-    set(cohort) |> unclass(), attr(cohort, "cohort_set") |> unclass()
+    settings(cohort) |> unclass(), attr(cohort, "cohort_set") |> unclass()
   )
   expect_no_error(cohortCount(cohort))
   expect_equal(
@@ -71,7 +71,7 @@ test_that("test create cohort", {
     c("cohort_set", "cohort_attrition") %in% names(attributes(cohort))
   ))
   expect_equal(
-    set(cohort) |> unclass(), attr(cohort, "cohort_set") |> unclass()
+    settings(cohort) |> unclass(), attr(cohort, "cohort_set") |> unclass()
   )
   expect_no_error(cohortCount(cohort))
   expect_equal(
@@ -93,8 +93,8 @@ test_that("test create cohort", {
   expect_no_error(cohort3 <- generatedCohortSet(cdm$cohort3, cohort_set3))
   expect_error(cohort4 <- generatedCohortSet(cdm$cohort3, cohort_set4))
   expect_error(cohort5 <- generatedCohortSet(cdm$cohort3, cohort_set5))
-  # expect_equal(set(cohort2) |> unclass(), cohort_set2 |> unclass())
-  # expect_equal(set(cohort3), cohort_set3)
+  # expect_equal(settings(cohort2) |> unclass(), cohort_set2 |> unclass())
+  # expect_equal(settings(cohort3), cohort_set3)
 
   # check cohort attrition
   cohort_attrition1 <- dplyr::tibble(cohort_definition_id = 1)
