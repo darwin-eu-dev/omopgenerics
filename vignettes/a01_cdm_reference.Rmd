@@ -26,7 +26,7 @@ There are multiple versions of the OMOP CDM. The list of tables included in vers
 
 ```{r}
 library(OMOPGenerics)
-standardTables(version = "5.3")
+omopTables()
 ```
 
 The standard OMOP tables have required fields. We can check the required column of the person table, for example, like so 

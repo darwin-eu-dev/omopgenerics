@@ -100,7 +100,7 @@ validateCdmReference <- function(cdm) {
     cli::cli_abort("{combine(x)} {verb(x)} not included in the cdm object")
   }
 
-  cdmTables <- standardTables(version = cdmVersion)
+  cdmTables <- omopTables(version = cdmVersion)
 
   # assertions for all the cdm tables
   for (nm in names(cdm)) {
@@ -283,7 +283,7 @@ print.cdm_reference <- function(x, ...) {
 #'
 #' @export
 #'
-standardTables <- function(version = "5.3") {
+omopTables <- function(version = "5.3") {
   assertVersion(version = version)
   tableChoice(version = version, type = "cdm_table")
 }

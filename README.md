@@ -62,7 +62,7 @@ A cdm object can contain three type of tables:
 - Standard tables:
 
 ``` r
-standardTables()
+omopTables()
 #>  [1] "person"                "observation_period"    "visit_occurrence"     
 #>  [4] "visit_detail"          "condition_occurrence"  "drug_exposure"        
 #>  [7] "procedure_occurrence"  "device_exposure"       "measurement"          
