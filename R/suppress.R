@@ -27,7 +27,18 @@ suppress <- function(result,
   UseMethod("suppress")
 }
 
+#' Function to suppress counts in compared_result objects
+#'
+#' @param result compared_result object
+#' @param minCellCount Minimum count of records to report results.
+#'
+#' @return Table with suppressed counts
+#'
+#' @export
+suppress.compared_result <- function(result,
+                                     minCellCount = 5) {
 
+}
 
 #' Function to suppress counts in summarised_result objects
 #'
@@ -138,8 +149,8 @@ obscureLinked <- function(result, linkEstimates, variable) {
       )) |>
       dplyr::select(-"obscure_linked_k") |>
       dplyr::mutate(obscure_linked = dplyr::if_else(is.na(.data$obscure_linked),
-                                                          0,
-                                                          .data$obscure_linked))
+                                                    0,
+                                                    .data$obscure_linked))
   }
   return(result)
 }

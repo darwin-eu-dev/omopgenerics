@@ -16,16 +16,13 @@
 
 addClass <- function(x, value) {
   if (any(value %in% class(x))) x <- removeClass(x, value)
-
   base::class(x) <- c(value, base::class(x))
   return(x)
 }
-
 removeClass <- function(x, value) {
   base::class(x) <- base::class(x)[!(base::class(x) %in% value)]
   return(x)
 }
-
 getCdmSource <- function(x) {
   if ("cdm_reference" %in% class(x)) {
     cdm <- x

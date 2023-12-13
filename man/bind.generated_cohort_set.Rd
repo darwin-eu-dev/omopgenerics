@@ -4,14 +4,13 @@
 \alias{bind.generated_cohort_set}
 \title{Bind generated_cohort_set}
 \usage{
-\method{bind}{generated_cohort_set}(..., name = NULL)
+\method{bind}{generated_cohort_set}(..., name)
 }
 \arguments{
 \item{...}{Generated cohort set objects to bind. At least two must be
 provided.}
 
-\item{name}{Name of the new generated cohort set. If not provided The name of
-the first cohort is used instead.}
+\item{name}{Name of the new generated cohort set.}
 }
 \value{
 New generated cohort set

@@ -43,11 +43,11 @@ aggregate <- function(x,
     originalCols <- originalCols[!originalCols %in% cols]
   }
 
-  x %>%
-    dplyr::mutate(!!name := paste0(cols, collapse = " and ")) %>%
+  x |>
+    dplyr::mutate(!!name := paste0(cols, collapse = " and ")) |>
     tidyr::unite(
       col = !!level, dplyr::all_of(cols), sep = " and ", remove = !keep
-    ) %>%
+    ) |>
     dplyr::select(dplyr::all_of(c(originalCols, name, level)))
 }
 
@@ -72,8 +72,8 @@ unAggregate <- function(x,
   assertLogical(keep, length = 1)
   assertTibble(x, columns = c(name, level))
 
-  nameValues <- x[[name]] %>% stringr::str_split(" and ")
-  levelValues <- x[[level]] %>% stringr::str_split(" and ")
+  nameValues <- x[[name]] |> stringr::str_split(" and ")
+  levelValues <- x[[level]] |> stringr::str_split(" and ")
   if (!all(lengths(nameValues) == lengths(levelValues))) {
     cli::cli_abort("Column names and levels number does not match")
   }
@@ -88,13 +88,13 @@ unAggregate <- function(x,
       } else {
         return(res)
       }
-    }) %>%
+    }) |>
       unlist()
     x[[col]] <- dat
   }
 
   if (!keep) {
-    x <- x %>% dplyr::select(-dplyr::all_of(c(name, level)))
+    x <- x |> dplyr::select(-dplyr::all_of(c(name, level)))
   }
 
   return(x)

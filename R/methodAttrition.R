@@ -48,6 +48,6 @@ attrition.generated_cohort_set <- function(x) {
       "excluded_records" = as.integer(.data$excluded_records),
       "excluded_subjects" = as.integer(.data$excluded_subjects)
     )
-  addClass(x) <- c("omop_attrition", "attrition")
+  x <- addClass(x, c("omop_attrition", "attrition"))
   return(x)
 }

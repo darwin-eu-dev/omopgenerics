@@ -90,7 +90,7 @@ checkColumns <- function(x, resultName) {
       {resultName} object."
     )
   }
-  x %>% dplyr::select(dplyr::all_of(cols))
+  x |> dplyr::select(dplyr::all_of(cols))
 }
 checkResultType <- function(x) {
   x <- unique(x$result_type) |> strsplit(split = " and ") |> unlist() |> unique()
