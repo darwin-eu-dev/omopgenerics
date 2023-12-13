@@ -204,10 +204,12 @@ getClass <- function(x, def) {
 checkColumnContent <- function(x, col, content) {
   if (!all(x[[col]] %in% content)) {
     notType <- x[[col]][!x[[col]] %in% content] |> unique()
+    len <- length(notType)
+    notType <- notType[1:min(5, len)]
     cli::cli_abort(c(
       "{col} contains incorrect values, possible values:
       {paste0(content, collapse = ', ')}. Observed values:
-      {paste0(notType[1:5], collapse = ', ')}{ifelse(length(notType)>5, '...', '.')}"
+      {paste0(notType, collapse = ', ')}{ifelse(len>5, '...', '.')}"
     ))
   }
   return(invisible(TRUE))
