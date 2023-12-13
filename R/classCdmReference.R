@@ -168,18 +168,7 @@ checkColumnsCdm <- function(table, nm, required, call = parent.frame()) {
 #' @export
 #'
 cdmName <- function(cdm) {
-  UseMethod("cdmName")
-}
-
-#' Name of a cdm_reference.
-#'
-#' @param cdm A cdm_reference object.
-#'
-#' @return Name of the cdm_reference.
-#'
-#' @export
-#'
-cdmName.cdm_reference <- function(cdm) {
+  assertClass(cdm, "cdm_reference")
   attr(cdm, "cdm_name")
 }
 
@@ -192,19 +181,8 @@ cdmName.cdm_reference <- function(cdm) {
 #' @export
 #'
 cdmVersion <- function(cdm) {
-  UseMethod("cdmVersion")
-}
-
-#' Version of a cdm_reference.
-#'
-#' @param cdm A cdm_reference object.
-#'
-#' @return Version of the cdm_reference.
-#'
-#' @export
-#'
-cdmVersion.cdm_reference <- function(cdm) {
-  attr(cdm, "cdm_name")
+  assertClass(cdm, "cdm_reference")
+  attr(cdm, "cdm_version")
 }
 
 #' Subset a cdm reference object.
@@ -306,16 +284,8 @@ print.cdm_reference <- function(x, ...) {
 #' @export
 #'
 standardTables <- function(version = "5.3") {
-  # check inputs
-  assertChoice(version, c("5.3", "5.4"))
-
-  # filter
-  tables <- fieldsTables$cdm_table_name[
-    grepl(version, fieldsTables$cdm_version)
-  ] |>
-    unique()
-
-  return(tables)
+  assertVersion(version = version)
+  tableChoice(version = version, type = "cdm_table")
 }
 
 #' Required columns that the standard tables in the OMOP Common Data Model must
@@ -329,18 +299,23 @@ standardTables <- function(version = "5.3") {
 #' @export
 #'
 requiredTableColumns <- function(table, version = "5.3") {
-  # check input
-  assertChoice(x = version, choices = c("5.3", "5.4"))
-  assertChoice(x = table, choices = standardTables(version = version))
+  assertVersion(version = version)
+  assertTable(table = table, version = version, type = "cdm_table")
+  requiredColumns(table = table, version = version, type = "cdm_table")
+}
 
-  # filter
-  columns <- fieldsTables$cdm_field_name[
-    grepl(version, fieldsTables$cdm_version) &
-      fieldsTables$cdm_table_name == table &
-      fieldsTables$is_required == TRUE
-  ]
-
-  return(columns)
+#' Cohort tables that a cdm reference can contain in the OMOP Common Data
+#' Model.
+#'
+#' @param version Version of the OMOP Common Data Model.
+#'
+#' @return cohort tables
+#'
+#' @export
+#'
+cohortTables <- function(version = "5.3") {
+  assertVersion(version = version)
+  tableChoice(version = version, type = "cohort")
 }
 
 #' Required columns for a generated cohort set.
@@ -353,67 +328,58 @@ requiredTableColumns <- function(table, version = "5.3") {
 #' @export
 #'
 requiredCohortColumns <- function(table, version = "5.3") {
-  # check input
-  assertChoice(x = version, choices = c("5.3", "5.4"))
-  assertChoice(x = table, choices = unique(fieldsCohorts$cdm_table_name))
-
-  # filter
-  columns <- fieldsCohorts$cdm_field_name[
-    grepl(version, fieldsCohorts$cdm_version) &
-      fieldsCohorts$cdm_table_name == table &
-      fieldsCohorts$is_required == TRUE
-  ]
-
-  return(columns)
+  assertVersion(version = version)
+  assertTable(table = table, version = version, type = "cohort")
+  requiredColumns(table = table, version = version, type = "cohort")
 }
 
-
 #' Tables containing the results of achilles analyses
+#'
+#' @param version Version of the OMOP Common Data Model.
 #'
 #' @return Names of tables returned by achilles analyses
 #' @export
 #'
 #' @examples
-achillesTables <- function(){
-
-c("achilles_analysis",
-  "achilles_results",
-  "achilles_results_dist")
-
+achillesTables <- function(version = "5.3"){
+  assertVersion(version = version)
+  tableChoice(version = version, type = "achilles")
 }
 
 #' Required columns for achilles result tables
 #'
-#' @param table Either achilles_analysis, achilles_results,
-#' achilles_results_dist
+#' @param table Table to see required columns.
+#' @param version Version of the OMOP Common Data Model.
 #'
 #' @return Names of columns for achilles result tables
 #' @export
 #'
 #' @examples
-requiredAchillesColumns <- function(table) {
-
-  assertChoice(x = table,
-               choices = c("achilles_analysis",
-                           "achilles_results",
-                           "achilles_results_dist"))
-
-if(table == "achilles_analysis"){
-  return(c("analysis_id","analysis_name", "stratum_1_name",
-  "stratum_2_name", "stratum_3_name", "stratum_4_name",
-  "stratum_5_name", "is_default", "category"))
-} else if (table == "achilles_results"){
-  return(c("analysis_id", "stratum_1", "stratum_2", "stratum_3",
-           "stratum_4", "stratum_5", "count_value"))
-} else {
-  c("analysis_id", "stratum_1", "stratum_2", "stratum_3",
-    "stratum_4", "stratum_5", "count_value", "min_value",
-    "max_value", "avg_value", "stdev_value", "median_value",
-    "p10_value", "p25_value", "p75_value", "p90_value")
+requiredAchillesColumns <- function(table, version = "5.3") {
+  assertVersion(version = version)
+  assertTable(table = table, version = version, type = "achilles")
+  requiredColumns(table = table, version = version, type = "achilles")
 }
 
+assertVersion <- function(version, call = parent.env()) {
+  assertChoice(x = version, choices = c("5.3", "5.4"), call = call)
 }
-
-
-
+assertTable <- function(table, version, type, call = parent.env()) {
+  assertChoice(x = table, choices = tableChoice(version, type), call = call)
+}
+tableChoice <- function(version, type) {
+  fieldsTables$cdm_table_name[
+    grepl(version, fieldsTables$cdm_version) &
+      fieldsTables$type == type
+  ] |>
+    unique()
+}
+requiredColumns <- function(table, version, type) {
+  fieldsTables$cdm_field_name[
+    grepl(version, fieldsTables$cdm_version) &
+      fieldsTables$cdm_table_name == table &
+      fieldsTables$is_required == TRUE &
+      fieldsTables$type == type
+  ]
+}
 

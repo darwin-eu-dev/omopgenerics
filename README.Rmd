@@ -75,14 +75,37 @@ Any table to be part of a cdm object has to fulfill 4 conditions:
 - `person` and `observation_period` must be present.
 
 
-### Codelist
-A codelist is a named list, with each item of the list containing concept IDs. 
+### Concept set
+
+A concept set can be represented as either a codelist or a concept set expression. A codelist is a named list, with each item of the list containing specific concept IDs. 
 ```{r}
 condition_codes <- list("diabetes" = c(201820, 4087682, 3655269),
                         "asthma" = 317009)
 condition_codes <- codelist(condition_codes)
 
 condition_codes
+```
+
+Meanwhile, a concept set expression provides a high-level definition of concepts that, when applied to a specific OMOP CDM vocabulary version (by making use of the concept hierarchies and relationships), will result in a codelist. 
+
+```{r}
+condition_cs <- list(
+  "diabetes" = dplyr::tibble(
+    "concept_id" = c(201820, 4087682),
+    "excluded" = c(FALSE, FALSE),
+    "descendants" = c(TRUE, FALSE),
+    "mapped" = c(FALSE, FALSE)
+  ),
+  "asthma" = dplyr::tibble(
+    "concept_id" = 317009,
+    "excluded" = FALSE,
+    "descendants" = FALSE,
+    "mapped" = FALSE
+  )
+)
+condition_cs <- conceptSetExpression(condition_cs)
+
+condition_cs
 ```
 
 ### Generatred cohort set

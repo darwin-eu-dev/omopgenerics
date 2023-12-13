@@ -43,7 +43,7 @@ generatedCohortSet <- function(cohortRef,
     )
   }
   if (!"tbl_name" %in% names(attributes(cohortRef))) {
-    cli::cli_abort("Table was not correctly read/inserted as does not have attribute `tbl_name`.")
+    cli::cli_abort("Table was not correctly read/inserted as does not have attribute `tbl_name`. Is it a permanent table?")
   }
   cdm <- attr(cohortRef, "cdm_reference")
   cohortName <- attr(cohortRef, "tbl_name")

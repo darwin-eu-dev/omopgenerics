@@ -1,57 +1,68 @@
 test_that("test SummarisedResult object", {
   x <- dplyr::tibble(
     "cdm_name" = "cprd",
-    "result_type" = "Summarised characteristics",
-    "package" = "PatientProfiles",
+    "result_type" = "summarised_characteristics",
+    "package_name" = "PatientProfiles",
     "package_version" = "0.4.0",
     "group_name" = "sex",
     "group_level" = "male",
     "strata_name" = "sex",
     "strata_level" = "male",
-    "variable" = "age_group",
+    "variable_name" = "Age group",
     "variable_level" = "10 to 50",
-    "variable_type" = "date",
-    "estimate_type" = "count",
-    "estimate" = "5"
+    "variable_type" = "categorical",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
   )
   expect_no_error(summarisedResult(x = x))
 
   class <- x |> summarisedResult() |> class()
-  expect_true(c("summarised_result") %in% class)
+  expect_true(all(
+    c("summarised_characteristics", "summarised_result") %in% class
+  ))
 
   # check none character
   x <- dplyr::tibble(
     "cdm_name" = 1,
-    "result_type" = "Summarised characteristics",
-    "package" = "patientProfiles",
+    "result_type" = "summarised_characteristics",
+    "package_name" = "PatientProfiles",
     "package_version" = "0.4.0",
     "group_name" = "sex",
     "group_level" = "male",
     "strata_name" = "sex",
     "strata_level" = "male",
-    "variable" = "age_group",
+    "variable_name" = "Age group",
     "variable_level" = "10 to 50",
-    "variable_type" = "date",
-    "estimate_type" = "count",
-    "estimate" = "5"
+    "variable_type" = "categorical",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
   )
   expect_error(summarisedResult(x = x))
 
-  #check none sentence case
+  #check result_type
   x <- dplyr::tibble(
     "cdm_name" = "cprd",
-    "result_type" = "Summarised Characteristics",
-    "package" = "patientProfiles",
+    "result_type" = "Summarised characteristics",
+    "package_name" = "PatientProfiles",
     "package_version" = "0.4.0",
     "group_name" = "sex",
     "group_level" = "male",
     "strata_name" = "sex",
     "strata_level" = "male",
-    "variable" = "age_group",
+    "variable_name" = "Age group",
     "variable_level" = "10 to 50",
-    "variable_type" = "date",
-    "estimate_type" = "count",
-    "estimate" = "5"
+    "variable_type" = "categorical",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
   )
   expect_error(summarisedResult(x = x))
 
@@ -73,87 +84,65 @@ test_that("test SummarisedResult object", {
 
   # check NA
   x <- dplyr::tibble(
-    "cdm_name" = as.character(NA),
-    "result_type" = "Summarised characteristics",
-    "package" = "patientProfiles",
+    "cdm_name" = "cprd",
+    "result_type" = "summarised_characteristics",
+    "package_name" = "PatientProfiles",
     "package_version" = "0.4.0",
     "group_name" = "sex",
     "group_level" = "male",
     "strata_name" = "sex",
     "strata_level" = "male",
-    "variable" = "age_group",
+    "variable_name" = "Age group",
     "variable_level" = "10 to 50",
-    "variable_type" = "date",
-    "estimate_type" = "count",
-    "estimate" = "5"
+    "variable_type" = "categorical",
+    "estimate_name" = NA_character_,
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
   )
   expect_error(summarisedResult(x = x))
 
   # check wrong paired
   x <- dplyr::tibble(
-    "cdm_name" = "mock",
-    "result_type" = "Summarised characteristics",
-    "package" = "patientProfiles",
+    "cdm_name" = "cprd",
+    "result_type" = "summarised_characteristics",
+    "package_name" = "PatientProfiles",
     "package_version" = "0.4.0",
     "group_name" = "sex and cohort_name",
     "group_level" = "male",
     "strata_name" = "sex",
     "strata_level" = "male and cohort1",
-    "variable" = "age_group",
+    "variable_name" = "Age group",
     "variable_level" = "10 to 50",
-    "variable_type" = "date",
-    "estimate_type" = "count",
-    "estimate" = "5"
+    "variable_type" = "categorical",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
   )
   expect_error(summarisedResult(x = x))
 
   # check wrong case
   x <- dplyr::tibble(
-    "cdm_name" = "mock",
-    "result_type" = "Summarised characteristics",
-    "package" = "patientProfiles",
+    "cdm_name" = "cprd",
+    "result_type" = "summarised_characteristics",
+    "package_name" = "PatientProfiles",
     "package_version" = "0.4.0",
     "group_name" = "sex and cohort_Name",
-    "group_level" = "male and acetaminophen",
+    "group_level" = "male and cohort1",
     "strata_name" = "sex",
     "strata_level" = "male",
-    "variable" = "age_group",
+    "variable_name" = "Age group",
     "variable_level" = "10 to 50",
-    "variable_type" = "date",
-    "estimate_type" = "count",
-    "estimate" = "5"
+    "variable_type" = "categorical",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
   )
   expect_error(summarisedResult(x = x))
-  x <- dplyr::tibble(
-    "cdm_name" = "mock",
-    "result_type" = "Summarised characteristics",
-    "package" = "patientProfiles",
-    "package_version" = "0.4.0",
-    "group_name" = "sex and cohort_name",
-    "group_level" = "male and acetaminophen",
-    "strata_name" = "Sex",
-    "strata_level" = "male",
-    "variable" = "age_group",
-    "variable_level" = "10 to 50",
-    "variable_type" = "date",
-    "estimate_type" = "count",
-    "estimate" = "5"
-  )
-  expect_error(summarisedResult(x = x))
-  x <- dplyr::tibble(
-    "cdm_name" = "mock",
-    "result_type" = "Summarised characteristics",
-    "package" = "patientProfiles",
-    "package_version" = "0.4.0",
-    "group_name" = "sex and cohort_name",
-    "group_level" = "male and acetaminophen",
-    "strata_name" = "sex",
-    "strata_level" = "male",
-    "variable" = "age_group",
-    "variable_level" = "10 to 50",
-    "variable_type" = "date",
-    "estimate_type" = "count",
-    "estimate" = "5"
-  )
-  expect_error(expect_warning(summarisedResult(x = x)))
+
 })

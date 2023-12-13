@@ -14,23 +14,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# NA
+# classes
+# colnaming
+# sentence
+# snake (only pair group)
+
 #' 'summarised_results' object constructor
 #'
-#' @param x input must be a tibble.
-#' @param name Name of the summarised result object
+#' @param x Table.
 #'
 #' @return A summarisedResult object
 #' @export
 #'
-summarisedResult <- function(x, name = "summarised_result") {
+summarisedResult <- function(x) {
 
   # inital input check
-  assertTibble(x)
-  assertCharacter(name, length = 1, minNumCharacter = 1)
+  assertClass(x, "data.frame")
 
   # constructor
-  # TODO convert some columns to sentence case
-  x <- newSummarisedResult(x, name)
+  x <- newSummarisedResult(x)
 
   # validate
   x <- validateSummariseResult(x)
@@ -38,87 +41,89 @@ summarisedResult <- function(x, name = "summarised_result") {
   return(x)
 }
 
-newSummarisedResult <- function(x, name) {
-
-  if (!is.null(x[["result_type"]])) {
-    cs <- unique(x[["result_type"]]) |>
-      strsplit(split = " and ") |>
-      unlist() |>
-      unique()
-    cs <- c(cs, "summarised_result")
-  } else {
-    cs <- "summarised_result"
-  }
-
-  x <- addClass(x, cs)
-  attr(x, "summarised_result_name") <- name
-
+newSummarisedResult <- function(x) {
+  x <- getClass(x, "summarised_result")
   return(x)
 }
 validateSummariseResult <- function(x) {
   # compulsory columns
-  compulsoryCols <- c(
-    "cdm_name", "result_type", "package", "package_version", "group_name",
-    "group_level", "strata_name", "strata_level", "variable", "variable_level",
-    "variable_type", "estimate_type", "estimate"
-  )
-  checkColumns(x = x, cols = compulsoryCols)
+  x <- checkColumns(x = x, "summarised_result")
 
   # all columns should be character
-  checkColumnsFormat(x = x, cols = compulsoryCols, format = "character")
+  checkColumnsFormat(x = x, "summarised_result")
 
   # Cannot contain NA columns
   notNaCols <- c(
     "cdm_name", "group_name", "group_level", "strata_name", "strata_level",
-    "variable", "variable_type", "estimate_type", "estimate"
+    "variable_name", "variable_type", "estimate_name", "estimate_type",
+    "additional_name", "additional_level"
   )
   checkNA(x = x, cols = notNaCols)
 
-  # Sentence case column
-  sentenceCaseCols <- c("result_type")
-  checkSentence(x = x, cols = sentenceCaseCols)
+  checkResultType(x = x)
 
   # columPairs
-  columnPairs <- c("group_name" = "group_level", "strata_name" = "strata_level")
+  columnPairs <- c(
+    "group_name" = "group_level", "strata_name" = "strata_level",
+    "additional_name" = "additional_level"
+  )
   checkColumnPairs(x, columnPairs, " and ", "snake")
+
+  # estimate_type
+  checkColumnContent(x, "estimate_type", c("numeric", "date", "character"))
 
   return(x)
 }
-checkColumns <- function(x, cols) {
-  if (!all(cols %in% colnames(x))) {
+checkColumns <- function(x, resultName) {
+  cols <- requiredResultColumns(table = resultName)
+  notPresent <- cols[!cols %in% colnames(x)]
+  if (length(notPresent) > 0) {
     cli::cli_abort(
-      paste0(
-        "`",
-        paste0(cols, collapse = "`, `"),
-        "` must be column names of a summarised_result object."
-      )
+      "{paste0(notPresent, collapse = ', ')} must be present in a {resultName}
+      object."
     )
   }
-  invisible(NULL)
-}
-checkSentence <- function(x, cols) {
-  for (col in cols) {
-    if (!all(isSentenceCase(unique(x[[col]])))) {
-      cli::cli_abort("`{col}` must be in sentence case.")
-    }
+  extra <- colnames(x)[!colnames(x) %in% cols]
+  if (length(extra) > 0) {
+    cli::cli_abort(
+      "{paste0(extra, collapse = ', ')} are not allowed column names of a
+      {resultName} object."
+    )
   }
-  invisible(NULL)
+  x %>% dplyr::select(dplyr::all_of(cols))
+}
+checkResultType <- function(x) {
+  x <- unique(x$result_type) |> strsplit(split = " and ") |> unlist() |> unique()
+  x <- x[!isSnakeCase(x)]
+  x <- x[!is.na(x)]
+  if (length(x) > 0) {
+    err <- paste0(x, collapse = '\', \'')
+    cli::cli_abort(
+      "result_type must contain only snake case characters separated by ` and `
+      (if multiple). Incorrect format: '{err}'."
+    )
+  }
 }
 checkNA <- function(x, cols) {
   for (col in cols) {
-    if (all(is.na(unique(x[[col]])))) {
+    if (any(is.na(unique(x[[col]])))) {
       cli::cli_abort("`{col}` must not contain NA.")
     }
   }
   invisible(NULL)
 }
-checkColumnsFormat <- function(x, cols, format = "character") {
-  if (!all(lapply(x |> dplyr::select(dplyr::all_of(cols)), typeof) |> unlist() == format)) {
-    cli::cli_abort(paste0(
-      "`",
-      paste0(cols, collapse = "`, `"),
-      "` must have character format."
-    ))
+checkColumnsFormat <- function(x, resultName) {
+  cols <- requiredResultColumns(resultName)
+  expectedFormat <- fieldsResults$datatype[fieldsResults$result == resultName]
+  formats <- lapply(x, typeof) |> unlist()
+  id <- formats != expectedFormat
+  cols <- cols[id]
+  formats <- formats[id]
+  expectedFormat <- expectedFormat[id]
+  if (length(cols) > 0) {
+    err <- paste0(cols, ": format=", formats, " (expected=", expectedFormat, ")")
+    names(err) <- rep("*", length(err))
+    cli::cli_abort(c("The following cols does not have a correct format", err))
   }
   invisible(NULL)
 }
@@ -182,3 +187,69 @@ isSentenceCase <- function(x) {
 isSnakeCase <- function(x) {
   x == snakecase::to_snake_case(x)
 }
+getClass <- function(x, def) {
+  if (!is.null(x[["result_type"]])) {
+    cs <- unique(x[["result_type"]]) |>
+      strsplit(split = " and ") |>
+      unlist() |>
+      unique()
+    cs <- cs[!is.na(cs)]
+    cs <- c(cs, def)
+  } else {
+    cs <- def
+  }
+  x <- addClass(x, cs)
+  return(x)
+}
+checkColumnContent <- function(x, col, content) {
+  if (!all(x[[col]] %in% content)) {
+    notType <- x[[col]][!x[[col]] %in% content] |> unique()
+    cli::cli_abort(c(
+      "{col} contains incorrect values, possible values:
+      {paste0(content, collapse = ', ')}. Observed values:
+      {paste0(notType[1:5], collapse = ', ')}{ifelse(length(notType)>5, '...', '.')}"
+    ))
+  }
+  return(invisible(TRUE))
+}
+
+#' Required columns that the result tables must have.
+#'
+#' @param table Table to see required columns.
+#'
+#' @return Required columns
+#'
+#' @export
+#'
+requiredResultColumns <- function(table) {
+  assertChoice(table, unique(fieldsResults$result))
+  fieldsResults$result_field_name[fieldsResults$result == table]
+}
+
+
+# checkSentence <- function(x, cols) {
+#   for (col in cols) {
+#     notCase <- unique(x[[col]])
+#     notCase <- notCase[!isSentenceCase(notCase)]
+#     if (length(notCase) > 0) {
+#       cli::cli_abort(
+#         "`{col}` must be in sentence case. Not sentence case values:
+#         {paste0(notCase[1:min(5, length(notCase))], collapse = ', ')}{ifelse(length(notCase)>5, '...', '.')}"
+#       )
+#     }
+#   }
+#   invisible(NULL)
+# }
+# checkSnake <- function(x, cols) {
+#   for (col in cols) {
+#     notCase <- unique(x[[col]])
+#     notCase <- notCase[!isSnakeCase(notCase)]
+#     if (length(notCase) > 0) {
+#       cli::cli_abort(
+#         "`{col}` must be in snake case. Not snake case values:
+#         {paste0(notCase[1:min(5, length(notCase))], collapse = ', ')}{ifelse(length(notCase)>5, '...', '.')}"
+#       )
+#     }
+#   }
+#   invisible(NULL)
+# }

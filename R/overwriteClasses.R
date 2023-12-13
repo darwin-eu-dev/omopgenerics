@@ -14,24 +14,90 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+keepAttributes <- function(x) {
+  list(
+    cdm_reference = attr(x, "cdm_reference"),
+    tbl_name = attr(x, "tbl_name")
+  )
+}
+keepClass <- function(x) {
+  x <- removeClass(x, "cdm_table")
+  return(x)
+}
+restoreAttributes <- function(x, at) {
+  for (nm in names(at)) {
+    if (!nm %in% names(attributes(x))) {
+      attr(x, nm) <- at[[nm]]
+    }
+  }
+  return(x)
+}
+restoreClass <- function(x) {
+  x <- addClass(x, "cdm_table")
+  return(x)
+}
+
 #' @export
 #' @importFrom dplyr group_by
 group_by.cdm_table <- function(.data, ...) {
-  .data <- removeClass(.data, "cdm_table")
-  .data <- dplyr::group_by(.data, ...)
-  .data <- addClass(.data, "cdm_table")
-  return(.data)
+  .data <- keepClass(.data)
+  x <- dplyr::group_by(.data, ...)
+  x <- restoreClass(x)
+  x <- restoreAttributes(x, keepAttributes(.data))
+  return(x)
 }
 
 #' @export
 #' @importFrom dplyr summarise
 summarise.cdm_table <- function(.data, ...) {
-  .data <- removeClass(.data, "cdm_table")
-  cdm <- attr(.data, "cdm_reference")
-  tblName <- attr(.data, "cdm_reference")
-  .data <- dplyr::summarise(.data, ...)
-  .data <- addClass(.data, "cdm_table")
-  attr(.data, "cdm_reference") <- cdm
-  attr(.data, "tbl_name") <- tblName
-  return(.data)
+  .data <- keepClass(.data)
+  x <- dplyr::summarise(.data, ...)
+  x <- restoreClass(x)
+  x <- restoreAttributes(x, keepAttributes(.data))
+  return(x)
 }
+
+# add_count
+# anti_join
+# arrange
+# as.data.frame
+# auto_copy
+# count
+# cross_join
+# distinct
+# dplyr_col_modify
+# dplyr_reconstruct
+# dplyr_row_slice
+# filter
+# full_join
+# group_data
+# inner_join
+# intersect
+# left_join
+# mutate
+# nest_by
+# nest_join
+# right_join
+# rows_append
+# rows_delete
+# rows_insert
+# rows_patch
+# rows_update
+# rows_upsert
+# rowwise
+# sample_n
+# select
+# semi_join
+# slice
+# slice_head
+# slice_max
+# slice_min
+# slice_sample
+# slice_tail
+# symdiff
+# tally
+# tbl
+# transmute
+# ungroup
+# union
+# union_all
