@@ -57,7 +57,7 @@ standardTables()
 ```
 Each one of the tables has a required columns. For example, for the `person` table this are the required columns:
 ```{r}
-requiredTableColumns(table = "person")
+omopColumns(table = "person")
 ```
 
 * Cohort tables (see `generatedCohortSet`).

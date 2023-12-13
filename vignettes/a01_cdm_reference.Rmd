@@ -31,11 +31,11 @@ standardTables(version = "5.3")
 
 The standard OMOP tables have required fields. We can check the required column of the person table, for example, like so 
 ```{r}
-requiredTableColumns(table = "person", version = "5.3")
+omopColumns(table = "person", version = "5.3")
 ```
 
 ```{r}
-requiredTableColumns(table = "observation_period", version = "5.3")
+omopColumns(table = "observation_period", version = "5.3")
 ```
 
 
