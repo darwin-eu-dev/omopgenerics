@@ -106,6 +106,9 @@
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/localSource.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/omopColumns.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/omopTables.html</loc>
   </url>
   <url>
@@ -122,9 +125,6 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/requiredResultColumns.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/requiredTableColumns.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/OMOPGenerics/reference/settings.generated_cohort_set.html</loc>
