@@ -105,7 +105,7 @@ summary.cdm_reference <- function(object, ...) {
 #'
 summary.generated_cohort_set <- function(object, ...) {
   x <- object
-  set(x) |>
+  settings(x) |>
     dplyr::inner_join(attrition(x), by = "cohort_definition_id") |>
     dplyr::arrange(.data$cohort_definition_id, .data$reason_id) |>
     dplyr::mutate(
