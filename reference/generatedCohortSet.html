@@ -52,7 +52,12 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">generatedCohortSet</span><span class="op">(</span><span class="va">cohortRef</span>, cohortSetRef <span class="op">=</span> <span class="cn">NULL</span>, cohortAttritionRef <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">generatedCohortSet</span><span class="op">(</span></span>
+<span>  <span class="va">cohortRef</span>,</span>
+<span>  cohortSetRef <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cohortAttritionRef <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -70,6 +75,10 @@ cohort_start_date, cohort_end_date.</p></dd>
 <dd><p>Table with at least: cohort_definition_id,
 number_subjects, number_records, reason_id, reason, excluded_subjects,
 excluded_records.</p></dd>
+
+
+<dt>overwrite</dt>
+<dd><p>Whether to overwrite a preexiting table with same name.</p></dd>
 
 </dl></div>
     <div class="section level2">
