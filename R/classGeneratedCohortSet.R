@@ -22,6 +22,7 @@
 #' @param cohortAttritionRef Table with at least: cohort_definition_id,
 #' number_subjects, number_records, reason_id, reason, excluded_subjects,
 #' excluded_records.
+#' @param overwrite Whether to overwrite a preexiting table with same name.
 #'
 #' @return A generated_cohort_set object
 #'
@@ -29,11 +30,13 @@
 #'
 generatedCohortSet <- function(cohortRef,
                                cohortSetRef = NULL,
-                               cohortAttritionRef = NULL) {
+                               cohortAttritionRef = NULL,
+                               overwrite = TRUE) {
   # initial checks
   assertClass(cohortRef, "cdm_table")
   assertClass(cohortSetRef, "tbl", null = TRUE)
   assertClass(cohortAttritionRef, "tbl", null = TRUE)
+  assertChoice(overwrite, choices = c(TRUE, FALSE), length = 1)
 
   # comes from a cdm
   if (!"cdm_reference" %in% names(attributes(cohortRef))) {
@@ -50,17 +53,17 @@ generatedCohortSet <- function(cohortRef,
 
   # populate
   if (is.null(cohortSetRef)) {
-    cohortSetRef <- defaultCohortSet(cohortRef)
+    cohortSetRef <- defaultCohortSet(cohortRef, overwrite)
   } else if ("data.frame" %in% class(cohortSetRef)) {
     name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
-    cdm2 <- insertTable(cdm = cdm, name = name, table = cohortSetRef)
+    cdm2 <- insertTable(cdm = cdm, name = name, table = cohortSetRef, overwrite = overwrite)
     cohortSetRef <- cdm2[[name]]
   }
   if (is.null(cohortAttritionRef)) {
-    cohortAttritionRef <- defaultCohortAttrition(cohortRef, cohortSetRef)
+    cohortAttritionRef <- defaultCohortAttrition(cohortRef, cohortSetRef, overwrite)
   } else if ("data.frame" %in% class(cohortAttritionRef)) {
     name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
-    cdm2 <- insertTable(cdm = cdm, name = name, table = cohortAttritionRef)
+    cdm2 <- insertTable(cdm = cdm, name = name, table = cohortAttritionRef, overwrite = overwrite)
     cohortAttritionRef <- cdm2[[name]]
   }
 
@@ -223,7 +226,7 @@ cdi <- function(x) {
     sort() |>
     paste0(collapse = ", ")
 }
-defaultCohortSet <- function(cohort) {
+defaultCohortSet <- function(cohort, overwrite) {
   cohortName <- attr(cohort, "tbl_name")
   cdm <- attr(cohort, "cdm_reference")
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
@@ -233,9 +236,9 @@ defaultCohortSet <- function(cohort) {
     dplyr::mutate(
       "cohort_name" = paste0("cohort_", as.character(.data$cohort_definition_id))
     ) |>
-    compute(name = name)
+    compute(name = name, temporary = FALSE, overwrite = overwrite)
 }
-defaultCohortAttrition <- function(cohort, set) {
+defaultCohortAttrition <- function(cohort, set, overwrite) {
   cohortName <- attr(cohort, "tbl_name")
   cdm <- attr(cohort, "cdm_reference")
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
@@ -261,7 +264,7 @@ defaultCohortAttrition <- function(cohort, set) {
       "excluded_records" = 0,
       "excluded_subjects" = 0
     ) |>
-    compute(name = name)
+    compute(name = name, temporary = FALSE, overwrite = overwrite)
   return(x)
 }
 checkOverlap <- function(cohort) {

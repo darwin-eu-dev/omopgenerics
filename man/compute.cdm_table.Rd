@@ -4,7 +4,7 @@
 \alias{compute.cdm_table}
 \title{Store results in a table.}
 \usage{
-\method{compute}{cdm_table}(x, name, temporary = TRUE, overwrite = TRUE, ...)
+\method{compute}{cdm_table}(x, name = uniqueTableName(), temporary = TRUE, overwrite = TRUE, ...)
 }
 \arguments{
 \item{x}{Table in the cdm.}

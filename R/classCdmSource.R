@@ -79,7 +79,7 @@ validateCdmSource <- function(src) {
   }
 
   # compute inserted table
-  cdm[[name]] <- cdm[[name]] |> compute(name = name)
+  cdm[[name]] <- cdm[[name]] |> compute(name = name, temporary = FALSE)
   validateX(x = cdm[[name]], name = name, fun = "compute")
 
   # drop table
