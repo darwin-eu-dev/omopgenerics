@@ -53,11 +53,11 @@ A cdm object can contain three type of tables:
 
 * Standard tables:
 ```{r}
-standardTables()
+omopTables()
 ```
 Each one of the tables has a required columns. For example, for the `person` table this are the required columns:
 ```{r}
-requiredTableColumns(table = "person")
+omopColumns(table = "person")
 ```
 
 * Cohort tables (see `generatedCohortSet`).

@@ -20,4 +20,8 @@ test_that("test codelist works", {
   expect_error(codelist(list(c(1,2,3))))
   expect_error(codelist(list("disease" = dplyr::tibble("disease" = c(1,2,3)))))
 
+  codes <- list("disease X" = c(1,NA,3),
+                "disease Y" = c(4,5))
+  expect_error(codes <- codelist(codes))
+
 })
