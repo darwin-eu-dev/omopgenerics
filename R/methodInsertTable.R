@@ -19,26 +19,29 @@
 #' @param cdm A cdm reference or the source of a cdm reference.
 #' @param name Name of the table to insert.
 #' @param table Table to insert to the cdm.
+#' @param overwrite Whether to overwrite an existent table.
 #'
 #' @export
 #'
 #' @return The cdm raference.
 #'
-insertTable <- function(cdm, name, table) {
+insertTable <- function(cdm, name, table, overwrite = TRUE) {
   assertCharacter(name, length = 1, minNumCharacter = 1, na = TRUE)
   UseMethod("insertTable")
 }
 
 #' @export
-insertTable.cdm_reference <- function(cdm, name, table) {
-  value <- insertTable(cdm = getCdmSource(cdm), name = name, table = table)
+insertTable.cdm_reference <- function(cdm, name, table, overwrite) {
+  value <- insertTable(
+    cdm = getCdmSource(cdm), name = name, table = table, overwrite = overwrite
+  )
   attr(value, "cdm_reference") <- cdm
   cdm[[name]] <- value
   return(cdm)
 }
 
 #' @export
-insertTable.local_cdm <- function(cdm, name, table) {
+insertTable.local_cdm <- function(cdm, name, table, ...) {
   attr(table, "tbl_name") <- name
   return(table)
 }
