@@ -100,7 +100,7 @@ validateCdmReference <- function(cdm) {
     cli::cli_abort("{combine(x)} {verb(x)} not included in the cdm object")
   }
 
-  cdmTables <- standardTables(version = cdmVersion)
+  cdmTables <- omopTables(version = cdmVersion)
 
   # assertions for all the cdm tables
   for (nm in names(cdm)) {
@@ -115,15 +115,15 @@ validateCdmReference <- function(cdm) {
 
     # assert columnames match version
     if (nm %in% cdmTables) {
-      cols <- requiredTableColumns(table = nm, version = cdmVersion)
+      cols <- omopColumns(table = nm, version = cdmVersion)
       checkColumnsCdm(cdm[[nm]], nm, cols)
     } else if ("generated_cohort_set" %in% class(cdm[[nm]])) {
       cohort <- cdm[[nm]]
-      cols <- requiredTableColumns(table = "cohort", version = cdmVersion)
+      cols <- omopColumns(table = "cohort", version = cdmVersion)
       checkColumnsCdm(cohort, nm, cols)
-      cols <- requiredTableColumns(table = "cohort_set", version = cdmVersion)
+      cols <- omopColumns(table = "cohort_set", version = cdmVersion)
       checkColumnsCdm(settings(cohort), paste0(nm, "_set"), cols)
-      cols <- requiredTableColumns(table = "cohort_attrition", version = cdmVersion)
+      cols <- omopColumns(table = "cohort_attrition", version = cdmVersion)
       checkColumnsCdm(attrition(cohort), paste0(nm, "_attrition"), cols)
     }
   }
@@ -283,7 +283,7 @@ print.cdm_reference <- function(x, ...) {
 #'
 #' @export
 #'
-standardTables <- function(version = "5.3") {
+omopTables <- function(version = "5.3") {
   assertVersion(version = version)
   tableChoice(version = version, type = "cdm_table")
 }
@@ -298,7 +298,7 @@ standardTables <- function(version = "5.3") {
 #'
 #' @export
 #'
-requiredTableColumns <- function(table, version = "5.3") {
+omopColumns <- function(table, version = "5.3") {
   assertVersion(version = version)
   assertTable(table = table, version = version, type = "cdm_table")
   requiredColumns(table = table, version = version, type = "cdm_table")
@@ -327,7 +327,7 @@ cohortTables <- function(version = "5.3") {
 #'
 #' @export
 #'
-requiredCohortColumns <- function(table, version = "5.3") {
+cohortColumns <- function(table, version = "5.3") {
   assertVersion(version = version)
   assertTable(table = table, version = version, type = "cohort")
   requiredColumns(table = table, version = version, type = "cohort")
@@ -355,7 +355,7 @@ achillesTables <- function(version = "5.3"){
 #' @export
 #'
 #' @examples
-requiredAchillesColumns <- function(table, version = "5.3") {
+achillesColumns <- function(table, version = "5.3") {
   assertVersion(version = version)
   assertTable(table = table, version = version, type = "achilles")
   requiredColumns(table = table, version = version, type = "achilles")
