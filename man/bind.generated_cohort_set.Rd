@@ -13,7 +13,7 @@ provided.}
 \item{name}{Name of the new generated cohort set.}
 }
 \value{
-New generated cohort set
+The cdm object with the new generated cohort set.
 }
 \description{
 Bind generated_cohort_set
