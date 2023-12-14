@@ -26,7 +26,11 @@
 #'
 #' @export
 #' @importFrom dplyr compute
-compute.cdm_table <- function(x, name, temporary = TRUE, overwrite = TRUE, ...) {
+compute.cdm_table <- function(x,
+                              name = uniqueTableName(),
+                              temporary = TRUE,
+                              overwrite = TRUE,
+                              ...) {
   cdm <- attr(x, "cdm_reference")
   if (is.null(attr(x, "cdm_reference"))) {
     cli::cli_abort("x does not com from a cdm object.")
@@ -39,7 +43,21 @@ compute.cdm_table <- function(x, name, temporary = TRUE, overwrite = TRUE, ...) 
 }
 
 #' @export
-compute.local_cdm <- function(x, name, temporary, overwrite, ...) {
+compute.local_cdm <- function(x, name, temporary, ...) {
+  if (temporary) {
+    name <- NA_character_
+  }
   attr(x, "tbl_name") <- name
   return(x)
 }
+
+#' Create a unique table name for temp tables
+#'
+#' @return A string that can be used as a dbplyr temp table name
+#' @export
+uniqueTableName <- function() {
+  i <- getOption("dbplyr_table_name", 0) + 1
+  options(dbplyr_table_name = i)
+  sprintf("dbplyr_%03i", i)
+}
+

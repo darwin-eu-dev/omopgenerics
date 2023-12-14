@@ -151,7 +151,7 @@ summary.cdm_reference <- function(object, ...) {
       "additional_name" = "overall",
       "additional_level" = "overall"
     ) |>
-    dplyr::select(dplyr::all_of(requiredResultColumns("summarised_result"))) |>
+    dplyr::select(dplyr::all_of(resultColumns("summarised_result"))) |>
     summarisedResult()
 
   return(x)
@@ -253,7 +253,7 @@ summary.generated_cohort_set <- function(object, ...) {
       "group_name" = "cohort_table_name",
       "group_level" = attr(object, "tbl_name")
     ) |>
-    dplyr::select(dplyr::all_of(requiredResultColumns("summarised_result"))) |>
+    dplyr::select(dplyr::all_of(resultColumns("summarised_result"))) |>
     summarisedResult()
 
   return(x)
@@ -285,8 +285,9 @@ getType <- function(x) {
     return("character")
   } else {
     cli::cli_abort(
-      "I can't assign the type of {x}, please report it if you think it is
-      mistake."
+      "Can't assign the type of {x}, please report it if you think it is
+      mistake. Supported types are integer, numeric, logical, date and
+      character."
     )
   }
 }
