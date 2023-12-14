@@ -32,7 +32,7 @@ bind <- function(...) {
 #' provided.
 #' @param name Name of the new generated cohort set.
 #'
-#' @return New generated cohort set
+#' @return The cdm object with the new generated cohort set.
 #'
 #' @export
 #'
@@ -48,9 +48,35 @@ bind.generated_cohort_set <- function(..., name) {
   assertCharacter(name, length = 1)
 
   # bind
-  sets <- lapply(seq_along(cohorts), function(x) {
-    dplyr::tibble(
-      "old_cohort_definition_id" = x |> dplyr::pull("cohort_definition_id")
-    )
-  })
+  newCohortSet <- lapply(cohorts, settings) |>
+    dplyr::bind_rows(.id = "cohort_id") |>
+    dplyr::mutate("new_cohort_definition_id" = dplyr::row_number())
+  newCohortAttrition <- lapply(cohorts, attrition) |>
+    dplyr::bind_rows(.id = "cohort_id") |>
+    dplyr::left_join(newCohortSet, by = c("cohort_definition_id", "cohort_id")) |>
+    dplyr::select(-c("cohort_definition_id", "cohort_id")) |>
+    dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") |>
+    dplyr::relocate(dplyr::all_of(cohortColumns("cohort_attrition")))
+  newCohort <- Reduce(cohorts, dplyr::union_all) |>
+    dplyr::left_join(
+      newCohortSet |>
+        dplyr::select("cohort_definition_id", "new_cohort_definition_id"),
+      by = "cohort_definition_id",
+      copy = TRUE
+    ) |>
+    dplyr::relocate(dplyr::all_of(cohortColumns("cohort"))) |>
+    dplyr::compute(name = name, temporary = FALSE, overwrite = TRUE)
+  newCohortSet <- newCohortSet |>
+    dplyr::select(-c("cohort_definition_id", "cohort_id")) |>
+    dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") |>
+    dplyr::relocate(dplyr::all_of(cohortColumns("cohort_set")))
+
+  # instantiate the new generated cohort set
+  cdm <- generatedCohortSet(
+    cohortRef = newCohort,
+    cohortSetRef = newCohortSet,
+    cohortAttritionRef = newCohortAttrition
+  )
+
+  return(cdm)
 }
