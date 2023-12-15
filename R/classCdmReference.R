@@ -37,11 +37,11 @@ cdmReference <- function(cdmTables, cohortTables = list(), cdmName, cdmSource = 
   assertClass(cdmSource, "cdm_source", null = TRUE)
 
   if (is.null(cdmSource)){
-    if ("tbl_df" %in% class(cdmTables[[1]])) {
-      cdmSource <- localSource(cdmName)
-    } else {
+    # if ("tbl_df" %in% class(cdmTables[[1]])) {
+    #   cdmSource <- localSource(cdmName)
+    # } else {
       cli::cli_abort("cdmSource must be provided, create a cdmSource with the cdmSource() function.")
-    }
+    # }
   }
 
   # get cdm version
@@ -204,6 +204,7 @@ cdmVersion <- function(cdm) {
 #' @return A single cdm table reference
 #' @export
 `[[.cdm_reference` <- function(x, name) {
+  print("out")
   x_raw <- unclass(x)
   tbl <- x_raw[[name]]
   attr(tbl, "cdm_reference") <- x
@@ -237,6 +238,7 @@ cdmVersion <- function(cdm) {
 #' @export
 #'
 `[[<-.cdm_reference` <- function(cdm, name, value) {
+  print("in")
   if (!is.null(value)) {
     if (!identical(getCdmSource(value), getCdmSource(cdm))) {
       cli::cli_abort("Table and cdm does not share a common source, please insert table to the cdm with insertTable")
