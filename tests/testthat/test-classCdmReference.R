@@ -14,7 +14,7 @@ test_that("test cdm_reference", {
   )
 
   expect_no_error(cdm <- cdmReference(
-    cdmTables = cdmTables, cdmName = "mock", cdmSource = src
+    cdmTables = cdmTables, cdmName = "mock", souceCdm = src
   ))
 
   expect_snapshot(cdm)

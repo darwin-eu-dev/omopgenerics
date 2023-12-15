@@ -26,35 +26,38 @@
 #'
 #' @export
 #'
-cdmReference <- function(cdmTables, cohortTables = list(), cdmName, cdmSource = NULL) {
+cdmReference <- function(cdmTables, cohortTables = list(), cdmName, souceCdm = NULL) {
 
-  # inputs
-  assertList(cdmTables, named = TRUE, class = "tbl")
-  assertList(
-    cohortTables, named = TRUE, class = c("generated_cohort_set", "tbl")
-  )
-  assertCharacter(cdmName, length = 1)
-  assertClass(cdmSource, "cdm_source", null = TRUE)
-
-  if (is.null(cdmSource)){
-    # if ("tbl_df" %in% class(cdmTables[[1]])) {
-    #   cdmSource <- localSource(cdmName)
-    # } else {
-      cli::cli_abort("cdmSource must be provided, create a cdmSource with the cdmSource() function.")
-    # }
-  }
+  # # inputs
+  # assertList(cdmTables, named = TRUE, class = "tbl")
+  # assertList(
+  #   cohortTables, named = TRUE, class = c("generated_cohort_set", "tbl")
+  # )
+  # assertCharacter(cdmName, length = 1)
+  # assertClass(cdmSource, "cdm_source", null = TRUE)
+  #
+  # if (is.null(cdmSource)){
+  #   # if ("tbl_df" %in% class(cdmTables[[1]])) {
+  #   #   cdmSource <- localSource(cdmName)
+  #   # } else {
+  #     cli::cli_abort("cdmSource must be provided, create a cdmSource with the cdmSource() function.")
+  #   # }
+  # }
 
   # get cdm version
-  cdmVersion <- getVersion(cdmTables)
+  #cdmVersion <- getVersion(cdmTables)
 
   # constructor
-  cdm <- newCdmReference(
-    cdmTables = cdmTables, cohortTables = cohortTables, cdmName = cdmName,
-    cdmVersion = cdmVersion, cdmSource = cdmSource
-  )
+  # cdm <- newCdmReference(
+  #   cdmTables = cdmTables, cohortTables = cohortTables, cdmName = cdmName,
+  #   cdmVersion = cdmVersion, cdmSource = cdmSource
+  # )
+  cdm <- cdmTables
+  attr(cdm, "cdm_source") <- souceCdm
+  class(cdm) <- "cdm_reference"
 
   # validate
-  cdm <- validateCdmReference(cdm)
+  #cdm <- validateCdmReference(cdm)
 
   return(cdm)
 }

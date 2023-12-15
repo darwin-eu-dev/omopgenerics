@@ -15,11 +15,13 @@
 # limitations under the License.
 
 addClass <- function(x, value) {
+  print("add_class")
   if (any(value %in% class(x))) x <- removeClass(x, value)
   base::class(x) <- c(value, base::class(x))
   return(x)
 }
 removeClass <- function(x, value) {
+  print("remove_class")
   base::class(x) <- base::class(x)[!(base::class(x) %in% value)]
   return(x)
 }

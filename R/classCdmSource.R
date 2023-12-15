@@ -64,7 +64,7 @@ validateCdmSource <- function(src) {
       )
     ),
     cdmName = "mock",
-    cdmSource = src
+    souceCdm = src
   )
 
   # insert table
