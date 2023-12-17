@@ -39,17 +39,6 @@ cdmReference <- function(cdmTables, cohortTables = list(), cdmName, sourceCdm = 
 
 #' Subset a cdm reference object.
 #'
-#' @param x A cdm reference.
-#' @param name The name of the table to extract from the cdm object.
-#'
-#' @return A single cdm table reference
-#' @export
-`$.cdm_reference` <- function(x, name) {
-  x[[name]]
-}
-
-#' Subset a cdm reference object.
-#'
 #' @param x A cdm reference
 #' @param name The name or index of the table to extract from the cdm object.
 #'
@@ -62,39 +51,3 @@ cdmReference <- function(cdmTables, cohortTables = list(), cdmName, sourceCdm = 
   attr(tbl, "cdm_reference") <- x
   return(tbl)
 }
-
-#' Assign an table to a cdm reference.
-#'
-#' @param cdm A cdm reference.
-#' @param name Name where to assign the new table.
-#' @param value Table with the same source than the cdm object.
-#'
-#' @return The cdm reference.
-#'
-#' @export
-#'
-`$<-.cdm_reference` <- function(cdm, name, value) {
-  cdm[[name]] <- value
-  return(cdm)
-}
-
-#' Assign an table to a cdm reference.
-#'
-#' @param cdm A cdm reference.
-#' @param name Name where to assign the new table.
-#' @param value Table with the same source than the cdm object.
-#'
-#' @return The cdm reference.
-#'
-#' @export
-#'
-`[[<-.cdm_reference` <- function(cdm, name, value) {
-  print("in")
-  attr(value, "cdm_reference") <- NULL
-  originalClass <- class(cdm)
-  cdm <- unclass(cdm)
-  cdm[[name]] <- value
-  class(cdm) <- originalClass
-  return(cdm)
-}
-
