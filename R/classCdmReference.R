@@ -20,41 +20,19 @@
 #' @param cohortTables List of tables that contains `generated_cohort_set`
 #' objects.
 #' @param cdmName Name of the cdm.
-#' @param cdmSource Source of the cdm object.
+#' @param sourceCdm Source of the cdm object.
 #'
 #' @return A `cdm_reference` object.
 #'
 #' @export
 #'
-cdmReference <- function(cdmTables, cohortTables = list(), cdmName, cdmSource = NULL) {
-
-  # inputs
-  assertList(cdmTables, named = TRUE, class = "tbl")
-  assertList(
-    cohortTables, named = TRUE, class = c("generated_cohort_set", "tbl")
-  )
-  assertCharacter(cdmName, length = 1)
-  assertClass(cdmSource, "cdm_source", null = TRUE)
-
-  if (is.null(cdmSource)){
-    if ("tbl_df" %in% class(cdmTables[[1]])) {
-      cdmSource <- localSource(cdmName)
-    } else {
-      cli::cli_abort("cdmSource must be provided, create a cdmSource with the cdmSource() function.")
-    }
-  }
-
-  # get cdm version
-  cdmVersion <- getVersion(cdmTables)
+cdmReference <- function(cdmTables, cohortTables = list(), cdmName, sourceCdm = NULL) {
 
   # constructor
   cdm <- newCdmReference(
     cdmTables = cdmTables, cohortTables = cohortTables, cdmName = cdmName,
-    cdmVersion = cdmVersion, cdmSource = cdmSource
+    cdmVersion = cdmVersion, sourceCdm = sourceCdm
   )
-
-  # validate
-  cdm <- validateCdmReference(cdm)
 
   return(cdm)
 }
@@ -66,72 +44,13 @@ getVersion <- function(cdm) {
   )
   return(version)
 }
-newCdmReference <- function(cdmTables, cohortTables, cdmName, cdmVersion, cdmSource) {
+newCdmReference <- function(cdmTables, cohortTables, cdmName, cdmVersion, sourceCdm) {
   cdm <- c(cdmTables, cohortTables)
   attr(cdm, "cdm_name") <- cdmName
   attr(cdm, "cdm_version") <- cdmVersion
-  attr(cdm, "cdm_source") <- cdmSource
+  attr(cdm, "cdm_source") <- sourceCdm
   class(cdm) <- "cdm_reference"
   return(cdm)
-}
-validateCdmReference <- function(cdm) {
-  # assert name
-  assertCharacter(attr(cdm, "cdm_name"), length = 1)
-
-  # assert version
-  cdmVersion <- attr(cdm, "cdm_version")
-  assertChoice(cdmVersion, c("5.3", "5.4"), length = 1)
-
-  # assert source
-  assertClass(attr(cdm, "cdm_source"), "cdm_source")
-
-  # assert lowercase names
-  x <- names(cdm)[names(cdm) != tolower(names(cdm))]
-  if (length(x) > 0) {
-    cli::cli_abort(
-      "table names should be lower case; {combine(x)} {verb(x)} not."
-    )
-  }
-
-  # assert compulsory tables
-  compulsoryTables <- c("person", "observation_period")
-  x <- compulsoryTables[!compulsoryTables %in% names(cdm)]
-  if (length(x) > 0) {
-    cli::cli_abort("{combine(x)} {verb(x)} not included in the cdm object")
-  }
-
-  cdmTables <- omopTables(version = cdmVersion)
-
-  # assertions for all the cdm tables
-  for (nm in names(cdm)) {
-    # assert lowercase columns
-    cols <- colnames(cdm[[nm]])
-    x <- cols[cols != tolower(cols)]
-    if (length(x) > 0) {
-      cli::cli_abort(
-        "column{plural(x)} {combine(x)} in table {nm} should be lowercase"
-      )
-    }
-
-    # assert columnames match version
-    if (nm %in% cdmTables) {
-      cols <- omopColumns(table = nm, version = cdmVersion)
-      checkColumnsCdm(cdm[[nm]], nm, cols)
-    } else if ("generated_cohort_set" %in% class(cdm[[nm]])) {
-      cohort <- cdm[[nm]]
-      cols <- omopColumns(table = "cohort", version = cdmVersion)
-      checkColumnsCdm(cohort, nm, cols)
-      cols <- omopColumns(table = "cohort_set", version = cdmVersion)
-      checkColumnsCdm(settings(cohort), paste0(nm, "_set"), cols)
-      cols <- omopColumns(table = "cohort_attrition", version = cdmVersion)
-      checkColumnsCdm(attrition(cohort), paste0(nm, "_attrition"), cols)
-    }
-  }
-
-  # TODO
-  # assertions for cohort tables
-
-  return(invisible(cdm))
 }
 combine <- function(x) {
   if (length(x) < 2) {
@@ -204,10 +123,10 @@ cdmVersion <- function(cdm) {
 #' @return A single cdm table reference
 #' @export
 `[[.cdm_reference` <- function(x, name) {
+  print("out")
   x_raw <- unclass(x)
   tbl <- x_raw[[name]]
   attr(tbl, "cdm_reference") <- x
-  tbl <- cdmTable(tbl)
   return(tbl)
 }
 
@@ -237,6 +156,7 @@ cdmVersion <- function(cdm) {
 #' @export
 #'
 `[[<-.cdm_reference` <- function(cdm, name, value) {
+  print("in")
   if (!is.null(value)) {
     if (!identical(getCdmSource(value), getCdmSource(cdm))) {
       cli::cli_abort("Table and cdm does not share a common source, please insert table to the cdm with insertTable")
