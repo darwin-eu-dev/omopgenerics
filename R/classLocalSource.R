@@ -20,7 +20,6 @@
 #'
 localSource <- function(name) {
   print("create local source")
-  assertCharacter(name, length = 1, minNumCharacter = 1)
   source <- NA
   class(source) <- "local_cdm"
   source <- cdmSource(src = source, sourceName = name, sourceType = "local")
