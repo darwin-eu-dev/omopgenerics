@@ -16,7 +16,7 @@ test_that("test cdm_reference", {
   expect_no_error(x <- cdmReference(
     cdmTables = cdmTables,
     cdmName = "mock",
-    sourceCdm = localSource("test")
+    sourceCdm = "source"
   ))
 
 })

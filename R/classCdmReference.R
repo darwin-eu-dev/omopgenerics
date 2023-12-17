@@ -90,18 +90,6 @@ cdmReference <- function(cdmTables, cohortTables = list(), cdmName, sourceCdm = 
 #'
 `[[<-.cdm_reference` <- function(cdm, name, value) {
   print("in")
-  if (!is.null(value)) {
-    if (!identical(getCdmSource(value), getCdmSource(cdm))) {
-      cli::cli_abort("Table and cdm does not share a common source, please insert table to the cdm with insertTable")
-    }
-    remoteName <- attr(value, "tbl_name")
-    if (is.null(remoteName)) {
-      cli::cli_abort("The table that you are tying to assign does not have a name.")
-    }
-    if (!is.na(remoteName) && name != remoteName) {
-      cli::cli_abort("You can't assign a table named {remoteName} to {name}. Please use compute to change table name.")
-    }
-  }
   attr(value, "cdm_reference") <- NULL
   originalClass <- class(cdm)
   cdm <- unclass(cdm)
@@ -110,19 +98,3 @@ cdmReference <- function(cdmTables, cohortTables = list(), cdmName, sourceCdm = 
   return(cdm)
 }
 
-#' Print a CDM reference object
-#'
-#' @param x A cdm_reference object
-#' @param ... Included for compatibility with generic. Not used.
-#'
-#' @return Invisibly returns the input
-#' @export
-print.cdm_reference <- function(x, ...) {
-  src <- getCdmSource(x)
-  type <- attr(src, "source_type")
-  ref <- attr(src, "source_name")
-  cli::cat_line(glue::glue("# OMOP CDM reference ({type}) of {ref}"))
-  cli::cat_line("")
-  cli::cat_line(paste("Tables:", paste(names(x), collapse = ", ")))
-  invisible(x)
-}
