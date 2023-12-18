@@ -17,24 +17,16 @@
 #' `cdm_reference` objects constructor
 #'
 #' @param cdmTables List of standard tables in the OMOP Common Data Model.
-#' @param cohortTables List of tables that contains `generated_cohort_set`
-#' objects.
-#' @param cdmName Name of the cdm.
-#' @param sourceCdm Source of the cdm object.
 #'
 #' @return A `cdm_reference` object.
 #'
 #' @export
 #'
-cdmReference <- function(cdmTables, cohortTables = list(), cdmName, sourceCdm = NULL) {
+cdmReference <- function(cdmTables) {
 
-  cdm <- c(cdmTables, cohortTables)
-  attr(cdm, "cdm_name") <- cdmName
-  attr(cdm, "cdm_version") <- "5.3"
-  attr(cdm, "cdm_source") <- sourceCdm
-  class(cdm) <- "cdm_reference"
+  class(cdmTables) <- "cdm_reference"
 
-  return(cdm)
+  return(cdmTables)
 }
 
 #' Subset a cdm reference object.
@@ -48,6 +40,6 @@ cdmReference <- function(cdmTables, cohortTables = list(), cdmName, sourceCdm = 
   print("out")
   x_raw <- unclass(x)
   tbl <- x_raw[[name]]
-  attr(tbl, "cdm_reference") <- x
+  attr(tbl, "reference") <- x
   return(tbl)
 }
