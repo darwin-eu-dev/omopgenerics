@@ -234,6 +234,7 @@ defaultCohortSet <- function(cohort, overwrite) {
     dplyr::select("cohort_definition_id") |>
     dplyr::distinct() |>
     dplyr::mutate(
+      "cohort_definition_id" = as.integer(.data$cohort_definition_id),
       "cohort_name" = paste0("cohort_", as.character(.data$cohort_definition_id))
     ) |>
     compute(name = name, temporary = FALSE, overwrite = overwrite)

@@ -23,7 +23,6 @@
 #' @return A codelist
 #' @export
 #'
-#' @examples
 codelist <- function(x) {
 
   #constructor

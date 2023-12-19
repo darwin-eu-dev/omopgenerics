@@ -38,6 +38,25 @@ uniteGroup <- function(x,
   assertLogical(keep, length = 1)
   assertTibble(x, columns = cols)
 
+  present <- c(name, level)[c(name, level) %in% colnames(x)]
+  if (length(present) > 0) {
+    cli::cli_warn(
+      "The following columns will be overwritten:
+      {paste0(present, collapse = ', ')}."
+    )
+  }
+
+  containAnd <- cols[grepl(" and ", cols)]
+  if (length(containAnd) > 0) {
+    cli::cli_abort("Column names must not contain ' and ' : `{paste0(containAnd, collapse = '`, `')}`")
+  }
+  containAnd <- cols[
+    lapply(cols, function(col){any(grepl(" and ", x[[col]]))}) |> unlist()
+  ]
+  if (length(containAnd) > 0) {
+    cli::cli_abort("Column values must not contain ' and '. Present in: `{paste0(containAnd, collapse = '`, `')}`.")
+  }
+
   originalCols <- colnames(x)
   if (!keep) {
     originalCols <- originalCols[!originalCols %in% cols]

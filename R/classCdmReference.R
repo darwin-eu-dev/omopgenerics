@@ -30,10 +30,9 @@
 cdmReference <- function(cdmTables, cohortTables = list(), achillesTables = list(), cdmName, cdmSource = NULL) {
 
   # inputs
-  assertList(cdmTables, named = TRUE, class = "tbl")
-  assertList(
-    cohortTables, named = TRUE, class = c("generated_cohort_set", "tbl")
-  )
+  assertList(cdmTables, named = TRUE)
+  assertList(cohortTables, named = TRUE)
+  assertList(achillesTables, named = TRUE)
   assertCharacter(cdmName, length = 1)
   assertClass(cdmSource, "cdm_source", null = TRUE)
 
@@ -50,13 +49,26 @@ cdmReference <- function(cdmTables, cohortTables = list(), achillesTables = list
 
   # constructor
   cdm <- newCdmReference(
-    cdmTables = cdmTables, cohortTables = cohortTables,
-    achillesTables = achillesTables, cdmName = cdmName,
+    cdmTables = cdmTables, achillesTables = achillesTables, cdmName = cdmName,
     cdmVersion = cdmVersion, cdmSource = cdmSource
   )
 
   # validate
   cdm <- validateCdmReference(cdm)
+
+  # add cohort tables
+  for (nm in names(cohortTables)) {
+    x <- cohortTables[[nm]]
+    attr(x, "cdm_reference") <- cdm
+    attr(x, "tbl_name") <- nm
+    x <- cdmTable(x)
+    cdm[[nm]] <- generatedCohortSet(
+      cohortRef = x,
+      cohortSetRef = attr(x, "cohort_set"),
+      cohortAttritionRef = attr(x, "cohort_attrition"),
+      overwrite = FALSE
+    )
+  }
 
   return(cdm)
 }
@@ -68,13 +80,9 @@ getVersion <- function(cdm) {
   )
   return(version)
 }
-newCdmReference <- function(cdmTables, cohortTables, achillesTables, cdmName, cdmVersion, cdmSource) {
-  tables <- c(cdmTables, cohortTables, achillesTables)
-  cdm <- list()
+newCdmReference <- function(cdmTables, achillesTables, cdmName, cdmVersion, cdmSource) {
+  cdm <- c(cdmTables, achillesTables)
   class(cdm) <- "cdm_reference"
-  for (nm in names(tables)) {
-    cdm <- appendToCdm(cdm, tables[[nm]], nm)
-  }
   attr(cdm, "cdm_source") <- cdmSource
   attr(cdm, "cdm_name") <- cdmName
   attr(cdm, "cdm_version") <- cdmVersion
@@ -212,7 +220,8 @@ cdmVersion <- function(cdm) {
 #' @export
 `[[.cdm_reference` <- function(x, name) {
   if (!name %in% names(x)) return(NULL)
-  tbl <- getFromCdm(x, name)
+  xraw <- unclass(x)
+  tbl <- xraw[[name]]
   attr(tbl, "cdm_reference") <- x
   tbl <- cdmTable(tbl)
   return(tbl)
@@ -244,10 +253,7 @@ cdmVersion <- function(cdm) {
 #' @export
 #'
 `[[<-.cdm_reference` <- function(cdm, name, value) {
-  if (is.null(value)) {
-    cdm <- deleteCdmElement(cdm, name)
-    return(cdm)
-  } else {
+  if (!is.null(value)) {
     if (!identical(getCdmSource(value), getCdmSource(cdm))) {
       cli::cli_abort("Table and cdm does not share a common source, please insert table to the cdm with insertTable")
     }
@@ -260,7 +266,10 @@ cdmVersion <- function(cdm) {
     }
   }
   attr(value, "cdm_reference") <- NULL
-  cdm <- appendToCdm(cdm, value, name)
+  cl <- class(cdm)
+  cdm <- unclass(cdm)
+  cdm[[name]] <- value
+  class(cdm) <- cl
   return(cdm)
 }
 
@@ -347,7 +356,6 @@ cohortColumns <- function(table, version = "5.3") {
 #' @return Names of tables returned by achilles analyses
 #' @export
 #'
-#' @examples
 achillesTables <- function(version = "5.3"){
   assertVersion(version = version)
   tableChoice(version = version, type = "achilles")
@@ -361,7 +369,6 @@ achillesTables <- function(version = "5.3"){
 #' @return Names of columns for achilles result tables
 #' @export
 #'
-#' @examples
 achillesColumns <- function(table, version = "5.3") {
   assertVersion(version = version)
   assertTable(table = table, version = version, type = "achilles")
@@ -390,85 +397,7 @@ requiredColumns <- function(table, version, type) {
   ]
 }
 
-appendToCdm <- function(cdm, x, name) {
-  cl <- class(cdm)
-  cdm <- unclass(cdm)
-  if (inherits(x, "generated_cohort_set")) {
-    cdm <- appendSet(cdm, x, name)
-    cdm <- appendAttrition(cdm, x, name)
-  }
-  cdm <- appendTable(cdm, x, name)
-  class(cdm) <- cl
-  return(cdm)
-}
-appendTable <- function(cdm, x, name) {
-  cdm[[name]] <- unclass(x)
-  attr(cdm, "classes") <- append(
-    x = attr(cdm, "classes"),
-    values = list(class(x)) |> rlang::set_names(name)
-  )
-  return(cdm)
-}
-appendSet <- function(cdm, x, name) {
-  set <- attr(x, "cohort_set")
-  attr(cdm, "cohort_set") <- append(
-    x = attr(cdm, "cohort_set"),
-    values = list(unclass(set)) |> rlang::set_names(name)
-  )
-  attr(cdm, "cohort_set_classes") <- append(
-    x = attr(cdm, "cohort_set_classes"),
-    values = list(class(set)) |> rlang::set_names(name)
-  )
-  return(cdm)
-}
-appendAttrition <- function(cdm, x, name) {
-  attri <- attr(x, "cohort_attrition")
-  attr(cdm, "cohort_attrition") <- append(
-    x = attr(cdm, "cohort_attrition"),
-    values = list(unclass(attri)) |> rlang::set_names(name)
-  )
-  attr(cdm, "cohort_attrition_classes") <- append(
-    x = attr(cdm, "cohort_attrition_classes"),
-    values = list(class(attri)) |> rlang::set_names(name)
-  )
-  return(cdm)
-}
-getFromCdm <- function(cdm, name) {
-  cdm <- unclass(cdm)
-  x <- getTable(cdm, name)
-  if (inherits(x, "generated_cohort_set")) {
-    attr(x, "cohort_set") <- getSet(cdm, name)
-    attr(x, "cohort_attrition") <- getAttrition(cdm, name)
-  }
-  return(x)
-}
-getTable <- function(cdm, name) {
-  x <- cdm[[name]]
-  class(x) <- attr(cdm, "classes")[[name]]
-  return(x)
-}
-getSet <- function(cdm, name) {
-  x <- attr(cdm, "cohort_set")[[name]]
-  class(x) <- attr(cdm, "cohort_set_classes")[[name]]
-  return(x)
-}
-getAttrition <- function(cdm, name) {
-  x <- attr(cdm, "cohort_attrition")[[name]]
-  class(x) <- attr(cdm, "cohort_attrition_classes")[[name]]
-  return(x)
-}
-deleteCdmElement <- function(cdm, name) {
-  x <- cdm[[name]]
-  cl <- class(cdm)
-  cdm <- unclass(cdm)
-  if (inherits(x, "generated_cohort_set")) {
-    attr(cdm, "cohort_set")[[name]] <- NULL
-    attr(cdm, "cohort_set_classes")[[name]] <- NULL
-    attr(cdm, "cohort_attrition")[[name]] <- NULL
-    attr(cdm, "cohort_attrition_classes")[[name]] <- NULL
-  }
-  cdm[[name]] <- NULL
-  attr(cdm, "classes")[[name]] <- NULL
-  class(cdm) <- cl
-  return(cdm)
+#' @export
+str.cdm_reference <- function(object, ...) {
+  utils::capture.output(print(object))
 }
