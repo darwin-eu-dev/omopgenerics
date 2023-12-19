@@ -365,7 +365,6 @@ cohortColumns <- function(table, version = "5.3") {
 #' @return Names of tables returned by achilles analyses
 #' @export
 #'
-#' @examples
 achillesTables <- function(version = "5.3"){
   assertVersion(version = version)
   tableChoice(version = version, type = "achilles")
@@ -379,7 +378,6 @@ achillesTables <- function(version = "5.3"){
 #' @return Names of columns for achilles result tables
 #' @export
 #'
-#' @examples
 achillesColumns <- function(table, version = "5.3") {
   assertVersion(version = version)
   assertTable(table = table, version = version, type = "achilles")

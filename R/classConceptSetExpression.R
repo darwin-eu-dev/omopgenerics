@@ -23,7 +23,6 @@
 #' @return A conceptSetExpression
 #' @export
 #'
-#' @examples
 conceptSetExpression <- function(x) {
 
   #constructor

@@ -1,4 +1,4 @@
-test_that("splitGroups", {
+test_that("splitGroup", {
   tib <- dplyr::tibble(
     group_name = c("cohort_name", "cohort_name and age", "age and sex"),
     group_level = c("acetaminophen", "ibuprofen and 10 to 19", "20 to 29 and Male"),
@@ -7,6 +7,7 @@ test_that("splitGroups", {
     z = c(1, 2, 3),
     a = c("a", "b", "c")
   )
+  expect_error(tib |> splitGroup(NA_character_))
   expect_no_error(res0 <- tib |> splitGroup())
   expect_false("group_name" %in% colnames(res0))
   expect_false("group_level" %in% colnames(res0))
