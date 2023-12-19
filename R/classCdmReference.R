@@ -30,10 +30,9 @@
 cdmReference <- function(cdmTables, cohortTables = list(), achillesTables = list(), cdmName, cdmSource = NULL) {
 
   # inputs
-  assertList(cdmTables, named = TRUE, class = "tbl")
-  assertList(
-    cohortTables, named = TRUE, class = c("generated_cohort_set", "tbl")
-  )
+  assertList(cdmTables, named = TRUE)
+  assertList(cohortTables, named = TRUE)
+  assertList(achillesTables, named = TRUE)
   assertCharacter(cdmName, length = 1)
   assertClass(cdmSource, "cdm_source", null = TRUE)
 
@@ -50,13 +49,30 @@ cdmReference <- function(cdmTables, cohortTables = list(), achillesTables = list
 
   # constructor
   cdm <- newCdmReference(
-    cdmTables = cdmTables, cohortTables = cohortTables,
-    achillesTables = achillesTables, cdmName = cdmName,
+    cdmTables = cdmTables, achillesTables = achillesTables, cdmName = cdmName,
     cdmVersion = cdmVersion, cdmSource = cdmSource
   )
 
   # validate
   cdm <- validateCdmReference(cdm)
+
+  # add cohort tables
+  for (nm in names(cohortTables)) {
+    x <- cohortTables[[nm]]
+    attr(x, "cdm_reference") <- cdm
+    attr(x, "tbl_name") <- nm
+    x <- cdmTable(x)
+    if ("generated_cohort_set" %in% class(x)) {
+      cdm[[nm]] <- x
+    } else {
+      cdm[[nm]] <- generatedCohortSet(
+        cohortRef = x,
+        cohortSetRef = attr(x, "cohort_set"),
+        cohortAttritionRef = attr(x, "cohort_attrition"),
+        overwrite = FALSE
+      )
+    }
+  }
 
   return(cdm)
 }
@@ -68,12 +84,14 @@ getVersion <- function(cdm) {
   )
   return(version)
 }
-newCdmReference <- function(cdmTables, cohortTables, achillesTables, cdmName, cdmVersion, cdmSource) {
-  tables <- c(cdmTables, cohortTables, achillesTables)
+newCdmReference <- function(cdmTables, achillesTables, cdmName, cdmVersion, cdmSource) {
   cdm <- list()
   class(cdm) <- "cdm_reference"
-  for (nm in names(tables)) {
-    cdm <- appendToCdm(cdm, tables[[nm]], nm)
+  for (nm in names(cdmTables)) {
+    cdm <- appendToCdm(cdm, cdmTables[[nm]], nm)
+  }
+  for (nm in names(achillesTables)) {
+    cdm <- appendToCdm(cdm, achillesTables[[nm]], nm)
   }
   attr(cdm, "cdm_source") <- cdmSource
   attr(cdm, "cdm_name") <- cdmName
@@ -402,6 +420,7 @@ appendToCdm <- function(cdm, x, name) {
   return(cdm)
 }
 appendTable <- function(cdm, x, name) {
+  attr(x, "tbl_name") <- name
   cdm[[name]] <- unclass(x)
   attr(cdm, "classes") <- append(
     x = attr(cdm, "classes"),
@@ -411,6 +430,7 @@ appendTable <- function(cdm, x, name) {
 }
 appendSet <- function(cdm, x, name) {
   set <- attr(x, "cohort_set")
+  attr(set, "tbl_name") <- paste0(name, "_set")
   attr(cdm, "cohort_set") <- append(
     x = attr(cdm, "cohort_set"),
     values = list(unclass(set)) |> rlang::set_names(name)
@@ -423,6 +443,7 @@ appendSet <- function(cdm, x, name) {
 }
 appendAttrition <- function(cdm, x, name) {
   attri <- attr(x, "cohort_attrition")
+  attr(attri, "tbl_name") <- paste0(name, "_attrition")
   attr(cdm, "cohort_attrition") <- append(
     x = attr(cdm, "cohort_attrition"),
     values = list(unclass(attri)) |> rlang::set_names(name)
