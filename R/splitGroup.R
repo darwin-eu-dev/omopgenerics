@@ -42,6 +42,13 @@ splitGroup <- function(x,
   }
 
   nameValue <- unique(unlist(nameValues))
+  present <- nameValue[nameValue %in% colnames(x)]
+  if (length(present) > 0) {
+    cli::cli_warn(
+      "The following columns will be overwritten:
+      {paste0(present, collapse = ', ')}."
+    )
+  }
   for (k in seq_along(nameValue)) {
     col <- nameValue[k]
     dat <- lapply(seq_along(nameValues), function(y) {
