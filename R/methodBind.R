@@ -47,6 +47,9 @@ bind.generated_cohort_set <- function(..., name) {
   }
   assertCharacter(name, length = 1)
 
+  # get cdm
+  cdm <- attr(cohorts[[1]], "cdm_reference")
+
   # bind
   newCohortSet <- lapply(cohorts, function(x) {
     attr(x, "cohort_set") |> dplyr::collect()

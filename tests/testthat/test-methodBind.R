@@ -82,3 +82,4 @@ test_that("bind a cohort_set", {
   )
   expect_equal(attrition(newcdm$new_cohort) |> nrow(), 8)
 })
+
