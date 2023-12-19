@@ -48,22 +48,55 @@ bind.generated_cohort_set <- function(..., name) {
   assertCharacter(name, length = 1)
 
   # bind
-  newCohortSet <- lapply(cohorts, settings) |>
+  newCohortSet <- lapply(cohorts, function(x) {
+    attr(x, "cohort_set") |> dplyr::collect()
+  }) |>
     dplyr::bind_rows(.id = "cohort_id") |>
     dplyr::mutate("new_cohort_definition_id" = dplyr::row_number())
-  newCohortAttrition <- lapply(cohorts, attrition) |>
+  repeatedCohortName <- newCohortSet |>
+    dplyr::group_by(.data$cohort_name) |>
+    dplyr::filter(dplyr::n() > 1) |>
+    dplyr::pull("cohort_name") |>
+    unique()
+  if (length(repeatedCohortName) > 0) {
+    repeatedCohort <- lapply(repeatedCohortName, function(x) {
+      newCohortSet |>
+        dplyr::filter(.data$cohort_name == .env$x) |>
+        dplyr::pull("cohort_id") |>
+        paste0(collapse = ", ")
+    }) |>
+      unlist()
+    err <- paste0(repeatedCohortName, " in ", repeatedCohort)
+    cli::cli_abort("Cohorts can have the same cohort_name: {paste0(err, collapse = '; ')}.")
+  }
+  newCohortAttrition <- lapply(cohorts, function(x) {
+    attr(x, "cohort_attrition") |> dplyr::collect()
+  }) |>
     dplyr::bind_rows(.id = "cohort_id") |>
-    dplyr::left_join(newCohortSet, by = c("cohort_definition_id", "cohort_id")) |>
+    dplyr::left_join(
+      newCohortSet |> dplyr::select(-"cohort_name"),
+      by = c("cohort_definition_id", "cohort_id")
+    ) |>
     dplyr::select(-c("cohort_definition_id", "cohort_id")) |>
     dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") |>
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_attrition")))
-  newCohort <- Reduce(cohorts, dplyr::union_all) |>
-    dplyr::left_join(
-      newCohortSet |>
-        dplyr::select("cohort_definition_id", "new_cohort_definition_id"),
-      by = "cohort_definition_id",
-      copy = TRUE
-    ) |>
+  cohorts <- lapply(seq_len(length(cohorts)), function(x) {
+    cohorts[[x]] |>
+      dplyr::left_join(
+        newCohortSet |>
+          dplyr::filter(.data$cohort_id == .env$x) |>
+          dplyr::mutate(
+            "cohort_definition_id" = as.integer(.data$cohort_definition_id),
+            "cohort_name" = as.character(.data$cohort_name)
+          ) |>
+          dplyr::select("cohort_definition_id", "new_cohort_definition_id"),
+        by = c("cohort_definition_id"),
+        copy = TRUE
+      ) |>
+      dplyr::select(-"cohort_definition_id") |>
+      dplyr::rename("cohort_definition_id" = "new_cohort_definition_id")
+  })
+  newCohort <- Reduce(dplyr::union_all, cohorts) |>
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort"))) |>
     dplyr::compute(name = name, temporary = FALSE, overwrite = TRUE)
   newCohortSet <- newCohortSet |>
@@ -72,7 +105,7 @@ bind.generated_cohort_set <- function(..., name) {
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_set")))
 
   # instantiate the new generated cohort set
-  cdm <- generatedCohortSet(
+  cdm[[name]] <- generatedCohortSet(
     cohortRef = newCohort,
     cohortSetRef = newCohortSet,
     cohortAttritionRef = newCohortAttrition
