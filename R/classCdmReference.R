@@ -19,6 +19,7 @@
 #' @param cdmTables List of standard tables in the OMOP Common Data Model.
 #' @param cohortTables List of tables that contains `generated_cohort_set`
 #' objects.
+#' @param achillesTables List of tables that contain achilles.
 #' @param cdmName Name of the cdm.
 #' @param cdmSource Source of the cdm object.
 #'
@@ -26,7 +27,7 @@
 #'
 #' @export
 #'
-cdmReference <- function(cdmTables, cohortTables = list(), cdmName, cdmSource = NULL) {
+cdmReference <- function(cdmTables, cohortTables = list(), achillesTables = list(), cdmName, cdmSource = NULL) {
 
   # inputs
   assertList(cdmTables, named = TRUE, class = "tbl")
@@ -49,7 +50,8 @@ cdmReference <- function(cdmTables, cohortTables = list(), cdmName, cdmSource = 
 
   # constructor
   cdm <- newCdmReference(
-    cdmTables = cdmTables, cohortTables = cohortTables, cdmName = cdmName,
+    cdmTables = cdmTables, cohortTables = cohortTables,
+    achillesTables = achillesTables, cdmName = cdmName,
     cdmVersion = cdmVersion, cdmSource = cdmSource
   )
 
@@ -66,11 +68,16 @@ getVersion <- function(cdm) {
   )
   return(version)
 }
-newCdmReference <- function(cdmTables, cohortTables, cdmName, cdmVersion, cdmSource) {
-  cdm <- c(cdmTables, cohortTables)
+newCdmReference <- function(cdmTables, cohortTables, achillesTables, cdmName, cdmVersion, cdmSource) {
+  tables <- c(cdmTables, cohortTables, achillesTables)
+  cdm <- list()
+  class(cdm) <- "cdm_reference"
+  for (nm in names(tables)) {
+    cdm <- appendToCdm(cdm, tables[[nm]], nm)
+  }
+  attr(cdm, "cdm_source") <- cdmSource
   attr(cdm, "cdm_name") <- cdmName
   attr(cdm, "cdm_version") <- cdmVersion
-  attr(cdm, "cdm_source") <- cdmSource
   class(cdm) <- "cdm_reference"
   return(cdm)
 }
@@ -204,8 +211,8 @@ cdmVersion <- function(cdm) {
 #' @return A single cdm table reference
 #' @export
 `[[.cdm_reference` <- function(x, name) {
-  x_raw <- unclass(x)
-  tbl <- x_raw[[name]]
+  if (!name %in% names(x)) return(NULL)
+  tbl <- getFromCdm(x, name)
   attr(tbl, "cdm_reference") <- x
   tbl <- cdmTable(tbl)
   return(tbl)
@@ -237,7 +244,10 @@ cdmVersion <- function(cdm) {
 #' @export
 #'
 `[[<-.cdm_reference` <- function(cdm, name, value) {
-  if (!is.null(value)) {
+  if (is.null(value)) {
+    cdm <- deleteCdmElement(cdm, name)
+    return(cdm)
+  } else {
     if (!identical(getCdmSource(value), getCdmSource(cdm))) {
       cli::cli_abort("Table and cdm does not share a common source, please insert table to the cdm with insertTable")
     }
@@ -250,10 +260,7 @@ cdmVersion <- function(cdm) {
     }
   }
   attr(value, "cdm_reference") <- NULL
-  originalClass <- class(cdm)
-  cdm <- unclass(cdm)
-  cdm[[name]] <- value
-  class(cdm) <- originalClass
+  cdm <- appendToCdm(cdm, value, name)
   return(cdm)
 }
 
@@ -383,3 +390,85 @@ requiredColumns <- function(table, version, type) {
   ]
 }
 
+appendToCdm <- function(cdm, x, name) {
+  cl <- class(cdm)
+  cdm <- unclass(cdm)
+  if (inherits(x, "generated_cohort_set")) {
+    cdm <- appendSet(cdm, x, name)
+    cdm <- appendAttrition(cdm, x, name)
+  }
+  cdm <- appendTable(cdm, x, name)
+  class(cdm) <- cl
+  return(cdm)
+}
+appendTable <- function(cdm, x, name) {
+  cdm[[name]] <- unclass(x)
+  attr(cdm, "classes") <- append(
+    x = attr(cdm, "classes"),
+    values = list(class(x)) |> rlang::set_names(name)
+  )
+  return(cdm)
+}
+appendSet <- function(cdm, x, name) {
+  set <- attr(x, "cohort_set")
+  attr(cdm, "cohort_set") <- append(
+    x = attr(cdm, "cohort_set"),
+    values = list(unclass(set)) |> rlang::set_names(name)
+  )
+  attr(cdm, "cohort_set_classes") <- append(
+    x = attr(cdm, "cohort_set_classes"),
+    values = list(class(set)) |> rlang::set_names(name)
+  )
+  return(cdm)
+}
+appendAttrition <- function(cdm, x, name) {
+  attri <- attr(x, "cohort_attrition")
+  attr(cdm, "cohort_attrition") <- append(
+    x = attr(cdm, "cohort_attrition"),
+    values = list(unclass(attri)) |> rlang::set_names(name)
+  )
+  attr(cdm, "cohort_attrition_classes") <- append(
+    x = attr(cdm, "cohort_attrition_classes"),
+    values = list(class(attri)) |> rlang::set_names(name)
+  )
+  return(cdm)
+}
+getFromCdm <- function(cdm, name) {
+  cdm <- unclass(cdm)
+  x <- getTable(cdm, name)
+  if (inherits(x, "generated_cohort_set")) {
+    attr(x, "cohort_set") <- getSet(cdm, name)
+    attr(x, "cohort_attrition") <- getAttrition(cdm, name)
+  }
+  return(x)
+}
+getTable <- function(cdm, name) {
+  x <- cdm[[name]]
+  class(x) <- attr(cdm, "classes")[[name]]
+  return(x)
+}
+getSet <- function(cdm, name) {
+  x <- attr(cdm, "cohort_set")[[name]]
+  class(x) <- attr(cdm, "cohort_set_classes")[[name]]
+  return(x)
+}
+getAttrition <- function(cdm, name) {
+  x <- attr(cdm, "cohort_attrition")[[name]]
+  class(x) <- attr(cdm, "cohort_attrition_classes")[[name]]
+  return(x)
+}
+deleteCdmElement <- function(cdm, name) {
+  x <- cdm[[name]]
+  cl <- class(cdm)
+  cdm <- unclass(cdm)
+  if (inherits(x, "generated_cohort_set")) {
+    attr(cdm, "cohort_set")[[name]] <- NULL
+    attr(cdm, "cohort_set_classes")[[name]] <- NULL
+    attr(cdm, "cohort_attrition")[[name]] <- NULL
+    attr(cdm, "cohort_attrition_classes")[[name]] <- NULL
+  }
+  cdm[[name]] <- NULL
+  attr(cdm, "classes")[[name]] <- NULL
+  class(cdm) <- cl
+  return(cdm)
+}
