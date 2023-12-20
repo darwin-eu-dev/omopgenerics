@@ -1,6 +1,6 @@
 # Copyright 2023 DARWIN EU (C)
 #
-# This file is part of OMOPGenerics
+# This file is part of omopgenerics
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -140,8 +140,8 @@ summary.cdm_reference <- function(object, ...) {
     dplyr::union_all(observationPeriodValues) |>
     dplyr::mutate(
       "cdm_name" = cdmName(object),
-      "package_name" = "OMOPGenerics",
-      "package_version" = as.character(utils::packageVersion("OMOPGenerics")),
+      "package_name" = "omopgenerics",
+      "package_version" = as.character(utils::packageVersion("omopgenerics")),
       "result_type" = "cdm_snapshot",
       "variable_level" = NA_character_,
       "group_name" = "overall",
@@ -248,8 +248,8 @@ summary.generated_cohort_set <- function(object, ...) {
     ) |>
     dplyr::mutate(
       "cdm_name" = cdmName(attr(object, "cdm_reference")),
-      "package_name" = "OMOPGenerics",
-      "package_version" = as.character(utils::packageVersion("OMOPGenerics")),
+      "package_name" = "omopgenerics",
+      "package_version" = as.character(utils::packageVersion("omopgenerics")),
       "group_name" = "cohort_table_name",
       "group_level" = attr(object, "tbl_name")
     ) |>

@@ -1,11 +1,11 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# OMOPGenerics
+# omopgenerics
 
 [![Lifecycle:Experimental](https://img.shields.io/badge/Lifecycle-Experimental-339999)](https://lifecycle.r-lib.org/articles/stages.html)
 
-The OMOPGenerics package provides definitions of core classes and
+The omopgenerics package provides definitions of core classes and
 methods used by analytic pipelines that query the OMOP common data
 model.
 
@@ -16,13 +16,13 @@ You can install the development version of OMOPGenerics from
 
 ``` r
 install.packages("remotes")
-devtools::install_github("darwin-eu-dev/OMOPGenerics")
+devtools::install_github("darwin-eu-dev/omopgenerics")
 ```
 
 And load it using the library command:
 
 ``` r
-library(OMOPGenerics)
+library(omopgenerics)
 ```
 
 ## Core classes and methods
@@ -36,7 +36,7 @@ arrow. In the latter case the cdm reference would typically be a subset
 of an original cdm reference that has been derived as part of a
 particular analysis.
 
-OMOPGenerics contains the class definition of a cdm reference and a
+omopgenerics contains the class definition of a cdm reference and a
 dataframe implementation. For creating a cdm reference using a database,
 see the CDMConnector package
 (<https://darwin-eu.github.io/CDMConnector/>).
