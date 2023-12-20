@@ -233,7 +233,7 @@ resultColumns <- function(table) {
   fieldsResults$result_field_name[fieldsResults$result == table]
 }
 
-#' Subset a summaried_result or compared_result object to a certain result_type.
+#' Subset a summarised_result or compared_result object to a certain result_type.
 #'
 #' @param result A result object.
 #' @param resultType A result type identifier.

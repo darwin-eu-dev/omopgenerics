@@ -20,7 +20,7 @@
 #' @param name Name to store the table with.
 #' @param temporary Whether to store table temporarily (TRUE) or permanent
 #' (FALSE).
-#' @param overwrite Whether to overwrite previosly existing table with name
+#' @param overwrite Whether to overwrite previously existing table with name
 #' same.
 #' @param ... For compatibility (not used).
 #'

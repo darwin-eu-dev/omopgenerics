@@ -16,7 +16,7 @@ insertTable(cdm, name, table, overwrite = TRUE)
 \item{overwrite}{Whether to overwrite an existent table.}
 }
 \value{
-The cdm raference.
+The cdm reference.
 }
 \description{
 Insert a table to a cdm object.

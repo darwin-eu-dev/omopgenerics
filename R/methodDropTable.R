@@ -17,7 +17,7 @@
 #' Drop a table from a cdm object.
 #'
 #' @param cdm A cdm reference.
-#' @param name Name(s) of the table(s) to insert. Tidyselect statments are
+#' @param name Name(s) of the table(s) to insert. Tidyselect statements are
 #' supported.
 #'
 #' @export

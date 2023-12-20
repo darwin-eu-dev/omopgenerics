@@ -23,7 +23,7 @@
 #'
 #' @export
 #'
-#' @return The cdm raference.
+#' @return The cdm reference.
 #'
 insertTable <- function(cdm, name, table, overwrite = TRUE) {
   assertCharacter(name, length = 1, minNumCharacter = 1, na = TRUE)
