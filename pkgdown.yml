@@ -7,8 +7,8 @@ articles:
   a03_generated_cohort_set: a03_generated_cohort_set.html
   a04_summarised_result: a04_summarised_result.html
   a05_compared_result: a05_compared_result.html
-last_built: 2023-12-20T11:19Z
+last_built: 2023-12-20T11:27Z
 urls:
-  reference: https://darwin-eu-dev.github.io/OMOPGenerics/reference
-  article: https://darwin-eu-dev.github.io/OMOPGenerics/articles
+  reference: https://darwin-eu-dev.github.io/omopgenerics/reference
+  article: https://darwin-eu-dev.github.io/omopgenerics/articles
 
