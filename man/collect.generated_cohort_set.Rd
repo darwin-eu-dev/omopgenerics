@@ -12,7 +12,7 @@
 \item{...}{Not used (for compatibility).}
 }
 \value{
-A data frame with yhe \code{generated_cohort_set}
+A data frame with the \code{generated_cohort_set}
 }
 \description{
 To collect a \code{generated_cohort_set} object.

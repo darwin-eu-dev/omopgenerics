@@ -15,18 +15,11 @@ knitr::opts_chunk$set(
 
 # OMOPGenerics
 
-[![CRANstatus](https://www.r-pkg.org/badges/version/OMOPGenerics)](https://CRAN.R-project.org/package=OMOPGenerics) [![codecov.io](https://codecov.io/github/darwin-eu/OMOPGenerics/coverage.svg?branch=main)](https://app.codecov.io/github/darwin-eu/OMOPGenerics?branch=main) [![R-CMD-check](https://github.com/darwin-eu/OMOPGenerics/workflows/R-CMD-check/badge.svg)](https://github.com/darwin-eu/OMOPGenerics/actions) [![Lifecycle:Experimental](https://img.shields.io/badge/Lifecycle-Experimental-339999)](https://lifecycle.r-lib.org/articles/stages.html)
+[![Lifecycle:Experimental](https://img.shields.io/badge/Lifecycle-Experimental-339999)](https://lifecycle.r-lib.org/articles/stages.html)
 
 The OMOPGenerics package provides definitions of core classes and methods used by analytic pipelines that query the OMOP common data model.
 
 ## Installation
-
-You can install the CRAN version of the [OMOPGenerics](https://CRAN.R-project.org/package=OMOPGenerics) from CRAN:
-
-```{r, eval = FALSE}
-install.packages("OMOPGenerics")
-```
-
 
 You can install the development version of OMOPGenerics from [GitHub](https://github.com/) with:
 
@@ -49,7 +42,7 @@ A cdm reference is a single R object that represents OMOP CDM data. The tables i
 
 OMOPGenerics contains the class definition of a cdm reference and a dataframe implementation. For creating a cdm reference using a database, see the CDMConnector package (<https://darwin-eu.github.io/CDMConnector/>).
 
-A cdm object can contain three type of tables:
+A cdm object can contain four type of tables:
 
 * Standard tables:
 ```{r}
@@ -60,7 +53,21 @@ Each one of the tables has a required columns. For example, for the `person` tab
 omopColumns(table = "person")
 ```
 
-* Cohort tables (see `generatedCohortSet`).
+* Cohort tables
+We can see the cohort-related tables and their required columns.
+```{r}
+cohortTables()
+cohortColumns(table = "cohort")
+```
+
+In addition, cohorts are defined in terms of a `generatedCohortSet` class. For more details on this class definition see the corresponding vignette.
+
+* Achilles tables 
+The Achilles R package generates descriptive statistics about the data contained in the OMOP CDM. Again, we can see the tables created and their required columns. 
+```{r}
+achillesTables()
+achillesColumns(table = "achilles_results")
+```
 
 * Other tables, these other tables can have any format. 
 
@@ -108,13 +115,6 @@ condition_cs <- conceptSetExpression(condition_cs)
 condition_cs
 ```
 
-### Generatred cohort set
-
-
 ### Summarised result
 
-
 ### Compared result
-
-
-### Participants

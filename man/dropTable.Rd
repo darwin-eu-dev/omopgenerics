@@ -9,7 +9,7 @@ dropTable(cdm, name)
 \arguments{
 \item{cdm}{A cdm reference.}
 
-\item{name}{Name(s) of the table(s) to insert. Tidyselect statments are
+\item{name}{Name(s) of the table(s) to insert. Tidyselect statements are
 supported.}
 }
 \value{
