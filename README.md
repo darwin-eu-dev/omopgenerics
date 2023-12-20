@@ -1,41 +1,41 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# OMOPGenerics
+# omopgenerics
 
-[![CRANstatus](https://www.r-pkg.org/badges/version/OMOPGenerics)](https://CRAN.R-project.org/package=OMOPGenerics)
-[![codecov.io](https://codecov.io/github/darwin-eu/OMOPGenerics/coverage.svg?branch=main)](https://app.codecov.io/github/darwin-eu/OMOPGenerics?branch=main)
-[![R-CMD-check](https://github.com/darwin-eu/OMOPGenerics/workflows/R-CMD-check/badge.svg)](https://github.com/darwin-eu/OMOPGenerics/actions)
+[![CRANstatus](https://www.r-pkg.org/badges/version/omopgenerics)](https://CRAN.R-project.org/package=omopgenerics)
+[![codecov.io](https://codecov.io/github/darwin-eu/omopgenerics/coverage.svg?branch=main)](https://app.codecov.io/github/darwin-eu/omopgenerics?branch=main)
+[![R-CMD-check](https://github.com/darwin-eu/omopgenerics/workflows/R-CMD-check/badge.svg)](https://github.com/darwin-eu/omopgenerics/actions)
 [![Lifecycle:Experimental](https://img.shields.io/badge/Lifecycle-Experimental-339999)](https://lifecycle.r-lib.org/articles/stages.html)
 
-The OMOPGenerics package provides definitions of core classes and
+The omopgenerics package provides definitions of core classes and
 methods used by analytic pipelines that query the OMOP common data
 model.
 
 ## Installation
 
 You can install the CRAN version of the
-[OMOPGenerics](https://CRAN.R-project.org/package=OMOPGenerics) from
+[omopgenerics](https://CRAN.R-project.org/package=omopgenerics) from
 CRAN:
 
 ``` r
-install.packages("OMOPGenerics")
+install.packages("omopgenerics")
 ```
 
-You can install the development version of OMOPGenerics from
+You can install the development version of omopgenerics from
 [GitHub](https://github.com/) with:
 
 ``` r
 install.packages("remotes")
-devtools::install_github("darwin-eu-dev/OMOPGenerics")
+devtools::install_github("darwin-eu-dev/omopgenerics")
 ```
 
 And load it using the library command:
 
 ``` r
-library(OMOPGenerics)
+library(omopgenerics)
 #> 
-#> Attaching package: 'OMOPGenerics'
+#> Attaching package: 'omopgenerics'
 #> The following object is masked from 'package:stats':
 #> 
 #>     aggregate
@@ -52,7 +52,7 @@ arrow. In the latter case the cdm reference would typically be a subset
 of an original cdm reference that has been derived as part of a
 particular analysis.
 
-OMOPGenerics contains the class definition of a cdm reference and a
+omopgenerics contains the class definition of a cdm reference and a
 dataframe implementation. For creating a cdm reference using a database,
 see the CDMConnector package
 (<https://darwin-eu.github.io/CDMConnector/>).

@@ -18,7 +18,7 @@ A generated cohort set is a cohort table contained in a cdm reference. These stu
 
 A table containing a generated cohort set must have the following columns: 
 ```{r}
-library(OMOPGenerics)
+library(omopgenerics)
 # TO ADD
 ```
 
