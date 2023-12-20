@@ -65,26 +65,18 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="omopgenerics">OMOPGenerics<a class="anchor" aria-label="anchor" href="#omopgenerics"></a>
 </h1></div>
-<p><a href="https://CRAN.R-project.org/package=OMOPGenerics" class="external-link"><img src="https://www.r-pkg.org/badges/version/OMOPGenerics" alt="CRANstatus"></a> <a href="https://app.codecov.io/github/darwin-eu/OMOPGenerics?branch=main" class="external-link"><img src="https://codecov.io/github/darwin-eu/OMOPGenerics/coverage.svg?branch=main" alt="codecov.io"></a> <a href="https://github.com/darwin-eu/OMOPGenerics/actions" class="external-link"><img src="https://github.com/darwin-eu/OMOPGenerics/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a> <a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/Lifecycle-Experimental-339999" alt="Lifecycle:Experimental"></a></p>
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/Lifecycle-Experimental-339999" alt="Lifecycle:Experimental"></a></p>
 <p>The OMOPGenerics package provides definitions of core classes and methods used by analytic pipelines that query the OMOP common data model.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the CRAN version of the <a href="https://CRAN.R-project.org/package=OMOPGenerics" class="external-link">OMOPGenerics</a> from CRAN:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"OMOPGenerics"</span><span class="op">)</span></span></code></pre></div>
 <p>You can install the development version of OMOPGenerics from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"darwin-eu-dev/OMOPGenerics"</span><span class="op">)</span></span></code></pre></div>
 <p>And load it using the library command:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://darwin-eu-dev.github.io/OMOPGenerics/">OMOPGenerics</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'OMOPGenerics'</span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     aggregate</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://darwin-eu-dev.github.io/OMOPGenerics/">OMOPGenerics</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="core-classes-and-methods">Core classes and methods<a class="anchor" aria-label="anchor" href="#core-classes-and-methods"></a>
@@ -94,11 +86,11 @@
 </h3>
 <p>A cdm reference is a single R object that represents OMOP CDM data. The tables in the cdm reference may be in a database, but a cdm reference may also contain OMOP CDM tables that are in dataframes/tibbles or in arrow. In the latter case the cdm reference would typically be a subset of an original cdm reference that has been derived as part of a particular analysis.</p>
 <p>OMOPGenerics contains the class definition of a cdm reference and a dataframe implementation. For creating a cdm reference using a database, see the CDMConnector package (<a href="https://darwin-eu.github.io/CDMConnector/" class="external-link uri">https://darwin-eu.github.io/CDMConnector/</a>).</p>
-<p>A cdm object can contain three type of tables:</p>
+<p>A cdm object can contain four type of tables:</p>
 <ul>
 <li>Standard tables:</li>
 </ul>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/omopTables.html">omopTables</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "person"                "observation_period"    "visit_occurrence"     </span></span>
 <span><span class="co">#&gt;  [4] "visit_detail"          "condition_occurrence"  "drug_exposure"        </span></span>
@@ -114,13 +106,31 @@
 <span><span class="co">#&gt; [34] "source_to_concept_map" "drug_strength"         "cohort_definition"    </span></span>
 <span><span class="co">#&gt; [37] "attribute_definition"</span></span></code></pre></div>
 <p>Each one of the tables has a required columns. For example, for the <code>person</code> table this are the required columns:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/omopColumns.html">omopColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"person"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "person_id"            "gender_concept_id"    "year_of_birth"       </span></span>
 <span><span class="co">#&gt; [4] "race_concept_id"      "ethnicity_concept_id"</span></span></code></pre></div>
 <ul>
-<li><p>Cohort tables (see <code>generatedCohortSet</code>).</p></li>
-<li><p>Other tables, these other tables can have any format.</p></li>
+<li>Cohort tables We can see the cohort-related tables and their required columns.</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/cohortTables.html">cohortTables</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "cohort"           "cohort_set"       "cohort_attrition"</span></span>
+<span><span class="fu"><a href="reference/cohortColumns.html">cohortColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"cohort"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "cohort_definition_id" "subject_id"           "cohort_start_date"   </span></span>
+<span><span class="co">#&gt; [4] "cohort_end_date"</span></span></code></pre></div>
+<p>In addition, cohorts are defined in terms of a <code>generatedCohortSet</code> class. For more details on this class definition see the corresponding vignette.</p>
+<ul>
+<li>Achilles tables The Achilles R package generates descriptive statistics about the data contained in the OMOP CDM. Again, we can see the tables created and their required columns.</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/achillesTables.html">achillesTables</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "achilles_analysis"     "achilles_results"      "achilles_results_dist"</span></span>
+<span><span class="fu"><a href="reference/achillesColumns.html">achillesColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"achilles_results"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "analysis_id" "stratum_1"   "stratum_2"   "stratum_3"   "stratum_4"  </span></span>
+<span><span class="co">#&gt; [6] "stratum_5"   "count_value"</span></span></code></pre></div>
+<ul>
+<li>Other tables, these other tables can have any format.</li>
 </ul>
 <p>Any table to be part of a cdm object has to fulfill 4 conditions:</p>
 <ul>
@@ -134,7 +144,7 @@
 <h3 id="concept-set">Concept set<a class="anchor" aria-label="anchor" href="#concept-set"></a>
 </h3>
 <p>A concept set can be represented as either a codelist or a concept set expression. A codelist is a named list, with each item of the list containing specific concept IDs.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condition_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"diabetes"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">201820</span>, <span class="fl">4087682</span>, <span class="fl">3655269</span><span class="op">)</span>,</span>
 <span>                        <span class="st">"asthma"</span> <span class="op">=</span> <span class="fl">317009</span><span class="op">)</span></span>
 <span><span class="va">condition_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/codelist.html">codelist</a></span><span class="op">(</span><span class="va">condition_codes</span><span class="op">)</span></span>
@@ -146,7 +156,7 @@
 <span><span class="co">#&gt; - diabetes (3 codes)</span></span>
 <span><span class="co">#&gt; - asthma (1 codes)</span></span></code></pre></div>
 <p>Meanwhile, a concept set expression provides a high-level definition of concepts that, when applied to a specific OMOP CDM vocabulary version (by making use of the concept hierarchies and relationships), will result in a codelist.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condition_cs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="st">"diabetes"</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>    <span class="st">"concept_id"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">201820</span>, <span class="fl">4087682</span><span class="op">)</span>,</span>
@@ -171,19 +181,11 @@
 <span><span class="co">#&gt; - asthma (1 concept criteria)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="generatred-cohort-set">Generatred cohort set<a class="anchor" aria-label="anchor" href="#generatred-cohort-set"></a>
-</h3>
-</div>
-<div class="section level3">
 <h3 id="summarised-result">Summarised result<a class="anchor" aria-label="anchor" href="#summarised-result"></a>
 </h3>
 </div>
 <div class="section level3">
 <h3 id="compared-result">Compared result<a class="anchor" aria-label="anchor" href="#compared-result"></a>
-</h3>
-</div>
-<div class="section level3">
-<h3 id="participants">Participants<a class="anchor" aria-label="anchor" href="#participants"></a>
 </h3>
 </div>
 </div>
