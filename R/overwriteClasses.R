@@ -161,9 +161,9 @@ right_join.cdm_table <- function(x, ...) {
 
 #' @export
 #' @importFrom dplyr rowwise
-rowwise.cdm_table <- function(data) {
+rowwise.cdm_table <- function(data, ...) {
   data <- keepClass(data)
-  res <- dplyr::rowwise(data = data)
+  res <- dplyr::rowwise(data = data, ...)
   res <- restoreClass(res)
   res <- restoreAttributes(res, keepAttributes(data))
   return(res)
