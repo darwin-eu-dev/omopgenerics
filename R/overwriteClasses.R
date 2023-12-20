@@ -14,6 +14,231 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# library(dplyr)
+# funs <- lsf.str("package:dplyr")
+# funsMethods <- character()
+# for (fun in funs) {
+#   try(
+#     if (isS3stdGeneric(eval(parse(text = fun)))) {
+#       funsMethods <- c(funsMethods, fun)
+#     },
+#     silent = TRUE
+#   )
+# }
+# funsMethods <- c(
+#   "anti_join", "collapse", "count", "cross_join", "full_join", "group_by",
+#   "group_data", "inner_join", "intersect", "left_join", "nest_join",
+#   "right_join", "rowwise", "semi_join", "tally", "ungroup", "union",
+#   "union_all", "summarise"
+# )
+# x <- character()
+# for (fun in funsMethods) {
+#   x <- c(
+#     x,
+#     "#' @export",
+#     paste0("#' @importFrom dplyr ", fun),
+#     paste0(fun, ".cdm_table <- function(x, ...) {"),
+#     "  x <- keepClass(x)",
+#     paste0("  res <- dplyr::", fun, "(x, ...)"),
+#     "  res <- restoreClass(res)",
+#     "  res <- restoreAttributes(res, keepAttributes(x))",
+#     "  return(res)",
+#     "}",
+#     ""
+#   )
+# }
+# cat(x, sep = "\n")
+
+#' @export
+#' @importFrom dplyr anti_join
+anti_join.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::anti_join(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr collapse
+collapse.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::collapse(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr count
+count.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::count(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr cross_join
+cross_join.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::cross_join(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr full_join
+full_join.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::full_join(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr group_by
+group_by.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::group_by(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr group_data
+group_data.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::group_data(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr inner_join
+inner_join.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::inner_join(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr intersect
+intersect.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::intersect(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr left_join
+left_join.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::left_join(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr nest_join
+nest_join.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::nest_join(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr right_join
+right_join.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::right_join(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr rowwise
+rowwise.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::rowwise(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr semi_join
+semi_join.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::semi_join(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr tally
+tally.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::tally(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr ungroup
+ungroup.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::ungroup(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr union
+union.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::union(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr union_all
+union_all.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::union_all(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
+#' @export
+#' @importFrom dplyr summarise
+summarise.cdm_table <- function(x, ...) {
+  x <- keepClass(x)
+  res <- dplyr::summarise(x, ...)
+  res <- restoreClass(res)
+  res <- restoreAttributes(res, keepAttributes(x))
+  return(res)
+}
+
 keepAttributes <- function(x) {
   list(
     cdm_reference = attr(x, "cdm_reference"),
@@ -36,68 +261,3 @@ restoreClass <- function(x) {
   x <- addClass(x, "cdm_table")
   return(x)
 }
-
-#' @export
-#' @importFrom dplyr group_by
-group_by.cdm_table <- function(.data, ...) {
-  .data <- keepClass(.data)
-  x <- dplyr::group_by(.data, ...)
-  x <- restoreClass(x)
-  x <- restoreAttributes(x, keepAttributes(.data))
-  return(x)
-}
-
-#' @export
-#' @importFrom dplyr summarise
-summarise.cdm_table <- function(.data, ...) {
-  .data <- keepClass(.data)
-  x <- dplyr::summarise(.data, ...)
-  x <- restoreClass(x)
-  x <- restoreAttributes(x, keepAttributes(.data))
-  return(x)
-}
-
-# add_count
-# anti_join
-# arrange
-# as.data.frame
-# auto_copy
-# count
-# cross_join
-# distinct
-# dplyr_col_modify
-# dplyr_reconstruct
-# dplyr_row_slice
-# filter
-# full_join
-# group_data
-# inner_join
-# intersect
-# left_join
-# mutate
-# nest_by
-# nest_join
-# right_join
-# rows_append
-# rows_delete
-# rows_insert
-# rows_patch
-# rows_update
-# rows_upsert
-# rowwise
-# sample_n
-# select
-# semi_join
-# slice
-# slice_head
-# slice_max
-# slice_min
-# slice_sample
-# slice_tail
-# symdiff
-# tally
-# tbl
-# transmute
-# ungroup
-# union
-# union_all
