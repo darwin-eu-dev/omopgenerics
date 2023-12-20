@@ -42,7 +42,7 @@ A cdm reference is a single R object that represents OMOP CDM data. The tables i
 
 OMOPGenerics contains the class definition of a cdm reference and a dataframe implementation. For creating a cdm reference using a database, see the CDMConnector package (<https://darwin-eu.github.io/CDMConnector/>).
 
-A cdm object can contain three type of tables:
+A cdm object can contain four type of tables:
 
 * Standard tables:
 ```{r}
@@ -53,7 +53,21 @@ Each one of the tables has a required columns. For example, for the `person` tab
 omopColumns(table = "person")
 ```
 
-* Cohort tables (see `generatedCohortSet`).
+* Cohort tables
+We can see the cohort-related tables and their required columns.
+```{r}
+cohortTables()
+cohortColumns(table = "cohort")
+```
+
+In addition, cohorts are defined in terms of a `generatedCohortSet` class. For more details on this class definition see the corresponding vignette.
+
+* Achilles tables 
+The Achilles R package generates descriptive statistics about the data contained in the OMOP CDM. Again, we can see the tables created and their required columns. 
+```{r}
+achillesTables()
+achillesColumns(table = "achilles_results")
+```
 
 * Other tables, these other tables can have any format. 
 
@@ -101,13 +115,6 @@ condition_cs <- conceptSetExpression(condition_cs)
 condition_cs
 ```
 
-### Generatred cohort set
-
-
 ### Summarised result
 
-
 ### Compared result
-
-
-### Participants
