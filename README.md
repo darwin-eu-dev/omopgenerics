@@ -3,9 +3,6 @@
 
 # OMOPGenerics
 
-[![CRANstatus](https://www.r-pkg.org/badges/version/OMOPGenerics)](https://CRAN.R-project.org/package=OMOPGenerics)
-[![codecov.io](https://codecov.io/github/darwin-eu/OMOPGenerics/coverage.svg?branch=main)](https://app.codecov.io/github/darwin-eu/OMOPGenerics?branch=main)
-[![R-CMD-check](https://github.com/darwin-eu/OMOPGenerics/workflows/R-CMD-check/badge.svg)](https://github.com/darwin-eu/OMOPGenerics/actions)
 [![Lifecycle:Experimental](https://img.shields.io/badge/Lifecycle-Experimental-339999)](https://lifecycle.r-lib.org/articles/stages.html)
 
 The OMOPGenerics package provides definitions of core classes and
@@ -13,14 +10,6 @@ methods used by analytic pipelines that query the OMOP common data
 model.
 
 ## Installation
-
-You can install the CRAN version of the
-[OMOPGenerics](https://CRAN.R-project.org/package=OMOPGenerics) from
-CRAN:
-
-``` r
-install.packages("OMOPGenerics")
-```
 
 You can install the development version of OMOPGenerics from
 [GitHub](https://github.com/) with:
@@ -34,11 +23,6 @@ And load it using the library command:
 
 ``` r
 library(OMOPGenerics)
-#> 
-#> Attaching package: 'OMOPGenerics'
-#> The following object is masked from 'package:stats':
-#> 
-#>     aggregate
 ```
 
 ## Core classes and methods
