@@ -27,7 +27,7 @@
 # }
 # funsMethods <- c(
 #   "anti_join", "collapse", "count", "cross_join", "full_join", "group_by",
-#   "group_data", "inner_join", "intersect", "left_join", "nest_join",
+#   "inner_join", "intersect", "left_join", "nest_join",
 #   "right_join", "rowwise", "semi_join", "tally", "ungroup", "union",
 #   "union_all", "summarise"
 # )
@@ -101,21 +101,11 @@ full_join.cdm_table <- function(x, ...) {
 
 #' @export
 #' @importFrom dplyr group_by
-group_by.cdm_table <- function(x, ...) {
-  x <- keepClass(x)
-  res <- dplyr::group_by(x, ...)
+group_by.cdm_table <- function(.data, ..., .add, .drop) {
+  .data <- keepClass(.data)
+  res <- dplyr::group_by(.data = .data, ..., .add = .add, .drop = .drop)
   res <- restoreClass(res)
-  res <- restoreAttributes(res, keepAttributes(x))
-  return(res)
-}
-
-#' @export
-#' @importFrom dplyr group_data
-group_data.cdm_table <- function(x, ...) {
-  x <- keepClass(x)
-  res <- dplyr::group_data(x, ...)
-  res <- restoreClass(res)
-  res <- restoreAttributes(res, keepAttributes(x))
+  res <- restoreAttributes(res, keepAttributes(.data))
   return(res)
 }
 
@@ -171,11 +161,11 @@ right_join.cdm_table <- function(x, ...) {
 
 #' @export
 #' @importFrom dplyr rowwise
-rowwise.cdm_table <- function(x, ...) {
-  x <- keepClass(x)
-  res <- dplyr::rowwise(x, ...)
+rowwise.cdm_table <- function(data) {
+  data <- keepClass(data)
+  res <- dplyr::rowwise(data = data)
   res <- restoreClass(res)
-  res <- restoreAttributes(res, keepAttributes(x))
+  res <- restoreAttributes(res, keepAttributes(data))
   return(res)
 }
 
@@ -231,11 +221,11 @@ union_all.cdm_table <- function(x, ...) {
 
 #' @export
 #' @importFrom dplyr summarise
-summarise.cdm_table <- function(x, ...) {
-  x <- keepClass(x)
-  res <- dplyr::summarise(x, ...)
+summarise.cdm_table <- function(.data, ..., .by, .groups) {
+  .data <- keepClass(.data)
+  res <- dplyr::summarise(.data = .data, ..., .by = .by, .groups = .groups)
   res <- restoreClass(res)
-  res <- restoreAttributes(res, keepAttributes(x))
+  res <- restoreAttributes(res, keepAttributes(.data))
   return(res)
 }
 
