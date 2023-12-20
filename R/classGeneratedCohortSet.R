@@ -54,14 +54,14 @@ generatedCohortSet <- function(cohortRef,
   # populate
   if (is.null(cohortSetRef)) {
     cohortSetRef <- defaultCohortSet(cohortRef, overwrite)
-  } else if ("data.frame" %in% class(cohortSetRef)) {
+  } else if (!"cdm_table" %in% class(cohortSetRef)) {
     name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
     cdm2 <- insertTable(cdm = cdm, name = name, table = cohortSetRef, overwrite = overwrite)
     cohortSetRef <- cdm2[[name]]
   }
   if (is.null(cohortAttritionRef)) {
     cohortAttritionRef <- defaultCohortAttrition(cohortRef, cohortSetRef, overwrite)
-  } else if ("data.frame" %in% class(cohortAttritionRef)) {
+  } else if (!"cdm_table" %in% class(cohortAttritionRef)) {
     name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
     cdm2 <- insertTable(cdm = cdm, name = name, table = cohortAttritionRef, overwrite = overwrite)
     cohortAttritionRef <- cdm2[[name]]
@@ -268,7 +268,7 @@ defaultCohortAttrition <- function(cohort, set, overwrite) {
     compute(name = name, temporary = FALSE, overwrite = overwrite)
   return(x)
 }
-checkOverlap <- function(cohort) {
+checkOverlap <- function(cohort, call = parent.frame()) {
   x <- cohort |>
     dplyr::group_by(.data$cohort_definition_id, .data$subject_id) |>
     dplyr::arrange(.data$cohort_start_date) |>
@@ -279,20 +279,27 @@ checkOverlap <- function(cohort) {
     dplyr::collect()
   if (nrow(x) > 0){
     x5 <- x |>
+      dplyr::ungroup() |>
       dplyr::select(
         "cohort_definition_id", "subject_id", "cohort_start_date",
         "cohort_end_date", "next_cohort_start_date"
       ) |>
-      utils::head(5)
+      utils::head(5) |>
+      dplyr::glimpse() |>
+      print(width = Inf) |>
+      utils::capture.output()
     cli::cli_abort(
-      "There is overlap between entries in the cohort, {nrow(x)} overlaps
-      detected{ifelse(nrow(x)<=5, ':', ' first 5:')}",
-      utils::capture.output(print(x5, width = Inf))
+      message = c(
+        "There is overlap between entries in the cohort, {nrow(x)} overlaps
+        detected{ifelse(nrow(x)<=5, ':', ' first 5:')}",
+        x5[3:7]
+      ),
+      call = call
     )
   }
   return(invisible(TRUE))
 }
-checkNaCohort <- function(cohort) {
+checkNaCohort <- function(cohort, call = parent.frame()) {
   x <- cohort |>
     dplyr::select(
       "cohort_definition_id", "subject_id", "cohort_start_date",
@@ -302,6 +309,7 @@ checkNaCohort <- function(cohort) {
     dplyr::collect()
   if (nrow(x) > 0) {
     x <- x |>
+      dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
       tidyr::pivot_longer(dplyr::everything()) |>
       dplyr::filter(is.na(.data$value)) |>
       dplyr::pull("name") |>
@@ -309,12 +317,13 @@ checkNaCohort <- function(cohort) {
       paste0(collapse = ", ")
     cli::cli_abort(
       "Cohort can't have NA values, there are NA values in the following
-      columns: {x}"
+      columns: {x}",
+      call = call
     )
   }
   return(invisible(TRUE))
 }
-checkObservationPeriod <- function(cohort) {
+checkObservationPeriod <- function(cohort, call = parent.frame()) {
   cdm <- attr(cohort, "cdm_reference")
   if (is.null(cdm)) {
     cli::cli_abort("cdm_reference can not be NULL")
@@ -341,11 +350,9 @@ checkObservationPeriod <- function(cohort) {
     ) |>
     dplyr::collect()
   if (nrow(x) > 0) {
-    x5 <- x |> utils::head(5)
     cli::cli_abort(
-      "Some observations are not during observation period, {nrow(x)}
-      detected{ifelse(nrow(x)<=5, ':', ' first 5:')}",
-      utils::capture.output(print(x5, width = Inf))
+      message = "{nrow(x)} observations are not during observation period.",
+      call = call
     )
   }
   return(invisible(TRUE))

@@ -33,3 +33,8 @@ cdmTable <- function(table) {
   }
   return(table)
 }
+
+#' @export
+collect.cdm_table <- function(x, ...) {
+  removeClass(x, "cdm_table") |> dplyr::collect()
+}

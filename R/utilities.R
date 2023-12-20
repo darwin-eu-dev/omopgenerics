@@ -35,32 +35,6 @@ getCdmSource <- function(x) {
     return(attr(cdm, "cdm_source"))
   }
 }
-addResultId <- function(x, resultId) {
-  if (!is.null(resultId)) {
-    x <- x |>
-      dplyr::mutate("result_id" = .env$resultId) |>
-      dplyr::relocate("result_id")
-  }
-  return(x)
-}
-saveFile <- function(x, path, namePrefix, resultId, nam) {
-  readr::write_csv(
-    x = x, file = file.path(path, fileName(x, path, namePrefix, resultId, nam))
-  )
-}
-fileName <- function(x, path, namePrefix, resultId, nam) {
-  n <- nchar(namePrefix)
-  if (n > 0 & substr(namePrefix, n, n) != "_") {
-    namePrefix <- paste0(namePrefix, "_")
-  }
-  if (!is.null(resultId)) {
-    resultId <- paste0("_", resultId)
-  }
-  paste0(
-    namePrefix, nam, "_", paste0(unique(x$cdm_name), collapse = "_"), resultId,
-    ".csv"
-  )
-}
 getVocabularyVersion <- function(x) {
   vocabVersion <- NULL
   if ("vocabulary_version" %in% colnames(x[["vocabulary"]])) {

@@ -17,7 +17,6 @@ Imports:
     dbplyr,
     dplyr,
     glue,
-    readr,
     rlang,
     snakecase,
     stringr,
