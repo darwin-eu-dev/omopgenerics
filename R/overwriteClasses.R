@@ -101,9 +101,9 @@ full_join.cdm_table <- function(x, ...) {
 
 #' @export
 #' @importFrom dplyr group_by
-group_by.cdm_table <- function(.data, ..., .add, .drop) {
+group_by.cdm_table <- function(.data, ...) {
   .data <- keepClass(.data)
-  res <- dplyr::group_by(.data = .data, ..., .add = .add, .drop = .drop)
+  res <- dplyr::group_by(.data = .data, ...)
   res <- restoreClass(res)
   res <- restoreAttributes(res, keepAttributes(.data))
   return(res)
@@ -221,9 +221,9 @@ union_all.cdm_table <- function(x, ...) {
 
 #' @export
 #' @importFrom dplyr summarise
-summarise.cdm_table <- function(.data, ..., .by, .groups) {
+summarise.cdm_table <- function(.data, ...) {
   .data <- keepClass(.data)
-  res <- dplyr::summarise(.data = .data, ..., .by = .by, .groups = .groups)
+  res <- dplyr::summarise(.data = .data, ...)
   res <- restoreClass(res)
   res <- restoreAttributes(res, keepAttributes(.data))
   return(res)
