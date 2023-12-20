@@ -14,7 +14,7 @@
 \item{temporary}{Whether to store table temporarily (TRUE) or permanent
 (FALSE).}
 
-\item{overwrite}{Whether to overwrite previosly existing table with name
+\item{overwrite}{Whether to overwrite previously existing table with name
 same.}
 
 \item{...}{For compatibility (not used).}

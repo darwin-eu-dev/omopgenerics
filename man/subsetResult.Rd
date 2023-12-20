@@ -2,7 +2,7 @@
 % Please edit documentation in R/classSummarisedResult.R
 \name{subsetResult}
 \alias{subsetResult}
-\title{Subset a summaried_result or compared_result object to a certain result_type.}
+\title{Subset a summarised_result or compared_result object to a certain result_type.}
 \usage{
 subsetResult(result, resultType)
 }
@@ -15,5 +15,5 @@ subsetResult(result, resultType)
 A subsetted
 }
 \description{
-Subset a summaried_result or compared_result object to a certain result_type.
+Subset a summarised_result or compared_result object to a certain result_type.
 }

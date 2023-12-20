@@ -86,7 +86,7 @@ generatedCohortSet <- function(cohortRef,
 #' @param x `generated_cohort_set` object.
 #' @param ... Not used (for compatibility).
 #'
-#' @return A data frame with yhe `generated_cohort_set`
+#' @return A data frame with the `generated_cohort_set`
 #'
 #' @export
 #'

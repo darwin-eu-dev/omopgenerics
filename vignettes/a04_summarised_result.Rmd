@@ -21,7 +21,7 @@ A summarised result is a table that contains aggregated summary statistics (that
 A summarised result may also contain other aggregated results as attributes of the main result.
 
 ### Participants
-A summarised result may, as an optional attribute, contain a reference to the patients that informed the result. The participans will contain a "subject_id" column which can be used to identify individuals in the person table (or other tables in the cdm reference).
+A summarised result may, as an optional attribute, contain a reference to the patients that informed the result. The participants will contain a "subject_id" column which can be used to identify individuals in the person table (or other tables in the cdm reference).
 
 ## Exporting summarised result
 
