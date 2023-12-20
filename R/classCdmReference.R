@@ -399,5 +399,9 @@ requiredColumns <- function(table, version, type) {
 
 #' @export
 str.cdm_reference <- function(object, ...) {
-  utils::capture.output(print(object))
+  src <- getCdmSource(object)
+  mes <- glue::glue(
+    "A {attr(src, 'source_type')} cdm reference of {attr(src, 'source_name')} with {length(object)} tables: {paste0(names(object), collapse = ', ')}"
+  )
+  cat(mes, sep = "")
 }

@@ -93,8 +93,14 @@ test_that("test create cohort", {
   expect_no_error(cohort3 <- generatedCohortSet(cdm$cohort3, cohort_set3))
   expect_error(cohort4 <- generatedCohortSet(cdm$cohort3, cohort_set4))
   expect_error(cohort5 <- generatedCohortSet(cdm$cohort3, cohort_set5))
-  # expect_equal(settings(cohort2) |> unclass(), cohort_set2 |> unclass())
-  # expect_equal(settings(cohort3), cohort_set3)
+  x <- settings(cohort2) |> as.data.frame()
+  attr(x, "cdm_reference") <- NULL
+  attr(x, "tbl_name") <- NULL
+  expect_equal(x, cohort_set2 |> as.data.frame())
+  x <- settings(cohort3) |> as.data.frame()
+  attr(x, "cdm_reference") <- NULL
+  attr(x, "tbl_name") <- NULL
+  expect_equal(x, cohort_set3 |> as.data.frame())
 
   # check cohort attrition
   cohort_attrition1 <- dplyr::tibble(cohort_definition_id = 1)
@@ -120,9 +126,15 @@ test_that("test create cohort", {
   expect_no_error(cohort3 <- generatedCohortSet(cdm$cohort3, cohortAttritionRef = cohort_attrition3))
   expect_error(cohort4 <- generatedCohortSet(cdm$cohort3, cohortAttritionRef = cohort_attrition4))
   expect_error(cohort5 <- generatedCohortSet(cdm$cohort3, cohortAttritionRef = cohort_attrition5))
-  # TODO
-  # expect_equal(attrition(cohort2), cohort_attrition2)
-  # expect_equal(attrition(cohort3), cohort_attrition3)
+  x <- attrition(cohort2) |> as.data.frame()
+  attr(x, "cdm_reference") <- NULL
+  attr(x, "tbl_name") <- NULL
+  expect_equal(x, cohort_attrition2 |> as.data.frame())
+  x <- attrition(cohort3) |> as.data.frame()
+  attr(x, "cdm_reference") <- NULL
+  attr(x, "tbl_name") <- NULL
+  expect_equal(x, cohort_attrition3 |> as.data.frame())
+
 
   expect_true(is.integer(attrition(cohort2)$cohort_definition_id))
   expect_true(is.integer(attrition(cohort2)$number_records))
@@ -169,6 +181,78 @@ test_that("test create cohort", {
   expect_no_error(validateGeneratedCohortSet(cohort2))
   attr(cohort2, "cohort_set") <- NULL
   expect_error(validateGeneratedCohortSet(cohort2))
+
+  cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
+    cohort_definition_id = 1, subject_id = 1,
+    cohort_start_date = as.Date("2020-01-01"),
+    cohort_end_date = as.Date("2020-01-10")
+  ))
+
+  # no tbl_name
+  x <- cdm$cohort1
+  attr(x, "tbl_name") <- NULL
+  expect_error(generatedCohortSet(cohortRef = x))
+
+  # no cdm_reference
+  x <- cdm$cohort1
+  attr(x, "cdm_reference") <- NULL
+  expect_error(generatedCohortSet(cohortRef = x))
+
+  # different classes
+  set <- defaultCohortSet(cdm$cohort1)
+  set <- addClass(set, "weird_class")
+  expect_error(generatedCohortSet(cohortRef = cdm$cohort1, cohortSetRef = set))
+
+  # no snake name
+  set <- defaultCohortSet(cdm$cohort1) |>
+    dplyr::mutate("cohort_name" = "COHORT 1")
+  expect_error(generatedCohortSet(cohortRef = cdm$cohort1, cohortSetRef = set))
+
+  # wrong naming
+  cdm <- insertTable(
+    cdm = cdm, name = "cohort1_set", table = defaultCohortSet(cdm$cohort1)
+  )
+  expect_no_error(generatedCohortSet(
+    cohortRef = cdm$cohort1, cohortSetRef = cdm$cohort1_set
+  ))
+  cdm <- insertTable(
+    cdm = cdm, name = "cohort1_setting", table = defaultCohortSet(cdm$cohort1)
+  )
+  expect_error(generatedCohortSet(
+    cohortRef = cdm$cohort1, cohortSetRef = cdm$cohort1_setting
+  ))
+  cdm <- insertTable(
+    cdm = cdm, name = "my_table",
+    table = defaultCohortAttrition(cdm$cohort1, defaultCohortSet(cdm$cohort1))
+  )
+  expect_error(generatedCohortSet(
+    cohortRef = cdm$cohort1, cohortSetRef = cdm$cohort1_setting,
+    cohortAttritionRef = cdm$my_table
+  ))
+
+  # test NA
+  cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
+    cohort_definition_id = 1, subject_id = 1,
+    cohort_start_date = as.Date(NA),
+    cohort_end_date = as.Date("2020-01-10")
+  ))
+  expect_error(generatedCohortSet(cohortRef = cdm$cohort1))
+
+  # not in observation
+  cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
+    cohort_definition_id = 1, subject_id = 1,
+    cohort_start_date = as.Date("1020-01-01"),
+    cohort_end_date = as.Date("1020-01-10")
+  ))
+  expect_error(generatedCohortSet(cohortRef = cdm$cohort1))
+
+  # test overlap
+  cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
+    cohort_definition_id = 1, subject_id = 1,
+    cohort_start_date = as.Date(c("2020-01-01", "2020-01-10")),
+    cohort_end_date = as.Date(c("2020-01-10", "2020-01-25"))
+  ))
+  expect_error(generatedCohortSet(cohortRef = cdm$cohort1))
 
 })
 
