@@ -163,7 +163,12 @@ test_that("test create cohort", {
   )
 
   # collect
-  expect_equal(cohort, dplyr::collect(cohort))
+  x <- dplyr::collect(cohort)
+  expect_false("cdm_table" %in% class(x))
+  expect_false("cdm_table" %in% attr(x, "cohort_set"))
+  expect_false("cdm_table" %in% attr(x, "cohort_attrition"))
+  # not sure about that because it can not be a cohort if it is in a cdm
+  expect_true("generated_cohort_set" %in% class(x))
 
   # classes
   expect_no_error(cohort <- generatedCohortSet(cdm$cohort3, cohort_set2))
