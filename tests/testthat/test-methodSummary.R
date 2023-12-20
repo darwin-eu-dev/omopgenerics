@@ -6,15 +6,79 @@ test_that("summary a cdm reference", {
         race_concept_id = 0, ethnicity_concept_id = 0
       ),
       "observation_period" = dplyr::tibble(
-        observation_period_id = 1, person_id = 1,
-        observation_period_start_date = as.Date("2000-01-01"),
-        observation_period_end_date = as.Date("2025-12-31"),
+        observation_period_id = 1:2, person_id = 1,
+        observation_period_start_date = as.Date(c("2000-01-01", "2030-01-01")),
+        observation_period_end_date = as.Date(c("2025-12-31", "2032-01-01")),
         period_type_concept_id = 0
       )
     ),
     cdmName = "mock"
   )
   expect_no_error(summary(cdm))
+  cdm <- insertTable(cdm, "cdm_source", dplyr::tibble(cdm_source_name = "test"))
+  expect_no_error(x <- summary(cdm))
+  expect_equal(
+    x$estimate_value[x$estimate_name == "source_name"],
+    cdm$cdm_source |> dplyr::pull("cdm_source_name")
+  )
+  cdm <- insertTable(cdm, "cdm_source", dplyr::tibble(
+    cdm_source_name = "test", vocabulary_version = 5.3
+  ))
+  expect_no_error(x <- summary(cdm))
+  expect_equal(
+    x$estimate_value[x$estimate_name == "version" & x$variable_name == "vocabulary"],
+    cdm$cdm_source |> dplyr::pull("vocabulary_version") |> as.character()
+  )
+  cdm <- insertTable(cdm, "cdm_source", dplyr::tibble(
+    cdm_source_name = "test", cdm_version = 5.3
+  ))
+  expect_no_error(x <- summary(cdm))
+  expect_equal(
+    x$estimate_value[x$estimate_name == "version" & x$variable_name == "cdm"],
+    cdm$cdm_source |> dplyr::pull("cdm_version") |> as.character()
+  )
+  cdm <- insertTable(cdm, "cdm_source", dplyr::tibble(
+    cdm_source_name = "test", cdm_version = 5.3, cdm_holder = "me",
+    vocabulary_version = "5.3.8 AUG 2022", cdm_release_date = Sys.Date(),
+    source_description = "this is mock data qith only 1 individual",
+    source_documentation_reference = "www.omopgenerics.com"
+  ))
+  expect_no_error(x <- summary(cdm))
+  expt <- dplyr::tibble(
+    variable_name = c(
+      "snapshot_date", "person_count", "observation_period_count",
+      "cdm", "vocabulary", rep("cdm", 5), "observation_period_start_date",
+      "observation_period_end_date"
+    ),
+    estimate_name = c(
+      "value", "count", "count", "source_name", "version", "version",
+      "holder_name", "release_date", "description", "documentation_reference",
+      "min", "max"
+    ),
+    column  = c(
+      rep(NA_character_, 3), "cdm_source_name", "vocabulary_version",
+      "cdm_version", "cdm_holder", "cdm_release_date", "source_description",
+      "source_documentation_reference", rep(NA_character_, 2)
+    ),
+    value = c(
+      as.character(Sys.Date()), "1", "2", rep(NA_character_, 7),
+      "2000-01-01", "2032-01-01"
+    )
+  )
+  for (k in seq_len(nrow(expt))) {
+    if (is.na(expt$column[k])) {
+      value <- expt$value[k]
+    } else {
+      value <- cdm$cdm_source |>
+        dplyr::pull(dplyr::all_of(expt$column[k])) |>
+        as.character()
+    }
+    expect_equal(
+      x$estimate_value[x$estimate_name == expt$estimate_name[k] & x$variable_name == expt$variable_name[k]],
+      value
+    )
+  }
+
 })
 
 test_that("summary a generated cohort set", {
