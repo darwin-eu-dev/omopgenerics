@@ -11,7 +11,8 @@ model.
 
 ## Installation
 
-You can install the development version of OMOPGenerics from [GitHub](https://github.com/) with:
+You can install the development version of OMOPGenerics from
+[GitHub](https://github.com/) with:
 
 ``` r
 install.packages("remotes")
@@ -22,11 +23,6 @@ And load it using the library command:
 
 ``` r
 library(omopgenerics)
-#> 
-#> Attaching package: 'omopgenerics'
-#> The following object is masked from 'package:stats':
-#> 
-#>     aggregate
 ```
 
 ## Core classes and methods
