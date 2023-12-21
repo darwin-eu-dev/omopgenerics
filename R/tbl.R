@@ -21,5 +21,6 @@ tbl.cdm_reference <- function(src, ...) {
   src <- getCdmSource(src)
   x <- dplyr::tbl(src = src, ...)
   attr(x, "cdm_reference") <- cdm
+  x <- cdmTable(x)
   return(x)
 }
