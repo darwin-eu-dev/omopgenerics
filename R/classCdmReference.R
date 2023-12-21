@@ -78,6 +78,10 @@ getVersion <- function(cdm) {
     cdm[["cdm_source"]] |> dplyr::pull("cdm_version"),
     error = function(e) {"5.3"}
   )
+  if (substr(version, 1, 1) == "v") {
+    version <- substr(version, 2, nchar(version))
+  }
+  version <- substr(version, 1, 3)
   return(version)
 }
 newCdmReference <- function(cdmTables, achillesTables, cdmName, cdmVersion, cdmSource) {
