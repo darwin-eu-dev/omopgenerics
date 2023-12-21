@@ -72,9 +72,10 @@ validateCdmSource <- function(src) {
   validateX(x = cdm[[name]], name = name, fun = "insertTable")
 
   # check inserted table
-  attr(table, "tbl_name") <- name
-  attr(table, "cdm_reference") <- cdm
-  if (!identical(unclass(dplyr::collect(cdm[[name]])), unclass(table))) {
+  x <- cdm[[name]] |> dplyr::collect() |> unclass()
+  attr(x, "cdm_reference") <- NULL
+  attr(x, "tbl_name") <- NULL
+  if (!identical(x, unclass(table))) {
     cli::cli_abort("The inserted table was not the same than the original one.")
   }
 
