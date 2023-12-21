@@ -6,7 +6,7 @@
 \alias{omopgenerics-package}
 \title{omopgenerics: Methods and Classes for the OMOP Common Data Model}
 \description{
-The omopgenerics package provides definitions of core classes and methods used by analytic pipelines that query the OMOP common data model.
+Provides definitions of core classes and methods used by analytic pipelines that query the OMOP common data model.
 }
 \seealso{
 Useful links:
