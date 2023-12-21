@@ -19,6 +19,9 @@
 #' @param object A cdm reference object.
 #' @param ... For compatibility (not used).
 #'
+#' @return A summarised_result object with a summary of the data contained in
+#' the cdm.
+#'
 #' @export
 #'
 summary.cdm_reference <- function(object, ...) {
@@ -161,6 +164,8 @@ summary.cdm_reference <- function(object, ...) {
 #'
 #' @param object A generated cohort set object.
 #' @param ... For compatibility (not used).
+#'
+#' @return A summarised_result object with a summary of a generated_cohort_set.
 #'
 #' @export
 #'

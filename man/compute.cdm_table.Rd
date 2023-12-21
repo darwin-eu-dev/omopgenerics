@@ -19,6 +19,9 @@ same.}
 
 \item{...}{For compatibility (not used).}
 }
+\value{
+Reference to a table in the cdm
+}
 \description{
 Store results in a table.
 }

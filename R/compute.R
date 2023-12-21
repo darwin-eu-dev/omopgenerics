@@ -24,6 +24,8 @@
 #' same.
 #' @param ... For compatibility (not used).
 #'
+#' @return Reference to a table in the cdm
+#'
 #' @export
 #' @importFrom dplyr compute
 compute.cdm_table <- function(x,

@@ -11,6 +11,9 @@
 
 \item{...}{For compatibility (not used).}
 }
+\value{
+A summarised_result object with a summary of a generated_cohort_set.
+}
 \description{
 Summary a generated cohort set
 }

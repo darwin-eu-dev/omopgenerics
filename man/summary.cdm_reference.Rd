@@ -11,6 +11,10 @@
 
 \item{...}{For compatibility (not used).}
 }
+\value{
+A summarised_result object with a summary of the data contained in
+the cdm.
+}
 \description{
 Summary a cdm reference
 }
