@@ -31,7 +31,7 @@ insertTable <- function(cdm, name, table, overwrite = TRUE) {
 }
 
 #' @export
-insertTable.cdm_reference <- function(cdm, name, table, overwrite) {
+insertTable.cdm_reference <- function(cdm, name, table, overwrite = TRUE) {
   value <- insertTable(
     cdm = getCdmSource(cdm), name = name, table = table, overwrite = overwrite
   )

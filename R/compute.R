@@ -43,7 +43,10 @@ compute.cdm_table <- function(x,
 }
 
 #' @export
-compute.local_cdm <- function(x, name, temporary, ...) {
+compute.local_cdm <- function(x,
+                              name = uniqueTableName(),
+                              temporary = TRUE,
+                              ...) {
   if (temporary) {
     name <- NA_character_
   }

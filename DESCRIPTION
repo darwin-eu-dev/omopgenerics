@@ -24,8 +24,8 @@ Authors@R: c(
     ),
     person(
         "Marta", "Alcalde-Herraiz", 
-        email = "marta.alcaldeherraiz@ndorms.ox.ac.uk", 
-        role = c("ctb"), comment = c(ORCID = "0009-0002-4405-1814")
+        email = "marta.alcaldeherraiz@ndorms.ox.ac.uk", role = c("ctb"), 
+        comment = c(ORCID = "0009-0002-4405-1814")
     )
     )
 Description: The omopgenerics package provides definitions of core classes and 
