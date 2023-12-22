@@ -72,13 +72,14 @@ assertCharacter <- function(x,
 
   # assert null
   if (assertNull(x, null, errorMessage, call)) {
-    # no NA vector
-    xNoNa <- x[!is.na(x)]
 
     # assert class
     if (!is.character(x)) {
       cli::cli_abort(errorMessage, call = call)
     }
+
+    # no NA vector
+    xNoNa <- x[!is.na(x)]
 
     # assert length
     assertLength(x, length, errorMessage, call)
@@ -122,13 +123,14 @@ assertList <- function(x,
 
   # assert null
   if (assertNull(x, null, errorMessage, call)) {
-    # no NA vector
-    xNoNa <- x[!is.na(x)]
 
     # assert class
     if (!is.list(x)) {
       cli::cli_abort(errorMessage, call = call)
     }
+
+    # no NA vector
+    xNoNa <- x[!is.na(x)]
 
     # assert length
     assertLength(x, length, errorMessage, call)
@@ -175,13 +177,14 @@ assertChoice <- function(x,
 
   # assert null
   if (assertNull(x, null, errorMessage, call)) {
-    # no NA vector
-    xNoNa <- x[!is.na(x)]
 
     # assert class
     if (!all(class(x) == class(choices))) {
       cli::cli_abort(errorMessage, call = call)
     }
+
+    # no NA vector
+    xNoNa <- x[!is.na(x)]
 
     # assert length
     assertLength(x, length, errorMessage, call)
@@ -263,13 +266,14 @@ assertNumeric <- function(x,
 
   # assert null
   if (assertNull(x, null, errorMessage, call)) {
-    # no NA vector
-    xNoNa <- x[!is.na(x)]
 
     # assert class
     if (!is.numeric(x)) {
       cli::cli_abort(errorMessage, call = call)
     }
+
+    # no NA vector
+    xNoNa <- x[!is.na(x)]
 
     # assert integerish
     if (integerish & base::length(xNoNa) > 0) {
