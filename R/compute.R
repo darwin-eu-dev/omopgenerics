@@ -38,9 +38,11 @@ compute.cdm_table <- function(x,
     cli::cli_abort("x does not com from a cdm object.")
   }
   src <- getCdmSource(x)
+  x <- removeClass(x, "cdm_table")
   x <- addClass(x, class(src))
   x <- dplyr::compute(x = x, name = name, temporary = temporary, overwrite = overwrite)
   x <- removeClass(x, class(src))
+  x <- addClass(x, "cdm_table")
   return(x)
 }
 
