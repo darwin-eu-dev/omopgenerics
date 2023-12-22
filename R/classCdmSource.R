@@ -63,7 +63,6 @@ validateCdmSource <- function(src) {
         period_type_concept_id = 0
       )
     ),
-    cdmName = "mock",
     cdmSource = src
   )
 

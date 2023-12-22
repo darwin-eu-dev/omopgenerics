@@ -1,5 +1,5 @@
 test_that("test create cohort", {
-  src <- localSource("test")
+  src <- localSource("mock")
   cdmTables <- list(
     "person" = dplyr::tibble(
       person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
@@ -12,7 +12,7 @@ test_that("test create cohort", {
       period_type_concept_id = 0
     )
   )
-  cdm <- cdmReference(cdmTables = cdmTables, cdmName = "mock", cdmSource = src)
+  cdm <- cdmReference(cdmTables = cdmTables, cdmSource = src)
   cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
     cohort_definition_id = 1, subject_id = 1,
     cohort_start_date = as.Date("2020-01-01"),

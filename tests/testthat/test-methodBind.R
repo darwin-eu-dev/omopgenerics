@@ -43,8 +43,7 @@ test_that("bind a cohort_set", {
     cohortTables = list(
       "cohort1" = cohort1, "cohort2" = cohort2, "cohort3" = cohort3,
       "cohort4" = cohort4
-    ),
-    cdmName = "mock"
+    )
   )
   expect_no_error(newcdm <- bind(cdm$cohort1, cdm$cohort2, name = "new_cohort"))
   expect_true("new_cohort" %in% names(newcdm))

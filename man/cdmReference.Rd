@@ -8,7 +8,6 @@ cdmReference(
   cdmTables,
   cohortTables = list(),
   achillesTables = list(),
-  cdmName,
   cdmSource = NULL
 )
 }
@@ -19,8 +18,6 @@ cdmReference(
 objects.}
 
 \item{achillesTables}{List of tables that contain achilles.}
-
-\item{cdmName}{Name of the cdm.}
 
 \item{cdmSource}{Source of the cdm object.}
 }

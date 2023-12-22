@@ -20,25 +20,23 @@
 #' @param cohortTables List of tables that contains `generated_cohort_set`
 #' objects.
 #' @param achillesTables List of tables that contain achilles.
-#' @param cdmName Name of the cdm.
 #' @param cdmSource Source of the cdm object.
 #'
 #' @return A `cdm_reference` object.
 #'
 #' @export
 #'
-cdmReference <- function(cdmTables, cohortTables = list(), achillesTables = list(), cdmName, cdmSource = NULL) {
+cdmReference <- function(cdmTables, cohortTables = list(), achillesTables = list(), cdmSource = NULL) {
 
   # inputs
   assertList(cdmTables, named = TRUE)
   assertList(cohortTables, named = TRUE)
   assertList(achillesTables, named = TRUE)
-  assertCharacter(cdmName, length = 1)
   assertClass(cdmSource, "cdm_source", null = TRUE)
 
   if (is.null(cdmSource)){
     if ("tbl_df" %in% class(cdmTables[[1]])) {
-      cdmSource <- localSource(cdmName)
+      cdmSource <- localSource("unknown")
     } else {
       cli::cli_abort("cdmSource must be provided, create a cdmSource with the cdmSource() function.")
     }
@@ -49,7 +47,7 @@ cdmReference <- function(cdmTables, cohortTables = list(), achillesTables = list
 
   # constructor
   cdm <- newCdmReference(
-    cdmTables = cdmTables, achillesTables = achillesTables, cdmName = cdmName,
+    cdmTables = cdmTables, achillesTables = achillesTables,
     cdmVersion = cdmVersion, cdmSource = cdmSource
   )
 
@@ -84,18 +82,17 @@ getVersion <- function(cdm) {
   version <- substr(version, 1, 3)
   return(version)
 }
-newCdmReference <- function(cdmTables, achillesTables, cdmName, cdmVersion, cdmSource) {
+newCdmReference <- function(cdmTables, achillesTables, cdmVersion, cdmSource) {
   cdm <- c(cdmTables, achillesTables)
   class(cdm) <- "cdm_reference"
   attr(cdm, "cdm_source") <- cdmSource
-  attr(cdm, "cdm_name") <- cdmName
   attr(cdm, "cdm_version") <- cdmVersion
   class(cdm) <- "cdm_reference"
   return(cdm)
 }
 validateCdmReference <- function(cdm) {
   # assert name
-  assertCharacter(attr(cdm, "cdm_name"), length = 1)
+  assertCharacter(cdmName(cdm), length = 1)
 
   # assert version
   cdmVersion <- attr(cdm, "cdm_version")
@@ -188,7 +185,9 @@ checkColumnsCdm <- function(table, nm, required, call = parent.frame()) {
 #'
 cdmName <- function(cdm) {
   assertClass(cdm, "cdm_reference")
-  attr(cdm, "cdm_name")
+  src <- getCdmSource(cdm)
+  assertClass(src, "cdm_source")
+  attr(src, "source_name")
 }
 
 #' Version of a cdm_reference.

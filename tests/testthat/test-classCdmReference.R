@@ -1,5 +1,5 @@
 test_that("test cdm_reference", {
-  src <- localSource("test")
+  src <- localSource("mock")
   cdmTables <- list(
     "person" = dplyr::tibble(
       person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
@@ -13,9 +13,7 @@ test_that("test cdm_reference", {
     )
   )
 
-  expect_no_error(cdm <- cdmReference(
-    cdmTables = cdmTables, cdmName = "mock", cdmSource = src
-  ))
+  expect_no_error(cdm <- cdmReference(cdmTables = cdmTables, cdmSource = src))
 
   expect_snapshot(cdm)
 
@@ -23,35 +21,21 @@ test_that("test cdm_reference", {
   expect_true("cdm_reference" %in% names(attributes(cdm$person)))
   expect_true("cdm_reference" %in% names(attributes(cdm[["person"]])))
 
-  expect_error(cdmReference(
-    cdmTables = cdmTables, cdmName = 1, cdmSource = src
-  ))
+  expect_error(cdmReference(cdmTables = cdmTables["person"], cdmSource = src))
 
-  expect_error(cdmReference(
-    cdmTables = cdmTables["person"], cdmName = "mock", cdmSource = src
-  ))
-
-  expect_error(cdmReference(
-    cdmTables = list(), cdmName = "mock", cdmSource = src
-  ))
+  expect_error(cdmReference(cdmTables = list(), cdmSource = src))
 
   cdmUpper <- cdmTables
   names(cdmUpper) <- toupper(names(cdmUpper))
-  expect_error(cdmReference(
-    cdmTables = cdmUpper, cdmName = "mock", cdmSource = src
-  ))
+  expect_error(cdmReference(cdmTables = cdmUpper, cdmSource = src))
 
   cdmTables$person <- cdmTables$person |>
     dplyr::rename("PERSON_ID" = "person_id")
-  expect_error(cdmReference(
-    cdmTables = cdmTables, cdmName = "mock", cdmSource = src
-  ))
+  expect_error(cdmReference(cdmTables = cdmTables, cdmSource = src))
 
   cdmTables$person <- cdmTables$person |>
     dplyr::select(-"PERSON_ID")
-  expect_error(cdmReference(
-    cdmTables = cdmTables, cdmName = "mock", cdmSource = src
-  ))
+  expect_error(cdmReference(cdmTables = cdmTables, cdmSource = src))
 
 })
 

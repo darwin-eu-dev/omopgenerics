@@ -11,8 +11,7 @@ test_that("summary a cdm reference", {
         observation_period_end_date = as.Date(c("2025-12-31", "2032-01-01")),
         period_type_concept_id = 0
       )
-    ),
-    cdmName = "mock"
+    )
   )
   expect_no_error(summary(cdm))
   cdm <- insertTable(cdm, "cdm_source", dplyr::tibble(cdm_source_name = "test"))
@@ -102,8 +101,7 @@ test_that("summary a generated cohort set", {
         cohort_start_date = as.Date("2010-01-01"),
         cohort_end_date = as.Date("2010-01-05")
       )
-    ),
-    cdmName = "mock"
+    )
   )
   expect_no_error(summary(cdm$cohort1))
 })

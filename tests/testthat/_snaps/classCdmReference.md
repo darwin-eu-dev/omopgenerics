@@ -3,7 +3,7 @@
     Code
       cdm
     Output
-      # OMOP CDM reference (local) of test
+      # OMOP CDM reference (local) of mock
       
       Tables: person, observation_period
 
