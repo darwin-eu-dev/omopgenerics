@@ -293,6 +293,39 @@ print.cdm_reference <- function(x, ...) {
   invisible(x)
 }
 
+#' Retrieves the cdm reference into a local cdm.
+#'
+#' @param x A cdm_reference object.
+#' @param ... For compatibility only, not used.
+#'
+#' @export
+#' @importFrom dplyr collect
+#'
+collect.cdm_reference <- function(x, ...) {
+  name <- cdmName(cdm)
+  x <- unclass(x)
+  tables <- lapply(x, dplyr::collect)
+  cdmTables <- list()
+  cohortTables <- list()
+  achillesTables <- list()
+  for (k in seq_along(tables)) {
+    xn <- tables[k]
+    if (inherits(xn[[1]], "generated_cohort_set")) {
+      cohortTables <- c(cohortTables, xn)
+    } else if (names(xn) %in% omopgenerics::achillesTables()) {
+      achillesTables <- c(achillesTables, xn)
+    } else {
+      cdmTables <- c(cdmTables, xn)
+    }
+  }
+  src <- localSource(name = name)
+  cdm <- cdmReference(
+    cdmTables = cdmTables, cohortTables = cohortTables,
+    achillesTables = achillesTables, cdmSource = src
+  )
+  return(cdm)
+}
+
 #' Standard tables that a cdm reference can contain in the OMOP Common Data
 #' Model.
 #'
