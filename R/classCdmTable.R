@@ -38,3 +38,14 @@ cdmTable <- function(table) {
 collect.cdm_table <- function(x, ...) {
   removeClass(x, "cdm_table") |> dplyr::collect()
 }
+
+#' @export
+`attr<-.cdm_table` <- function(x, which, value) {
+  cl <- class(x)
+  attr(x = value, which = "cdm_reference") <- NULL
+  x <- removeClass(x, "cdm_table")
+  attr(x = x, which = which) <- value
+  class(x) <- cl
+  return(x)
+}
+

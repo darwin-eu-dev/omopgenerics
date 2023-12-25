@@ -18,6 +18,8 @@
 #'
 #' @param name Name of the local cdm.
 #'
+#' @export
+#'
 localSource <- function(name) {
   assertCharacter(name, length = 1, minNumCharacter = 1)
   source <- NA
