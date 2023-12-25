@@ -38,3 +38,8 @@ cdmTable <- function(table) {
 collect.cdm_table <- function(x, ...) {
   removeClass(x, "cdm_table") |> dplyr::collect()
 }
+
+noReference <- function(x) {
+  attr(x, "cdm_reference") <- NULL
+  return(x)
+}
