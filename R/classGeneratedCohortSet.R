@@ -104,8 +104,8 @@ collect.generated_cohort_set <- function(x, ...) {
 constructGeneratedCohortSet <- function(cohortRef,
                                         cohortSetRef,
                                         cohortAttritionRef) {
-  attr(cohortRef, "cohort_set") <- cohortSetRef
-  attr(cohortRef, "cohort_attrition") <- cohortAttritionRef
+  attr(cohortRef, "cohort_set") <- noReference(cohortSetRef)
+  attr(cohortRef, "cohort_attrition") <- noReference(cohortAttritionRef)
   cohortRef <- addClass(cohortRef, c("generated_cohort_set", "GeneratedCohortSet"))
   return(cohortRef)
 }
