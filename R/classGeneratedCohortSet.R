@@ -34,38 +34,15 @@ generatedCohortSet <- function(cohortRef,
                                overwrite = TRUE) {
   # initial checks
   assertClass(cohortRef, "cdm_table")
-  assertClass(cohortSetRef, "tbl", null = TRUE)
+
   assertClass(cohortAttritionRef, "tbl", null = TRUE)
   assertChoice(overwrite, choices = c(TRUE, FALSE), length = 1)
 
-  # comes from a cdm
-  if (!"cdm_reference" %in% names(attributes(cohortRef))) {
-    cli::cli_abort(
-      "The cohort does not come from a cdm object, please insert it with
-      insertTable."
-    )
-  }
-  if (!"tbl_name" %in% names(attributes(cohortRef))) {
-    cli::cli_abort("Table was not correctly read/inserted as does not have attribute `tbl_name`. Is it a permanent table?")
-  }
-  cdm <- attr(cohortRef, "cdm_reference")
-  cohortName <- attr(cohortRef, "tbl_name")
-
   # populate
-  if (is.null(cohortSetRef)) {
-    cohortSetRef <- defaultCohortSet(cohortRef, overwrite)
-  } else if (!"cdm_table" %in% class(cohortSetRef)) {
-    name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
-    cdm2 <- insertTable(cdm = cdm, name = name, table = cohortSetRef, overwrite = overwrite)
-    cohortSetRef <- cdm2[[name]]
-  }
-  if (is.null(cohortAttritionRef)) {
-    cohortAttritionRef <- defaultCohortAttrition(cohortRef, cohortSetRef, overwrite)
-  } else if (!"cdm_table" %in% class(cohortAttritionRef)) {
-    name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
-    cdm2 <- insertTable(cdm = cdm, name = name, table = cohortAttritionRef, overwrite = overwrite)
-    cohortAttritionRef <- cdm2[[name]]
-  }
+  cohortSetRef <- populateCohortSet(cohortRef, cohortSetRef, overwrite)
+  cohortAttritionRef <- populateCohortAttrition(
+    cohortRef, cohortSetRef, cohortAttritionRef, overwrite
+  )
 
   # constructor
   cohort <- constructGeneratedCohortSet(
@@ -104,9 +81,12 @@ collect.generated_cohort_set <- function(x, ...) {
 constructGeneratedCohortSet <- function(cohortRef,
                                         cohortSetRef,
                                         cohortAttritionRef) {
-  attr(cohortRef, "cohort_set") <- noReference(cohortSetRef)
-  attr(cohortRef, "cohort_attrition") <- noReference(cohortAttritionRef)
-  cohortRef <- addClass(cohortRef, c("generated_cohort_set", "GeneratedCohortSet"))
+  cohortRef <- structure(
+    .Data = cohortRef,
+    "cohort_set" = noReference(cohortSetRef),
+    "cohort_attrition" = noReference(cohortAttritionRef)
+  ) |>
+    addClass(c("generated_cohort_set", "GeneratedCohortSet"))
   return(cohortRef)
 }
 validateGeneratedCohortSet <- function(cohort) {
@@ -123,15 +103,30 @@ validateGeneratedCohortSet <- function(cohort) {
   cohort_set <- attr(cohort, "cohort_set")
   cohort_attrition <- attr(cohort, "cohort_attrition")
 
+  # assertClass
+  assertClass(cohort, "cdm_table")
+  assertClass(cohort_set, "cdm_table")
+  assertClass(cohort_attrition, "cdm_table")
+
   # check name
-  assertCharacter(attr(cohort, "tbl_name"), length = 1, na = TRUE)
-  assertCharacter(attr(cohort_set, "tbl_name"), length = 1, na = TRUE)
-  assertCharacter(attr(cohort_attrition, "tbl_name"), length = 1, na = TRUE)
+  assertCharacter(getTableName(cohort), length = 1, na = TRUE)
+  assertCharacter(getTableName(cohort_set), length = 1, na = TRUE)
+  assertCharacter(getTableName(cohort_attrition), length = 1, na = TRUE)
   consistentNaming(
-    cohortName = attr(cohort, "tbl_name"),
-    cohortSetName = attr(cohort_set, "tbl_name"),
-    cohortAttritionName = attr(cohort_attrition, "tbl_name")
+    cohortName = getTableName(cohort),
+    cohortSetName = getTableName(cohort_set),
+    cohortAttritionName = getTableName(cohort_attrition)
   )
+
+  # check source
+  srcCohort <- getTableSource(cohort)
+  srcCohortSet <- getTableSource(cohort_set)
+  srcCohortAttrition <- getTableSource(cohort_attrition)
+  if (!equal(srcCohort, srcCohortSet, srcCohortAttrition)) {
+    cli::cli_abort(
+      "The source must be the same for cohort, cohort_set and cohort_attrition."
+    )
+  }
 
   # assert columns
   checkColumnsCohort <- function(x, nam) {
@@ -200,7 +195,7 @@ validateGeneratedCohortSet <- function(cohort) {
   # check within observation period
   checkObservationPeriod(cohort)
 
-  # cehck overlap
+  # check overlap
   checkOverlap(cohort)
 
   return(cohort)
@@ -251,7 +246,8 @@ defaultCohortAttrition <- function(cohort, set, overwrite) {
     ) |>
     dplyr::left_join(
       set |> dplyr::select("cohort_definition_id"),
-      by = "cohort_definition_id"
+      by = "cohort_definition_id",
+      copy = TRUE
     ) |>
     dplyr::mutate(
       "number_records" = dplyr::if_else(
@@ -375,4 +371,39 @@ consistentNaming <- function(cohortName, cohortSetName, cohortAttritionName) {
     }
   }
   return(invisible(TRUE))
+}
+populateCohortSet <- function(cohortRef, cohortSetRef, overwrite) {
+  if (is.null(cohortSetRef)) {
+    cohortSetRef <- defaultCohortSet(cohortRef, overwrite)
+  } else if (!"cdm_table" %in% class(cohortSetRef)) {
+    cohortName <- getTableName(cohortRef)
+    assertClass(cohortSetRef, "data.frame", null = TRUE)
+    cohortSetRef <- dplyr::as_tibble(cohortSetRef)
+    name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
+    cohortSetRef <- insertTable(
+      cdm = getTableSource(cohortRef), name = name, table = cohortSetRef,
+      overwrite = overwrite
+    )
+  }
+  return(cohortSetRef)
+}
+populateCohortAttrition <- function(cohortRef,
+                                    cohortSetRef,
+                                    cohortAttritionRef,
+                                    overwrite) {
+  if (is.null(cohortAttritionRef)) {
+    cohortAttritionRef <- defaultCohortAttrition(
+      cohortRef, cohortSetRef, overwrite
+    )
+  } else if (!"cdm_table" %in% class(cohortAttritionRef)) {
+    cohortName <- getTableName(cohortRef)
+    assertClass(cohortAttritionRef, "data.frame", null = TRUE)
+    cohortAttritionRef <- dplyr::as_tibble(cohortAttritionRef)
+    name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
+    cohortAttritionRef <- insertTable(
+      cdm = getTableSource(cohortRef), name = name, table = cohortAttritionRef,
+      overwrite = overwrite
+    )
+  }
+  return(cohortAttritionRef)
 }

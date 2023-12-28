@@ -224,15 +224,16 @@ union_all.cdm_table <- function(x, ...) {
 summarise.cdm_table <- function(.data, ...) {
   .data <- keepClass(.data)
   res <- dplyr::summarise(.data = .data, ...)
-  res <- restoreClass(res)
+  res <- restoreClass(res, cl)
   res <- restoreAttributes(res, keepAttributes(.data))
   return(res)
 }
 
 keepAttributes <- function(x) {
   list(
-    cdm_reference = attr(x, "cdm_reference"),
-    tbl_name = attr(x, "tbl_name")
+    tbl_source = getTableSource(x),
+    tbl_name = getTableName(x),
+    cdm_reference = getCdmReference(x)
   )
 }
 keepClass <- function(x) {

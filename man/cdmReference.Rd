@@ -4,22 +4,13 @@
 \alias{cdmReference}
 \title{\code{cdm_reference} objects constructor}
 \usage{
-cdmReference(
-  cdmTables,
-  cohortTables = list(),
-  achillesTables = list(),
-  cdmSource = NULL
-)
+cdmReference(tables, cdmName)
 }
 \arguments{
-\item{cdmTables}{List of standard tables in the OMOP Common Data Model.}
+\item{tables}{List of tables that are part of the OMOP Common Data Model
+reference.}
 
-\item{cohortTables}{List of tables that contains \code{generated_cohort_set}
-objects.}
-
-\item{achillesTables}{List of tables that contain achilles.}
-
-\item{cdmSource}{Source of the cdm object.}
+\item{cdmName}{Name of the cdm object.}
 }
 \value{
 A \code{cdm_reference} object.

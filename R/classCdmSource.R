@@ -17,20 +17,18 @@
 #' Create a cdm source object.
 #'
 #' @param src Source to a cdm object.
-#' @param sourceName Name of the source.
 #' @param sourceType Type of the source object.
 #'
 #' @export
 #'
 #' @return A validated cdm source object.
 #'
-cdmSource <- function(src, sourceName, sourceType) {
+cdmSource <- function(src, sourceType) {
   # initial check
-  assertCharacter(sourceName, length = 1, minNumCharacter = 1)
   assertCharacter(sourceType, length = 1, minNumCharacter = 1)
 
   # assign class
-  src <- newCdmSource(src = src, sourceName = sourceName, sourceType = sourceType)
+  src <- newCdmSource(src = src, sourceType = sourceType)
 
   # validate source
   src <- validateCdmSource(src = src)
@@ -38,11 +36,8 @@ cdmSource <- function(src, sourceName, sourceType) {
   return(src)
 }
 
-newCdmSource <- function(src, sourceName, sourceType) {
-  src <- addClass(src, "cdm_source")
-  attr(src, "source_name") <- sourceName
-  attr(src, "source_type") <- sourceType
-  return(src)
+newCdmSource <- function(src, sourceType) {
+  structure(src, source_type = sourceType) |> addClass("cdm_source")
 }
 validateCdmSource <- function(src) {
   # toy data
@@ -62,8 +57,7 @@ validateCdmSource <- function(src) {
         observation_period_end_date = as.Date("2029-12-31"),
         period_type_concept_id = 0
       )
-    ),
-    cdmSource = src
+    )
   )
 
   # insert table

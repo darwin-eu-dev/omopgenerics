@@ -85,7 +85,7 @@ fieldsAchilles <- dplyr::tibble(
   is_required = TRUE,
   cdm_datatype = NA,
   cdm_version = "5.3; 5.4"
-) %>%
+) |>
   dplyr::union_all(dplyr::tibble(
     cdm_table_name = "achilles_results",
     cdm_field_name = c(
@@ -95,7 +95,7 @@ fieldsAchilles <- dplyr::tibble(
     is_required = TRUE,
     cdm_datatype = NA,
     cdm_version = "5.3; 5.4"
-  )) %>%
+  )) |>
   dplyr::union_all(dplyr::tibble(
     cdm_table_name = "achilles_results_dist",
     cdm_field_name = c(
@@ -109,13 +109,13 @@ fieldsAchilles <- dplyr::tibble(
     cdm_version = "5.3; 5.4"
   ))
 
-fieldsTables <- fieldsTables %>%
-  dplyr::mutate(type = "cdm_table") %>%
+fieldsTables <- fieldsTables |>
+  dplyr::mutate(type = "cdm_table") |>
   dplyr::union_all(
-    fieldsCohorts %>% dplyr::mutate(type = "cohort")
-  ) %>%
+    fieldsCohorts |> dplyr::mutate(type = "cohort")
+  ) |>
   dplyr::union_all(
-    fieldsAchilles %>% dplyr::mutate(type = "achilles")
+    fieldsAchilles |> dplyr::mutate(type = "achilles")
   )
 
 fieldsResults <- dplyr::tibble(
@@ -140,7 +140,7 @@ fieldsResults <- dplyr::tibble(
     rep(NA, 4), "name1", "level1", "name2", "level2", rep(NA, 5), "name3",
     "level3"
   )
-) %>%
+) |>
   dplyr::union_all(dplyr::tibble(
     result = "compared_result",
     result_field_name = c(

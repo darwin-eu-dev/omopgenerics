@@ -24,16 +24,7 @@ removeClass <- function(x, value) {
   return(x)
 }
 getCdmSource <- function(x) {
-  if ("cdm_reference" %in% class(x)) {
-    cdm <- x
-  } else {
-    cdm <- attr(x, "cdm_reference")
-  }
-  if (is.null(cdm)) {
-    return(NULL)
-  } else {
-    return(attr(cdm, "cdm_source"))
-  }
+  attr(cdm, "cdm_source")
 }
 getVocabularyVersion <- function(x) {
   vocabVersion <- NULL

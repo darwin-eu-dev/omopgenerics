@@ -29,10 +29,10 @@
 #' @export
 #' @importFrom dplyr compute
 compute.cdm_table <- function(x,
-                              name = uniqueTableName(),
-                              temporary = TRUE,
-                              overwrite = TRUE,
-                              ...) {
+                               name = uniqueTableName(),
+                               temporary = TRUE,
+                               overwrite = TRUE,
+                               ...) {
   cdm <- attr(x, "cdm_reference")
   if (is.null(attr(x, "cdm_reference"))) {
     cli::cli_abort("x does not com from a cdm object.")

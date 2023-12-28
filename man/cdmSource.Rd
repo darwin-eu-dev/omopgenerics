@@ -4,12 +4,10 @@
 \alias{cdmSource}
 \title{Create a cdm source object.}
 \usage{
-cdmSource(src, sourceName, sourceType)
+cdmSource(src, sourceType)
 }
 \arguments{
 \item{src}{Source to a cdm object.}
-
-\item{sourceName}{Name of the source.}
 
 \item{sourceType}{Type of the source object.}
 }

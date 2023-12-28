@@ -16,57 +16,37 @@
 
 #' `cdm_reference` objects constructor
 #'
-#' @param cdmTables List of standard tables in the OMOP Common Data Model.
-#' @param cohortTables List of tables that contains `generated_cohort_set`
-#' objects.
-#' @param achillesTables List of tables that contain achilles.
-#' @param cdmSource Source of the cdm object.
+#' @param tables List of tables that are part of the OMOP Common Data Model
+#' reference.
+#' @param cdmName Name of the cdm object.
 #'
 #' @return A `cdm_reference` object.
 #'
 #' @export
 #'
-cdmReference <- function(cdmTables, cohortTables = list(), achillesTables = list(), cdmSource = NULL) {
-
+cdmReference <- function(tables,
+                         cdmName) {
   # inputs
-  assertList(cdmTables, named = TRUE)
-  assertList(cohortTables, named = TRUE)
-  assertList(achillesTables, named = TRUE)
-  assertClass(cdmSource, "cdm_source", null = TRUE)
-
-  if (is.null(cdmSource)){
-    if ("tbl_df" %in% class(cdmTables[[1]])) {
-      cdmSource <- localSource("unknown")
-    } else {
-      cli::cli_abort("cdmSource must be provided, create a cdmSource with the cdmSource() function.")
-    }
-  }
+  assertList(tables, named = TRUE, class = "cdm_table")
+  assertCharacter(cdmName, length = 1)
 
   # get cdm version
-  cdmVersion <- getVersion(cdmTables)
+  cdmVersion <- getVersion(tables)
+
+  # get cdm source
+  if (length(tables) < 2) {
+    cli::cli_abort("At least person and observation_period should be provided in tables")
+  }
+  cdmSource <- getCdmSource(tables[[1]])
 
   # constructor
   cdm <- newCdmReference(
-    cdmTables = cdmTables, achillesTables = achillesTables,
-    cdmVersion = cdmVersion, cdmSource = cdmSource
+    tables = tables, cdmName = cdmName, cdmVersion = cdmVersion,
+    cdmSource = cdmSource
   )
 
   # validate
   cdm <- validateCdmReference(cdm)
-
-  # add cohort tables
-  for (nm in names(cohortTables)) {
-    x <- cohortTables[[nm]]
-    attr(x, "cdm_reference") <- cdm
-    attr(x, "tbl_name") <- nm
-    x <- cdmTable(x)
-    cdm[[nm]] <- generatedCohortSet(
-      cohortRef = x,
-      cohortSetRef = attr(x, "cohort_set"),
-      cohortAttritionRef = attr(x, "cohort_attrition"),
-      overwrite = FALSE
-    )
-  }
 
   return(cdm)
 }
@@ -82,24 +62,21 @@ getVersion <- function(cdm) {
   version <- substr(version, 1, 3)
   return(version)
 }
-newCdmReference <- function(cdmTables, achillesTables, cdmVersion, cdmSource) {
-  cdm <- c(cdmTables, achillesTables)
-  class(cdm) <- "cdm_reference"
-  attr(cdm, "cdm_source") <- cdmSource
-  attr(cdm, "cdm_version") <- cdmVersion
-  class(cdm) <- "cdm_reference"
-  return(cdm)
+newCdmReference <- function(tables, cdmName, cdmVersion, cdmSource) {
+  structure(
+    .Data = tables,
+    cdm_name = cdmName,
+    cdm_source = cdmSource,
+    cdm_version = cdmVersion,
+    class = "cdm_reference"
+  )
 }
 validateCdmReference <- function(cdm) {
-  # assert name
-  assertCharacter(cdmName(cdm), length = 1)
-
   # assert version
-  cdmVersion <- attr(cdm, "cdm_version")
-  assertChoice(cdmVersion, c("5.3", "5.4"), length = 1)
+  assertChoice(cdmVersion(cdm), c("5.3", "5.4"), length = 1)
 
   # assert source
-  assertClass(attr(cdm, "cdm_source"), "cdm_source")
+  assertClass(getCdmSource(cdm), "cdm_source")
 
   # assert lowercase names
   x <- names(cdm)[names(cdm) != tolower(names(cdm))]
@@ -116,36 +93,19 @@ validateCdmReference <- function(cdm) {
     cli::cli_abort("{combine(x)} {verb(x)} not included in the cdm object")
   }
 
-  cdmTables <- omopTables(version = cdmVersion)
-
-  # assertions for all the cdm tables
-  for (nm in names(cdm)) {
-    # assert lowercase columns
-    cols <- colnames(cdm[[nm]])
-    x <- cols[cols != tolower(cols)]
-    if (length(x) > 0) {
-      cli::cli_abort(
-        "column{plural(x)} {combine(x)} in table {nm} should be lowercase"
-      )
-    }
-
-    # assert columnames match version
-    if (nm %in% cdmTables) {
-      cols <- omopColumns(table = nm, version = cdmVersion)
-      checkColumnsCdm(cdm[[nm]], nm, cols)
-    } else if ("generated_cohort_set" %in% class(cdm[[nm]])) {
-      cohort <- cdm[[nm]]
-      cols <- omopColumns(table = "cohort", version = cdmVersion)
-      checkColumnsCdm(cohort, nm, cols)
-      cols <- omopColumns(table = "cohort_set", version = cdmVersion)
-      checkColumnsCdm(settings(cohort), paste0(nm, "_set"), cols)
-      cols <- omopColumns(table = "cohort_attrition", version = cdmVersion)
-      checkColumnsCdm(attrition(cohort), paste0(nm, "_attrition"), cols)
-    }
+  # validate cdm tables
+  omopTables <- omopTables(version = cdmVersion(cdm))
+  omopTables <- omopTables[omopTables %in% names(cdm)]
+  for (nm in omopTables) {
+    cdm[[nm]] <- omopTable(cdm[[nm]])
   }
 
-  # TODO
-  # assertions for cohort tables
+  # validate achilles tables
+  achillesTables <- achillesTables(version = cdmVersion(cdm))
+  achillesTables <- achillesTables[achillesTables %in% names(cdm)]
+  for (nm in achillesTables) {
+    cdm[[nm]] <- achillesTable(cdm[[nm]])
+  }
 
   return(invisible(cdm))
 }
@@ -185,9 +145,7 @@ checkColumnsCdm <- function(table, nm, required, call = parent.frame()) {
 #'
 cdmName <- function(cdm) {
   assertClass(cdm, "cdm_reference")
-  src <- getCdmSource(cdm)
-  assertClass(src, "cdm_source")
-  attr(src, "source_name")
+  attr(src, "cdm_name")
 }
 
 #' Version of a cdm_reference.
@@ -226,7 +184,6 @@ cdmVersion <- function(cdm) {
   xraw <- unclass(x)
   tbl <- xraw[[name]]
   attr(tbl, "cdm_reference") <- x
-  tbl <- cdmTable(tbl)
   return(tbl)
 }
 
@@ -257,15 +214,21 @@ cdmVersion <- function(cdm) {
 #'
 `[[<-.cdm_reference` <- function(cdm, name, value) {
   if (!is.null(value)) {
-    if (!identical(getCdmSource(value), getCdmSource(cdm))) {
-      cli::cli_abort("Table and cdm does not share a common source, please insert table to the cdm with insertTable")
+    if (!"cdm_table" %in% class(value)) {
+      cli::cli_abort(
+        "You can only assign cdm_table objects to a cdm object. The object has
+        class: {paste0(class(value), collapse = ', ')}."
+      )
     }
-    remoteName <- attr(value, "tbl_name")
-    if (is.null(remoteName)) {
-      cli::cli_abort("The table that you are tying to assign does not have a name.")
+    if (!identical(getTableSource(value), getCdmSource(cdm))) {
+      cli::cli_abort("Table and cdm does not share a common source.")
     }
+    remoteName <- getTableName(value)
     if (!is.na(remoteName) && name != remoteName) {
-      cli::cli_abort("You can't assign a table named {remoteName} to {name}. Please use compute to change table name.")
+      cli::cli_abort(
+        "You can't assign a table named {remoteName} to {name}. Please use
+        compute to change table name."
+      )
     }
   }
   attr(value, "cdm_reference") <- NULL
@@ -284,12 +247,32 @@ cdmVersion <- function(cdm) {
 #' @return Invisibly returns the input
 #' @export
 print.cdm_reference <- function(x, ...) {
-  src <- getCdmSource(x)
-  type <- attr(src, "source_type")
-  ref <- attr(src, "source_name")
-  cli::cat_line(glue::glue("# OMOP CDM reference ({type}) of {ref}"))
+  type <- getCdmSource(x) |> sourceType()
+  name <- cdmName(x)
+  nms <- names(x)
+  classes <- lapply(x, function(xx) {
+    cl <- class(xx)
+    if ("omop_table" %in% cl) {
+      return("omop_table")
+    } else if ("generated_cohort_set" %in% cl) {
+      return("generated_cohort_set")
+    } else if ("achilles_table" %in% cl) {
+      return("achilles_table")
+    } else {
+      return("cdm_table")
+    }
+  }) |>
+    unlist()
+  omop <- nms[classes == "omop_table"]
+  cohort <- nms[classes == "generated_cohort_set"]
+  achilles <- nms[classes == "achilles_table"]
+  other <- nms[classes == "cdm_table"]
+  cli::cat_line(glue::glue("# OMOP CDM reference ({type}) of {name}"))
   cli::cat_line("")
-  cli::cat_line(paste("Tables:", paste(names(x), collapse = ", ")))
+  cli::cat_line(paste("omop tables:", paste(omop, collapse = ", ")))
+  cli::cat_line(paste("cohort tables:", paste(cohort, collapse = ", ")))
+  cli::cat_line(paste("achilles tables:", paste(achilles, collapse = ", ")))
+  cli::cat_line(paste("other tables:", paste(other, collapse = ", ")))
   invisible(x)
 }
 
@@ -299,7 +282,6 @@ print.cdm_reference <- function(x, ...) {
 #' @param ... For compatibility only, not used.
 #'
 #' @export
-#' @importFrom dplyr collect
 #'
 collect.cdm_reference <- function(x, ...) {
   name <- cdmName(cdm)
