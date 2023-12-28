@@ -1,10 +1,8 @@
 test_that("test that classes and attributes are keep", {
 
   # add class and attributes
-  x <- dplyr::tibble(a = 1)
-  x <- addClass(x, "cdm_table")
-  attr(x, "cdm_reference") <- 1
-  attr(x, "tbl_name") <- "xuxudecrema"
+  x <- dplyr::tibble(a = 1) |>
+    cdmTable(src = localSource(), name = "xuxudecrema")
 
   # nothing
   funs <- c("collapse", "count", "rowwise", "tally", "ungroup")

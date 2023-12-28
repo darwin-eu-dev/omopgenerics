@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' `cdm_reference` objects constructor
+#' Create a cdm object from local tables
 #'
 #' @param tables List of tables to be part of the cdm object.
 #' @param cdmName Name of the cdm object.
@@ -56,9 +56,7 @@ cdmFromTables <- function(tables,
 }
 
 localSource <- function() {
-  source <- list()
-  class(source) <- "local_cdm"
-  source <- cdmSource(src = source, sourceType = "local")
-  return(source)
+  structure(.Data = list(), class = "local_cdm") |>
+    cdmSource(sourceType = "local")
 }
 

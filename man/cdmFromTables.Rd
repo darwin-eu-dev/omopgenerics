@@ -2,7 +2,7 @@
 % Please edit documentation in R/cdmFromTables.R
 \name{cdmFromTables}
 \alias{cdmFromTables}
-\title{\code{cdm_reference} objects constructor}
+\title{Create a cdm object from local tables}
 \usage{
 cdmFromTables(tables, cdmName, cohortTables = list())
 }
@@ -18,5 +18,5 @@ cohort_attrition can be provided as attributes.}
 A \code{cdm_reference} object.
 }
 \description{
-\code{cdm_reference} objects constructor
+Create a cdm object from local tables
 }

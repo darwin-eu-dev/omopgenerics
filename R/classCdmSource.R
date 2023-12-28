@@ -37,7 +37,9 @@ cdmSource <- function(src, sourceType) {
 }
 
 newCdmSource <- function(src, sourceType) {
-  structure(src, source_type = sourceType) |> addClass("cdm_source")
+  structure(
+    .Data = src, source_type = sourceType, class = c(class(src), "cdm_source")
+  )
 }
 validateCdmSource <- function(src) {
   # toy data
@@ -50,7 +52,7 @@ validateCdmSource <- function(src) {
 
   # check inserted table
   x <- tab |> dplyr::collect() |> unclass()
-  attr(x, "cdm_reference") <- NULL
+  attr(x, "tbl_source") <- NULL
   attr(x, "tbl_name") <- NULL
   if (!identical(x, unclass(table))) {
     cli::cli_abort("The inserted table was not the same than the original one.")
@@ -81,6 +83,6 @@ validateX <- function(x, name, fun) {
 #' @export
 print.cdm_source <- function(x, ...) {
   cli::cli_inform(
-    "This is a {attr(x, 'source_type')} cdm source of {attr(x, 'source_name')}"
+    "This is a {attr(x, 'source_type')} cdm source"
   )
 }
