@@ -37,12 +37,11 @@ cdmReference <- function(tables,
   if (length(tables) < 2) {
     cli::cli_abort("At least person and observation_period should be provided in tables")
   }
-  cdmSource <- getCdmSource(tables[[1]])
 
   # constructor
   cdm <- newCdmReference(
     tables = tables, cdmName = cdmName, cdmVersion = cdmVersion,
-    cdmSource = cdmSource
+    cdmSource = getCdmSource(tables[[1]])
   )
 
   # validate
@@ -145,7 +144,7 @@ checkColumnsCdm <- function(table, nm, required, call = parent.frame()) {
 #'
 cdmName <- function(cdm) {
   assertClass(cdm, "cdm_reference")
-  attr(src, "cdm_name")
+  attr(cdm, "cdm_name")
 }
 
 #' Version of a cdm_reference.
@@ -247,7 +246,7 @@ cdmVersion <- function(cdm) {
 #' @return Invisibly returns the input
 #' @export
 print.cdm_reference <- function(x, ...) {
-  type <- getCdmSource(x) |> sourceType()
+  type <- getCdmSource(x) |> getSourceType()
   name <- cdmName(x)
   nms <- names(x)
   classes <- lapply(x, function(xx) {
@@ -287,24 +286,7 @@ collect.cdm_reference <- function(x, ...) {
   name <- cdmName(cdm)
   x <- unclass(x)
   tables <- lapply(x, dplyr::collect)
-  cdmTables <- list()
-  cohortTables <- list()
-  achillesTables <- list()
-  for (k in seq_along(tables)) {
-    xn <- tables[k]
-    if (inherits(xn[[1]], "generated_cohort_set")) {
-      cohortTables <- c(cohortTables, xn)
-    } else if (names(xn) %in% omopgenerics::achillesTables()) {
-      achillesTables <- c(achillesTables, xn)
-    } else {
-      cdmTables <- c(cdmTables, xn)
-    }
-  }
-  src <- localSource(name = name)
-  cdm <- cdmReference(
-    cdmTables = cdmTables, cohortTables = cohortTables,
-    achillesTables = achillesTables, cdmSource = src
-  )
+  cdm <- cdmFromTables(tables = tables, cdmName = name)
   return(cdm)
 }
 
@@ -419,7 +401,14 @@ requiredColumns <- function(table, version, type) {
 str.cdm_reference <- function(object, ...) {
   src <- getCdmSource(object)
   mes <- glue::glue(
-    "A {attr(src, 'source_type')} cdm reference of {attr(src, 'source_name')} with {length(object)} tables: {paste0(names(object), collapse = ', ')}"
+    "A cdm reference of {cdmName(object)} with {length(object)} tables: {paste0(names(object), collapse = ', ')}"
   )
   cat(mes, sep = "")
+}
+
+getCdmReference <- function(x) {
+  attr(x, "cdm_reference")
+}
+getSourceType <- function(x) {
+  attr(x, "src_type")
 }

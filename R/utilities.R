@@ -24,7 +24,7 @@ removeClass <- function(x, value) {
   return(x)
 }
 getCdmSource <- function(x) {
-  attr(cdm, "cdm_source")
+  attr(x, "cdm_source")
 }
 getVocabularyVersion <- function(x) {
   vocabVersion <- NULL

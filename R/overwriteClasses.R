@@ -224,7 +224,7 @@ union_all.cdm_table <- function(x, ...) {
 summarise.cdm_table <- function(.data, ...) {
   .data <- keepClass(.data)
   res <- dplyr::summarise(.data = .data, ...)
-  res <- restoreClass(res, cl)
+  res <- restoreClass(res)
   res <- restoreAttributes(res, keepAttributes(.data))
   return(res)
 }

@@ -57,6 +57,7 @@ omopTable <- function(table) {
   # create the structure
   assertClass(table, class = "cdm_table")
   table <- addClass(table, "omop_table")
+  name <- getTableName(table)
 
   # validation
   if (!getTableName(table) %in% omopTables()) {
@@ -64,7 +65,7 @@ omopTable <- function(table) {
   }
 
   cols <- omopColumns(table = getTableName(table))
-  checkColumnsCdm(table, nm, cols)
+  checkColumnsCdm(table, name, cols)
 
   return(table)
 }

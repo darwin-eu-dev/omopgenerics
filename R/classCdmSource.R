@@ -44,28 +44,12 @@ validateCdmSource <- function(src) {
   name <- paste0(c(sample(letters, 5, replace = TRUE), "_test_table"), collapse = "")
   table <- datasets::cars
 
-  # create mock cdm
-  cdm <- cdmReference(
-    cdmTables = list(
-      person = dplyr::tibble(
-        person_id = 1, gender_concept_id = 0, year_of_birth = 2000,
-        race_concept_id = 0, ethnicity_concept_id = 0
-      ),
-      observation_period = dplyr::tibble(
-        observation_period_id = 1, person_id = 1,
-        observation_period_start_date = as.Date("2010-01-01"),
-        observation_period_end_date = as.Date("2029-12-31"),
-        period_type_concept_id = 0
-      )
-    )
-  )
-
   # insert table
-  cdm <- insertTable(cdm = cdm, name = name, table = table)
-  validateX(x = cdm[[name]], name = name, fun = "insertTable")
+  tab <- insertTable(cdm = src, name = name, table = table)
+  validateX(x = tab, name = name, fun = "insertTable")
 
   # check inserted table
-  x <- cdm[[name]] |> dplyr::collect() |> unclass()
+  x <- tab |> dplyr::collect() |> unclass()
   attr(x, "cdm_reference") <- NULL
   attr(x, "tbl_name") <- NULL
   if (!identical(x, unclass(table))) {
@@ -73,11 +57,13 @@ validateCdmSource <- function(src) {
   }
 
   # compute inserted table
-  cdm[[name]] <- cdm[[name]] |> compute(name = name, temporary = FALSE)
-  validateX(x = cdm[[name]], name = name, fun = "compute")
+  tab <- tab |> compute(name = name, temporary = FALSE)
+  validateX(x = tab, name = name, fun = "compute")
 
   # drop table
-  cdm <- dropTable(cdm = cdm, name = name)
+  if(!isTRUE(dropTable(cdm = src, name = name))) {
+    cli::cli_abort("Source is invalid as table {name} couldn't be dropped.")
+  }
 
   return(invisible(src))
 }

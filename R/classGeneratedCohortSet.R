@@ -34,8 +34,6 @@ generatedCohortSet <- function(cohortRef,
                                overwrite = TRUE) {
   # initial checks
   assertClass(cohortRef, "cdm_table")
-
-  assertClass(cohortAttritionRef, "tbl", null = TRUE)
   assertChoice(overwrite, choices = c(TRUE, FALSE), length = 1)
 
   # populate

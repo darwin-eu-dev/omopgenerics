@@ -16,12 +16,10 @@
 
 #' `cdm_reference` objects constructor
 #'
-#' @param cdmTables List of standard tables in the OMOP Common Data Model.
+#' @param tables List of tables to be part of the cdm object.
 #' @param cdmName Name of the cdm object.
-#' @param cohortTables List of tables that contains `generated_cohort_set`
-#' objects.
-#' @param achillesTables List of tables that contain achilles.
-#' @param otherTables List of tables that contain unespecified tables in the cdm.
+#' @param cohortTables List of tables that contains cohort, cohort_set and
+#' cohort_attrition can be provided as attributes.
 #'
 #' @return A `cdm_reference` object.
 #'
