@@ -34,6 +34,9 @@
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/achillesColumns.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/achillesTable.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/achillesTables.html</loc>
   </url>
   <url>
@@ -53,6 +56,9 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cash-set-.cdm_reference.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmFromTables.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmName.html</loc>
@@ -109,10 +115,10 @@
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/insertTable.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/localSource.html</loc>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/omopColumns.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/omopColumns.html</loc>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/omopTable.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/omopTables.html</loc>
