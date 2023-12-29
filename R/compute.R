@@ -33,16 +33,15 @@ compute.cdm_table <- function(x,
                               temporary = TRUE,
                               overwrite = TRUE,
                               ...) {
-  cdm <- attr(x, "cdm_reference")
-  if (is.null(attr(x, "cdm_reference"))) {
-    cli::cli_abort("x does not com from a cdm object.")
-  }
-  src <- getCdmSource(x)
+  src <- getTableSource(x)
   x <- removeClass(x, "cdm_table")
   x <- addClass(x, class(src))
   x <- dplyr::compute(x = x, name = name, temporary = temporary, overwrite = overwrite)
-  x <- removeClass(x, class(src))
-  x <- addClass(x, "cdm_table")
+  if (temporary) {
+    name <- NA_character_
+  }
+  x <- removeClass(x, class(src)) |>
+    cdmTable(src = src, name = name)
   return(x)
 }
 
@@ -51,10 +50,6 @@ compute.local_cdm <- function(x,
                               name = uniqueTableName(),
                               temporary = TRUE,
                               ...) {
-  if (temporary) {
-    name <- NA_character_
-  }
-  attr(x, "tbl_name") <- name
   return(x)
 }
 

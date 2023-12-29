@@ -27,8 +27,8 @@ test_that("bind a cohort_set", {
     cohort_definition_id = 1:5,
     cohort_name = c("first_cohort", "second_cohort", "third_cohort", "fourth_cohort", "fifth_cohort")
   )
-  cdm <- cdmReference(
-    cdmTables = list(
+  cdm <- cdmFromTables(
+    tables = list(
       "person" = dplyr::tibble(
         person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
         race_concept_id = 0, ethnicity_concept_id = 0
@@ -40,6 +40,7 @@ test_that("bind a cohort_set", {
         period_type_concept_id = 0
       )
     ),
+    cdmName = "mock",
     cohortTables = list(
       "cohort1" = cohort1, "cohort2" = cohort2, "cohort3" = cohort3,
       "cohort4" = cohort4

@@ -1,41 +1,52 @@
 test_that("test cdm_reference", {
-  src <- localSource("mock")
+  src <- localSource()
   cdmTables <- list(
     "person" = dplyr::tibble(
       person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
       race_concept_id = 0, ethnicity_concept_id = 0
-    ),
+    ) |>
+      cdmTable(src, "person"),
     "observation_period" = dplyr::tibble(
       observation_period_id = 1, person_id = 1,
       observation_period_start_date = as.Date("2000-01-01"),
       observation_period_end_date = as.Date("2025-12-31"),
       period_type_concept_id = 0
-    )
+    ) |>
+      cdmTable(src, "observation_period")
   )
 
-  expect_no_error(cdm <- cdmReference(cdmTables = cdmTables, cdmSource = src))
+  expect_no_error(cdm <- cdmReference(tables = cdmTables, cdmName = "mock"))
 
   expect_snapshot(cdm)
 
-  expect_identical(cdmName(cdm), "mock")
+  expect_identical("mock", cdmName(cdm))
+  expect_identical(src, getCdmSource(cdm))
   expect_true("cdm_reference" %in% names(attributes(cdm$person)))
   expect_true("cdm_reference" %in% names(attributes(cdm[["person"]])))
 
-  expect_error(cdmReference(cdmTables = cdmTables["person"], cdmSource = src))
+  expect_error(cdmReference(tables = cdmTables["person"], cdmName = "mock"))
 
-  expect_error(cdmReference(cdmTables = list(), cdmSource = src))
+  expect_error(cdmReference(tables = list(), cdmName = "mock"))
 
   cdmUpper <- cdmTables
   names(cdmUpper) <- toupper(names(cdmUpper))
-  expect_error(cdmReference(cdmTables = cdmUpper, cdmSource = src))
+  expect_error(cdmReference(tables = cdmUpper, cdmName = "mock"))
 
   cdmTables$person <- cdmTables$person |>
     dplyr::rename("PERSON_ID" = "person_id")
-  expect_error(cdmReference(cdmTables = cdmTables, cdmSource = src))
+  expect_error(cdmReference(tables = cdmTables, cdmName = "mock"))
+
+  expect_error(
+    dplyr::tibble(
+      PERSON_ID = 1, gender_concept_id = 0, year_of_birth = 1990,
+      race_concept_id = 0, ethnicity_concept_id = 0
+    ) |>
+      cdmTable(src, "person")
+  )
 
   cdmTables$person <- cdmTables$person |>
     dplyr::select(-"PERSON_ID")
-  expect_error(cdmReference(cdmTables = cdmTables, cdmSource = src))
+  expect_error(cdmReference(tables = cdmTables, cdmName = "mock"))
 
 })
 
@@ -52,6 +63,8 @@ test_that("test assign and extract from cdm object", {
 
   # I define an element with a cdm reference on it
   xx <- 3
+  attr(xx, "tbl_name") <- "c"
+  class(xx) <- "cdm_table"
   attr(xx, "cdm_reference") <- 4
   expect_true("cdm_reference" %in% names(attributes(xx)))
 
@@ -62,8 +75,6 @@ test_that("test assign and extract from cdm object", {
 
   # if I assign to a cdm_reference it wont but it will appear back when I access
   # to one of the elements
-  expect_error(x$c <- xx)
-  attr(xx, "tbl_name") <- "c"
   expect_no_error(x$c <- xx)
   expect_true("cdm_reference" %in% names(attributes(x[["c"]])))
   expect_true("cdm_reference" %in% names(attributes(x$c)))

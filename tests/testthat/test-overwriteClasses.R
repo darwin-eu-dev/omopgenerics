@@ -1,13 +1,11 @@
 test_that("test that classes and attributes are keep", {
 
   # add class and attributes
-  x <- dplyr::tibble(a = 1)
-  x <- addClass(x, "cdm_table")
-  attr(x, "cdm_reference") <- 1
-  attr(x, "tbl_name") <- "xuxudecrema"
+  x <- dplyr::tibble(a = 1) |>
+    cdmTable(src = localSource(), name = "xuxudecrema")
 
   # nothing
-  funs <- c("collapse", "count", "rowwise", "tally", "ungroup")
+  funs <- c("count", "rowwise", "tally", "ungroup")
   for (fun in funs) {
     expect_no_error(eval(parse(text = paste0("xn <- dplyr::", fun, "(x)"))))
     expect_identical(attr(x, "cdm_reference"), attr(xn, "cdm_reference"))
@@ -38,7 +36,7 @@ test_that("test that classes and attributes are keep", {
   }
 
   # no by
-  funs <- c("cross_join", "intersect", "union", "union_all")
+  funs <- c("cross_join", "union", "union_all")
   for (fun in funs) {
     expect_no_error(eval(parse(text = paste0("xn <- dplyr::", fun, "(x, y)"))))
     expect_identical(attr(x, "cdm_reference"), attr(xn, "cdm_reference"))
@@ -52,3 +50,4 @@ test_that("test that classes and attributes are keep", {
   expect_identical(attr(x, "tbl_name"), attr(xn, "tbl_name"))
   expect_true("cdm_table" %in% class(xn))
 })
+

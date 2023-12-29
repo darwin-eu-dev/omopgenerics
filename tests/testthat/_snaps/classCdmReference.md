@@ -2,8 +2,11 @@
 
     Code
       cdm
-    Output
-      # OMOP CDM reference (local) of mock
+    Message
       
-      Tables: person, observation_period
+      -- # OMOP CDM reference (local) of mock ----------------------------------------
+      * omop tables: person, observation_period
+      * cohort tables: -
+      * achilles tables: -
+      * other tables: -
 

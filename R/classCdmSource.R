@@ -17,20 +17,18 @@
 #' Create a cdm source object.
 #'
 #' @param src Source to a cdm object.
-#' @param sourceName Name of the source.
 #' @param sourceType Type of the source object.
 #'
 #' @export
 #'
 #' @return A validated cdm source object.
 #'
-cdmSource <- function(src, sourceName, sourceType) {
+cdmSource <- function(src, sourceType) {
   # initial check
-  assertCharacter(sourceName, length = 1, minNumCharacter = 1)
   assertCharacter(sourceType, length = 1, minNumCharacter = 1)
 
   # assign class
-  src <- newCdmSource(src = src, sourceName = sourceName, sourceType = sourceType)
+  src <- newCdmSource(src = src, sourceType = sourceType)
 
   # validate source
   src <- validateCdmSource(src = src)
@@ -38,52 +36,36 @@ cdmSource <- function(src, sourceName, sourceType) {
   return(src)
 }
 
-newCdmSource <- function(src, sourceName, sourceType) {
-  src <- addClass(src, "cdm_source")
-  attr(src, "source_name") <- sourceName
-  attr(src, "source_type") <- sourceType
-  return(src)
+newCdmSource <- function(src, sourceType) {
+  structure(
+    .Data = src, source_type = sourceType, class = c(class(src), "cdm_source")
+  )
 }
 validateCdmSource <- function(src) {
   # toy data
   name <- paste0(c(sample(letters, 5, replace = TRUE), "_test_table"), collapse = "")
   table <- datasets::cars
 
-  # create mock cdm
-  cdm <- cdmReference(
-    cdmTables = list(
-      person = dplyr::tibble(
-        person_id = 1, gender_concept_id = 0, year_of_birth = 2000,
-        race_concept_id = 0, ethnicity_concept_id = 0
-      ),
-      observation_period = dplyr::tibble(
-        observation_period_id = 1, person_id = 1,
-        observation_period_start_date = as.Date("2010-01-01"),
-        observation_period_end_date = as.Date("2029-12-31"),
-        period_type_concept_id = 0
-      )
-    ),
-    cdmSource = src
-  )
-
   # insert table
-  cdm <- insertTable(cdm = cdm, name = name, table = table)
-  validateX(x = cdm[[name]], name = name, fun = "insertTable")
+  tab <- insertTable(cdm = src, name = name, table = table)
+  validateX(x = tab, name = name, fun = "insertTable")
 
   # check inserted table
-  x <- cdm[[name]] |> dplyr::collect() |> unclass()
-  attr(x, "cdm_reference") <- NULL
+  x <- tab |> dplyr::collect() |> unclass()
+  attr(x, "tbl_source") <- NULL
   attr(x, "tbl_name") <- NULL
   if (!identical(x, unclass(table))) {
     cli::cli_abort("The inserted table was not the same than the original one.")
   }
 
   # compute inserted table
-  cdm[[name]] <- cdm[[name]] |> compute(name = name, temporary = FALSE)
-  validateX(x = cdm[[name]], name = name, fun = "compute")
+  tab <- tab |> compute(name = name, temporary = FALSE)
+  validateX(x = tab, name = name, fun = "compute")
 
   # drop table
-  cdm <- dropTable(cdm = cdm, name = name)
+  if(!isTRUE(dropTable(cdm = src, name = name))) {
+    cli::cli_abort("Source is invalid as table {name} couldn't be dropped.")
+  }
 
   return(invisible(src))
 }
@@ -101,6 +83,6 @@ validateX <- function(x, name, fun) {
 #' @export
 print.cdm_source <- function(x, ...) {
   cli::cli_inform(
-    "This is a {attr(x, 'source_type')} cdm source of {attr(x, 'source_name')}"
+    "This is a {attr(x, 'source_type')} cdm source"
   )
 }

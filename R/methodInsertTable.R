@@ -43,6 +43,5 @@ insertTable.cdm_reference <- function(cdm, name, table, overwrite = TRUE) {
 
 #' @export
 insertTable.local_cdm <- function(cdm, name, table, ...) {
-  attr(table, "tbl_name") <- name
-  return(table)
+  cdmTable(table = table, src = cdm, name = name)
 }
