@@ -1,17 +1,17 @@
 test_that("summary a cdm reference", {
-  cdm <- cdmReference(
-    cdmTables = list(
-      "person" = dplyr::tibble(
-        person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
-        race_concept_id = 0, ethnicity_concept_id = 0
-      ),
-      "observation_period" = dplyr::tibble(
-        observation_period_id = 1:2, person_id = 1,
-        observation_period_start_date = as.Date(c("2000-01-01", "2030-01-01")),
-        observation_period_end_date = as.Date(c("2025-12-31", "2032-01-01")),
-        period_type_concept_id = 0
-      )
-    )
+  person <- dplyr::tibble(
+    person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+    race_concept_id = 0, ethnicity_concept_id = 0
+  )
+  observation_period <- dplyr::tibble(
+    observation_period_id = 1:2, person_id = 1,
+    observation_period_start_date = as.Date(c("2000-01-01", "2031-01-01")),
+    observation_period_end_date = as.Date(c("2025-12-31", "2032-01-01")),
+    period_type_concept_id = 0
+  )
+  cdm <- cdmFromTables(
+    tables = list("person" = person, "observation_period" = observation_period),
+    cdmName = "mock"
   )
   expect_no_error(summary(cdm))
   cdm <- insertTable(cdm, "cdm_source", dplyr::tibble(cdm_source_name = "test"))
@@ -81,27 +81,26 @@ test_that("summary a cdm reference", {
 })
 
 test_that("summary a generated cohort set", {
-  cdm <- cdmReference(
-    cdmTables = list(
-      "person" = dplyr::tibble(
-        person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
-        race_concept_id = 0, ethnicity_concept_id = 0
-      ),
-      "observation_period" = dplyr::tibble(
-        observation_period_id = 1, person_id = 1,
-        observation_period_start_date = as.Date("2000-01-01"),
-        observation_period_end_date = as.Date("2025-12-31"),
-        period_type_concept_id = 0
-      )
-    ),
-    cohortTables = list(
-      "cohort1" = dplyr::tibble(
-        cohort_definition_id = 1,
-        subject_id = 1,
-        cohort_start_date = as.Date("2010-01-01"),
-        cohort_end_date = as.Date("2010-01-05")
-      )
-    )
+  person <- dplyr::tibble(
+    person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+    race_concept_id = 0, ethnicity_concept_id = 0
+  )
+  observation_period <- dplyr::tibble(
+    observation_period_id = 1, person_id = 1,
+    observation_period_start_date = as.Date("2000-01-01"),
+    observation_period_end_date = as.Date("2025-12-31"),
+    period_type_concept_id = 0
+  )
+  cohort <- dplyr::tibble(
+    cohort_definition_id = 1,
+    subject_id = 1,
+    cohort_start_date = as.Date("2020-01-01"),
+    cohort_end_date = as.Date("2020-01-01")
+  )
+  cdm <- cdmFromTables(
+    tables = list("person" = person, "observation_period" = observation_period),
+    cdmName = "test",
+    cohortTables = list("cohort1" = cohort)
   )
   expect_no_error(summary(cdm$cohort1))
 })

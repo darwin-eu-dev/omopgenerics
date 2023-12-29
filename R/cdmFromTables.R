@@ -34,23 +34,22 @@ cdmFromTables <- function(tables,
   assertList(cohortTables, named = TRUE, class = "data.frame")
 
   src <- localSource()
-  tables <- lapply(names(tables), function(nm) {
-    tables[[nm]] |>
+  for (nm in names(tables)) {
+    tables[[nm]] <- tables[[nm]] |>
       dplyr::as_tibble() |>
       cdmTable(src = src, name = nm)
-  })
-  cohortTables <- lapply(names(cohortTables), function(nm) {
-    cohortTables[[nm]] |>
-      dplyr::as_tibble() |>
-      cdmTable(src = src, name = nm) |>
+  }
+  cdm <- cdmReference(tables = tables, cdmName = cdmName)
+
+  for (nm in names(cohortTables)) {
+    cdm <- insertTable(cdm = cdm, name = nm, table = cohortTables[[nm]])
+    cdm[[nm]] <- cdm[[nm]] |>
       generatedCohortSet(
         cohortSetRef = attr(cohortTables[[nm]], "cohort_set"),
         cohortAttritionRef = attr(cohortTables[[nm]], "cohort_attrition"),
         overwrite = TRUE
       )
-  })
-
-  cdm <- cdmReference(tables = c(tables, cohortTables), cdmName = cdmName)
+  }
 
   return(cdm)
 }

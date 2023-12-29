@@ -72,7 +72,6 @@ collect.generated_cohort_set <- function(x, ...) {
   y <- x |> dplyr::collect()
   attr(y, "cohort_set") <- attr(x, "cohort_set") |> dplyr::collect()
   attr(y, "cohort_attrition") <- attr(x, "cohort_attrition") |> dplyr::collect()
-  y <- addClass(y, "generated_cohort_set")
   return(y)
 }
 
@@ -88,15 +87,6 @@ constructGeneratedCohortSet <- function(cohortRef,
   return(cohortRef)
 }
 validateGeneratedCohortSet <- function(cohort) {
-  # attributes exist
-  if (!all(c("cohort_set", "cohort_attrition", "tbl_name") %in%
-           names(attributes(cohort)))) {
-    cli::cli_abort(
-      "`cohort_set` and `cohort_attrition` must be attributes of a generated_cohort_set
-      object."
-    )
-  }
-
   # get attributes
   cohort_set <- attr(cohort, "cohort_set")
   cohort_attrition <- attr(cohort, "cohort_attrition")
@@ -105,6 +95,11 @@ validateGeneratedCohortSet <- function(cohort) {
   assertClass(cohort, "cdm_table")
   assertClass(cohort_set, "cdm_table")
   assertClass(cohort_attrition, "cdm_table")
+
+  # check cdm reference
+  if (!"cdm_reference" %in% names(attributes(cohort))) {
+    cli::cli_abort("cohort must be part of a cdm_reference")
+  }
 
   # check name
   assertCharacter(getTableName(cohort), length = 1, na = TRUE)
@@ -221,7 +216,6 @@ cdi <- function(x) {
 }
 defaultCohortSet <- function(cohort, overwrite) {
   cohortName <- attr(cohort, "tbl_name")
-  cdm <- attr(cohort, "cdm_reference")
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
   cohort |>
     dplyr::select("cohort_definition_id") |>
@@ -234,7 +228,6 @@ defaultCohortSet <- function(cohort, overwrite) {
 }
 defaultCohortAttrition <- function(cohort, set, overwrite) {
   cohortName <- attr(cohort, "tbl_name")
-  cdm <- attr(cohort, "cdm_reference")
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
   x <- cohort |>
     group_by(.data$cohort_definition_id) |>
@@ -284,7 +277,7 @@ checkOverlap <- function(cohort, call = parent.frame()) {
       utils::capture.output()
     cli::cli_abort(
       message = c(
-        "There is overlap between entries in the cohort, {nrow(x)} overlaps
+        "There is overlap between entries in the cohort, {nrow(x)} overlap{?s}
         detected{ifelse(nrow(x)<=5, ':', ' first 5:')}",
         x5[3:7]
       ),
@@ -319,9 +312,6 @@ checkNaCohort <- function(cohort, call = parent.frame()) {
 }
 checkObservationPeriod <- function(cohort, call = parent.frame()) {
   cdm <- attr(cohort, "cdm_reference")
-  if (is.null(cdm)) {
-    cli::cli_abort("cdm_reference can not be NULL")
-  }
   x <- cohort |>
     dplyr::anti_join(
       cohort |>
@@ -345,7 +335,7 @@ checkObservationPeriod <- function(cohort, call = parent.frame()) {
     dplyr::collect()
   if (nrow(x) > 0) {
     cli::cli_abort(
-      message = "{nrow(x)} observations are not during observation period.",
+      message = "{nrow(x)} observation{?s} outside observation period.",
       call = call
     )
   }
@@ -354,7 +344,7 @@ checkObservationPeriod <- function(cohort, call = parent.frame()) {
 consistentNaming <- function(cohortName, cohortSetName, cohortAttritionName) {
   if (is.na(cohortName)) {
     if (!is.na(cohortSetName) | !is.na(cohortAttritionName)) {
-      cli::cli_abort("cohort is a temp table, cohort name and cohort attrition should be a temp table too")
+      cli::cli_abort("cohort is a temp table, cohort_set and cohort_attrition should be a temp table too")
     }
   } else {
     errorMessage <- character()
@@ -362,7 +352,7 @@ consistentNaming <- function(cohortName, cohortSetName, cohortAttritionName) {
       errorMessage <- c(errorMessage, "cohort_set name must be {paste0(cohortName, '_set')} but is {cohortSetName}")
     }
     if (cohortAttritionName != paste0(cohortName, "_attrition")) {
-      errorMessage <- c(errorMessage, "cohort_set name must be {paste0(cohortName, '_attrition')} but is {cohortAttritionName}")
+      errorMessage <- c(errorMessage, "cohort_attrition name must be {paste0(cohortName, '_attrition')} but is {cohortAttritionName}")
     }
     if (length(errorMessage) > 0) {
       cli::cli_abort(errorMessage)
@@ -397,7 +387,7 @@ populateCohortAttrition <- function(cohortRef,
     cohortName <- getTableName(cohortRef)
     assertClass(cohortAttritionRef, "data.frame", null = TRUE)
     cohortAttritionRef <- dplyr::as_tibble(cohortAttritionRef)
-    name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
+    name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
     cohortAttritionRef <- insertTable(
       cdm = getTableSource(cohortRef), name = name, table = cohortAttritionRef,
       overwrite = overwrite

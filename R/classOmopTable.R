@@ -99,7 +99,11 @@ achillesTable <- function(table) {
 #' @export
 #' @importFrom dplyr collect
 collect.cdm_table <- function(x, ...) {
-  removeClass(x, "cdm_table") |> dplyr::collect()
+  x <- removeClass(x, "cdm_table") |> dplyr::collect()
+  attr(x, "tbl_name") <- NULL
+  attr(x, "tbl_source") <- NULL
+  attr(x, "cdm_reference") <- NULL
+  return(x)
 }
 
 noReference <- function(x) {

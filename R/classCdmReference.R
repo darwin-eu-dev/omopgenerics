@@ -41,7 +41,7 @@ cdmReference <- function(tables,
   # constructor
   cdm <- newCdmReference(
     tables = tables, cdmName = cdmName, cdmVersion = cdmVersion,
-    cdmSource = getCdmSource(tables[[1]])
+    cdmSource = getTableSource(tables[[1]])
   )
 
   # validate
@@ -249,8 +249,8 @@ print.cdm_reference <- function(x, ...) {
   type <- getCdmSource(x) |> getSourceType()
   name <- cdmName(x)
   nms <- names(x)
-  classes <- lapply(x, function(xx) {
-    cl <- class(xx)
+  classes <- lapply(names(x), function(nm) {
+    cl <- base::class(x[[nm]])
     if ("omop_table" %in% cl) {
       return("omop_table")
     } else if ("generated_cohort_set" %in% cl) {
@@ -266,12 +266,15 @@ print.cdm_reference <- function(x, ...) {
   cohort <- nms[classes == "generated_cohort_set"]
   achilles <- nms[classes == "achilles_table"]
   other <- nms[classes == "cdm_table"]
-  cli::cat_line(glue::glue("# OMOP CDM reference ({type}) of {name}"))
-  cli::cat_line("")
-  cli::cat_line(paste("omop tables:", paste(omop, collapse = ", ")))
-  cli::cat_line(paste("cohort tables:", paste(cohort, collapse = ", ")))
-  cli::cat_line(paste("achilles tables:", paste(achilles, collapse = ", ")))
-  cli::cat_line(paste("other tables:", paste(other, collapse = ", ")))
+  if (length(omop) == 0) omop <- "-"
+  if (length(cohort) == 0) cohort <- "-"
+  if (length(achilles) == 0) achilles <- "-"
+  if (length(other) == 0) other <- "-"
+  cli::cli_h1("# OMOP CDM reference ({type}) of {name}")
+  cli::cli_li(paste("{.strong omop tables:}", paste(omop, collapse = ", ")))
+  cli::cli_li(paste("{.strong cohort tables:}", paste(cohort, collapse = ", ")))
+  cli::cli_li(paste("{.strong achilles tables:}", paste(achilles, collapse = ", ")))
+  cli::cli_li(paste("{.strong other tables:}", paste(other, collapse = ", ")))
   invisible(x)
 }
 
@@ -285,8 +288,18 @@ print.cdm_reference <- function(x, ...) {
 collect.cdm_reference <- function(x, ...) {
   name <- cdmName(cdm)
   x <- unclass(x)
-  tables <- lapply(x, dplyr::collect)
-  cdm <- cdmFromTables(tables = tables, cdmName = name)
+  tables <- list()
+  cohortTables <- list()
+  for (nm in names(x)) {
+    if (inherits(x[[nm]], "generated_cohort_set")) {
+      cohortTables[[nm]] <- x[[nm]] |> dplyr::collect()
+    } else {
+      tables[[nm]] <- x[[nm]] |> dplyr::collect()
+    }
+  }
+  cdm <- cdmFromTables(
+    tables = tables, cdmName = name, cohortTables = cohortTables
+  )
   return(cdm)
 }
 
@@ -410,5 +423,5 @@ getCdmReference <- function(x) {
   attr(x, "cdm_reference")
 }
 getSourceType <- function(x) {
-  attr(x, "src_type")
+  attr(x, "source_type")
 }

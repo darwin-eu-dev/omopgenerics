@@ -56,7 +56,7 @@ anti_join.cdm_table <- function(x, ...) {
   x <- keepClass(x)
   res <- dplyr::anti_join(x, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(x, cl), cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
   return(res)
 }
 
@@ -67,7 +67,7 @@ count.cdm_table <- function(x, ...) {
   x <- keepClass(x)
   res <- dplyr::count(x, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(x, cl), cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
   return(res)
 }
 
@@ -78,7 +78,7 @@ cross_join.cdm_table <- function(x, ...) {
   x <- keepClass(x)
   res <- dplyr::cross_join(x, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(x, cl), cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
   return(res)
 }
 
@@ -89,7 +89,7 @@ full_join.cdm_table <- function(x, ...) {
   x <- keepClass(x)
   res <- dplyr::full_join(x, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(x, cl), cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
   return(res)
 }
 
@@ -100,7 +100,7 @@ group_by.cdm_table <- function(.data, ...) {
   .data <- keepClass(.data)
   res <- dplyr::group_by(.data = .data, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(.data))
+  res <- restoreAttributes(res, keepAttributes(.data, cl))
   return(res)
 }
 
@@ -111,7 +111,7 @@ inner_join.cdm_table <- function(x, ...) {
   x <- keepClass(x)
   res <- dplyr::inner_join(x, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(x, cl), cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
   return(res)
 }
 
@@ -122,7 +122,7 @@ intersect.cdm_table <- function(x, ...) {
   x <- keepClass(x)
   res <- dplyr::intersect(x, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(x, cl), cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
   return(res)
 }
 
@@ -133,7 +133,7 @@ left_join.cdm_table <- function(x, ...) {
   x <- keepClass(x)
   res <- dplyr::left_join(x, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(x, cl), cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
   return(res)
 }
 
@@ -144,7 +144,7 @@ nest_join.cdm_table <- function(x, ...) {
   x <- keepClass(x)
   res <- dplyr::nest_join(x, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(x, cl), cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
   return(res)
 }
 
@@ -155,7 +155,7 @@ right_join.cdm_table <- function(x, ...) {
   x <- keepClass(x)
   res <- dplyr::right_join(x, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(x, cl), cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
   return(res)
 }
 
@@ -166,7 +166,7 @@ rowwise.cdm_table <- function(data, ...) {
   data <- keepClass(data)
   res <- dplyr::rowwise(data = data, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(data))
+  res <- restoreAttributes(res, keepAttributes(data, cl))
   return(res)
 }
 
@@ -177,7 +177,7 @@ semi_join.cdm_table <- function(x, ...) {
   x <- keepClass(x)
   res <- dplyr::semi_join(x, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(x, cl), cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
   return(res)
 }
 
@@ -188,7 +188,7 @@ tally.cdm_table <- function(x, ...) {
   x <- keepClass(x)
   res <- dplyr::tally(x, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(x, cl), cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
   return(res)
 }
 
@@ -199,7 +199,7 @@ ungroup.cdm_table <- function(x, ...) {
   x <- keepClass(x)
   res <- dplyr::ungroup(x, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(x, cl), cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
   return(res)
 }
 
@@ -210,7 +210,7 @@ union.cdm_table <- function(x, ...) {
   x <- keepClass(x)
   res <- dplyr::union(x, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(x, cl), cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
   return(res)
 }
 
@@ -221,7 +221,7 @@ union_all.cdm_table <- function(x, ...) {
   x <- keepClass(x)
   res <- dplyr::union_all(x, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(x, cl), cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
   return(res)
 }
 
@@ -232,15 +232,15 @@ summarise.cdm_table <- function(.data, ...) {
   .data <- keepClass(.data)
   res <- dplyr::summarise(.data = .data, ...)
   res <- restoreClass(res, cl)
-  res <- restoreAttributes(res, keepAttributes(.data))
+  res <- restoreAttributes(res, keepAttributes(.data, cl))
   return(res)
 }
 
 keepAttributes <- function(x, cl) {
   xx <- list(
-    tbl_source = getTableSource(x),
-    tbl_name = getTableName(x),
-    cdm_reference = getCdmReference(x)
+    tbl_source = attr(x, "tbl_source"),
+    tbl_name = attr(x, "tbl_name"),
+    cdm_reference = attr(x, "cdm_reference")
   )
   if ("generated_cohort_set" %in% cl) {
     xx[["cohort_set"]] <- attr(x, "cohort_set")
@@ -254,15 +254,11 @@ keepClass <- function(x) {
       "cdm_table", "omop_table", "achilles_table", "generated_cohort_set"
     ))
 }
-restoreAttributes <- function(x, at, cl) {
+restoreAttributes <- function(x, at) {
   for (nm in names(at)) {
     if (!nm %in% names(attributes(x))) {
       attr(x, nm) <- at[[nm]]
     }
-  }
-  if ("generated_cohort_set" %in% cl) {
-    attr(x, "cohort_set") <- at[["cohort_set"]]
-    attr(x, "cohort_attrition") <- at[["cohort_attrition"]]
   }
   return(x)
 }
