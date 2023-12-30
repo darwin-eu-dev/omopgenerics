@@ -136,19 +136,6 @@ validateGeneratedCohortSet <- function(cohort) {
   checkColumnsCohort(cohort_set, "cohort_set")
   checkColumnsCohort(cohort_attrition, "cohort_attrition")
 
-  # classes attributes
-  clCohort <- cl(cohort)
-  clCohortSet <- cl(cohort_set)
-  clCohortAttrition <- cl(cohort_attrition)
-  if (!equal(clCohort, clCohortSet, clCohortAttrition)) {
-    cli::cli_abort(c(
-      "class of cohort objects must be the same:",
-      "*" = "class(cohort) = {clCohort}",
-      "*" = "class(cohort_set) = {clCohortSet}",
-      "*" = "class(cohort_attrition) = {clCohortAttrition}"
-    ))
-  }
-
   # cohort_definition_id the same
   cdiCohort <- cdi(cohort)
   cdiCohortSet <- cdi(cohort_set)
