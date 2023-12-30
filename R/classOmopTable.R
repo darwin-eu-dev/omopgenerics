@@ -26,7 +26,7 @@
 #'
 cdmTable <- function(table, src, name) {
   assertClass(src, class = "cdm_source")
-  assertCharacter(name, length = 1)
+  assertCharacter(name, length = 1, na = TRUE)
   table <- structure(.Data = table, tbl_source = src, tbl_name = name) |>
     addClass("cdm_table")
   if (any(colnames(table) != tolower(colnames(table)))) {
