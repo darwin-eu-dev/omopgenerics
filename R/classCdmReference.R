@@ -112,7 +112,7 @@ combine <- function(x) {
   if (length(x) < 2) {
     return(x)
   }
-  paste0(paste0(x[length(x) - 1], ", "), " and ", x[length(x)])
+  paste0(paste0(x[-length(x)], ", "), " and ", x[length(x)])
 }
 verb <- function(x) {
   ifelse(length(x) == 1, "is", "are")
