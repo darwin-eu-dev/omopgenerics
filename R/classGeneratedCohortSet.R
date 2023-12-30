@@ -136,16 +136,22 @@ validateGeneratedCohortSet <- function(cohort) {
   checkColumnsCohort(cohort_set, "cohort_set")
   checkColumnsCohort(cohort_attrition, "cohort_attrition")
 
-  # cohort_definition_id the same
+  # cohort_definition_id is coherent
   cdiCohort <- cdi(cohort)
   cdiCohortSet <- cdi(cohort_set)
   cdiCohortAttrition <- cdi(cohort_attrition)
-  if (!equal(cdiCohort, cdiCohortSet, cdiCohortAttrition)) {
+  if (!all(cdiCohortSet == cdiCohortAttrition)) {
     cli::cli_abort(c(
-      "Present cohort_definition_id must be the same in all elements",
-      "*" = "cohort: {cdiCohort}",
+      "Present cohort_definition_id must be the same:",
       "*" = "cohort_set: {cdiCohortSet}",
       "*" = "cohort_attrition: {cdiCohortAttrition}"
+    ))
+  }
+  if (!all(cdiCohort %in% cdiCohortSet)) {
+    cli::cli_abort(c(
+      "There are cohort_definition_id that appear in cohort and not in cohort_set:",
+      "*" = "cohort: {paste0(cdiCohort, collapse = ', ')}",
+      "*" = "cohort_set: {paste0(cdiCohortSet, collapse = ', ')}"
     ))
   }
 
@@ -198,8 +204,7 @@ cdi <- function(x) {
     dplyr::select("cohort_definition_id") |>
     dplyr::distinct() |>
     dplyr::pull() |>
-    sort() |>
-    paste0(collapse = ", ")
+    sort()
 }
 defaultCohortSet <- function(cohort, overwrite) {
   cohortName <- attr(cohort, "tbl_name")
