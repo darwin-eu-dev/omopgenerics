@@ -112,7 +112,7 @@ combine <- function(x) {
   if (length(x) < 2) {
     return(x)
   }
-  paste0(paste0(x[length(x) - 1], ", "), " and ", x[length(x)])
+  paste0(paste0(x[-length(x)], collapse = ", "), " and ", x[length(x)])
 }
 verb <- function(x) {
   ifelse(length(x) == 1, "is", "are")
@@ -297,7 +297,7 @@ print.cdm_reference <- function(x, ...) {
 #' @export
 #'
 collect.cdm_reference <- function(x, ...) {
-  name <- cdmName(cdm)
+  name <- cdmName(x)
   x <- unclass(x)
   tables <- list()
   cohortTables <- list()
