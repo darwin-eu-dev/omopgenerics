@@ -212,6 +212,7 @@ cdmVersion <- function(cdm) {
 #' @export
 #'
 `[[<-.cdm_reference` <- function(cdm, name, value) {
+  # check consistent naming of value
   if (!is.null(value)) {
     if (!"cdm_table" %in% class(value)) {
       cli::cli_abort(
@@ -230,11 +231,21 @@ cdmVersion <- function(cdm) {
       )
     }
   }
+
+  # check name lowercase
+  if (name != tolowercase(name)) {
+    cli::cli_abort("name should be lowercase.")
+  }
+
+  # remove cdm_reference
   attr(value, "cdm_reference") <- NULL
+
+  # assign
   cl <- class(cdm)
   cdm <- unclass(cdm)
   cdm[[name]] <- value
   class(cdm) <- cl
+
   return(cdm)
 }
 
