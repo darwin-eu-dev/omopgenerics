@@ -89,7 +89,7 @@ achillesTable <- function(table) {
     cli::cli_abort("{name} is not one of the achilles omop cdm tables.")
   }
 
-  cols <- omopColumns(table = name)
+  cols <- achillesColumns(table = name)
   checkColumnsCdm(table, name, cols)
 
   return(table)
