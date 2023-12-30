@@ -297,7 +297,7 @@ print.cdm_reference <- function(x, ...) {
 #' @export
 #'
 collect.cdm_reference <- function(x, ...) {
-  name <- cdmName(cdm)
+  name <- cdmName(x)
   x <- unclass(x)
   tables <- list()
   cohortTables <- list()
