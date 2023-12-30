@@ -34,22 +34,18 @@ compute.cdm_table <- function(x,
                               overwrite = TRUE,
                               ...) {
   src <- getTableSource(x)
-  x <- removeClass(x, "cdm_table")
-  x <- addClass(x, class(src))
-  x <- dplyr::compute(x = x, name = name, temporary = temporary, overwrite = overwrite)
-  if (temporary) {
-    name <- NA_character_
-  }
-  x <- removeClass(x, class(src)) |>
-    cdmTable(src = src, name = name)
+  cl <- class(src)[class(src) != "cdm_source"]
+  x <- x |>
+    removeClass("cdm_table") |>
+    addClass(cl) |>
+    dplyr::compute(name = name, temporary = temporary, overwrite = overwrite)
+  if (temporary) name <- NA_character_
+  x <- x |> removeClass(cl) |> cdmTable(src = src, name = name)
   return(x)
 }
 
 #' @export
-compute.local_cdm <- function(x,
-                              name = uniqueTableName(),
-                              temporary = TRUE,
-                              ...) {
+compute.local_cdm <- function(x, ...) {
   return(x)
 }
 
@@ -57,6 +53,7 @@ compute.local_cdm <- function(x,
 #'
 #' @return A string that can be used as a dbplyr temp table name
 #' @export
+#'
 uniqueTableName <- function() {
   i <- getOption("dbplyr_table_name", 0) + 1
   options(dbplyr_table_name = i)

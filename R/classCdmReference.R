@@ -92,7 +92,7 @@ validateCdmReference <- function(cdm) {
     cli::cli_abort("{combine(x)} {verb(x)} not included in the cdm object")
   }
 
-  # validate cdm tables
+  # validate omop tables
   omopTables <- omopTables(version = cdmVersion(cdm))
   omopTables <- omopTables[omopTables %in% names(cdm)]
   for (nm in omopTables) {
