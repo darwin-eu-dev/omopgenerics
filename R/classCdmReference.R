@@ -399,10 +399,10 @@ achillesColumns <- function(table, version = "5.3") {
   requiredColumns(table = table, version = version, type = "achilles")
 }
 
-assertVersion <- function(version, call = parent.env()) {
+assertVersion <- function(version, call = parent.frame()) {
   assertChoice(x = version, choices = c("5.3", "5.4"), call = call)
 }
-assertTable <- function(table, version, type, call = parent.env()) {
+assertTable <- function(table, version, type, call = parent.frame()) {
   assertChoice(x = table, choices = tableChoice(version, type), call = call)
 }
 tableChoice <- function(version, type) {
