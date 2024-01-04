@@ -51,14 +51,15 @@ cdmReference <- function(tables,
 }
 
 getVersion <- function(cdm) {
-  version <- tryCatch(
-    cdm[["cdm_source"]] |> dplyr::pull("cdm_version"),
+  version <- tryCatch({
+    version <- cdm[["cdm_source"]] |> dplyr::pull("cdm_version")
+    if (substr(version, 1, 1) == "v") {
+      version <- substr(version, 2, nchar(version))
+    }
+    substr(version, 1, 3)
+    },
     error = function(e) {"5.3"}
   )
-  if (substr(version, 1, 1) == "v") {
-    version <- substr(version, 2, nchar(version))
-  }
-  version <- substr(version, 1, 3)
   return(version)
 }
 newCdmReference <- function(tables, cdmName, cdmVersion, cdmSource) {
