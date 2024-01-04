@@ -74,6 +74,7 @@ test_that("test cdmFromTables", {
       )
     ),
     cdmName = "mock"
-  )
+  ) |>
+    expect_no_error()
 
 })
