@@ -48,7 +48,7 @@ test_that("bind a cohort_set", {
   )
   expect_no_error(newcdm <- bind(cdm$cohort1, cdm$cohort2, name = "new_cohort"))
   expect_true("new_cohort" %in% names(newcdm))
-  expect_true(inherits(newcdm$new_cohort, "generated_cohort_set"))
+  expect_true(inherits(newcdm$new_cohort, "cohort_table"))
   expect_true(all(c("cohort_set", "cohort_attrition") %in% names(attributes(newcdm$new_cohort))))
   expect_identical(
     settings(newcdm$new_cohort) |> data.frame(),

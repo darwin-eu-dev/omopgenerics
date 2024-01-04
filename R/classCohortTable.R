@@ -14,37 +14,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' `generated_cohort_set` objects constructor.
+#' `cohort_table` objects constructor.
 #'
-#' @param cohortRef Table with at least: cohort_definition_id, subject_id,
-#' cohort_start_date, cohort_end_date.
+#' @param table cdm_table object with at least: cohort_definition_id,
+#' subject_id, cohort_start_date, cohort_end_date.
 #' @param cohortSetRef Table with at least: cohort_definition_id, cohort_name
 #' @param cohortAttritionRef Table with at least: cohort_definition_id,
 #' number_subjects, number_records, reason_id, reason, excluded_subjects,
 #' excluded_records.
 #' @param overwrite Whether to overwrite a preexiting table with same name.
 #'
-#' @return A generated_cohort_set object
+#' @return A cohort_table object
 #'
 #' @export
 #'
-generatedCohortSet <- function(cohortRef,
-                               cohortSetRef = NULL,
-                               cohortAttritionRef = NULL,
-                               overwrite = TRUE) {
+cohortTable <- function(table,
+                        cohortSetRef = NULL,
+                        cohortAttritionRef = NULL,
+                        overwrite = TRUE) {
   # initial checks
-  assertClass(cohortRef, "cdm_table")
+  assertClass(table, "cdm_table")
   assertChoice(overwrite, choices = c(TRUE, FALSE), length = 1)
 
   # populate
-  cohortSetRef <- populateCohortSet(cohortRef, cohortSetRef, overwrite)
+  cohortSetRef <- populateCohortSet(table, cohortSetRef, overwrite)
   cohortAttritionRef <- populateCohortAttrition(
-    cohortRef, cohortSetRef, cohortAttritionRef, overwrite
+    table, cohortSetRef, cohortAttritionRef, overwrite
   )
 
   # constructor
   cohort <- constructGeneratedCohortSet(
-    cohortRef = cohortRef,
+    table = table,
     cohortSetRef = cohortSetRef,
     cohortAttritionRef = cohortAttritionRef
   )
@@ -56,35 +56,35 @@ generatedCohortSet <- function(cohortRef,
   return(cohort)
 }
 
-#' To collect a `generated_cohort_set` object.
+#' To collect a `cohort_table` object.
 #'
-#' @param x `generated_cohort_set` object.
+#' @param x `cohort_table` object.
 #' @param ... Not used (for compatibility).
 #'
-#' @return A data frame with the `generated_cohort_set`
+#' @return A data frame with the `cohort_table`
 #'
 #' @export
 #'
 #' @importFrom dplyr collect
 #'
-collect.generated_cohort_set <- function(x, ...) {
-  x <- removeClass(x, "generated_cohort_set")
+collect.cohort_table <- function(x, ...) {
+  x <- removeClass(x, "cohort_table")
   y <- x |> dplyr::collect()
   attr(y, "cohort_set") <- attr(x, "cohort_set") |> dplyr::collect()
   attr(y, "cohort_attrition") <- attr(x, "cohort_attrition") |> dplyr::collect()
   return(y)
 }
 
-constructGeneratedCohortSet <- function(cohortRef,
+constructGeneratedCohortSet <- function(table,
                                         cohortSetRef,
                                         cohortAttritionRef) {
-  cohortRef <- structure(
-    .Data = cohortRef,
+  table <- structure(
+    .Data = table,
     "cohort_set" = noReference(cohortSetRef),
     "cohort_attrition" = noReference(cohortAttritionRef)
   ) |>
-    addClass(c("generated_cohort_set", "GeneratedCohortSet"))
-  return(cohortRef)
+    addClass(c("cohort_table", "GeneratedCohortSet"))
+  return(table)
 }
 validateGeneratedCohortSet <- function(cohort) {
   # get attributes
@@ -127,7 +127,7 @@ validateGeneratedCohortSet <- function(cohort) {
     if (!all(cols %in% colnames(x))) {
       cli::cli_abort(paste0(
         "`", paste0(cols, collapse = "`, `"), "` must be column names of the ",
-        nam, " of a generated_cohort_set object."
+        nam, " of a cohort_table object."
       ))
     }
     invisible(NULL)
@@ -352,36 +352,36 @@ consistentNaming <- function(cohortName, cohortSetName, cohortAttritionName) {
   }
   return(invisible(TRUE))
 }
-populateCohortSet <- function(cohortRef, cohortSetRef, overwrite) {
+populateCohortSet <- function(table, cohortSetRef, overwrite) {
   if (is.null(cohortSetRef)) {
-    cohortSetRef <- defaultCohortSet(cohortRef, overwrite)
+    cohortSetRef <- defaultCohortSet(table, overwrite)
   } else if (!"cdm_table" %in% class(cohortSetRef)) {
-    cohortName <- getTableName(cohortRef)
+    cohortName <- getTableName(table)
     assertClass(cohortSetRef, "data.frame", null = TRUE)
     cohortSetRef <- dplyr::as_tibble(cohortSetRef)
     name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
     cohortSetRef <- insertTable(
-      cdm = getTableSource(cohortRef), name = name, table = cohortSetRef,
+      cdm = getTableSource(table), name = name, table = cohortSetRef,
       overwrite = overwrite
     )
   }
   return(cohortSetRef)
 }
-populateCohortAttrition <- function(cohortRef,
+populateCohortAttrition <- function(table,
                                     cohortSetRef,
                                     cohortAttritionRef,
                                     overwrite) {
   if (is.null(cohortAttritionRef)) {
     cohortAttritionRef <- defaultCohortAttrition(
-      cohortRef, cohortSetRef, overwrite
+      table, cohortSetRef, overwrite
     )
   } else if (!"cdm_table" %in% class(cohortAttritionRef)) {
-    cohortName <- getTableName(cohortRef)
+    cohortName <- getTableName(table)
     assertClass(cohortAttritionRef, "data.frame", null = TRUE)
     cohortAttritionRef <- dplyr::as_tibble(cohortAttritionRef)
     name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
     cohortAttritionRef <- insertTable(
-      cdm = getTableSource(cohortRef), name = name, table = cohortAttritionRef,
+      cdm = getTableSource(table), name = name, table = cohortAttritionRef,
       overwrite = overwrite
     )
   }

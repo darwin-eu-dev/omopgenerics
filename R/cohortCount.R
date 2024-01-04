@@ -14,15 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Get cohort counts from a generated_cohort_set object.
+#' Get cohort counts from a cohort_table object.
 #'
-#' @param cohort A generated_cohort_set object.
+#' @param cohort A cohort_table object.
 #'
 #' @return A table with the counts.
 #'
 #' @export
 cohortCount <- function(cohort) {
-  assertClass(cohort, "generated_cohort_set")
+  assertClass(cohort, "cohort_table")
   if (is.null(attr(cohort, "cohort_attrition"))) {
     cli::cli_abort("Cohort count does not exist for this cohort.")
   }

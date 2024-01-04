@@ -242,7 +242,7 @@ keepAttributes <- function(x, cl) {
     tbl_name = attr(x, "tbl_name"),
     cdm_reference = attr(x, "cdm_reference")
   )
-  if ("generated_cohort_set" %in% cl) {
+  if ("cohort_table" %in% cl) {
     xx[["cohort_set"]] <- attr(x, "cohort_set")
     xx[["cohort_attrition"]] <- attr(x, "cohort_attrition")
   }
@@ -251,7 +251,7 @@ keepAttributes <- function(x, cl) {
 keepClass <- function(x) {
   x |>
     removeClass(c(
-      "cdm_table", "omop_table", "achilles_table", "generated_cohort_set"
+      "cdm_table", "omop_table", "achilles_table", "cohort_table"
     ))
 }
 restoreAttributes <- function(x, at) {
@@ -264,9 +264,9 @@ restoreAttributes <- function(x, at) {
 }
 restoreClass <- function(x, cl) {
   x <- addClass(x, "cdm_table")
-  if ("generated_cohort_set" %in% cl &
+  if ("cohort_table" %in% cl &
       "cohort_definition_id" %in% colnames(x)) {
-    x <- addClass(x, "generated_cohort_set")
+    x <- addClass(x, "cohort_table")
   }
   return(x)
 }

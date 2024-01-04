@@ -165,11 +165,11 @@ summary.cdm_reference <- function(object, ...) {
 #' @param object A generated cohort set object.
 #' @param ... For compatibility (not used).
 #'
-#' @return A summarised_result object with a summary of a generated_cohort_set.
+#' @return A summarised_result object with a summary of a cohort_table.
 #'
 #' @export
 #'
-summary.generated_cohort_set <- function(object, ...) {
+summary.cohort_table <- function(object, ...) {
   if (is.null(attr(object, "cdm_reference"))) {
     cli::cli_abort(
       "Can't find the cdm that this cohort comes from

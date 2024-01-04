@@ -2,16 +2,16 @@
 % Please edit documentation in R/cohortCount.R
 \name{cohortCount}
 \alias{cohortCount}
-\title{Get cohort counts from a generated_cohort_set object.}
+\title{Get cohort counts from a cohort_table object.}
 \usage{
 cohortCount(cohort)
 }
 \arguments{
-\item{cohort}{A generated_cohort_set object.}
+\item{cohort}{A cohort_table object.}
 }
 \value{
 A table with the counts.
 }
 \description{
-Get cohort counts from a generated_cohort_set object.
+Get cohort counts from a cohort_table object.
 }

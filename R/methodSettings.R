@@ -25,14 +25,14 @@ settings <- function(x) {
   UseMethod("settings")
 }
 
-#' Get cohort settings from a generated_cohort_set object.
+#' Get cohort settings from a cohort_table object.
 #'
-#' @param x A generated_cohort_set object.
+#' @param x A cohort_table object.
 #'
 #' @return A table with the details of the cohort settings.
 #'
 #' @export
-settings.generated_cohort_set <- function(x) {
+settings.cohort_table <- function(x) {
   if (is.null(attr(x, "cohort_set"))) {
     cli::cli_abort("Cohort settings does not exist for this cohort.")
   }

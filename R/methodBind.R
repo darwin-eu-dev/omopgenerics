@@ -26,7 +26,7 @@ bind <- function(...) {
   UseMethod("bind")
 }
 
-#' Bind generated_cohort_set
+#' Bind cohort_table
 #'
 #' @param ... Generated cohort set objects to bind. At least two must be
 #' provided.
@@ -36,10 +36,10 @@ bind <- function(...) {
 #'
 #' @export
 #'
-bind.generated_cohort_set <- function(..., name) {
+bind.cohort_table <- function(..., name) {
   # initial checks
   cohorts <- list(...)
-  assertList(cohorts, class = "generated_cohort_set")
+  assertList(cohorts, class = "cohort_table")
   if (length(cohorts) < 2) {
     cli::cli_abort(
       "Only {length(cohorts)} cohort provided, at least 2 must be provided."
@@ -108,8 +108,8 @@ bind.generated_cohort_set <- function(..., name) {
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_set")))
 
   # instantiate the new generated cohort set
-  cdm[[name]] <- generatedCohortSet(
-    cohortRef = newCohort,
+  cdm[[name]] <- cohortTable(
+    table = newCohort,
     cohortSetRef = newCohortSet,
     cohortAttritionRef = newCohortAttrition
   )

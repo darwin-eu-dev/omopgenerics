@@ -44,7 +44,7 @@ cdmFromTables <- function(tables,
   for (nm in names(cohortTables)) {
     cdm <- insertTable(cdm = cdm, name = nm, table = cohortTables[[nm]])
     cdm[[nm]] <- cdm[[nm]] |>
-      generatedCohortSet(
+      cohortTable(
         cohortSetRef = attr(cohortTables[[nm]], "cohort_set"),
         cohortAttritionRef = attr(cohortTables[[nm]], "cohort_attrition"),
         overwrite = TRUE

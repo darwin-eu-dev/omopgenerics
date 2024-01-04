@@ -264,8 +264,8 @@ print.cdm_reference <- function(x, ...) {
     cl <- base::class(x[[nm]])
     if ("omop_table" %in% cl) {
       return("omop_table")
-    } else if ("generated_cohort_set" %in% cl) {
-      return("generated_cohort_set")
+    } else if ("cohort_table" %in% cl) {
+      return("cohort_table")
     } else if ("achilles_table" %in% cl) {
       return("achilles_table")
     } else {
@@ -274,7 +274,7 @@ print.cdm_reference <- function(x, ...) {
   }) |>
     unlist()
   omop <- nms[classes == "omop_table"]
-  cohort <- nms[classes == "generated_cohort_set"]
+  cohort <- nms[classes == "cohort_table"]
   achilles <- nms[classes == "achilles_table"]
   other <- nms[classes == "cdm_table"]
   if (length(omop) == 0) omop <- "-"
@@ -302,7 +302,7 @@ collect.cdm_reference <- function(x, ...) {
   tables <- list()
   cohortTables <- list()
   for (nm in names(x)) {
-    if (inherits(x[[nm]], "generated_cohort_set")) {
+    if (inherits(x[[nm]], "cohort_table")) {
       cohortTables[[nm]] <- x[[nm]] |> dplyr::collect()
     } else {
       tables[[nm]] <- x[[nm]] |> dplyr::collect()

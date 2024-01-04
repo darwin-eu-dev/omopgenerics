@@ -2,7 +2,7 @@
 title: "Generated cohort set"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{a03_generated_cohort_set}
+  %\VignetteIndexEntry{a03_cohort_table}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

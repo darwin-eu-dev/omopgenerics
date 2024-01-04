@@ -25,14 +25,14 @@ attrition <- function(x) {
   UseMethod("attrition")
 }
 
-#' Get cohort attrition from a generated_cohort_set object.
+#' Get cohort attrition from a cohort_table object.
 #'
-#' @param x A generated_cohort_set object.
+#' @param x A cohort_table object.
 #'
 #' @return A table with the attrition.
 #'
 #' @export
-attrition.generated_cohort_set <- function(x) {
+attrition.cohort_table <- function(x) {
   if (is.null(attr(x, "cohort_attrition"))) {
     cli::cli_abort("Cohort attrition does not exist for this cohort.")
   }
