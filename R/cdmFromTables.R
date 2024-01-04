@@ -29,9 +29,18 @@ cdmFromTables <- function(tables,
                           cdmName,
                           cohortTables = list()) {
   # check input
-  assertCharacter(cdmName, length = 1)
   assertList(tables, named = TRUE, class = "data.frame")
   assertList(cohortTables, named = TRUE, class = "data.frame")
+  if (is.missing(cdmName)) {
+    if ("cdm_source" %in% names(tables)) {
+      cdmName <- tables[["cdm_source"]] |> dplyr::pull("cdm_source_name")
+      cli::cli_alert_warning("cdmName not provided, obtained from cdm_source table.")
+    } else {
+      cli::cli_abort("cdmName not provided")
+    }
+  }
+  assertCharacter(cdmName, length = 1)
+
 
   src <- localSource()
   for (nm in names(tables)) {
