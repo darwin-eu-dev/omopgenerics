@@ -14,26 +14,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Create an omop table from a cdm table.
+#' Create an achilles table from a cdm_table.
 #'
 #' @param table A cdm_table.
 #'
-#' @return An omop_table object
+#' @return An achilles_table object
 #'
 #' @export
 #'
-omopTable <- function(table) {
+achillesTable <- function(table) {
   # create the structure
   assertClass(table, class = "cdm_table")
-  table <- addClass(table, "omop_table")
+  table <- addClass(table, "achilles_table")
   name <- getTableName(table)
 
   # validation
-  if (!getTableName(table) %in% omopTables()) {
-    cli::cli_abort("{name} is not one of the omop cdm standard tables.")
+  if (!name %in% achillesTables()) {
+    cli::cli_abort("{name} is not one of the achilles omop cdm tables.")
   }
 
-  cols <- omopColumns(table = getTableName(table))
+  cols <- achillesColumns(table = name)
   checkColumnsCdm(table, name, cols)
 
   return(table)
