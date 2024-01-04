@@ -22,19 +22,22 @@
 #' @param cohortAttritionRef Table with at least: cohort_definition_id,
 #' number_subjects, number_records, reason_id, reason, excluded_subjects,
 #' excluded_records.
-#' @param overwrite Whether to overwrite a preexiting table with same name.
+#' @param overwrite Whether to overwrite a preexisting table with same name.
+#' @param .softValidation Whether to perform a soft validation of consistency.
 #'
 #' @return A cohort_table object
 #'
 #' @export
 #'
 cohortTable <- function(table,
-                        cohortSetRef = NULL,
-                        cohortAttritionRef = NULL,
-                        overwrite = TRUE) {
+                        cohortSetRef = attr(table, "cohort_set"),
+                        cohortAttritionRef = attr(table, "cohort_attrition"),
+                        overwrite = TRUE,
+                        .softValidation = FALSE) {
   # initial checks
   assertClass(table, "cdm_table")
   assertChoice(overwrite, choices = c(TRUE, FALSE), length = 1)
+  assertChoice(.softValidation, choices = c(TRUE, FALSE), length = 1)
 
   # populate
   cohortSetRef <- populateCohortSet(table, cohortSetRef, overwrite)
@@ -50,7 +53,7 @@ cohortTable <- function(table,
   )
 
   # validate
-  cohort <- validateGeneratedCohortSet(cohort)
+  cohort <- validateGeneratedCohortSet(cohort, soft = .softValidation)
 
   # return
   return(cohort)
@@ -86,7 +89,7 @@ constructGeneratedCohortSet <- function(table,
     addClass(c("cohort_table", "GeneratedCohortSet"))
   return(table)
 }
-validateGeneratedCohortSet <- function(cohort) {
+validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
   # get attributes
   cohort_set <- attr(cohort, "cohort_set")
   cohort_attrition <- attr(cohort, "cohort_attrition")
@@ -175,14 +178,16 @@ validateGeneratedCohortSet <- function(cohort) {
   attr(cohort, "cohort_attrition") <- attr(cohort, "cohort_attrition") |>
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_attrition")))
 
-  # check NA
-  checkNaCohort(cohort)
+  if (!soft) {
+    # check NA
+    checkNaCohort(cohort)
 
-  # check within observation period
-  checkObservationPeriod(cohort)
+    # check within observation period
+    checkObservationPeriod(cohort)
 
-  # check overlap
-  checkOverlap(cohort)
+    # check overlap
+    checkOverlap(cohort)
+  }
 
   return(cohort)
 }

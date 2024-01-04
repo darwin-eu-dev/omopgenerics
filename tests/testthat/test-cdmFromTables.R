@@ -45,4 +45,16 @@ test_that("test cdmFromTables", {
   expect_equal(settings(cdm$cohort1), dplyr::tibble(
     "cohort_definition_id" = 1, "cohort_name" = "my_cohort"
   ))
+
+  expect_warning(
+    cdm <- cdmFromTables(
+      tables = list(
+        "person" = person, "observation_period" = observation_period,
+        "cdm_source" = dplyr::tibble(cdm_source_name = "mocktest")
+      ),
+      cohortTables = list("cohort1" = cohort)
+    )
+  )
+  expect_identical(cdmName(cdm), "mocktest")
+
 })

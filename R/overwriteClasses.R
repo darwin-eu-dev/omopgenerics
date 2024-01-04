@@ -83,6 +83,17 @@ cross_join.cdm_table <- function(x, ...) {
 }
 
 #' @export
+#' @importFrom dplyr filter
+filter.cdm_table <- function(.data, ...) {
+  cl <- class(.data)
+  .data <- keepClass(.data)
+  res <- dplyr::filter(.data = .data, ...)
+  res <- restoreClass(res, cl)
+  res <- restoreAttributes(res, keepAttributes(.data, cl))
+  return(res)
+}
+
+#' @export
 #' @importFrom dplyr full_join
 full_join.cdm_table <- function(x, ...) {
   cl <- class(x)
@@ -249,10 +260,9 @@ keepAttributes <- function(x, cl) {
   return(xx)
 }
 keepClass <- function(x) {
-  x |>
-    removeClass(c(
-      "cdm_table", "omop_table", "achilles_table", "cohort_table"
-    ))
+  removeClass(x = x, value = c(
+    "cdm_table", "omop_table", "achilles_table", "cohort_table"
+  ))
 }
 restoreAttributes <- function(x, at) {
   for (nm in names(at)) {

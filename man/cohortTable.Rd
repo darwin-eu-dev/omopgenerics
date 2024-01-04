@@ -6,9 +6,10 @@
 \usage{
 cohortTable(
   table,
-  cohortSetRef = NULL,
-  cohortAttritionRef = NULL,
-  overwrite = TRUE
+  cohortSetRef = attr(table, "cohort_set"),
+  cohortAttritionRef = attr(table, "cohort_attrition"),
+  overwrite = TRUE,
+  .softValidation = FALSE
 )
 }
 \arguments{
@@ -21,7 +22,9 @@ subject_id, cohort_start_date, cohort_end_date.}
 number_subjects, number_records, reason_id, reason, excluded_subjects,
 excluded_records.}
 
-\item{overwrite}{Whether to overwrite a preexiting table with same name.}
+\item{overwrite}{Whether to overwrite a preexisting table with same name.}
+
+\item{.softValidation}{Whether to perform a soft validation of consistency.}
 }
 \value{
 A cohort_table object
