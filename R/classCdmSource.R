@@ -44,14 +44,18 @@ newCdmSource <- function(src, sourceType) {
 validateCdmSource <- function(src) {
   # toy data
   name <- paste0(c(sample(letters, 5, replace = TRUE), "_test_table"), collapse = "")
-  table <- datasets::cars
+  table <- datasets::cars |>
+    dplyr::arrange(dplyr::across(c("speed", "dist")))
 
   # insert table
   tab <- insertTable(cdm = src, name = name, table = table)
   validateX(x = tab, name = name, fun = "insertTable")
 
   # check inserted table
-  x <- tab |> dplyr::collect() |> unclass()
+  x <- tab |>
+    dplyr::collect() |>
+    dplyr::arrange(dplyr::across(c("speed", "dist"))) |>
+    unclass()
   attr(x, "tbl_source") <- NULL
   attr(x, "tbl_name") <- NULL
   if (!identical(x, unclass(table))) {
