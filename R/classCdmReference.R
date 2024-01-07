@@ -216,9 +216,19 @@ cdmVersion <- function(cdm) {
   # check consistent naming of value
   if (!is.null(value)) {
     if (!"cdm_table" %in% class(value)) {
-      cli::cli_abort(
-        "You can only assign cdm_table objects to a cdm object. The object has
-        class: {paste0(class(value), collapse = ', ')}."
+      call <- parent.frame()
+      value <- tryCatch(
+        expr = insertFromSource(cdm, value),
+        error = function(e) {
+          cli::cli_abort(
+            message = c(
+              "The object is not a cdm_table and it could not convert to a
+              cdm_table.",
+              as.character(e$message)
+            ),
+            call = call
+          )
+        }
       )
     }
     if (!identical(getTableSource(value), getCdmSource(cdm))) {
