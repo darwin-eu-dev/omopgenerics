@@ -12,6 +12,8 @@ test_that("insertFromSource", {
   cdm <- cdmFromTables(
     tables = list("person" = person, "observation_period" = observation_period),
     cdmName = "test"
-  ) |>
-    expect_no_error()
+  )
+  cdm$test <- dplyr::tibble(a = 1) |> expect_no_error()
+  expect_true(inherits(cdm$test, "cdm_table"))
+  expect_error(cdm$xxx <- "a")
 })
