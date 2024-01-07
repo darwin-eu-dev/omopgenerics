@@ -244,7 +244,7 @@ cdmVersion <- function(cdm) {
   }
 
   # check name lowercase
-  if (name != tolower(name)) {
+  if (all(name != tolower(name))) {
     cli::cli_abort("name should be lowercase.")
   }
 
