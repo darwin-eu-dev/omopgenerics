@@ -20,6 +20,8 @@
 #' @param cdm A cdm_reference object.
 #' @param value A table that shares source with the cdm_reference object.
 #'
+#' @export
+#'
 insertFromSource <- function(cdm, value) {
   UseMethod("insertFromSource", getCdmSource(cdm))
 }
