@@ -180,7 +180,10 @@ cdmVersion <- function(cdm) {
 #' @return A single cdm table reference
 #' @export
 `[[.cdm_reference` <- function(x, name) {
-  if (!name %in% names(x)) return(NULL)
+  if (all(!name %in% names(x))) return(NULL)
+  if (length(name) > 1) {
+    cli::cli_abort("You can only read one table of a cdm_reference.")
+  }
   xraw <- unclass(x)
   tbl <- xraw[[name]]
   attr(tbl, "cdm_reference") <- x
@@ -241,6 +244,10 @@ cdmVersion <- function(cdm) {
         compute to change table name."
       )
     }
+  }
+
+  if (length(name) > 1) {
+    cli::cli_abort("You can only edit one table of a cdm_reference.")
   }
 
   # check name lowercase
