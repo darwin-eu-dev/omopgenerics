@@ -218,7 +218,7 @@ cdmVersion <- function(cdm) {
     if (!"cdm_table" %in% class(value)) {
       call <- parent.frame()
       value <- tryCatch(
-        expr = asdfghj,#convertToCdmTable(cdm, value),
+        expr = insertFromSource(cdm, value),
         error = function(e) {
           cli::cli_abort(
             message = c(
