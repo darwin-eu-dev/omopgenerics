@@ -35,13 +35,18 @@ compute.cdm_table <- function(x,
                               ...) {
   src <- getTableSource(x)
   cl <- class(src)[class(src) != "cdm_source"]
-  x <- x |>
-    removeClass("cdm_table") |>
+  cx <- class(x)
+  res <- x |>
+    keepClass() |>
     addClass(cl) |>
     dplyr::compute(name = name, temporary = temporary, overwrite = overwrite)
   if (temporary) name <- NA_character_
-  x <- x |> removeClass(cl) |> cdmTable(src = src, name = name)
-  return(x)
+  res <- res |>
+    removeClass(cl) |>
+    cdmTable(src = src, name = name) |>
+    restoreClass(cx) |>
+    restoreAttributes(keepAttributes(x, cx))
+  return(res)
 }
 
 #' @export
