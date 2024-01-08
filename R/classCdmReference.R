@@ -19,19 +19,23 @@
 #' @param tables List of tables that are part of the OMOP Common Data Model
 #' reference.
 #' @param cdmName Name of the cdm object.
+#' @param cdmVersion Version of the cdm. Supported versions 5.3 and 5.4.
 #'
 #' @return A `cdm_reference` object.
 #'
 #' @export
 #'
 cdmReference <- function(tables,
-                         cdmName) {
+                         cdmName,
+                         cdmVersion = NULL) {
   # inputs
   assertList(tables, named = TRUE, class = "cdm_table")
   assertCharacter(cdmName, length = 1)
 
   # get cdm version
-  cdmVersion <- getVersion(tables)
+  if (is.null(cdmVersion)) {
+    cdmVersion <- getVersion(tables)
+  }
 
   # get cdm source
   if (length(tables) < 2) {
@@ -52,8 +56,10 @@ cdmReference <- function(tables,
 
 getVersion <- function(cdm) {
   version <- tryCatch({
-    version <- cdm[["cdm_source"]] |> dplyr::pull("cdm_version")
-    if (substr(version, 1, 1) == "v") {
+    version <- cdm[["cdm_source"]] |>
+      dplyr::pull("cdm_version") |>
+      as.character()
+    if (tolower(substr(version, 1, 1)) == "v") {
       version <- substr(version, 2, nchar(version))
     }
     substr(version, 1, 3)
