@@ -4,13 +4,15 @@
 \alias{cdmReference}
 \title{\code{cdm_reference} objects constructor}
 \usage{
-cdmReference(tables, cdmName)
+cdmReference(tables, cdmName, cdmVersion = NULL)
 }
 \arguments{
 \item{tables}{List of tables that are part of the OMOP Common Data Model
 reference.}
 
 \item{cdmName}{Name of the cdm object.}
+
+\item{cdmVersion}{Version of the cdm. Supported versions 5.3 and 5.4.}
 }
 \value{
 A \code{cdm_reference} object.
