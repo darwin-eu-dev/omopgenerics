@@ -17,14 +17,14 @@
 #' @export
 #' @importFrom dplyr arrange
 arrange.cdm_table <- function(.data, ...) {
-  if ("tbl_lazy" %in% class(.data)) {
-    .data <- removeClass(.data, "cdm_table")
-    x <- dbplyr::window_order(.data, ...)
-    .data <- addClass(.data, "cdm_table")
+  cl <- class(.data)
+  .data <- keepClass(.data)
+  if ("tbl_lazy" %in% cl) {
+    res <- dbplyr::window_order(.data, ...)
   } else {
-    .data <- removeClass(.data, "cdm_table")
-    x <- dplyr::arrange(.data, ...)
-    .data <- addClass(.data, "cdm_table")
+    res <- dplyr::arrange(.data, ...)
   }
-  return(x)
+  res <- restoreClass(res, cl)
+  res <- restoreAttributes(res, keepAttributes(.data, cl))
+  return(res)
 }
