@@ -63,14 +63,12 @@ suppress.summarised_result <- function(result,
   # loop for different columns
   for (col in variable) {
     result <- result |>
-      # as numeric
-      dplyr::mutate(!!col := suppressWarnings(as.numeric(.data[[col]]))) |>
       # obscure groups flag
       obscureGroups(minCellCount, col, estimateName, group, groupCount) |>
       # obscure records
       obscureRecords(minCellCount, col, estimateName) |>
       # obscure linked
-      obscureLinked(linkEstimates, variable) |>
+      obscureLinked(linkEstimates, col) |>
       # obscure col
       obscureColumn(col, minCellCount, groupCount, linkEstimates)
   }
@@ -84,7 +82,8 @@ filterData <- function(result, minCellCount, variable, estimateName) {
   }
   result <- result |>
     dplyr::filter(
-      .data[[variable]] < .env$minCellCount & .data[[variable]] > 0
+      as.numeric(.data[[variable]]) < .env$minCellCount &
+        as.numeric(.data[[variable]]) > 0
     )
   return(result)
 }
@@ -119,8 +118,9 @@ obscureRecords <- function(result, minCellCount, variable, estimateName) {
   return(result)
 }
 obscureLinked <- function(result, linkEstimates, variable) {
+  not <- c(variable, "estimate_type", "obscure_linked", "obscure_group", "obscure_record")
   cols <- colnames(result)
-  cols <- cols[!(cols %in% variable)]
+  cols <- cols[!(cols %in% not)]
   result <- result |>
     dplyr::mutate(obscure_linked = 0)
   for (k in seq_along(linkEstimates)) {
@@ -139,18 +139,15 @@ obscureLinked <- function(result, linkEstimates, variable) {
             ),
             by = "estimate_name"
           ) |>
-          dplyr::select(-dplyr::all_of(c("estimate_name", variable, "obscure_linked"))) |>
+          dplyr::select(-dplyr::all_of(c("estimate_name",not))) |>
           dplyr::rename("estimate_name" = "new_estimate_name") |>
           dplyr::mutate(obscure_linked_k = 1),
         by = cols
       ) |>
       dplyr::mutate(obscure_linked = dplyr::if_else(
-        .data$obscure_linked_k == 1, 1, .data$obscure_linked
+        !is.na(.data$obscure_linked_k), 1, .data$obscure_linked
       )) |>
-      dplyr::select(-"obscure_linked_k") |>
-      dplyr::mutate(obscure_linked = dplyr::if_else(is.na(.data$obscure_linked),
-                                                    0,
-                                                    .data$obscure_linked))
+      dplyr::select(-"obscure_linked_k")
   }
   return(result)
 }
