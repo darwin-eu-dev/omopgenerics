@@ -82,8 +82,15 @@ cross_join.cdm_table <- function(x, ...) {
   return(res)
 }
 
-#' @export
+#' Filter
+#' @param .data Data
+#' @param ... Other args
+#' @name filter
 #' @importFrom dplyr filter
+#' @export filter
+NULL
+
+#' @export
 filter.cdm_table <- function(.data, ...) {
   cl <- class(.data)
   .data <- keepClass(.data)
