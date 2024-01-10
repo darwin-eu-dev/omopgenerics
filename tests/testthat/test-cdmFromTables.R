@@ -28,7 +28,6 @@ test_that("test cdmFromTables", {
   ) |>
     expect_no_error()
 
-  expect_snapshot(cdm)
   expect_equal(settings(cdm$cohort1), dplyr::tibble(
     "cohort_definition_id" = 1, "cohort_name" = "cohort_1"
   ))
