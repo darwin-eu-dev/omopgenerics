@@ -22,7 +22,6 @@
 #' @param cohortAttritionRef Table with at least: cohort_definition_id,
 #' number_subjects, number_records, reason_id, reason, excluded_subjects,
 #' excluded_records.
-#' @param overwrite Whether to overwrite a preexisting table with same name.
 #' @param .softValidation Whether to perform a soft validation of consistency.
 #'
 #' @return A cohort_table object
@@ -32,17 +31,15 @@
 cohortTable <- function(table,
                         cohortSetRef = attr(table, "cohort_set"),
                         cohortAttritionRef = attr(table, "cohort_attrition"),
-                        overwrite = TRUE,
                         .softValidation = FALSE) {
   # initial checks
   assertClass(table, "cdm_table")
-  assertChoice(overwrite, choices = c(TRUE, FALSE), length = 1)
   assertChoice(.softValidation, choices = c(TRUE, FALSE), length = 1)
 
   # populate
-  cohortSetRef <- populateCohortSet(table, cohortSetRef, overwrite)
+  cohortSetRef <- populateCohortSet(table, cohortSetRef)
   cohortAttritionRef <- populateCohortAttrition(
-    table, cohortSetRef, cohortAttritionRef, overwrite
+    table, cohortSetRef, cohortAttritionRef
   )
 
   # constructor
@@ -165,9 +162,27 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
   }
   notSnake <- cohortNames[!isSnakeCase(cohortNames)]
   if (length(notSnake)) {
-    cli::cli_abort(
-      "cohort_name must be snake case: {paste0(notSnake, collapse = ', ')}"
+    oldName <- notSnake
+    newName <- snakecase::to_snake_case(notSnake)
+    x <- paste0(oldName, " -> ", newName)
+    names(x) <- rep("*", length(x))
+    cli::cli_warn(c(
+      "cohort_name must be snake case, the following cohorts will be renamed:",
+      x
+    ))
+    nameChange <- dplyr::tibble(
+      "xyz_cohort_name" = newName, "cohort_name" = oldName
     )
+    attr(cohort, "cohort_set") <- attr(cohort, "cohort_set") |>
+      dplyr::left_join(nameChange, by = "cohort_name", copy = TRUE) |>
+      dplyr::mutate("cohort_name" = dplyr::if_else(
+        is.na(.data$xyz_cohort_name), .data$cohort_name, .data$xyz_cohort_name
+      )) |>
+      dplyr::select(-"xyz_cohort_name") |>
+      dplyr::compute(
+        name = paste0(getTableName(cohort), "_set"), temporary = FALSE,
+        overwrite = TRUE
+      )
   }
 
   # make correct order
@@ -179,6 +194,9 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_attrition")))
 
   if (!soft) {
+    # check start before end
+    checkStartEnd(cohort)
+
     # check NA
     checkNaCohort(cohort)
 
@@ -211,7 +229,7 @@ cdi <- function(x) {
     dplyr::pull() |>
     sort()
 }
-defaultCohortSet <- function(cohort, overwrite) {
+defaultCohortSet <- function(cohort) {
   cohortName <- attr(cohort, "tbl_name")
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
   cohort |>
@@ -221,9 +239,9 @@ defaultCohortSet <- function(cohort, overwrite) {
       "cohort_definition_id" = as.integer(.data$cohort_definition_id),
       "cohort_name" = paste0("cohort_", as.character(.data$cohort_definition_id))
     ) |>
-    compute(name = name, temporary = FALSE, overwrite = overwrite)
+    collect()
 }
-defaultCohortAttrition <- function(cohort, set, overwrite) {
+defaultCohortAttrition <- function(cohort, set) {
   cohortName <- attr(cohort, "tbl_name")
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
   x <- cohort |>
@@ -249,8 +267,32 @@ defaultCohortAttrition <- function(cohort, set, overwrite) {
       "excluded_records" = 0,
       "excluded_subjects" = 0
     ) |>
-    compute(name = name, temporary = FALSE, overwrite = overwrite)
+    collect()
   return(x)
+}
+checkStartEnd <- function(cohort, call = parent.frame()) {
+  x <- cohort |>
+    dplyr::filter(.data$cohort_end_date < .data$cohort_start_date) |>
+    dplyr::collect()
+  if (nrow(x) > 0){
+    x5 <- x |>
+      dplyr::ungroup() |>
+      dplyr::select(dplyr::all_of(cohortColumns("cohort"))) |>
+      utils::head(5) |>
+      dplyr::glimpse() |>
+      print(width = Inf) |>
+      utils::capture.output()
+    cli::cli_abort(
+      message = c(
+        "cohort_start_date must be <= tham cohort_end_date. There are {nrow(x)}
+        entries where cohort_end_date < cohort_start_date
+        {ifelse(nrow(x)<=5, ':', ' first 5:')}",
+        x5[3:7]
+      ),
+      call = call
+    )
+  }
+  return(invisible(TRUE))
 }
 checkOverlap <- function(cohort, call = parent.frame()) {
   x <- cohort |>
@@ -357,38 +399,35 @@ consistentNaming <- function(cohortName, cohortSetName, cohortAttritionName) {
   }
   return(invisible(TRUE))
 }
-populateCohortSet <- function(table, cohortSetRef, overwrite) {
+populateCohortSet <- function(table, cohortSetRef) {
   if (is.null(cohortSetRef)) {
-    cohortSetRef <- defaultCohortSet(table, overwrite)
-  } else if (!"cdm_table" %in% class(cohortSetRef)) {
-    cohortName <- getTableName(table)
-    assertClass(cohortSetRef, "data.frame", null = TRUE)
-    cohortSetRef <- dplyr::as_tibble(cohortSetRef)
-    name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
-    cohortSetRef <- insertTable(
-      cdm = getTableSource(table), name = name, table = cohortSetRef,
-      overwrite = overwrite
-    )
+    cohortSetRef <- defaultCohortSet(table)
+  } else {
+    cohortSetRef <- cohortSetRef |> dplyr::collect()
   }
+  cohortName <- getTableName(table)
+  assertClass(cohortSetRef, "data.frame", null = TRUE)
+  cohortSetRef <- dplyr::as_tibble(cohortSetRef)
+  name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
+  cohortSetRef <- insertTable(
+    cdm = getTableSource(table), name = name, table = cohortSetRef,
+    overwrite = TRUE
+  )
   return(cohortSetRef)
 }
-populateCohortAttrition <- function(table,
-                                    cohortSetRef,
-                                    cohortAttritionRef,
-                                    overwrite) {
+populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
   if (is.null(cohortAttritionRef)) {
-    cohortAttritionRef <- defaultCohortAttrition(
-      table, cohortSetRef, overwrite
-    )
-  } else if (!"cdm_table" %in% class(cohortAttritionRef)) {
-    cohortName <- getTableName(table)
-    assertClass(cohortAttritionRef, "data.frame", null = TRUE)
-    cohortAttritionRef <- dplyr::as_tibble(cohortAttritionRef)
-    name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
-    cohortAttritionRef <- insertTable(
-      cdm = getTableSource(table), name = name, table = cohortAttritionRef,
-      overwrite = overwrite
-    )
+    cohortAttritionRef <- defaultCohortAttrition(table, cohortSetRef)
+  } else {
+    cohortAttritionRef <- cohortAttritionRef |> dplyr::collect()
   }
+  cohortName <- getTableName(table)
+  assertClass(cohortAttritionRef, "data.frame", null = TRUE)
+  cohortAttritionRef <- dplyr::as_tibble(cohortAttritionRef)
+  name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
+  cohortAttritionRef <- insertTable(
+    cdm = getTableSource(table), name = name, table = cohortAttritionRef,
+    overwrite = TRUE
+  )
   return(cohortAttritionRef)
 }

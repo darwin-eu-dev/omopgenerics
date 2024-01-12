@@ -8,7 +8,6 @@ cohortTable(
   table,
   cohortSetRef = attr(table, "cohort_set"),
   cohortAttritionRef = attr(table, "cohort_attrition"),
-  overwrite = TRUE,
   .softValidation = FALSE
 )
 }
@@ -21,8 +20,6 @@ subject_id, cohort_start_date, cohort_end_date.}
 \item{cohortAttritionRef}{Table with at least: cohort_definition_id,
 number_subjects, number_records, reason_id, reason, excluded_subjects,
 excluded_records.}
-
-\item{overwrite}{Whether to overwrite a preexisting table with same name.}
 
 \item{.softValidation}{Whether to perform a soft validation of consistency.}
 }

@@ -43,7 +43,7 @@ test_that("test create cohort", {
   )
 
   set$cohort_name <- "Cohort 1"
-  expect_error(cohortTable(table = cdm$cohort1, cohortSetRef = set, cohortAttritionRef = attrition))
+  expect_warning(cohortTable(table = cdm$cohort1, cohortSetRef = set, cohortAttritionRef = attrition))
 
   cdm <- insertTable(
     cdm = cdm,
@@ -201,7 +201,10 @@ test_that("test create cohort", {
   # no snake name
   set <- defaultCohortSet(cdm$cohort1) |>
     dplyr::mutate("cohort_name" = "COHORT 1")
-  expect_error(cohortTable(table = cdm$cohort1, cohortSetRef = set))
+  expect_warning(
+    cdm$cohort1 <- cohortTable(table = cdm$cohort1, cohortSetRef = set)
+  )
+  expect_true(settings(cdm$cohort1) |> dplyr::pull("cohort_name") == "cohort_1")
 
   # wrong naming
   cdm <- insertTable(
@@ -209,20 +212,6 @@ test_that("test create cohort", {
   )
   expect_no_error(cohortTable(
     table = cdm$cohort1, cohortSetRef = cdm$cohort1_set
-  ))
-  cdm <- insertTable(
-    cdm = cdm, name = "cohort1_setting", table = defaultCohortSet(cdm$cohort1)
-  )
-  expect_error(cohortTable(
-    table = cdm$cohort1, cohortSetRef = cdm$cohort1_setting
-  ))
-  cdm <- insertTable(
-    cdm = cdm, name = "my_table",
-    table = defaultCohortAttrition(cdm$cohort1, defaultCohortSet(cdm$cohort1))
-  )
-  expect_error(cohortTable(
-    table = cdm$cohort1, cohortSetRef = cdm$cohort1_setting,
-    cohortAttritionRef = cdm$my_table
   ))
 
   # test NA
@@ -249,5 +238,12 @@ test_that("test create cohort", {
   ))
   expect_error(cohortTable(table = cdm$cohort1))
 
+  # test start before end
+  cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
+    cohort_definition_id = 1, subject_id = 1,
+    cohort_start_date = as.Date(c("2020-01-01")),
+    cohort_end_date = as.Date(c("2019-01-10"))
+  ))
+  expect_error(cohortTable(table = cdm$cohort1))
 })
 

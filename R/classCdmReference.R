@@ -103,15 +103,38 @@ validateCdmReference <- function(cdm) {
   omopTables <- omopTables(version = cdmVersion(cdm))
   omopTables <- omopTables[omopTables %in% names(cdm)]
   for (nm in omopTables) {
-    cdm[[nm]] <- omopTable(cdm[[nm]])
+    if (nm %in% c("person", "observation_period")) {
+      cdm[[nm]] <- omopTable(cdm[[nm]])
+    } else {
+      cdm[[nm]] <- tryCatch(
+        expr = {omopTable(cdm[[nm]])},
+        error = function(e){
+          cli::cli_warn(c(
+            "{nm} table not included in cdm because:", as.character(e)
+          ))
+          return(NULL)
+        }
+      )
+    }
   }
 
   # validate achilles tables
   achillesTables <- achillesTables(version = cdmVersion(cdm))
   achillesTables <- achillesTables[achillesTables %in% names(cdm)]
   for (nm in achillesTables) {
-    cdm[[nm]] <- achillesTable(cdm[[nm]])
+    tryCatch(
+      expr = {cdm[[nm]] <- achillesTable(cdm[[nm]])},
+      error = function(e){
+        cli::cli_warn(c(
+          "{nm} table not included in cdm because:", as.character(e)
+        ))
+        cdm[[nm]] <- NULL
+      }
+    )
   }
+
+  # not overlapping periods
+  checkOverlapObservation(cdm$observation_period)
 
   return(invisible(cdm))
 }
@@ -139,6 +162,35 @@ checkColumnsCdm <- function(table, nm, required, call = parent.frame()) {
   }
 
   return(invisible(TRUE))
+}
+checkOverlapObservation <- function(x, call = parent.frame()) {
+  x <- x |>
+    dplyr::group_by(.data$person_id) |>
+    dplyr::arrange(.data$observation_period_start_date) |>
+    dplyr::mutate("next_observation_period_start_date" = dplyr::lead(
+      .data$observation_period_start_date
+    )) |>
+    dplyr::filter(
+      .data$observation_period_end_date >=
+        .data$next_observation_period_start_date
+    ) |>
+    dplyr::collect()
+  if (nrow(x) > 0) {
+    x5 <- x |>
+      dplyr::ungroup() |>
+      utils::head(5) |>
+      dplyr::glimpse() |>
+      print(width = Inf) |>
+      utils::capture.output()
+    cli::cli_abort(
+      message = c(
+        "There is overlap between observation_periods, {nrow(x)} overlap{?s}
+        detected{ifelse(nrow(x)<=5, ':', ' first 5:')}",
+        x5[3:8]
+      ),
+      call = call
+    )
+  }
 }
 
 #' Name of a cdm_reference.
