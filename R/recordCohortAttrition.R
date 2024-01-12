@@ -41,7 +41,6 @@ recordCohortAttrition <- function(cohort, reason, cohortId = NULL) {
   cohort <- cohortTable(
     table = cohort,
     cohortAttritionRef = newAttrition,
-    overwrite = TRUE,
     .softValidation = TRUE
   )
 

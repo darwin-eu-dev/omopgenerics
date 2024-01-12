@@ -54,8 +54,7 @@ cdmFromTables <- function(tables,
     cdm[[nm]] <- cdm[[nm]] |>
       cohortTable(
         cohortSetRef = attr(cohortTables[[nm]], "cohort_set"),
-        cohortAttritionRef = attr(cohortTables[[nm]], "cohort_attrition"),
-        overwrite = TRUE
+        cohortAttritionRef = attr(cohortTables[[nm]], "cohort_attrition")
       )
   }
 
