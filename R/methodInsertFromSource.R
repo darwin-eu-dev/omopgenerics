@@ -26,6 +26,7 @@ insertFromSource <- function(cdm, value) {
   UseMethod("insertFromSource", getCdmSource(cdm))
 }
 
+#' @export
 insertFromSource.local_cdm <- function(cdm, value) {
   assertClass(value, "data.frame")
   src <- getCdmSource(cdm)
