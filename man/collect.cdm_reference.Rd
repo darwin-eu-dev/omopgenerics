@@ -11,6 +11,9 @@
 
 \item{...}{For compatibility only, not used.}
 }
+\value{
+A local cdm_reference.
+}
 \description{
 Retrieves the cdm reference into a local cdm.
 }

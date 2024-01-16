@@ -29,7 +29,8 @@ Authors@R: c(
     )
     )
 Description: Provides definitions of core classes and methods used by analytic 
-    pipelines that query the OMOP common data model.
+    pipelines that query the OMOP (Observational Medical Outcomes Partnership) 
+    common data model.
 License: Apache License (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

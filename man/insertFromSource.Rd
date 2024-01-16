@@ -3,7 +3,9 @@
 \name{insertFromSource}
 \alias{insertFromSource}
 \title{Convert a table that is not a cdm_table but have the same original source to
-a cdm_table,}
+a cdm_table.
+This Table is not meant to be used to insert tables in the cdm, please use
+insertTable instead.}
 \usage{
 insertFromSource(cdm, value)
 }
@@ -12,7 +14,12 @@ insertFromSource(cdm, value)
 
 \item{value}{A table that shares source with the cdm_reference object.}
 }
+\value{
+A table in the cdm_reference environment
+}
 \description{
 Convert a table that is not a cdm_table but have the same original source to
-a cdm_table,
+a cdm_table.
+This Table is not meant to be used to insert tables in the cdm, please use
+insertTable instead.
 }

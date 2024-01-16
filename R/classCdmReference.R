@@ -370,6 +370,8 @@ print.cdm_reference <- function(x, ...) {
 #' @param x A cdm_reference object.
 #' @param ... For compatibility only, not used.
 #'
+#' @return A local cdm_reference.
+#'
 #' @export
 #'
 collect.cdm_reference <- function(x, ...) {
