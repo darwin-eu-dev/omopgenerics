@@ -211,6 +211,7 @@ getClass <- function(x, def) {
   } else {
     cs <- def
   }
+  cs <- c(cs, "omop_result")
   x <- addClass(x, cs)
   return(x)
 }
