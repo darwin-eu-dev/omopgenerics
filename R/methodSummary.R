@@ -240,7 +240,8 @@ summary.cohort_table <- function(object, ...) {
       "additional_level" = paste(
         as.character(.data$reason_id), "and", .data$reason
       )
-    )
+    ) |>
+    dplyr::select(-c("reason_id", "reason"))
 
   # final join
   x <- settingsSummary |>
