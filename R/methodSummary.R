@@ -235,11 +235,13 @@ summary.cohort_table <- function(object, ...) {
       "result_type" = "cohort_attrition",
       "estimate_name" = "count",
       "variable_level" = NA_character_,
-      "estimate_type" = "integer"
+      "estimate_type" = "integer",
+      "additional_name" = "reason_id and reason",
+      "additional_level" = paste(
+        as.character(.data$reason_id), "and", .data$reason
+      )
     ) |>
-    uniteGroup(
-      cols = c("reason_id", "reason"), name = "additional_name", level = "additional_level"
-    )
+    dplyr::select(-c("reason_id", "reason"))
 
   # final join
   x <- settingsSummary |>
@@ -248,15 +250,14 @@ summary.cohort_table <- function(object, ...) {
       "additional_name" = "overall", "additional_level" = "overall"
     ) |>
     dplyr::union_all(attritionSummary) |>
-    uniteGroup(
-      cols = "cohort_name", name = "strata_name", level = "strata_level"
-    ) |>
     dplyr::mutate(
       "cdm_name" = cdmName(attr(object, "cdm_reference")),
       "package_name" = "omopgenerics",
       "package_version" = as.character(utils::packageVersion("omopgenerics")),
       "group_name" = "cohort_table_name",
-      "group_level" = attr(object, "tbl_name")
+      "group_level" = attr(object, "tbl_name"),
+      "strata_name" = "cohort_name",
+      "strata_level" = .data$cohort_name
     ) |>
     dplyr::select(dplyr::all_of(resultColumns("summarised_result"))) |>
     summarisedResult()

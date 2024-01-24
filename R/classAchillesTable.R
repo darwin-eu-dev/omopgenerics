@@ -38,3 +38,30 @@ achillesTable <- function(table) {
 
   return(table)
 }
+
+#' Create an empty achilles table
+#'
+#' @param name Name of the table to create.
+#' @param cdm A cdm_reference to create the table.
+#'
+#' @noRd
+#'
+#' @return The cdm_reference with an achilles empty table
+#'
+emptyAchillesTable <- function(name, cdm) {
+  # check input
+  assertChoice(name, achillesTables(), length = 1)
+  assertClass(cdm, "cdm_reference")
+
+  # create tibble
+  # TODO correct column type
+  x <- achillesColumns(name) |>
+    rlang::rep_named(list(character())) |>
+    dplyr::as_tibble()
+  cdm <- insertTable(cdm = cdm, name = name, table = x, overwrite = FALSE)
+
+  # validate
+  cdm[[name]] <- cdm[[name]] |> achillesTable()
+
+  return(cdm)
+}
