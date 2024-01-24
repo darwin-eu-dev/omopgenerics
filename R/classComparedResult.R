@@ -81,3 +81,23 @@ validateComparedResult <- function(x) {
 
   return(x)
 }
+
+#' Empty `compared_result` object.
+#'
+#' @return An empty `compared_result` object.
+#'
+#' @export
+#'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#'
+#' emptyComparedResult()
+#' }
+#'
+emptyComparedResult <- function() {
+  resultColumns("compared_result") |>
+    rlang::rep_named(list(character())) |>
+    dplyr::as_tibble() |>
+    comparedResult()
+}
