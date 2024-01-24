@@ -157,9 +157,6 @@
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/settings.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/splitGroup.html</loc>
-  </url>
-  <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/sub-sub-.cdm_reference.html</loc>
   </url>
   <url>
@@ -188,8 +185,5 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/uniqueTableName.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/uniteGroup.html</loc>
   </url>
 </urlset>
