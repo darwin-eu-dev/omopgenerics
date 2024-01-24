@@ -313,6 +313,6 @@ subsetResult <- function(result, resultType) {
 emptySummarisedResult <- function() {
   resultColumns("summarised_result") |>
     rlang::rep_named(list(character())) |>
-    tibble::as_tibble() |>
+    dplyr::as_tibble() |>
     summarisedResult()
 }
