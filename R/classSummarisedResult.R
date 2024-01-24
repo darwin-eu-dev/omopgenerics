@@ -99,7 +99,7 @@ checkColumns <- function(x, resultName) {
 }
 checkResultType <- function(x) {
   x <- unique(x$result_type) |> strsplit(split = " and ") |> unlist() |> unique()
-  x <- x[!isSnakeCase(x)]
+  if (length(x) > 0) x <- x[!isSnakeCase(x)]
   x <- x[!is.na(x)]
   if (length(x) > 0) {
     err <- paste0(x, collapse = '\', \'')
@@ -187,10 +187,18 @@ isCase <- function(x, case) {
   return(flag)
 }
 isSentenceCase <- function(x) {
-  x == snakecase::to_sentence_case(x)
+  if (length(x) > 0) {
+    x == snakecase::to_sentence_case(x)
+  } else {
+    x
+  }
 }
 isSnakeCase <- function(x) {
-  x == snakecase::to_snake_case(x)
+  if (length(x) > 0) {
+    x == snakecase::to_snake_case(x)
+  } else {
+    x
+  }
 }
 getClass <- function(x, def) {
   if (!is.null(x[["result_type"]])) {
@@ -288,3 +296,23 @@ subsetResult <- function(result, resultType) {
 #   }
 #   invisible(NULL)
 # }
+
+#' Empty `summarised_result` object.
+#'
+#' @return An empty `summarised_result` object.
+#'
+#' @export
+#'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#'
+#' emptySummarisedResult()
+#' }
+#'
+emptySummarisedResult <- function() {
+  resultColumns("summarised_result") |>
+    rlang::rep_named(list(character())) |>
+    tibble::as_tibble() |>
+    summarisedResult()
+}
