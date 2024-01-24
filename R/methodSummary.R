@@ -235,10 +235,11 @@ summary.cohort_table <- function(object, ...) {
       "result_type" = "cohort_attrition",
       "estimate_name" = "count",
       "variable_level" = NA_character_,
-      "estimate_type" = "integer"
-    ) |>
-    uniteGroup(
-      cols = c("reason_id", "reason"), name = "additional_name", level = "additional_level"
+      "estimate_type" = "integer",
+      "additional_name" = "reason_id and reason",
+      "additional_level" = paste(
+        as.character(.data$reason_id), "and", .data$reason
+      )
     )
 
   # final join
