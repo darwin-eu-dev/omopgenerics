@@ -107,7 +107,7 @@ test_that("test create cohort", {
   expect_error(cohort1 <- cohortTable(cdm$cohort3, cohort_set1))
   expect_no_error(cohort2 <- cohortTable(cdm$cohort3, cohort_set2))
   expect_no_error(cohort3 <- cohortTable(cdm$cohort3, cohort_set3))
-  expect_error(cohort4 <- cohortTable(cdm$cohort3, cohort_set4))
+  expect_no_error(cohort4 <- cohortTable(cdm$cohort3, cohort_set4))
   expect_error(cohort5 <- cohortTable(cdm$cohort3, cohort_set5))
   x <- settings(cohort2) |> as.data.frame()
   expect_equal(x, cohort_set2 |> as.data.frame())
@@ -217,8 +217,8 @@ test_that("test create cohort", {
   # empty cohort id
   expect_no_error(cohortTable(
     table = cdm$cohort1, cohortSetRef = dplyr::tibble(
-      cohort_definition_id = 1:2, cohort_name = c("cohort1", "cohort2")
-    )
+      cohort_definition_id = 1:2, cohort_name = c("cohort_1", "cohort_2")
+    ), cohortAttritionRef = NULL
   ))
 
   # test NA
