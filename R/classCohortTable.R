@@ -250,7 +250,7 @@ defaultCohortAttrition <- function(cohort, set) {
       number_records = dplyr::n(),
       number_subjects = dplyr::n_distinct(.data$subject_id)
     ) |>
-    dplyr::left_join(
+    dplyr::right_join(
       set |> dplyr::select("cohort_definition_id"),
       by = "cohort_definition_id",
       copy = TRUE
