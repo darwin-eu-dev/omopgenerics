@@ -214,6 +214,13 @@ test_that("test create cohort", {
     table = cdm$cohort1, cohortSetRef = cdm$cohort1_set
   ))
 
+  # empty cohort id
+  expect_no_error(cohortTable(
+    table = cdm$cohort1, cohortSetRef = dplyr::tibble(
+      cohort_definition_id = 1:2, cohort_name = c("cohort1", "cohort2")
+    )
+  ))
+
   # test NA
   cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
     cohort_definition_id = 1, subject_id = 1,
