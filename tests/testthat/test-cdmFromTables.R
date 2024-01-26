@@ -119,4 +119,40 @@ test_that("test cdmFromTables", {
   ))
   expect_false("drug_exposure" %in% names(cdm))
 
+  person <- dplyr::tibble(
+    person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+    race_concept_id = 0, ethnicity_concept_id = 0
+  )
+  observation_period <- dplyr::tibble(
+    observation_period_id = 1, person_id = 1,
+    observation_period_start_date = as.Date(c("2000-01-01")),
+    observation_period_end_date = as.Date(c("2025-12-31")),
+    period_type_concept_id = 0
+  )
+  drug_exposure <- dplyr::tibble(
+    drug_exposure_id = 1,
+    person_id = 1,
+    drug_concept_id = 0,
+    drug_exposure_start_date = as.Date("2020-01-01"),
+    drug_exposure_end_date = as.Date("2020-01-01"),
+    drug_type_concept_id = 0
+  )
+  expect_no_warning(cdm <- cdmFromTables(
+    tables = list(
+      "person" = person, "observation_period" = observation_period,
+      "drug_exposure" = drug_exposure
+    ),
+    cdmName = "test"
+  ))
+  expect_true("drug_exposure" %in% names(cdm))
+  expect_no_error(cdm[["drug_exposure"]] <- NULL)
+  expect_false("drug_exposure" %in% names(cdm))
+  expect_no_error(cdm[["drug_exposure"]] <- drug_exposure)
+  expect_true("drug_exposure" %in% names(cdm))
+  expect_false(inherits(cdm$drug_exposure, "omop_table"))
+  expect_no_error(cdm <- insertTable(
+    cdm = cdm, name = "drug_exposure", table = drug_exposure
+  ))
+  expect_true(inherits(cdm$drug_exposure, "omop_table"))
+
 })

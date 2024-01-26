@@ -302,6 +302,12 @@ cdmVersion <- function(cdm) {
         compute to change table name."
       )
     }
+    if (remoteName %in% omopTables()) {
+      value <- value |> omopTable()
+    }
+    if (remoteName %in% achillesTables()) {
+      value <- value |> achillesTable()
+    }
   }
 
   if (length(name) > 1) {
