@@ -17,6 +17,8 @@ test_that("test cdm_reference", {
 
   expect_no_error(cdm <- cdmReference(tables = cdmTables, cdmName = "mock"))
 
+  expect_identical(cdm, cdmFromTable(cdm$person))
+
   expect_identical("mock", cdmName(cdm))
   expect_identical(src, getCdmSource(cdm))
   expect_true("cdm_reference" %in% names(attributes(cdm$person)))
