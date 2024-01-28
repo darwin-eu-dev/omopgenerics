@@ -71,10 +71,7 @@ validateSummariseResult <- function(x) {
 
   # estimate_type
   checkColumnContent(
-    x = x, col = "estimate_type", content = c(
-      "numeric", "integer", "date", "character", "proportion", "percentage",
-      "logical"
-    )
+    x = x, col = "estimate_type", content = estimateTypeChoices()
   )
 
   return(x)
@@ -240,6 +237,20 @@ checkColumnContent <- function(x, col, content) {
 resultColumns <- function(table) {
   assertChoice(table, unique(fieldsResults$result))
   fieldsResults$result_field_name[fieldsResults$result == table]
+}
+
+#' Choices that can be present in `estimate_type` column.
+#'
+#' @return A character vector with the options that can be present in
+#' `estimate_type` column in the omop_result objects.
+#'
+#' @export
+#'
+estimateTypeChoices <- function() {
+  c(
+    "numeric", "integer", "date", "character", "proportion", "percentage",
+    "logical"
+  )
 }
 
 #' Subset a summarised_result or compared_result object to a certain result_type.
