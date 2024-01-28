@@ -18,6 +18,15 @@ test_that("test SummarisedResult object", {
   )
   expect_no_error(summarisedResult(x = x))
 
+  expect_identical(
+    estimateTypeChoices() |> sort(),
+    c(
+      "numeric", "integer", "date", "character", "proportion", "percentage",
+      "logical"
+    ) |>
+      sort()
+  )
+
   class <- x |> summarisedResult() |> class()
   expect_true(all(
     c("summarised_characteristics", "summarised_result") %in% class
