@@ -2,7 +2,7 @@ test_that("test that classes and attributes are keep", {
 
   # add class and attributes
   x <- dplyr::tibble(a = 1) |>
-    cdmTable(src = localSource(), name = "xuxudecrema")
+    newCdmTable(src = newLocalSource(), name = "xuxudecrema")
 
   # nothing
   funs <- c("count", "rowwise", "tally", "ungroup")

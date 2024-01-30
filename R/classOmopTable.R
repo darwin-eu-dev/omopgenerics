@@ -22,7 +22,7 @@
 #'
 #' @export
 #'
-omopTable <- function(table) {
+newOmopTable <- function(table) {
   # create the structure
   assertClass(table, class = "cdm_table")
   table <- addClass(table, "omop_table")

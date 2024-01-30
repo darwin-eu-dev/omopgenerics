@@ -21,7 +21,7 @@
 #' @return A compared_result object
 #' @export
 #'
-comparedResult <- function(x) {
+newComparedResult <- function(x) {
 
   #inital input check
   assertClass(x, "data.frame")
@@ -99,5 +99,5 @@ emptyComparedResult <- function() {
   resultColumns("compared_result") |>
     rlang::rep_named(list(character())) |>
     dplyr::as_tibble() |>
-    comparedResult()
+    newComparedResult()
 }

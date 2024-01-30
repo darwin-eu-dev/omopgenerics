@@ -23,7 +23,7 @@
 #' @return A codelist
 #' @export
 #'
-codelist <- function(x) {
+newCodelist <- function(x) {
 
   #constructor
   x <- constructCodelist(x)

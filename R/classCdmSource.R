@@ -23,7 +23,7 @@
 #'
 #' @return A validated cdm source object.
 #'
-cdmSource <- function(src, sourceType) {
+newCdmSource <- function(src, sourceType) {
   # initial check
   assertCharacter(sourceType, length = 1, minNumCharacter = 1)
 

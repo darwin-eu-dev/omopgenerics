@@ -17,7 +17,7 @@ test_that("test supress methods", {
     "additional_level" = "overall"
   )
 
-  obj <- summarisedResult(x)
+  obj <- newSummarisedResult(x)
 
   result <- suppress(obj, minCellCount = 8)
 

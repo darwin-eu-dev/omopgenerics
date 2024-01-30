@@ -21,7 +21,7 @@
 #' @return A summarisedResult object
 #' @export
 #'
-summarisedResult <- function(x) {
+newSummarisedResult <- function(x) {
 
   # inital input check
   assertClass(x, "data.frame")
@@ -280,9 +280,9 @@ subsetResult <- function(result, resultType) {
   result <- result |> dplyr::filter(grepl(resultType, x))
 
   if ("summarised_result" %in% class(result)) {
-    result <- summarisedResult(result)
+    result <- newSummarisedResult(result)
   } else {
-    result <- comparedResult(result)
+    result <- newComparedResult(result)
   }
 
   return(result)
@@ -332,5 +332,5 @@ emptySummarisedResult <- function() {
   resultColumns("summarised_result") |>
     rlang::rep_named(list(character())) |>
     dplyr::as_tibble() |>
-    summarisedResult()
+    newSummarisedResult()
 }
