@@ -85,26 +85,26 @@ containing specific concept IDs.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condition_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"diabetes"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">201820</span>, <span class="fl">4087682</span>, <span class="fl">3655269</span><span class="op">)</span>,</span>
 <span>                        <span class="st">"asthma"</span> <span class="op">=</span> <span class="fl">317009</span><span class="op">)</span></span>
-<span><span class="va">condition_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/codelist.html">codelist</a></span><span class="op">(</span><span class="va">condition_codes</span><span class="op">)</span></span>
+<span><span class="va">condition_codes</span> <span class="op">&lt;-</span> <span class="fu">codelist</span><span class="op">(</span><span class="va">condition_codes</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in codelist(condition_codes): could not find function "codelist"</span></span>
 <span></span>
 <span><span class="va">condition_codes</span></span>
+<span><span class="co">#&gt; $diabetes</span></span>
+<span><span class="co">#&gt; [1]  201820 4087682 3655269</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; - diabetes (3 codes)</span></span>
-<span><span class="co">#&gt; - asthma (1 codes)</span></span></code></pre></div>
+<span><span class="co">#&gt; $asthma</span></span>
+<span><span class="co">#&gt; [1] 317009</span></span></code></pre></div>
 <p>A codelist must be named</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condition_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">201820</span>, <span class="fl">4087682</span>, <span class="fl">3655269</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/codelist.html">codelist</a></span><span class="op">(</span><span class="va">condition_codes</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `validateCodelist()`:</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> x must be a list; it can not contain NA; it can not be NULL; it has to</span></span>
-<span><span class="co">#&gt;   be named; elements must have class: numeric, integer.</span></span></code></pre></div>
+<span><span class="fu">codelist</span><span class="op">(</span><span class="va">condition_codes</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in codelist(condition_codes): could not find function "codelist"</span></span></code></pre></div>
 <p>And a codelist cannot have missing values</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condition_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"diabetes"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">201820</span>, <span class="cn">NA</span>, <span class="fl">3655269</span><span class="op">)</span>,</span>
 <span>                        <span class="st">"asthma"</span> <span class="op">=</span> <span class="fl">317009</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/codelist.html">codelist</a></span><span class="op">(</span><span class="va">condition_codes</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `checkNA()`:</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> `diabetes` must not contain NA.</span></span></code></pre></div>
+<span><span class="fu">codelist</span><span class="op">(</span><span class="va">condition_codes</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in codelist(condition_codes): could not find function "codelist"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="concept-set-expression">Concept set expression<a class="anchor" aria-label="anchor" href="#concept-set-expression"></a>
@@ -128,7 +128,7 @@ codelist.</p>
 <span>    <span class="st">"mapped"</span> <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">condition_cs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/conceptSetExpression.html">conceptSetExpression</a></span><span class="op">(</span><span class="va">condition_cs</span><span class="op">)</span></span>
+<span><span class="va">condition_cs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newConceptSetExpression.html">newConceptSetExpression</a></span><span class="op">(</span><span class="va">condition_cs</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">condition_cs</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -144,8 +144,8 @@ cannot have missing elements.</p>
 <span>    <span class="st">"descendants"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>,</span>
 <span>    <span class="st">"mapped"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="cn">FALSE</span><span class="op">)</span></span>
 <span>  <span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/conceptSetExpression.html">conceptSetExpression</a></span><span class="op">(</span><span class="va">condition_cs</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `validateconceptSetExpression()`:</span></span></span>
+<span><span class="fu"><a href="../reference/newConceptSetExpression.html">newConceptSetExpression</a></span><span class="op">(</span><span class="va">condition_cs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `validateConceptSetExpression()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> x must be a list; it can not contain NA; it can not be NULL; it has to</span></span>
 <span><span class="co">#&gt;   be named; elements must have class: tbl.</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -163,8 +163,8 @@ cannot have missing elements.</p>
 <span>    <span class="st">"mapped"</span> <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/conceptSetExpression.html">conceptSetExpression</a></span><span class="op">(</span><span class="va">condition_cs</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `validateconceptSetExpression()`:</span></span></span>
+<span><span class="fu"><a href="../reference/newConceptSetExpression.html">newConceptSetExpression</a></span><span class="op">(</span><span class="va">condition_cs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `validateConceptSetExpression()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> $x[[i]]concept_id must be a numeric; it has to be integerish; it can</span></span>
 <span><span class="co">#&gt;   not contain NA; it can not be NULL.</span></span></code></pre></div>
 </div>

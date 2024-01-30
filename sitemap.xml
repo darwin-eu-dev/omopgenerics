@@ -34,9 +34,6 @@
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/achillesColumns.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/achillesTable.html</loc>
-  </url>
-  <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/achillesTables.html</loc>
   </url>
   <url>
@@ -64,28 +61,13 @@
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmName.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmReference.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmSource.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmTable.html</loc>
-  </url>
-  <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmVersion.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/codelist.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cohortColumns.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cohortCount.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cohortTable.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cohortTables.html</loc>
@@ -97,13 +79,7 @@
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/collect.cohort_table.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/comparedResult.html</loc>
-  </url>
-  <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/compute.cdm_table.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/conceptSetExpression.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/dropTable.html</loc>
@@ -127,10 +103,37 @@
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/insertTable.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/omopColumns.html</loc>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newAchillesTable.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/omopTable.html</loc>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCdmReference.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCdmSource.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCdmTable.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCodelist.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCohortTable.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newComparedResult.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newConceptSetExpression.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newOmopTable.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newSummarisedResult.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/omopColumns.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/omopTables.html</loc>
@@ -167,9 +170,6 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/subsetResult.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/summarisedResult.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/summary.cdm_reference.html</loc>
