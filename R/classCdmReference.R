@@ -335,6 +335,17 @@ cdmVersion <- function(cdm) {
   return(cdm)
 }
 
+#' Obtain the cdm_reference that a table comes from.
+#'
+#' @param table A cdm_table.
+#'
+#' @export
+#'
+cdmReference <- function(table) {
+  assertClass(table, "cdm_table")
+  attr(table, "cdm_reference")
+}
+
 #' Print a CDM reference object
 #'
 #' @param x A cdm_reference object
@@ -518,9 +529,6 @@ str.cdm_reference <- function(object, ...) {
   cat(mes, sep = "")
 }
 
-getCdmReference <- function(x) {
-  attr(x, "cdm_reference")
-}
 getSourceType <- function(x) {
   attr(x, "source_type")
 }
