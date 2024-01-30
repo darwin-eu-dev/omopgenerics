@@ -23,10 +23,10 @@
 #' @return A codelist
 #' @export
 #'
-codelist <- function(x) {
+newCodelist <- function(x) {
 
   #constructor
-  x <- newCodelist(x)
+  x <- constructCodelist(x)
 
   # validate
   x <- validateCodelist(x)
@@ -34,7 +34,7 @@ codelist <- function(x) {
   return(x)
 }
 
-newCodelist <- function(x) {
+constructCodelist <- function(x) {
 
   class(x) <- c("codelist", class(x)[which(class(x) != "codelist")])
 

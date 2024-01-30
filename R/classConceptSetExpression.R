@@ -23,25 +23,25 @@
 #' @return A conceptSetExpression
 #' @export
 #'
-conceptSetExpression <- function(x) {
+newConceptSetExpression <- function(x) {
 
   #constructor
-  x <- newconceptSetExpression(x)
+  x <- constructConceptSetExpression(x)
 
   # validate
-  x <- validateconceptSetExpression(x)
+  x <- validateConceptSetExpression(x)
 
   return(x)
 }
 
-newconceptSetExpression <- function(x) {
+constructConceptSetExpression <- function(x) {
 
   class(x) <- c("conceptSetExpression", class(x)[which(class(x) != "conceptSetExpression")])
 
   return(x)
 }
 
-validateconceptSetExpression <- function(x) {
+validateConceptSetExpression <- function(x) {
 
   assertList(x, named = TRUE, class = c("tbl"))
 

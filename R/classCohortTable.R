@@ -28,10 +28,10 @@
 #'
 #' @export
 #'
-cohortTable <- function(table,
-                        cohortSetRef = attr(table, "cohort_set"),
-                        cohortAttritionRef = attr(table, "cohort_attrition"),
-                        .softValidation = FALSE) {
+newCohortTable <- function(table,
+                           cohortSetRef = attr(table, "cohort_set"),
+                           cohortAttritionRef = attr(table, "cohort_attrition"),
+                           .softValidation = FALSE) {
   # initial checks
   assertClass(table, "cdm_table")
   assertChoice(.softValidation, choices = c(TRUE, FALSE), length = 1)

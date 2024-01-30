@@ -41,18 +41,18 @@ cdmFromTables <- function(tables,
   }
   assertCharacter(cdmName, length = 1)
 
-  src <- localSource()
+  src <- newLocalSource()
   for (nm in names(tables)) {
     tables[[nm]] <- tables[[nm]] |>
       dplyr::as_tibble() |>
-      cdmTable(src = src, name = nm)
+      newCdmTable(src = src, name = nm)
   }
-  cdm <- cdmReference(tables = tables, cdmName = cdmName)
+  cdm <- newCdmReference(tables = tables, cdmName = cdmName)
 
   for (nm in names(cohortTables)) {
     cdm <- insertTable(cdm = cdm, name = nm, table = cohortTables[[nm]])
     cdm[[nm]] <- cdm[[nm]] |>
-      cohortTable(
+      newCohortTable(
         cohortSetRef = attr(cohortTables[[nm]], "cohort_set"),
         cohortAttritionRef = attr(cohortTables[[nm]], "cohort_attrition")
       )
@@ -61,8 +61,8 @@ cdmFromTables <- function(tables,
   return(cdm)
 }
 
-localSource <- function() {
+newLocalSource <- function() {
   structure(.Data = list(), class = "local_cdm") |>
-    cdmSource(sourceType = "local")
+    newCdmSource(sourceType = "local")
 }
 

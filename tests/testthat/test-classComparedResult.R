@@ -23,9 +23,9 @@ test_that("test comparedResult object", {
     "additional_name_comparator" = "overall",
     "additional_level_comparator" = "overall"
   )
-  expect_no_error(comparedResult(x = x))
+  expect_no_error(newComparedResult(x = x))
 
-  class <- x |> comparedResult() |> class()
+  class <- x |> newComparedResult() |> class()
   expect_true(c("compared_result") %in% class)
 
   # check none character
@@ -52,7 +52,7 @@ test_that("test comparedResult object", {
     "additional_name_comparator" = "overall",
     "additional_level_comparator" = "overall"
   )
-  expect_error(comparedResult(x = x))
+  expect_error(newComparedResult(x = x))
 
 
   #check none sentence case
@@ -79,7 +79,7 @@ test_that("test comparedResult object", {
     "additional_name_comparator" = "overall",
     "additional_level_comparator" = "overall"
   )
-  expect_error(comparedResult(x = x))
+  expect_error(newComparedResult(x = x))
 
   #check wrong columns
   x <- dplyr::tibble(
@@ -94,7 +94,7 @@ test_that("test comparedResult object", {
     "estimate_type" = "count",
     "estimate" = "5"
   )
-  expect_error(comparedResult(x = x))
+  expect_error(newComparedResult(x = x))
 
   # check NA
   x <- dplyr::tibble(
@@ -120,5 +120,5 @@ test_that("test comparedResult object", {
     "additional_name_comparator" = "overall",
     "additional_level_comparator" = "overall"
   )
-  expect_error(comparedResult(x = x))
+  expect_error(newComparedResult(x = x))
 })

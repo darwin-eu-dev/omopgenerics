@@ -25,7 +25,7 @@
 #'
 #' @export
 #'
-cdmReference <- function(tables,
+newCdmReference <- function(tables,
                          cdmName,
                          cdmVersion = NULL) {
   # inputs
@@ -43,7 +43,7 @@ cdmReference <- function(tables,
   }
 
   # constructor
-  cdm <- newCdmReference(
+  cdm <- constructCdmReference(
     tables = tables, cdmName = cdmName, cdmVersion = cdmVersion,
     cdmSource = getTableSource(tables[[1]])
   )
@@ -68,7 +68,7 @@ getVersion <- function(cdm) {
   )
   return(version)
 }
-newCdmReference <- function(tables, cdmName, cdmVersion, cdmSource) {
+constructCdmReference <- function(tables, cdmName, cdmVersion, cdmSource) {
   structure(
     .Data = tables,
     cdm_name = cdmName,
@@ -104,10 +104,10 @@ validateCdmReference <- function(cdm) {
   omopTables <- omopTables[omopTables %in% names(cdm)]
   for (nm in omopTables) {
     if (nm %in% c("person", "observation_period")) {
-      cdm[[nm]] <- omopTable(cdm[[nm]])
+      cdm[[nm]] <- newOmopTable(cdm[[nm]])
     } else {
       cdm[[nm]] <- tryCatch(
-        expr = {omopTable(cdm[[nm]])},
+        expr = {newOmopTable(cdm[[nm]])},
         error = function(e){
           cli::cli_warn(c(
             "{nm} table not included in cdm because:", as.character(e)
@@ -122,13 +122,13 @@ validateCdmReference <- function(cdm) {
   achillesTables <- achillesTables(version = cdmVersion(cdm))
   achillesTables <- achillesTables[achillesTables %in% names(cdm)]
   for (nm in achillesTables) {
-    tryCatch(
-      expr = {cdm[[nm]] <- achillesTable(cdm[[nm]])},
+    cdm[[nm]] <- tryCatch(
+      expr = {newAchillesTable(cdm[[nm]])},
       error = function(e){
         cli::cli_warn(c(
           "{nm} table not included in cdm because:", as.character(e)
         ))
-        cdm[[nm]] <- NULL
+        return(NULL)
       }
     )
   }
@@ -307,10 +307,10 @@ cdmVersion <- function(cdm) {
       )
     }
     if (remoteName %in% omopTables()) {
-      value <- value |> omopTable()
+      value <- value |> newOmopTable()
     }
     if (remoteName %in% achillesTables()) {
-      value <- value |> achillesTable()
+      value <- value |> newAchillesTable()
     }
   }
 

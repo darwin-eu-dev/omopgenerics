@@ -16,9 +16,18 @@ test_that("test SummarisedResult object", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
-  expect_no_error(summarisedResult(x = x))
+  expect_no_error(newSummarisedResult(x = x))
 
-  class <- x |> summarisedResult() |> class()
+  expect_identical(
+    estimateTypeChoices() |> sort(),
+    c(
+      "numeric", "integer", "date", "character", "proportion", "percentage",
+      "logical"
+    ) |>
+      sort()
+  )
+
+  class <- x |> newSummarisedResult() |> class()
   expect_true(all(
     c("summarised_characteristics", "summarised_result") %in% class
   ))
@@ -41,7 +50,7 @@ test_that("test SummarisedResult object", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
-  expect_error(summarisedResult(x = x))
+  expect_error(newSummarisedResult(x = x))
 
   #check result_type
   x <- dplyr::tibble(
@@ -61,7 +70,7 @@ test_that("test SummarisedResult object", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
-  expect_error(summarisedResult(x = x))
+  expect_error(newSummarisedResult(x = x))
 
   #check wrong columns
   x <- dplyr::tibble(
@@ -76,7 +85,7 @@ test_that("test SummarisedResult object", {
     "estimate_type" = "count",
     "estimate" = "5"
   )
-  expect_error(summarisedResult(x = x))
+  expect_error(newSummarisedResult(x = x))
 
   # check NA
   x <- dplyr::tibble(
@@ -96,7 +105,7 @@ test_that("test SummarisedResult object", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
-  expect_error(summarisedResult(x = x))
+  expect_error(newSummarisedResult(x = x))
 
   # check wrong paired
   x <- dplyr::tibble(
@@ -116,7 +125,7 @@ test_that("test SummarisedResult object", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
-  expect_error(summarisedResult(x = x))
+  expect_error(newSummarisedResult(x = x))
 
   # check wrong case
   x <- dplyr::tibble(
@@ -136,6 +145,6 @@ test_that("test SummarisedResult object", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
-  expect_error(summarisedResult(x = x))
+  expect_error(newSummarisedResult(x = x))
 
 })

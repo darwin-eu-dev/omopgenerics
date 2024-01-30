@@ -21,13 +21,13 @@
 #' @return A compared_result object
 #' @export
 #'
-comparedResult <- function(x) {
+newComparedResult <- function(x) {
 
   #inital input check
   assertClass(x, "data.frame")
 
   #constructer
-  x <- newComparedResult(x)
+  x <- constructComparedResult(x)
 
   # validate
   x <- validateComparedResult(x)
@@ -35,8 +35,11 @@ comparedResult <- function(x) {
   return(x)
 }
 
-newComparedResult <- function(x) {
-  x <- getClass(x, "compared_result")
+constructComparedResult <- function(x) {
+  x <- x |>
+    omopResult() |>
+    addClass("compared_result")
+  x <- addClass(x, getClass(x))
   return(x)
 }
 validateComparedResult <- function(x) {
@@ -73,10 +76,7 @@ validateComparedResult <- function(x) {
 
   # estimate_type
   checkColumnContent(
-    x = x, col = "estimate_type", content = c(
-      "numeric", "integer", "date", "character", "proportion", "percentage",
-      "logical"
-    )
+    x = x, col = "estimate_type", content = estimateTypeChoices()
   )
 
   return(x)
@@ -99,5 +99,5 @@ emptyComparedResult <- function() {
   resultColumns("compared_result") |>
     rlang::rep_named(list(character())) |>
     dplyr::as_tibble() |>
-    comparedResult()
+    newComparedResult()
 }

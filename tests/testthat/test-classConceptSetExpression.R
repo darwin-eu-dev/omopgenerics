@@ -12,7 +12,7 @@ asthma_cs <- list("asthma_narrow" = dplyr::tibble(
     "descendants" = TRUE,
     "mapped" = FALSE
   ))
-expect_no_error(asthma_cs <- conceptSetExpression(asthma_cs))
+expect_no_error(asthma_cs <- newConceptSetExpression(asthma_cs))
 
 # no error if extra columns
 asthma_cs <- list("asthma_narrow" = dplyr::tibble(
@@ -30,10 +30,10 @@ asthma_cs <- list("asthma_narrow" = dplyr::tibble(
   "mapped" = FALSE
 ))
 
-expect_no_error(asthma_cs <- conceptSetExpression(asthma_cs))
+expect_no_error(asthma_cs <- newConceptSetExpression(asthma_cs))
 
 # expected errors
-expect_error(conceptSetExpression(list("asthma_narrow" = dplyr::tibble(
+expect_error(newConceptSetExpression(list("asthma_narrow" = dplyr::tibble(
   "concept_id" = 1,
   "excluded" = FALSE,
   "descendants" = TRUE,
@@ -46,7 +46,7 @@ dplyr::tibble( # no name
   "mapped" = FALSE
 ))))
 
-expect_error(conceptSetExpression(list("asthma_narrow" = dplyr::tibble(
+expect_error(newConceptSetExpression(list("asthma_narrow" = dplyr::tibble(
   "concept_id" = 1,
   "excluded" = FALSE,
   "descendants" = TRUE,
@@ -59,7 +59,7 @@ expect_error(conceptSetExpression(list("asthma_narrow" = dplyr::tibble(
   "mapped" = FALSE
 ))))
 
-expect_error(conceptSetExpression(list("asthma_narrow" = dplyr::tibble(
+expect_error(newConceptSetExpression(list("asthma_narrow" = dplyr::tibble(
   "concept_id" = 1,
   "excluded" = FALSE,
   "descendants" = TRUE,
@@ -72,7 +72,7 @@ expect_error(conceptSetExpression(list("asthma_narrow" = dplyr::tibble(
   "mapped" = FALSE
 ))))
 
-expect_error(conceptSetExpression(list("asthma_narrow" = dplyr::tibble(
+expect_error(newConceptSetExpression(list("asthma_narrow" = dplyr::tibble(
   "concept_id" = 1,
   "excluded" = FALSE,
   "descendants" = TRUE,
@@ -85,7 +85,7 @@ expect_error(conceptSetExpression(list("asthma_narrow" = dplyr::tibble(
   "mapped" = FALSE
 ))))
 
-expect_error(conceptSetExpression(list("asthma_narrow" = dplyr::tibble(
+expect_error(newConceptSetExpression(list("asthma_narrow" = dplyr::tibble(
   "concept_id" = 1,
   "excluded" = FALSE,
   "descendants" = TRUE,
@@ -98,7 +98,7 @@ expect_error(conceptSetExpression(list("asthma_narrow" = dplyr::tibble(
   "mapped" = "not logical"
 ))))
 
-expect_error(conceptSetExpression(list(
+expect_error(newConceptSetExpression(list(
   "diabetes" = dplyr::tibble(
     "concept_id" = c(201820, NA),
     "excluded" = c(FALSE, FALSE),

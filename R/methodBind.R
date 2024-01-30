@@ -108,7 +108,7 @@ bind.cohort_table <- function(..., name) {
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_set")))
 
   # instantiate the new generated cohort set
-  cdm[[name]] <- cohortTable(
+  cdm[[name]] <- newCohortTable(
     table = newCohort,
     cohortSetRef = newCohortSet,
     cohortAttritionRef = newCohortAttrition
