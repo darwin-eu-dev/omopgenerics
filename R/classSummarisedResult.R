@@ -36,7 +36,10 @@ summarisedResult <- function(x) {
 }
 
 newSummarisedResult <- function(x) {
-  x <- getClass(x, "summarised_result")
+  x <- x |>
+    omopResult() |>
+    addClass("summarised_result")
+  x <- addClass(x, getClass(x))
   return(x)
 }
 validateSummariseResult <- function(x) {
@@ -198,13 +201,10 @@ getClass <- function(x, def) {
       unlist() |>
       unique()
     cs <- cs[!is.na(cs)]
-    cs <- c(cs, def)
   } else {
-    cs <- def
+    cs <- character()
   }
-  cs <- c(cs, "omop_result")
-  x <- x |> dplyr::as_tibble() |> addClass(cs)
-  return(x)
+  return(cs)
 }
 checkColumnContent <- function(x, col, content) {
   if (!all(x[[col]] %in% content)) {
@@ -218,6 +218,18 @@ checkColumnContent <- function(x, col, content) {
     ))
   }
   return(invisible(TRUE))
+}
+
+#' `omop_result` object constructor.
+#'
+#' @param x Table.
+#'
+#' @return A `omop_result` object
+#'
+#' @noRd
+#'
+omopResult <- function(x) {
+  x |> dplyr::as_tibble() |> addClass("omop_result")
 }
 
 #' Required columns that the result tables must have.
