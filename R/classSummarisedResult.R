@@ -27,7 +27,7 @@ summarisedResult <- function(x) {
   assertClass(x, "data.frame")
 
   # constructor
-  x <- newSummarisedResult(x)
+  x <- constructSummarisedResult(x)
 
   # validate
   x <- validateSummariseResult(x)
@@ -35,7 +35,7 @@ summarisedResult <- function(x) {
   return(x)
 }
 
-newSummarisedResult <- function(x) {
+constructSummarisedResult <- function(x) {
   x <- x |>
     omopResult() |>
     addClass("summarised_result")

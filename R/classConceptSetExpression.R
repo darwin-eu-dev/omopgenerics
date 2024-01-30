@@ -26,7 +26,7 @@
 conceptSetExpression <- function(x) {
 
   #constructor
-  x <- newconceptSetExpression(x)
+  x <- constructConceptSetExpression(x)
 
   # validate
   x <- validateconceptSetExpression(x)
@@ -34,7 +34,7 @@ conceptSetExpression <- function(x) {
   return(x)
 }
 
-newconceptSetExpression <- function(x) {
+constructConceptSetExpression <- function(x) {
 
   class(x) <- c("conceptSetExpression", class(x)[which(class(x) != "conceptSetExpression")])
 
