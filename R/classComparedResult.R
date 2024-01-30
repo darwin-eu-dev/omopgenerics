@@ -36,7 +36,10 @@ comparedResult <- function(x) {
 }
 
 newComparedResult <- function(x) {
-  x <- getClass(x, "compared_result")
+  x <- x |>
+    omopResult() |>
+    addClass("compared_result")
+  x <- addClass(x, getClass(x))
   return(x)
 }
 validateComparedResult <- function(x) {
@@ -73,10 +76,7 @@ validateComparedResult <- function(x) {
 
   # estimate_type
   checkColumnContent(
-    x = x, col = "estimate_type", content = c(
-      "numeric", "integer", "date", "character", "proportion", "percentage",
-      "logical"
-    )
+    x = x, col = "estimate_type", content = estimateTypeChoices()
   )
 
   return(x)
