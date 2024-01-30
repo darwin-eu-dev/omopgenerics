@@ -14,12 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# NA
-# classes
-# colnaming
-# sentence
-# snake (only pair group)
-
 #' 'summarised_results' object constructor
 #'
 #' @param x Table.
@@ -209,7 +203,7 @@ getClass <- function(x, def) {
     cs <- def
   }
   cs <- c(cs, "omop_result")
-  x <- addClass(x, cs)
+  x <- x |> dplyr::as_tibble() |> addClass(cs)
   return(x)
 }
 checkColumnContent <- function(x, col, content) {
