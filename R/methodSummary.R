@@ -155,7 +155,7 @@ summary.cdm_reference <- function(object, ...) {
       "additional_level" = "overall"
     ) |>
     dplyr::select(dplyr::all_of(resultColumns("summarised_result"))) |>
-    summarisedResult()
+    newSummarisedResult()
 
   return(x)
 }
@@ -260,7 +260,7 @@ summary.cohort_table <- function(object, ...) {
       "strata_level" = .data$cohort_name
     ) |>
     dplyr::select(dplyr::all_of(resultColumns("summarised_result"))) |>
-    summarisedResult()
+    newSummarisedResult()
 
   return(x)
 }

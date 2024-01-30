@@ -110,7 +110,7 @@ condition_cs <- list(
     "mapped" = FALSE
   )
 )
-condition_cs <- conceptSetExpression(condition_cs)
+condition_cs <- newConceptSetExpression(condition_cs)
 
 condition_cs
 ```

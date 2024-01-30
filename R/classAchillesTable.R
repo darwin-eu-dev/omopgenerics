@@ -22,7 +22,7 @@
 #'
 #' @export
 #'
-achillesTable <- function(table) {
+newAchillesTable <- function(table) {
   # create the structure
   assertClass(table, class = "cdm_table")
   table <- addClass(table, "achilles_table")
@@ -61,7 +61,7 @@ emptyAchillesTable <- function(name, cdm) {
   cdm <- insertTable(cdm = cdm, name = name, table = x, overwrite = FALSE)
 
   # validate
-  cdm[[name]] <- cdm[[name]] |> achillesTable()
+  cdm[[name]] <- cdm[[name]] |> newAchillesTable()
 
   return(cdm)
 }

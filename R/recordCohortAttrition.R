@@ -38,7 +38,7 @@ recordCohortAttrition <- function(cohort, reason, cohortId = NULL) {
   newAttrition <- updateAttrition(cohort, cohortId, reason)
 
   # create cohort table
-  cohort <- cohortTable(
+  cohort <- newCohortTable(
     table = cohort,
     cohortAttritionRef = newAttrition,
     .softValidation = TRUE

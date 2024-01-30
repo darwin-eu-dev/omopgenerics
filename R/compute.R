@@ -43,7 +43,7 @@ compute.cdm_table <- function(x,
   if (temporary) name <- NA_character_
   res <- res |>
     removeClass(cl) |>
-    cdmTable(src = src, name = name) |>
+    newCdmTable(src = src, name = name) |>
     restoreClass(cx) |>
     restoreAttributes(keepAttributes(x, cx))
   return(res)
