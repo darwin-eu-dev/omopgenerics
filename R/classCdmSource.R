@@ -28,7 +28,7 @@ cdmSource <- function(src, sourceType) {
   assertCharacter(sourceType, length = 1, minNumCharacter = 1)
 
   # assign class
-  src <- newCdmSource(src = src, sourceType = sourceType)
+  src <- constructCdmSource(src = src, sourceType = sourceType)
 
   # validate source
   src <- validateCdmSource(src = src)
@@ -36,7 +36,7 @@ cdmSource <- function(src, sourceType) {
   return(src)
 }
 
-newCdmSource <- function(src, sourceType) {
+constructCdmSource <- function(src, sourceType) {
   structure(
     .Data = src, source_type = sourceType, class = c(class(src), "cdm_source")
   )

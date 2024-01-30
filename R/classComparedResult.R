@@ -27,7 +27,7 @@ comparedResult <- function(x) {
   assertClass(x, "data.frame")
 
   #constructer
-  x <- newComparedResult(x)
+  x <- constructComparedResult(x)
 
   # validate
   x <- validateComparedResult(x)
@@ -35,7 +35,7 @@ comparedResult <- function(x) {
   return(x)
 }
 
-newComparedResult <- function(x) {
+constructComparedResult <- function(x) {
   x <- x |>
     omopResult() |>
     addClass("compared_result")

@@ -43,7 +43,7 @@ cdmReference <- function(tables,
   }
 
   # constructor
-  cdm <- newCdmReference(
+  cdm <- constructCdmReference(
     tables = tables, cdmName = cdmName, cdmVersion = cdmVersion,
     cdmSource = getTableSource(tables[[1]])
   )
@@ -68,7 +68,7 @@ getVersion <- function(cdm) {
   )
   return(version)
 }
-newCdmReference <- function(tables, cdmName, cdmVersion, cdmSource) {
+constructCdmReference <- function(tables, cdmName, cdmVersion, cdmSource) {
   structure(
     .Data = tables,
     cdm_name = cdmName,
