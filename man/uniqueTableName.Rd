@@ -4,7 +4,7 @@
 \alias{uniqueTableName}
 \title{Create a unique table name}
 \usage{
-uniqueTableName(prefix = character())
+uniqueTableName(prefix = "")
 }
 \arguments{
 \item{prefix}{Prefix for the table names.}
