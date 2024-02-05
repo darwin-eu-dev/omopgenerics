@@ -54,14 +54,32 @@ compute.local_cdm <- function(x, ...) {
   return(x)
 }
 
-#' Create a unique table name for temp tables
+#' Create a unique table name
+#'
+#' @param prefix Prefix for the table names.
 #'
 #' @return A string that can be used as a dbplyr temp table name
 #' @export
 #'
-uniqueTableName <- function() {
+uniqueTableName <- function(prefix = character()) {
+  assertCharacter(x = prefix, length = 1)
   i <- getOption("dbplyr_table_name", 0) + 1
   options(dbplyr_table_name = i)
-  sprintf("dbplyr_%03i", i)
+  paste0(prefix, sprintf("dbplyr_%03i", i))
+}
+
+#' Create a random prefix for tables, that contains a random sample of lowercase
+#' letters.
+#'
+#' @param n Number of characters.
+#'
+#' @return A ramdom prefix.
+#' @export
+#'
+randomPrefix <- function(n = 5) {
+  assertNumeric(x = n, integerish = TRUE, min = 1, length = 1)
+  paste0(
+    paste0(sample(x = letters, size = n, replace = TRUE), collapse = ""), "_"
+  )
 }
 

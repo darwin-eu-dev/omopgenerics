@@ -2,13 +2,16 @@
 % Please edit documentation in R/compute.R
 \name{uniqueTableName}
 \alias{uniqueTableName}
-\title{Create a unique table name for temp tables}
+\title{Create a unique table name}
 \usage{
-uniqueTableName()
+uniqueTableName(prefix = character())
+}
+\arguments{
+\item{prefix}{Prefix for the table names.}
 }
 \value{
 A string that can be used as a dbplyr temp table name
 }
 \description{
-Create a unique table name for temp tables
+Create a unique table name
 }
