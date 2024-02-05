@@ -61,7 +61,7 @@ compute.local_cdm <- function(x, ...) {
 #' @return A string that can be used as a dbplyr temp table name
 #' @export
 #'
-uniqueTableName <- function(prefix = character()) {
+uniqueTableName <- function(prefix = "") {
   assertCharacter(x = prefix, length = 1)
   i <- getOption("dbplyr_table_name", 0) + 1
   options(dbplyr_table_name = i)
@@ -77,7 +77,7 @@ uniqueTableName <- function(prefix = character()) {
 #' @export
 #'
 randomPrefix <- function(n = 5) {
-  assertNumeric(x = n, integerish = TRUE, min = 1, length = 1)
+  assertNumeric(x = n, integerish = TRUE, min = 0, length = 1)
   paste0(
     paste0(sample(x = letters, size = n, replace = TRUE), collapse = ""), "_"
   )
