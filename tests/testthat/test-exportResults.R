@@ -1,9 +1,23 @@
 test_that("writing results", {
+  zipFolder <- tempdir()
+  unzipFolder <- file.path(tempdir(), "unzip")
+  dir.create(unzipFolder)
+  dbName <- "IPCI"
+
+  dataSet <- mtcars %>% dplyr::mutate(cdm_name = dbName)
   exportResults(
-    resultList = list("mtcars" = mtcars), zipName = "test",
-    outputFolder = tempdir()
+    resultList = list("mtcars" = dataSet), zipName = "test",
+    outputFolder = zipFolder
   )
-  expect_true("test.zip" %in% list.files(tempdir()))
+  expect_true("test.zip" %in% list.files(zipFolder))
+  # check files
+  zip::unzip(file.path(zipFolder, "test.zip"), exdir = unzipFolder, junkpaths = TRUE)
+  extractedFiles <- list.files(unzipFolder, full.names = F)
+  expect_true(length(extractedFiles) == 1)
+  expect_true(grepl(paste0(dbName, "_mtcars"), extractedFiles))
+
+  unlink(zipFolder)
+  unlink(unzipFolder)
 })
 
 test_that("writing results- expected errors", {
