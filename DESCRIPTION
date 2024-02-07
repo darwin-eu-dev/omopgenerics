@@ -44,7 +44,9 @@ Imports:
     snakecase,
     stringr,
     tidyr,
-    tidyselect
+    tidyselect,
+    checkmate,
+    zip
 Depends: 
     R (>= 4.1)
 Suggests: 
