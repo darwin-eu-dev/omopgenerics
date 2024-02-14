@@ -79,9 +79,84 @@ Català</h4>
     
     
 <div class="section level2">
-<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+<h2 id="cohort-table">Cohort table<a class="anchor" aria-label="anchor" href="#cohort-table"></a>
 </h2>
-<p>In Cohort</p>
+<p>A cohort is a <strong>set of people that fulfill a certain set of
+criteria for a period of time</strong>.</p>
+<p>In omopgenerics we defined the <code>cohort_table</code> class that
+allows us to represent individuals in a cohort.</p>
+<p>A <code>cohort_table</code> is created using the
+<code>newCohortTable</code> function that is defined by:</p>
+<ul>
+<li><p>A cohort table.</p></li>
+<li><p>A cohort set.</p></li>
+<li><p>A cohort attrition.</p></li>
+</ul>
+<p>The cohort set and the cohort attrition will be instantiated in the
+database every time that we create a new cohort table. You can access
+the cohort set of a cohort_table using the function
+<code>settings</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/settings.html">settings</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">$</span><span class="va">cohort</span><span class="op">)</span></span></code></pre></div>
+<p>You can access the cohort attrition of a cohort_table using the
+function <code>attrition</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/attrition.html">attrition</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">$</span><span class="va">cohort</span><span class="op">)</span></span></code></pre></div>
+<p>Each one of the elements have to fulfill a certain criteria.</p>
+<div class="section level3">
+<h3 id="cohort-set">Cohort Set<a class="anchor" aria-label="anchor" href="#cohort-set"></a>
+</h3>
+<p>A cohort set must be a table with:</p>
+<ul>
+<li><p>Lower case column names.</p></li>
+<li><p>At least cohort_definition_id, cohort_name columns
+(<code>cohortColumns("cohort_set")</code>).</p></li>
+<li><p><code>cohort_name</code> it must contain unique cohort names
+(currently it must be snake case*)</p></li>
+<li><p><code>cohort_definition_id</code> it must contain unique cohort
+ids, all the ids present in table must be present in the cohort set and
+the same ids must be present in cohort attrition.</p></li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="cohort-attrition">Cohort Attrition<a class="anchor" aria-label="anchor" href="#cohort-attrition"></a>
+</h3>
+<p>A cohort attrition must be a table with:</p>
+<ul>
+<li><p>Lower case column names.</p></li>
+<li><p>At least cohort_definition_id, number_records, number_subjects,
+reason_id, reason, excluded_records, excluded_subjects columns
+(<code>cohortColumns("cohort_attrition")</code>).</p></li>
+<li><p><code>cohort_definition_id</code> it must contain cohort ids, all
+the ids present in table must be present in the cohort attrition and the
+same ids must be present in cohort set.</p></li>
+<li><p>The must exist unique pairs of <code>cohort_definition_id</code>
+and <code>reason_id</code>.</p></li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="cohort-table-1">Cohort Table<a class="anchor" aria-label="anchor" href="#cohort-table-1"></a>
+</h3>
+<p>A cohort table must be a table with:</p>
+<ul>
+<li><p>It comes from a cdm_reference (extracted via
+<code>cdm$cohort</code>).</p></li>
+<li><p>It has the same source than this cdm_reference.</p></li>
+<li><p>Lower case column names.</p></li>
+<li><p>At least cohort_definition_id, subject_id, cohort_start_date,
+cohort_end_date columns (<code>cohortColumns("cohort")</code>).</p></li>
+<li><p>There is no record with <code>NA</code> value in the required
+columns.</p></li>
+<li><p>There is no record with <code>cohort_start_date</code> &gt;
+<code>cohort_end_date</code>.</p></li>
+<li><p>There is no overlap between observations. A person must be a
+cohort several times, but it can’t enter the cohort before leaving it.
+So an individual can’t be simulatniuoly more than once in the same
+cohort.</p></li>
+<li><p>All the time between cohort_start_date and cohort_end_date (both
+included) the individual must be in observation.</p></li>
+</ul>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
