@@ -278,7 +278,9 @@ getTypes <- function(x) {
 }
 getType <- function(x) {
   if (is.numeric(x)) {
-    if (all(round(x) == floor(x))) {
+    if (is.na(x)) {
+      return("numeric")
+    } else if (all(round(x) == floor(x))) {
       return("integer")
     } else {
       return("numeric")
