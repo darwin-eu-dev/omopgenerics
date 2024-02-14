@@ -20,6 +20,7 @@
 #' @param cdmName Name of the cdm object.
 #' @param cohortTables List of tables that contains cohort, cohort_set and
 #' cohort_attrition can be provided as attributes.
+#' @param cdmVersion Version of the OMOP CDM instance. If NULL it
 #'
 #' @return A `cdm_reference` object.
 #'
@@ -27,7 +28,8 @@
 #'
 cdmFromTables <- function(tables,
                           cdmName,
-                          cohortTables = list()) {
+                          cohortTables = list(),
+                          cdmVersion = NULL) {
   # check input
   assertList(tables, named = TRUE, class = "data.frame")
   assertList(cohortTables, named = TRUE, class = "data.frame")
@@ -47,7 +49,9 @@ cdmFromTables <- function(tables,
       dplyr::as_tibble() |>
       cdmTable(src = src, name = nm)
   }
-  cdm <- cdmReference(tables = tables, cdmName = cdmName)
+  cdm <- cdmReference(
+    tables = tables, cdmName = cdmName, cdmVersion = cdmVersion
+  )
 
   for (nm in names(cohortTables)) {
     cdm <- insertTable(cdm = cdm, name = nm, table = cohortTables[[nm]])
