@@ -1,0 +1,10 @@
+---
+title: "Validate a cohort_table"
+author: "Martí Català"
+date: "`r Sys.Date()`"
+
+---
+
+## Introduction
+
+In Cohort
