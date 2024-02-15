@@ -34,7 +34,7 @@ You can access the cohort attrition of a cohort_table using the function `attrit
 attrition(cdm$cohort)
 ```
 
-Each one of the elements have to fulfill a certain criteria.
+Each one of the elements have to fulfill certain criteria.
 
 ### Cohort Set
 
@@ -44,7 +44,7 @@ A cohort set must be a table with:
 
 - At least `r cohortColumns("cohort_set")` columns (`cohortColumns("cohort_set")`).
 
-- `cohort_name` it must contain unique cohort names (currently it must be snake case*)
+- `cohort_name` it must contain unique cohort names (currently they are cased to snake case).
 
 - `cohort_definition_id` it must contain unique cohort ids, all the ids present in table must be present in the cohort set and the same ids must be present in cohort attrition.
 
@@ -58,7 +58,7 @@ A cohort attrition must be a table with:
 
 - `cohort_definition_id` it must contain cohort ids, all the ids present in table must be present in the cohort attrition and the same ids must be present in cohort set.
 
-- The must exist unique pairs of `cohort_definition_id` and `reason_id`.
+- There must exist unique pairs of `cohort_definition_id` and `reason_id`.
 
 ### Cohort Table
 
