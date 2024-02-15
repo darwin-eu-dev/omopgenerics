@@ -74,8 +74,8 @@ A cohort table must be a table with:
 
 - There is no record with `NA` value in the required columns.
 
-- There is no record with `cohort_start_date` > `cohort_end_date`.
+- There is no record with `cohort_start_date` after `cohort_end_date`.
 
-- There is no overlap between observations. A person can be in a cohort several times (several records with the same subject_id). But it can't enter the cohort again before leaving it. So an individual can't be simultaneously more than once in the same cohort. This rule is applied at the cohort_definition_id level, so records with different cohort_definition_id can overlap.
+- There is no overlap between records. A person can be in a cohort several times (several records with the same subject_id). But it can't enter (cohort_start_date) the cohort again before leaving it (cohort_end_date). So an individual can't be simultaneously more than once in the same cohort. This rule is applied at the cohort_definition_id level, so records with different cohort_definition_id can overlap.
 
 - All the time between cohort_start_date and cohort_end_date (both included) the individual must be in observation.
