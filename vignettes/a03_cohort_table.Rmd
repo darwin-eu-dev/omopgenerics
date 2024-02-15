@@ -107,7 +107,6 @@ settings(cdm$my_new_cohort)
 attrition(cdm$my_new_cohort)
 
 cohortCount(cdm$my_new_cohort)
-
 ```
 
 
