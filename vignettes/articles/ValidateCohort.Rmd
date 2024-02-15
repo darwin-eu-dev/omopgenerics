@@ -16,7 +16,7 @@ A cohort is a **set of people that fulfill a certain set of criteria for a perio
 
 In omopgenerics we defined the `cohort_table` class that allows us to represent individuals in a cohort.
 
-A `cohort_table` is created using the `newCohortTable` function that is defined by:
+A `cohort_table` is created using the `newCohortTable()` function that is defined by:
 
 - A cohort table.
 
@@ -76,6 +76,6 @@ A cohort table must be a table with:
 
 - There is no record with `cohort_start_date` > `cohort_end_date`.
 
-- There is no overlap between observations. A person must be a cohort several times, but it can't enter the cohort before leaving it. So an individual can't be simulatniuoly more than once in the same cohort.
+- There is no overlap between observations. A person can be in a cohort several times (several records with the same subject_id). But it can't enter the cohort again before leaving it. So an individual can't be simultaneously more than once in the same cohort. This rule is applied at the cohort_definition_id level, so records with different cohort_definition_id can overlap.
 
 - All the time between cohort_start_date and cohort_end_date (both included) the individual must be in observation.
