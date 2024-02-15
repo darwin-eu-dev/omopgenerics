@@ -34,15 +34,7 @@ suppress <- function(result,
 }
 
 #' @export
-suppress.compared_result <- function(result,
-                                     minCellCount = 5,
-                                     suppressedValue = paste0("<", minCellCount),
-                                     suppressedGroup = NA) {
-
-}
-
-#' @export
-suppress.summarised_result <- function(result,
+suppress.omop_result <- function(result,
                                        minCellCount = 5,
                                        suppressedValue = paste0("<", minCellCount),
                                        suppressedGroup = NA) {
@@ -55,17 +47,17 @@ suppress.summarised_result <- function(result,
   suppressedValue <- ifelse(
     !is.null(suppressedValue), as.character(suppressedValue), suppressedValue
   )
-  assertCharacter(suppressedGroup, length = 1, null = TRUE)
+  assertCharacter(suppressedValue, length = 1, null = TRUE, na = TRUE)
   suppressedGroup <- ifelse(
     !is.null(suppressedGroup), as.character(suppressedGroup), suppressedGroup
   )
-  assertCharacter(suppressedGroup, length = 1, null = TRUE)
+  assertCharacter(suppressedGroup, length = 1, null = TRUE, na = TRUE)
 
   result <- result |>
     # obscured records
     obscureRecords(minCellCount, estimateName) |>
     # obscured records by group
-    obscureGroup(minCellCount, groupCount) |>
+    obscureGroup(minCellCount, estimateName, groupCount) |>
     # obscure column
     obscureColumn(suppressedValue, suppressedGroup)
 
@@ -90,7 +82,7 @@ obscureRecords <- function(result, minCellCount, estimateName) {
     )
   return(result)
 }
-obscureGroup <- function(result, minCellCount, groupCount) {
+obscureGroup <- function(result, minCellCount, estimateName, groupCount) {
   groupsToObscure1 <- result |>
     dplyr::group_by(dplyr::across(!c(
       "estimate_name", "estimate_type", "estimate_value", "obscure_record"
@@ -101,7 +93,9 @@ obscureGroup <- function(result, minCellCount, groupCount) {
   cols1 <- colnames(groupsToObscure1)[colnames(groupsToObscure1) != "obscure_group_1"]
   groupsToObscure2 <- result |>
     dplyr::filter(
-      .data$estimate_name %in% .env$groupCount & .data$obscure_record == 1
+      .data$variable_name %in% .env$groupCount &
+        .data$estimate_name %in% .env$estimateName &
+        .data$obscure_record == 1
     ) |>
     dplyr::select(!c(
       "variable_name", "variable_level", "estimate_name", "estimate_type",
@@ -113,20 +107,21 @@ obscureGroup <- function(result, minCellCount, groupCount) {
   result <- result |>
     dplyr::left_join(groupsToObscure1, by = cols1) |>
     dplyr::left_join(groupsToObscure2, by = cols2) |>
-    dplyr::mutate(
-      obscure_group = dplyr::case_when(
-        obscure_group_1 == 1 ~ 1,
-        obscure_group_2 == 1 ~ 1,
-        TRUE ~ 0
-      )
-    )
+    dplyr::mutate(obscure_group = dplyr::case_when(
+      obscure_group_2 == 1 &
+        !.data$variable_name %in% .env$groupCount &
+        !.data$estimate_name %in% .env$estimateName ~ 1,
+      obscure_group_1 == 1 &
+        !.data$estimate_name %in% .env$estimateName ~ 1,
+      TRUE ~ 0
+    ))
   return(result)
 }
 obscureColumn <- function(result, suppressedValue, suppressedGroup) {
   result |>
     dplyr::mutate("estimate_value" = dplyr::case_when(
-      .data$obscure_record == 1 ~ .env$suppressedValue,
       .data$obscure_group == 1 ~ .env$suppressedGroup,
+      .data$obscure_record == 1 ~ .env$suppressedValue,
       TRUE ~ .data$estimate_value
     )) |>
     dplyr::select(-c("obscure_record", "obscure_group"))
