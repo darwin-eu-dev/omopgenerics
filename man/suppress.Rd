@@ -4,12 +4,23 @@
 \alias{suppress}
 \title{Function to suppress counts in result objects}
 \usage{
-suppress(result, minCellCount = 5)
+suppress(
+  result,
+  minCellCount = 5,
+  suppressedValue = paste0("<", minCellCount),
+  suppressedGroup = NA
+)
 }
 \arguments{
 \item{result}{Result object}
 
 \item{minCellCount}{Minimum count of records to report results.}
+
+\item{suppressedValue}{Value to show in suppressed counts. If NULL suppressed
+rows will be dropped.}
+
+\item{suppressedGroup}{Value to show in suppressed group counts. If NULL
+suppressed rows will be dropped.}
 }
 \value{
 Table with suppressed counts
