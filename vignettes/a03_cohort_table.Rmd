@@ -32,17 +32,22 @@ A `cohort_table` is created using the `newCohortTable()` function that is define
 
 - A cohort attrition.
 
-The cohort set and the cohort attrition will be instantiated in the database every time that we create a new cohort table. You can access the cohort set of a cohort_table using the function `settings`:
+The cohort set and the cohort attrition will be instantiated in the database every time that we create a new cohort table. You can access the cohort set of a cohort_table using the function `settings()`:
 ```{r, eval = FALSE}
 settings(cdm$cohort)
 ```
 
-You can access the cohort attrition of a cohort_table using the function `attrition`:
+You can access the cohort attrition of a cohort_table using the function `attrition()`:
 ```{r, eval = FALSE}
 attrition(cdm$cohort)
 ```
 
-Each one of the elements have to fulfill certain criteria.
+Cohort attrition table is also used to compute the number of counts that each cohort has. It can be seen with the function `cohortCount()`. This entirely relies with the cohort attrition attribute and it is not performing any actual calculation.
+```{r, eval = FALSE}
+cohortCount(cdm$cohort)
+```
+
+Each one of the elements that define a cohort table have to fulfill certain criteria.
 
 ### Cohort Set
 
@@ -89,12 +94,26 @@ A cohort table must be a table with:
 - All the time between cohort_start_date and cohort_end_date (both included) the individual must be in observation.
 
 ## Combining generated cohort sets
-### Binding
-TO ADD
 
-## Export metadata about a generated cohort set
+You can bind two cohort tables using the method `bind()`. You can combine several cohort tables using this method. The only constrain is that cohort names must be unique across the different cohort tables. You have to provide a name for the new cohort table.
 
-You can export the metadata of a `cohort_table` using the function: `summary`:
+```{r, eval = FALSE}
+cdm <- bind(cdm$cohort1, cdm$cohort2, cdm$cohort3, name = "my_new_cohort")
+
+cdm$my_new_cohort
+
+settings(cdm$my_new_cohort)
+
+attrition(cdm$my_new_cohort)
+
+cohortCount(cdm$my_new_cohort)
+
+```
+
+
+## Export metadata about a cohort table
+
+You can export the metadata of a `cohort_table` using the function: `summary()`:
 ```{r, eval = FALSE}
 summary(cdm$cohort)
 ```
