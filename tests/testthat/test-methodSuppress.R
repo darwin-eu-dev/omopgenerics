@@ -28,7 +28,7 @@ test_that("test supress methods", {
   result <- suppress(obj, minCellCount = 4)
   expect_identical(
     result$estimate_value,
-    c("10", "5", "50", "<4", NA, "1", "<4", "12", "6")
+    c("10", "5", "50", NA, NA, "1", NA, "12", "6")
   )
   expect_identical(
     result |> dplyr::select(-"estimate_value"),
@@ -38,7 +38,7 @@ test_that("test supress methods", {
   result <- suppress(obj, minCellCount = 5)
   expect_identical(
     result$estimate_value,
-    c("10", "5", "50", "<5", NA, "1", "<5", "12", "6")
+    c("10", "5", "50", NA, NA, "1", NA, "12", "6")
   )
   expect_identical(
     result |> dplyr::select(-"estimate_value"),
@@ -48,7 +48,7 @@ test_that("test supress methods", {
   result <- suppress(obj, minCellCount = 6)
   expect_identical(
     result$estimate_value,
-    c("10", "<6", NA, "<6", NA, "1", "<6", "12", "6")
+    c("10", NA, NA, NA, NA, "1", NA, "12", "6")
   )
   expect_identical(
     result |> dplyr::select(-"estimate_value"),
@@ -58,7 +58,7 @@ test_that("test supress methods", {
   result <- suppress(obj, minCellCount = 10)
   expect_identical(
     result$estimate_value,
-    c("10", "<10", NA, "<10", NA, "1", "<10", "12", "6")
+    c("10", NA, NA, NA, NA, "1", NA, "12", "6")
   )
   expect_identical(
     result |> dplyr::select(-"estimate_value"),
@@ -68,7 +68,7 @@ test_that("test supress methods", {
   result <- suppress(obj, minCellCount = 11)
   expect_identical(
     result$estimate_value,
-    c("<11", NA, NA, NA, NA, NA, "<11", "12", "6")
+    c(NA, NA, NA, NA, NA, NA, NA, "12", "6")
   )
   expect_identical(
     result |> dplyr::select(-"estimate_value"),
@@ -78,7 +78,7 @@ test_that("test supress methods", {
   result <- suppress(obj, minCellCount = 12)
   expect_identical(
     result$estimate_value,
-    c("<12", NA, NA, NA, NA, NA, "<12", "12", "6")
+    c(NA, NA, NA, NA, NA, NA, NA, "12", "6")
   )
   expect_identical(
     result |> dplyr::select(-"estimate_value"),
@@ -86,53 +86,10 @@ test_that("test supress methods", {
   )
 
   result <- suppress(obj, minCellCount = 13)
-  expect_identical(
-    result$estimate_value,
-    c("<13", NA, NA, NA, NA, NA, "<13", "<13", NA)
-  )
+  expect_identical(result$estimate_value, rep(NA_character_, 9))
   expect_identical(
     result |> dplyr::select(-"estimate_value"),
     obj |> dplyr::select(-"estimate_value")
   )
-
-  result <- suppress(
-    obj, minCellCount = 13, suppressedValue = "x", suppressedGroup = "y"
-  )
-  expect_identical(
-    result$estimate_value,
-    c("x", "y", "y", "y", "y", "y", "x", "x", "y")
-  )
-  expect_identical(
-    result |> dplyr::select(-"estimate_value"),
-    obj |> dplyr::select(-"estimate_value")
-  )
-
-  result <- suppress(
-    obj, minCellCount = 13, suppressedValue = "x", suppressedGroup = NULL
-  )
-  expect_true(nrow(result) == 3)
-  expect_true(all(result$estimate_value == "x"))
-
-  result <- suppress(
-    obj, minCellCount = 13, suppressedValue = NULL, suppressedGroup = "y"
-  )
-  expect_true(nrow(result) == 4)
-  expect_true(all(result$estimate_value == "y"))
-
-  result <- suppress(
-    obj, minCellCount = 13, suppressedValue = NULL, suppressedGroup = NULL
-  )
-  expect_true(nrow(result) == 0)
-
-  result <- suppress(obj, minCellCount = 6, suppressedGroup = NULL)
-  expect_true(nrow(result) == 7)
-
-  result <- suppress(obj, minCellCount = 6, suppressedValue = NULL)
-  expect_true(nrow(result) == 6)
-
-  result <- suppress(
-    obj, minCellCount = 6, suppressedValue = NULL, suppressedGroup = NULL
-  )
-  expect_true(nrow(result) == 4)
 
 })

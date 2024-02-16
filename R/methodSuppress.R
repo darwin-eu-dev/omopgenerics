@@ -18,36 +18,25 @@
 #'
 #' @param result Result object
 #' @param minCellCount Minimum count of records to report results.
-#' @param suppressedValue Value to show in suppressed counts. If NULL suppressed
-#' rows will be dropped.
-#' @param suppressedGroup Value to show in suppressed group counts. If NULL
-#' suppressed rows will be dropped.
 #'
 #' @return Table with suppressed counts
 #' @export
 #'
 suppress <- function(result,
-                     minCellCount = 5,
-                     suppressedValue = paste0("<", minCellCount),
-                     suppressedGroup = NA) {
+                     minCellCount = 5) {
   UseMethod("suppress")
 }
 
 #' @export
 suppress.omop_result <- function(result,
-                                       minCellCount = 5,
-                                       suppressedValue = paste0("<", minCellCount),
-                                       suppressedGroup = NA) {
+                                       minCellCount = 5) {
   estimateName = "count"
   groupCount = c("number subjects", "number records")
+  suppressed <- NA_character_
 
   # initial checks
   assertTibble(result)
   assertNumeric(minCellCount, integerish = TRUE, min = 0, length = 1)
-  if (!is.null(suppressedValue)) suppressedValue <- as.character(suppressedValue)
-  assertCharacter(suppressedValue, length = 1, null = TRUE, na = TRUE)
-  if (!is.null(suppressedGroup)) suppressedGroup <- as.character(suppressedGroup)
-  assertCharacter(suppressedGroup, length = 1, null = TRUE, na = TRUE)
 
   result <- result |>
     # obscured records
@@ -55,7 +44,7 @@ suppress.omop_result <- function(result,
     # obscured records by group
     obscureGroup(minCellCount, estimateName, groupCount) |>
     # obscure column
-    obscureColumn(suppressedValue, suppressedGroup)
+    obscureColumn(suppressed)
 
   return(result)
 }
@@ -111,24 +100,12 @@ obscureGroup <- function(result, minCellCount, estimateName, groupCount) {
     dplyr::select(-c("obscure_group_1", "obscure_group_2"))
   return(result)
 }
-obscureColumn <- function(result, suppressedValue, suppressedGroup) {
-  if (is.null(suppressedValue)) {
-    result <- result |> dplyr::filter(.data$obscure_record == 0)
-  } else {
-    result <- result |>
-      dplyr::mutate("estimate_value" = dplyr::if_else(
-        .data$obscure_record == 1, .env$suppressedValue, .data$estimate_value
-      ))
-  }
-  if (is.null(suppressedGroup)) {
-    result <- result |> dplyr::filter(.data$obscure_group == 0)
-  } else {
-    result <- result |>
-      dplyr::mutate("estimate_value" = dplyr::if_else(
-        .data$obscure_group == 1, .env$suppressedGroup, .data$estimate_value
-      ))
-  }
-  result <- result |>
+obscureColumn <- function(result, suppressed) {
+  result |>
+    dplyr::mutate("estimate_value" = dplyr::if_else(
+      .data$obscure_group == 1 | .data$obscure_record == 1,
+      .env$suppressed,
+      .data$estimate_value
+    )) |>
     dplyr::select(-c("obscure_record", "obscure_group"))
-  return(result)
 }
