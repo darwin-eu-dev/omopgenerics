@@ -48,12 +48,10 @@ bind.cohort_table <- function(..., name) {
   assertCharacter(name, length = 1)
 
   # get cdm
-  cdm <- attr(cohorts[[1]], "cdm_reference")
+  cdm <- cdmReference(cohorts[[1]])
 
   # bind
-  newCohortSet <- lapply(cohorts, function(x) {
-    attr(x, "cohort_set") |> dplyr::collect()
-  }) |>
+  newCohortSet <- lapply(cohorts, settings) |>
     dplyr::bind_rows(.id = "cohort_id") |>
     dplyr::mutate("new_cohort_definition_id" = dplyr::row_number())
   repeatedCohortName <- newCohortSet |>
@@ -72,12 +70,13 @@ bind.cohort_table <- function(..., name) {
     err <- paste0(repeatedCohortName, " in ", repeatedCohort)
     cli::cli_abort("Cohorts can have the same cohort_name: {paste0(err, collapse = '; ')}.")
   }
-  newCohortAttrition <- lapply(cohorts, function(x) {
-    attr(x, "cohort_attrition") |> dplyr::collect()
-  }) |>
+  newCohortAttrition <- lapply(cohorts, attrition) |>
     dplyr::bind_rows(.id = "cohort_id") |>
     dplyr::left_join(
-      newCohortSet |> dplyr::select(-"cohort_name"),
+      newCohortSet |>
+        dplyr::select(
+          "cohort_definition_id", "cohort_id", "new_cohort_definition_id"
+        ),
       by = c("cohort_definition_id", "cohort_id")
     ) |>
     dplyr::select(-c("cohort_definition_id", "cohort_id")) |>

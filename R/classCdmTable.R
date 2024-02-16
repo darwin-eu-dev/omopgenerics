@@ -35,12 +35,42 @@ newCdmTable <- function(table, src, name) {
   return(table)
 }
 
-getTableName <- function(table) {
+
+#' Get the `cdm_reference` of a `cdm_table`.
+#'
+#' @param table A cdm_table.
+#'
+#' @return A cdm_reference.
+#'
+#' @export
+#'
+cdmReference <- function(table) {
+  assertClass(table, "cdm_table")
+  attr(table, "cdm_reference")
+}
+
+#' Get the table name of a `cdm_table`.
+#'
+#' @param table A cdm_table.
+#'
+#' @return A character with the name.
+#'
+#' @export
+#'
+tableName <- function(table) {
   assertClass(table, "cdm_table")
   attr(table, "tbl_name")
 }
 
-getTableSource <- function(table) {
+#' Get the table source of a `cdm_table`.
+#'
+#' @param table A cdm_table.
+#'
+#' @return A cdm_source object.
+#'
+#' @export
+#'
+tableSource <- function(table) {
   assertClass(table, "cdm_table")
   attr(table, "tbl_source")
 }

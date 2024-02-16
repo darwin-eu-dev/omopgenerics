@@ -81,7 +81,7 @@ summary.cdm_reference <- function(object, ...) {
     if (!"cdm_version" %in% colnames(cdmSourceSummary)) {
       cdmSourceSummary <- cdmSourceSummary |>
         dplyr::mutate(
-          "cdm_version" = dplyr::coalesce(attr(object, "cdm_version"), "")
+          "cdm_version" = dplyr::coalesce(cdmVersion(object), "")
         )
     }
     cols <- c(
@@ -99,7 +99,7 @@ summary.cdm_reference <- function(object, ...) {
       cdm_source_name = "",
       cdm_holder_name = "",
       cdm_release_date = "",
-      cdm_version = dplyr::coalesce(attr(object, "cdm_version"), ""),
+      cdm_version = dplyr::coalesce(cdmVersion(object), ""),
       cdm_description = "",
       cdm_documentation_reference = ""
     )
@@ -170,16 +170,15 @@ summary.cdm_reference <- function(object, ...) {
 #' @export
 #'
 summary.cohort_table <- function(object, ...) {
-  if (is.null(attr(object, "cdm_reference"))) {
+  if (is.null(cdmReference(object))) {
     cli::cli_abort(
-      "Can't find the cdm that this cohort comes from
-      (attr(cohort, 'cdm_reference') is NULL)."
+      "Can't find the cdm that this cohort comes from (cdmReference(object) is
+      NULL)."
     )
   }
-  if (is.null(attr(object, "tbl_name"))) {
+  if (is.null(tableName(object))) {
     cli::cli_abort(
-      "Can't find the table name of this cohort (attr(cohort, 'tbl_name') is
-      NULL)."
+      "Can't find the table name of this cohort (tableName(object) is NULL)."
     )
   }
 
@@ -251,11 +250,11 @@ summary.cohort_table <- function(object, ...) {
     ) |>
     dplyr::union_all(attritionSummary) |>
     dplyr::mutate(
-      "cdm_name" = cdmName(attr(object, "cdm_reference")),
+      "cdm_name" = cdmReference(object) |> cdmName(),
       "package_name" = "omopgenerics",
       "package_version" = as.character(utils::packageVersion("omopgenerics")),
       "group_name" = "cohort_table_name",
-      "group_level" = attr(object, "tbl_name"),
+      "group_level" = tableName(object),
       "strata_name" = "cohort_name",
       "strata_level" = .data$cohort_name
     ) |>
@@ -278,7 +277,10 @@ getTypes <- function(x) {
 }
 getType <- function(x) {
   if (is.numeric(x)) {
-    if (all(round(x) == floor(x))) {
+    x <- x[!is.na(x)]
+    if (length(x) == 0) {
+      return("numeric")
+    } else if (all(round(x) == floor(x))) {
       return("integer")
     } else {
       return("numeric")

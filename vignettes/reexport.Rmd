@@ -1,0 +1,79 @@
+---
+title: "Re-exporting functions from omopgnerics"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{reexport}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+**omopgenerics** is a package that is meant to be invisible for the user and it should be only developer focused package. This means that the typical user of the omopverse packages should never need to import directly it. This means that the functions needed to be used by the user they need to be reexported in other packages.
+
+## Methods
+
+If a package defined an implementation for a desired method (participants, attrition, settings, ...), this function should be reexported there.
+
+## CDM reference
+
+If a package has a function to create a `cdm_reference` object, this package should re-export several functions.
+
+1. To access the `cdm_reference` attributes:
+
+- `cdmSource()`
+
+- `cdmVersion()`
+
+- `cdmName()`
+
+2. To access the `cdm_table` attributes:
+
+- `tableSource()`
+
+- `tableName()`
+
+- `cdmReference()`
+
+3. To insert and drop tables using the cdm object:
+
+- `insertTable()`
+
+- `dropTable()`
+
+4. Helpers to create appropriate cdm tables:
+
+- `omopColumns()`
+
+- `omopTables()`
+
+- `cohortColumns()`
+
+- `cohortTables()`
+
+- `achillesColumns()`
+
+- `achillesTables()`
+
+## Cohorts
+
+If a package has a function to create a `cohort_table` object, this package should re-export the following functions:
+
+- `settings()`
+
+- `attrition()`
+
+- `cohortCount()`
+
+## Omop result
+
+If a package has a function to create an `omop_result` object (`summarised_result` or `compared_result`), this package should re-export the following functions:
+
+- `suppress()`

@@ -34,7 +34,7 @@ insertTable <- function(cdm, name, table, overwrite = TRUE) {
 insertTable.cdm_reference <- function(cdm, name, table, overwrite = TRUE) {
   table <- dplyr::collect(table)
   value <- insertTable(
-    cdm = getCdmSource(cdm), name = name, table = table, overwrite = overwrite
+    cdm = cdmSource(cdm), name = name, table = table, overwrite = overwrite
   )
   attr(value, "cdm_reference") <- cdm
   cdm[[name]] <- value

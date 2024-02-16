@@ -27,13 +27,13 @@
 #' @export
 #'
 insertFromSource <- function(cdm, value) {
-  UseMethod("insertFromSource", getCdmSource(cdm))
+  UseMethod("insertFromSource", cdmSource(cdm))
 }
 
 #' @export
 insertFromSource.local_cdm <- function(cdm, value) {
   assertClass(value, "data.frame")
-  src <- getCdmSource(cdm)
+  src <- cdmSource(cdm)
   value <- newCdmTable(table = value, src = src, name = NA_character_)
   return(value)
 }
