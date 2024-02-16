@@ -41,27 +41,24 @@ newAchillesTable <- function(table) {
 
 #' Create an empty achilles table
 #'
-#' @param name Name of the table to create.
 #' @param cdm A cdm_reference to create the table.
+#' @param name Name of the table to create.
 #'
-#' @noRd
+#' @export
 #'
 #' @return The cdm_reference with an achilles empty table
 #'
-emptyAchillesTable <- function(name, cdm) {
-  # check input
+emptyAchillesTable <- function(cdm, name) {
   assertChoice(name, achillesTables(), length = 1)
   assertClass(cdm, "cdm_reference")
-
-  # create tibble
-  # TODO correct column type
-  x <- achillesColumns(name) |>
-    rlang::rep_named(list(character())) |>
-    dplyr::as_tibble()
-  cdm <- insertTable(cdm = cdm, name = name, table = x, overwrite = FALSE)
-
-  # validate
+  table <- fieldsTables |>
+    dplyr::filter(
+      .data$cdm_table_name == .env$name &
+        .data$type == "achilles" &
+        grepl(cdmVersion(cdm), .data$cdm_version)
+    ) |>
+    emptyTable()
+  cdm <- insertTable(cdm = cdm, name = name, table = table, overwrite = FALSE)
   cdm[[name]] <- cdm[[name]] |> newAchillesTable()
-
   return(cdm)
 }

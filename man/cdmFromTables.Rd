@@ -4,7 +4,7 @@
 \alias{cdmFromTables}
 \title{Create a cdm object from local tables}
 \usage{
-cdmFromTables(tables, cdmName, cohortTables = list())
+cdmFromTables(tables, cdmName, cohortTables = list(), cdmVersion = NULL)
 }
 \arguments{
 \item{tables}{List of tables to be part of the cdm object.}
@@ -13,6 +13,8 @@ cdmFromTables(tables, cdmName, cohortTables = list())
 
 \item{cohortTables}{List of tables that contains cohort, cohort_set and
 cohort_attrition can be provided as attributes.}
+
+\item{cdmVersion}{Version of the cdm_reference}
 }
 \value{
 A \code{cdm_reference} object.

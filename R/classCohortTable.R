@@ -431,3 +431,47 @@ populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
   )
   return(cohortAttritionRef)
 }
+
+#' Create an empty cohort_table object
+#'
+#' @param cdm A cdm_reference to create the table.
+#' @param name Name of the table to create.
+#'
+#' @export
+#'
+#' @return The cdm_reference with an empty cohort table
+#'
+emptyCohortTable <- function(cdm, name) {
+  assertCharacter(name, length = 1)
+  assertClass(cdm, "cdm_reference")
+  table <- fieldsTables |>
+    dplyr::filter(
+      .data$cdm_table_name == "cohort" &
+        .data$type == "cohort" &
+        grepl(cdmVersion(cdm), .data$cdm_version)
+    ) |>
+    emptyTable()
+  cdm <- insertTable(cdm = cdm, name = name, table = table, overwrite = FALSE)
+  cdm[[name]] <- newCohortTable(cdm[[name]])
+  return(cdm)
+}
+
+emptyTable <- function(fields) {
+  lapply(fields$cdm_datatype, getEmptyField) |>
+    rlang::set_names(fields$cdm_field_name) |>
+    dplyr::as_tibble()
+}
+getEmptyField <- function(datatype) {
+  datatype[grepl("varchar", datatype)] <- "varchar"
+  empty <- switch(
+    datatype,
+    "integer" = integer(),
+    "datetime" = as.Date(integer()),
+    "date" = as.Date(integer()),
+    "float" = numeric(),
+    "varchar" = character(),
+    "logical" = logical()
+  )
+  return(empty)
+}
+

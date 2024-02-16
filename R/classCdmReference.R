@@ -530,3 +530,33 @@ str.cdm_reference <- function(object, ...) {
   )
   cat(mes, sep = "")
 }
+
+#' Create an empty cdm_reference
+#'
+#' @param cdmName Name of the cdm_reference
+#' @param cdmVersion Version of the cdm_reference
+#'
+#' @export
+#'
+#' @return An empty cdm_reference
+#'
+emptyCdmReference <- function(cdmName, cdmVersion = NULL) {
+  cdmFromTables(
+    tables = list(
+      "person" = emptyOmopTableInternal("person"),
+      "observation_period" = emptyOmopTableInternal("observation_period")
+    ),
+    cdmName = cdmName,
+    cdmVersion = cdmVersion
+  )
+}
+
+emptyOmopTableInternal <- function(name, version = "5.3") {
+  fieldsTables |>
+    dplyr::filter(
+      .data$cdm_table_name == name &
+        .data$type == "cdm_table" &
+        grepl(.env$version, .data$cdm_version)
+    ) |>
+    emptyTable()
+}
