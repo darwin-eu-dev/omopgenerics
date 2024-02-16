@@ -142,4 +142,13 @@ test_that("multiplication works", {
     )
   )
 
+  expect_error(
+    cdm$cohort1 <- cdm$cohort1 |>
+      dplyr::group_by(cohort_definition_id, subject_id) |>
+      dplyr::filter(cohort_start_date == min(cohort_start_date)) |>
+      dplyr::ungroup() |>
+      dplyr::compute(name = "cohort1", temporary = FALSE) |>
+      recordCohortAttrition(reason = "First record and blabla")
+  )
+
 })
