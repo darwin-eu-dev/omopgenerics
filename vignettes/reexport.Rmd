@@ -24,13 +24,23 @@ If a package defined an implementation for a desired method (participants, attri
 
 ## CDM reference
 
-If a package has a function to create a `cdm_reference` object, this package should re-export the following functions:
+If a package has a function to create a `cdm_reference` object, this package should re-export several functions.
+
+1. To access the `cdm_reference` attributes:
 
 - `cdmSource()`
 
 - `cdmVersion()`
 
 - `cdmName()`
+
+2. To access the `cdm_table` attributes:
+
+- `tableSource()`
+
+- `tableName()`
+
+- `cdmReference()`
 
 - `insertTable()`
 

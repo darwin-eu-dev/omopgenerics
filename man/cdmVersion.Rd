@@ -2,7 +2,7 @@
 % Please edit documentation in R/classCdmReference.R
 \name{cdmVersion}
 \alias{cdmVersion}
-\title{Version of a cdm_reference.}
+\title{Get the version of a cdm_reference.}
 \usage{
 cdmVersion(cdm)
 }
@@ -13,5 +13,5 @@ cdmVersion(cdm)
 Version of the cdm_reference.
 }
 \description{
-Version of a cdm_reference.
+Get the version of a cdm_reference.
 }

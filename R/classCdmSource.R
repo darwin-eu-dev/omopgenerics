@@ -90,3 +90,16 @@ print.cdm_source <- function(x, ...) {
     "This is a {attr(x, 'source_type')} cdm source"
   )
 }
+
+#' Get the source type of a cdm_source.
+#'
+#' @param cdmSource A cdm_source object.
+#'
+#' @return A character vector that defines the type of cdm_source.
+#'
+#' @export
+#'
+sourceType <- function(x) {
+  assertClass(cdm, "cdm_source")
+  attr(x, "source_type")
+}

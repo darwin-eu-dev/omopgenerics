@@ -20,7 +20,7 @@ test_that("test cdm_reference", {
   expect_identical(cdm, cdmReference(cdm$person))
 
   expect_identical("mock", cdmName(cdm))
-  expect_identical(src, getCdmSource(cdm))
+  expect_identical(src, cdmSource(cdm))
   expect_true("cdm_reference" %in% names(attributes(cdm$person)))
   expect_true("cdm_reference" %in% names(attributes(cdm[["person"]])))
 
