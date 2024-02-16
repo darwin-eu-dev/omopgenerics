@@ -100,7 +100,15 @@ test_that("summary a generated cohort set", {
   cdm <- cdmFromTables(
     tables = list("person" = person, "observation_period" = observation_period),
     cdmName = "test",
-    cohortTables = list("cohort1" = cohort)
+    cohortTables = list("cohort1" = cohort, "cohort2" = cohort)
   )
   expect_no_error(summary(cdm$cohort1))
+  expect_no_error(summary(cdm$cohort2))
+  cdm$cohort2 <- cdm$cohort2 |>
+    newCohortTable(cohortSetRef = dplyr::tibble(
+      cohort_definition_id = 1, cohort_name = "my_cohort", parameter = 1
+    ))
+  expect_no_error(cdm <- bind(cdm$cohort1, cdm$cohort2, name = "cohort3"))
+  expect_no_error(summary(cdm$cohort3))
+
 })

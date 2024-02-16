@@ -77,7 +77,10 @@ bind.cohort_table <- function(..., name) {
   }) |>
     dplyr::bind_rows(.id = "cohort_id") |>
     dplyr::left_join(
-      newCohortSet |> dplyr::select(-"cohort_name"),
+      newCohortSet |>
+        dplyr::select(
+          "cohort_definition_id", "cohort_id", "new_cohort_definition_id"
+        ),
       by = c("cohort_definition_id", "cohort_id")
     ) |>
     dplyr::select(-c("cohort_definition_id", "cohort_id")) |>
