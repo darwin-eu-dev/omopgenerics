@@ -38,3 +38,21 @@ newOmopTable <- function(table) {
 
   return(table)
 }
+
+#' Create an empty omop table
+#'
+#' @param name Name of the table to create.
+#' @param cdm A cdm_reference to create the table.
+#'
+#' @export
+#'
+#' @return The cdm_reference with an empty cohort table
+#'
+emptyOmopTable <- function(name, cdm) {
+  assertChoice(name, omopTables(), length = 1)
+  assertClass(cdm, "cdm_reference")
+  # create table
+  cdm <- insertTable(cdm = cdm, name = name, table = table)
+  cdm[[name]] <- newOmopTable(cdm[[name]])
+  return(cdm)
+}

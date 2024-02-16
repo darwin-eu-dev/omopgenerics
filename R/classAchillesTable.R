@@ -44,7 +44,7 @@ newAchillesTable <- function(table) {
 #' @param name Name of the table to create.
 #' @param cdm A cdm_reference to create the table.
 #'
-#' @noRd
+#' @export
 #'
 #' @return The cdm_reference with an achilles empty table
 #'
