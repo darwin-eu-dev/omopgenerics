@@ -26,8 +26,8 @@
 #' @export
 #'
 newCdmReference <- function(tables,
-                         cdmName,
-                         cdmVersion = NULL) {
+                            cdmName,
+                            cdmVersion = NULL) {
   # inputs
   assertList(tables, named = TRUE, class = "cdm_table")
   assertCharacter(cdmName, length = 1)
@@ -45,7 +45,7 @@ newCdmReference <- function(tables,
   # constructor
   cdm <- constructCdmReference(
     tables = tables, cdmName = cdmName, cdmVersion = cdmVersion,
-    cdmSource = getTableSource(tables[[1]])
+    cdmSource = tableSource(tables[[1]])
   )
 
   # validate
@@ -63,8 +63,8 @@ getVersion <- function(cdm) {
       version <- substr(version, 2, nchar(version))
     }
     substr(version, 1, 3)
-    },
-    error = function(e) {"5.3"}
+  },
+  error = function(e) {"5.3"}
   )
   return(version)
 }
@@ -82,7 +82,7 @@ validateCdmReference <- function(cdm) {
   assertChoice(cdmVersion(cdm), c("5.3", "5.4"), length = 1)
 
   # assert source
-  assertClass(getCdmSource(cdm), "cdm_source")
+  assertClass(cdmSource(cdm), "cdm_source")
 
   # assert lowercase names
   x <- names(cdm)[names(cdm) != tolower(names(cdm))]
@@ -193,7 +193,7 @@ checkOverlapObservation <- function(x, call = parent.frame()) {
   }
 }
 
-#' Name of a cdm_reference.
+#' Get the name of a cdm_reference.
 #'
 #' @param cdm A cdm_reference object.
 #'
@@ -206,7 +206,7 @@ cdmName <- function(cdm) {
   attr(cdm, "cdm_name")
 }
 
-#' Version of a cdm_reference.
+#' Get the version of a cdm_reference.
 #'
 #' @param cdm A cdm_reference object.
 #'
@@ -217,6 +217,19 @@ cdmName <- function(cdm) {
 cdmVersion <- function(cdm) {
   assertClass(cdm, "cdm_reference")
   attr(cdm, "cdm_version")
+}
+
+#' Get the source of a cdm_reference.
+#'
+#' @param cdm A cdm_reference object.
+#'
+#' @return A cdm_source object.
+#'
+#' @export
+#'
+cdmSource <- function(cdm) {
+  assertClass(cdm, "cdm_reference")
+  attr(cdm, "cdm_source")
 }
 
 #' Subset a cdm reference object.
@@ -296,10 +309,10 @@ cdmVersion <- function(cdm) {
         }
       )
     }
-    if (!identical(getTableSource(value), getCdmSource(cdm))) {
+    if (!identical(tableSource(value), cdmSource(cdm))) {
       cli::cli_abort("Table and cdm does not share a common source.")
     }
-    remoteName <- getTableName(value)
+    remoteName <- tableName(value)
     if (!is.na(remoteName) && name != remoteName) {
       cli::cli_abort(
         "You can't assign a table named {remoteName} to {name}. Please use
@@ -335,17 +348,6 @@ cdmVersion <- function(cdm) {
   return(cdm)
 }
 
-#' Obtain the cdm_reference that a table comes from.
-#'
-#' @param table A cdm_table.
-#'
-#' @export
-#'
-cdmReference <- function(table) {
-  assertClass(table, "cdm_table")
-  attr(table, "cdm_reference")
-}
-
 #' Print a CDM reference object
 #'
 #' @param x A cdm_reference object
@@ -354,7 +356,7 @@ cdmReference <- function(table) {
 #' @return Invisibly returns the input
 #' @export
 print.cdm_reference <- function(x, ...) {
-  type <- getCdmSource(x) |> getSourceType()
+  type <- cdmSource(x) |> sourceType()
   name <- cdmName(x)
   nms <- names(x)
   classes <- lapply(names(x), function(nm) {
@@ -522,13 +524,9 @@ requiredColumns <- function(table, version, type) {
 
 #' @export
 str.cdm_reference <- function(object, ...) {
-  src <- getCdmSource(object)
+  src <- cdmSource(object)
   mes <- glue::glue(
     "A cdm reference of {cdmName(object)} with {length(object)} tables: {paste0(names(object), collapse = ', ')}"
   )
   cat(mes, sep = "")
-}
-
-getSourceType <- function(x) {
-  attr(x, "source_type")
 }

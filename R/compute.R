@@ -33,7 +33,7 @@ compute.cdm_table <- function(x,
                               temporary = TRUE,
                               overwrite = TRUE,
                               ...) {
-  src <- getTableSource(x)
+  src <- tableSource(x)
   cl <- class(src)[class(src) != "cdm_source"]
   cx <- class(x)
   res <- x |>

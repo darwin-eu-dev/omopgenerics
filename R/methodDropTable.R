@@ -30,7 +30,7 @@ dropTable <- function(cdm, name) {
 
 #' @export
 dropTable.cdm_reference <- function(cdm, name) {
-  dropTable(getCdmSource(cdm), name = name)
+  dropTable(cdmSource(cdm), name = name)
   allTables <- names(cdm)
   names(allTables) <- names(cdm)
   toDrop <- names(tidyselect::eval_select(dplyr::any_of(name), data = allTables))
