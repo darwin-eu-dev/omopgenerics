@@ -434,14 +434,14 @@ populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
 
 #' Create an empty cohort_table object
 #'
-#' @param name Name of the table to create.
 #' @param cdm A cdm_reference to create the table.
+#' @param name Name of the table to create.
 #'
 #' @export
 #'
 #' @return The cdm_reference with an empty cohort table
 #'
-emptyCohortTable <- function(name, cdm) {
+emptyCohortTable <- function(cdm, name) {
   assertCharacter(name, length = 1)
   assertClass(cdm, "cdm_reference")
   table <- fieldsTables |>

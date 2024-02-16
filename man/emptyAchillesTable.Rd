@@ -4,12 +4,12 @@
 \alias{emptyAchillesTable}
 \title{Create an empty achilles table}
 \usage{
-emptyAchillesTable(name, cdm)
+emptyAchillesTable(cdm, name)
 }
 \arguments{
-\item{name}{Name of the table to create.}
-
 \item{cdm}{A cdm_reference to create the table.}
+
+\item{name}{Name of the table to create.}
 }
 \value{
 The cdm_reference with an achilles empty table

@@ -41,14 +41,14 @@ newAchillesTable <- function(table) {
 
 #' Create an empty achilles table
 #'
-#' @param name Name of the table to create.
 #' @param cdm A cdm_reference to create the table.
+#' @param name Name of the table to create.
 #'
 #' @export
 #'
 #' @return The cdm_reference with an achilles empty table
 #'
-emptyAchillesTable <- function(name, cdm) {
+emptyAchillesTable <- function(cdm, name) {
   assertChoice(name, achillesTables(), length = 1)
   assertClass(cdm, "cdm_reference")
   table <- fieldsTables |>
@@ -58,7 +58,7 @@ emptyAchillesTable <- function(name, cdm) {
         grepl(cdmVersion(cdm), .data$cdm_version)
     ) |>
     emptyTable()
-  cdm <- insertTable(cdm = cdm, name = name, table = x, overwrite = FALSE)
+  cdm <- insertTable(cdm = cdm, name = name, table = table, overwrite = FALSE)
   cdm[[name]] <- cdm[[name]] |> newAchillesTable()
   return(cdm)
 }

@@ -551,8 +551,12 @@ emptyCdmReference <- function(cdmName, cdmVersion = NULL) {
   )
 }
 
-emptyOmopTableInternal <- function(name) {
+emptyOmopTableInternal <- function(name, version = "5.3") {
   fieldsTables |>
-    dplyr::filter(.data$cdm_table_name == name & .data$type == "cdm_table") |>
+    dplyr::filter(
+      .data$cdm_table_name == name &
+        .data$type == "cdm_table" &
+        grepl(.env$version, .data$cdm_version)
+    ) |>
     emptyTable()
 }
