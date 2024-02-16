@@ -1,5 +1,5 @@
 ---
-title: "reexporting omopgnerics"
+title: "Re-exporting functions from omopgnerics"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{reexport}
@@ -14,9 +14,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Re-export
+## Introduction
 
-omopgenerics is a package that is designed to be invisible for the user. This means that the typical user should never need to import directly it. Functions needed to be used by the user they need to be reexported in other packages.
+**omopgenerics** is a package that is meant to be invisible for the user and it should be only developer focused package. This means that the typical user of the omopverse packages should never need to import directly it. This means that the functions needed to be used by the user they need to be reexported in other packages.
 
 ## Methods
 
@@ -42,9 +42,13 @@ If a package has a function to create a `cdm_reference` object, this package sho
 
 - `cdmReference()`
 
+3. To insert and drop tables using the cdm object:
+
 - `insertTable()`
 
 - `dropTable()`
+
+4. Helpers to create appropriate cdm tables:
 
 - `omopColumns()`
 
@@ -73,9 +77,9 @@ If a package has a function to create a `cohort_table` object, this package shou
 - `recordCohortAttrition()`
 
 
-## Summarised result
+## Omop result
 
-If a package has a function to create a `summarised_result` object, this package should re-export the following functions:
+If a package has a function to create an `omop_result` object (`summarised_result` or `compared_result`), this package should re-export the following functions:
 
 - `suppress()`
 
