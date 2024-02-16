@@ -102,19 +102,19 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
   }
 
   # check name
-  assertCharacter(getTableName(cohort), length = 1, na = TRUE)
-  assertCharacter(getTableName(cohort_set), length = 1, na = TRUE)
-  assertCharacter(getTableName(cohort_attrition), length = 1, na = TRUE)
+  assertCharacter(tableName(cohort), length = 1, na = TRUE)
+  assertCharacter(tableName(cohort_set), length = 1, na = TRUE)
+  assertCharacter(tableName(cohort_attrition), length = 1, na = TRUE)
   consistentNaming(
-    cohortName = getTableName(cohort),
-    cohortSetName = getTableName(cohort_set),
-    cohortAttritionName = getTableName(cohort_attrition)
+    cohortName = tableName(cohort),
+    cohortSetName = tableName(cohort_set),
+    cohortAttritionName = tableName(cohort_attrition)
   )
 
   # check source
-  srcCohort <- getTableSource(cohort)
-  srcCohortSet <- getTableSource(cohort_set)
-  srcCohortAttrition <- getTableSource(cohort_attrition)
+  srcCohort <- tableSource(cohort)
+  srcCohortSet <- tableSource(cohort_set)
+  srcCohortAttrition <- tableSource(cohort_attrition)
   if (!equal(srcCohort, srcCohortSet, srcCohortAttrition)) {
     cli::cli_abort(
       "The source must be the same for cohort, cohort_set and cohort_attrition."
@@ -180,7 +180,7 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
       )) |>
       dplyr::select(-"xyz_cohort_name") |>
       dplyr::compute(
-        name = paste0(getTableName(cohort), "_set"), temporary = FALSE,
+        name = paste0(tableName(cohort), "_set"), temporary = FALSE,
         overwrite = TRUE
       )
   }
@@ -230,7 +230,7 @@ cdi <- function(x) {
     sort()
 }
 defaultCohortSet <- function(cohort) {
-  cohortName <- attr(cohort, "tbl_name")
+  cohortName <- tableName(cohort)
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
   cohort |>
     dplyr::select("cohort_definition_id") |>
@@ -242,7 +242,7 @@ defaultCohortSet <- function(cohort) {
     collect()
 }
 defaultCohortAttrition <- function(cohort, set) {
-  cohortName <- attr(cohort, "tbl_name")
+  cohortName <- tableName(cohort)
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
   x <- cohort |>
     group_by(.data$cohort_definition_id) |>
@@ -405,12 +405,12 @@ populateCohortSet <- function(table, cohortSetRef) {
   } else {
     cohortSetRef <- cohortSetRef |> dplyr::collect()
   }
-  cohortName <- getTableName(table)
+  cohortName <- tableName(table)
   assertClass(cohortSetRef, "data.frame", null = TRUE)
   cohortSetRef <- dplyr::as_tibble(cohortSetRef)
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
   cohortSetRef <- insertTable(
-    cdm = getTableSource(table), name = name, table = cohortSetRef,
+    cdm = tableSource(table), name = name, table = cohortSetRef,
     overwrite = TRUE
   )
   return(cohortSetRef)
@@ -421,12 +421,12 @@ populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
   } else {
     cohortAttritionRef <- cohortAttritionRef |> dplyr::collect()
   }
-  cohortName <- getTableName(table)
+  cohortName <- tableName(table)
   assertClass(cohortAttritionRef, "data.frame", null = TRUE)
   cohortAttritionRef <- dplyr::as_tibble(cohortAttritionRef)
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
   cohortAttritionRef <- insertTable(
-    cdm = getTableSource(table), name = name, table = cohortAttritionRef,
+    cdm = tableSource(table), name = name, table = cohortAttritionRef,
     overwrite = TRUE
   )
   return(cohortAttritionRef)

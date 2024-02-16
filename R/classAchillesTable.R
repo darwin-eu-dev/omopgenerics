@@ -26,7 +26,7 @@ newAchillesTable <- function(table) {
   # create the structure
   assertClass(table, class = "cdm_table")
   table <- addClass(table, "achilles_table")
-  name <- getTableName(table)
+  name <- tableName(table)
 
   # validation
   if (!name %in% achillesTables()) {
