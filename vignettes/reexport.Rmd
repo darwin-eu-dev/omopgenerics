@@ -72,14 +72,8 @@ If a package has a function to create a `cohort_table` object, this package shou
 
 - `cohortCount()`
 
-- `bind()`
-
-- `recordCohortAttrition()`
-
-
 ## Omop result
 
 If a package has a function to create an `omop_result` object (`summarised_result` or `compared_result`), this package should re-export the following functions:
 
 - `suppress()`
-
