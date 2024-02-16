@@ -68,21 +68,6 @@ uniqueTableName <- function(prefix = "") {
   paste0(prefix, sprintf("dbplyr_%03i", i))
 }
 
-#' Create a random prefix for tables, that contains a random sample of lowercase
-#' letters.
-#'
-#' @param n Number of characters.
-#'
-#' @return A random prefix.
-#' @export
-#'
-randomPrefix <- function(n = 5) {
-  assertNumeric(x = n, integerish = TRUE, min = 0, length = 1)
-  paste0(
-    paste0(sample(x = letters, size = n, replace = TRUE), collapse = ""), "_"
-  )
-}
-
 #' Create a temporary prefix for tables, that contains a unique prefix that
 #' starts with tmp.
 #'
