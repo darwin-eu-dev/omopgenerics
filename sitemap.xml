@@ -94,7 +94,19 @@
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/dropTable.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyAchillesTable.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyCdmReference.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyCohortTable.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyComparedResult.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyOmopTable.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptySummarisedResult.html</loc>
