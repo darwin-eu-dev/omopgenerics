@@ -227,9 +227,9 @@ cdmVersion <- function(cdm) {
 #'
 #' @export
 #'
-cdmSource <- function(x) {
+cdmSource <- function(cdm) {
   assertClass(cdm, "cdm_reference")
-  attr(x, "cdm_source")
+  attr(cdm, "cdm_source")
 }
 
 #' Subset a cdm reference object.
@@ -356,7 +356,7 @@ cdmSource <- function(x) {
 #' @return Invisibly returns the input
 #' @export
 print.cdm_reference <- function(x, ...) {
-  type <- cdmSource(x) |> getSourceType()
+  type <- cdmSource(x) |> sourceType()
   name <- cdmName(x)
   nms <- names(x)
   classes <- lapply(names(x), function(nm) {

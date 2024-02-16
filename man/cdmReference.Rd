@@ -2,7 +2,7 @@
 % Please edit documentation in R/classCdmTable.R
 \name{cdmReference}
 \alias{cdmReference}
-\title{Obtain the \code{cdm_reference} of a \code{cdm_table}.}
+\title{Get the \code{cdm_reference} of a \code{cdm_table}.}
 \usage{
 cdmReference(table)
 }
@@ -13,5 +13,5 @@ cdmReference(table)
 A cdm_reference.
 }
 \description{
-Obtain the \code{cdm_reference} of a \code{cdm_table}.
+Get the \code{cdm_reference} of a \code{cdm_table}.
 }

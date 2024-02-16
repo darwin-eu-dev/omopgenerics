@@ -36,7 +36,7 @@ newCdmTable <- function(table, src, name) {
 }
 
 
-#' Obtain the `cdm_reference` of a `cdm_table`.
+#' Get the `cdm_reference` of a `cdm_table`.
 #'
 #' @param table A cdm_table.
 #'
@@ -49,7 +49,7 @@ cdmReference <- function(table) {
   attr(table, "cdm_reference")
 }
 
-#' Read the table name of a `cdm_table`.
+#' Get the table name of a `cdm_table`.
 #'
 #' @param table A cdm_table.
 #'

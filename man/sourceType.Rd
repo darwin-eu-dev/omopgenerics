@@ -4,7 +4,7 @@
 \alias{sourceType}
 \title{Get the source type of a cdm_source.}
 \usage{
-sourceType(x)
+sourceType(cdmSource)
 }
 \arguments{
 \item{cdmSource}{A cdm_source object.}

@@ -75,7 +75,7 @@ validateCdmSource <- function(src) {
 }
 
 validateX <- function(x, name, fun) {
-  if (!identical(attr(x, "tbl_name"), name)) {
+  if (!identical(tableName(x), name)) {
     cli::cli_abort("table name is not correctly assigned in {fun}")
   }
   if (!"cdm_table" %in% class(x)) {
@@ -87,7 +87,7 @@ validateX <- function(x, name, fun) {
 #' @export
 print.cdm_source <- function(x, ...) {
   cli::cli_inform(
-    "This is a {attr(x, 'source_type')} cdm source"
+    "This is a {sourceType(x)} cdm source"
   )
 }
 
@@ -99,7 +99,7 @@ print.cdm_source <- function(x, ...) {
 #'
 #' @export
 #'
-sourceType <- function(x) {
-  assertClass(cdm, "cdm_source")
-  attr(x, "source_type")
+sourceType <- function(cdmSource) {
+  assertClass(cdmSource, "cdm_source")
+  attr(cdmSource, "source_type")
 }

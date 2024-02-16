@@ -4,7 +4,7 @@
 \alias{cdmSource}
 \title{Get the source of a cdm_reference.}
 \usage{
-cdmSource(x)
+cdmSource(cdm)
 }
 \arguments{
 \item{cdm}{A cdm_reference object.}

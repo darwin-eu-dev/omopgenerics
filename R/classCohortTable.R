@@ -230,7 +230,7 @@ cdi <- function(x) {
     sort()
 }
 defaultCohortSet <- function(cohort) {
-  cohortName <- attr(cohort, "tbl_name")
+  cohortName <- tableName(cohort)
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
   cohort |>
     dplyr::select("cohort_definition_id") |>
@@ -242,7 +242,7 @@ defaultCohortSet <- function(cohort) {
     collect()
 }
 defaultCohortAttrition <- function(cohort, set) {
-  cohortName <- attr(cohort, "tbl_name")
+  cohortName <- tableName(cohort)
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
   x <- cohort |>
     group_by(.data$cohort_definition_id) |>

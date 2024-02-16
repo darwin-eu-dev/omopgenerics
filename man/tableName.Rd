@@ -2,7 +2,7 @@
 % Please edit documentation in R/classCdmTable.R
 \name{tableName}
 \alias{tableName}
-\title{Read the table name of a \code{cdm_table}.}
+\title{Get the table name of a \code{cdm_table}.}
 \usage{
 tableName(table)
 }
@@ -13,5 +13,5 @@ tableName(table)
 A character with the name.
 }
 \description{
-Read the table name of a \code{cdm_table}.
+Get the table name of a \code{cdm_table}.
 }
