@@ -27,89 +27,39 @@ suppress <- function(result,
   UseMethod("suppress")
 }
 
-#' Function to suppress counts in compared_result objects
-#'
-#' @param result compared_result object
-#' @param minCellCount Minimum count of records to report results.
-#'
-#' @return Table with suppressed counts
-#'
 #' @export
-suppress.compared_result <- function(result,
-                                     minCellCount = 5) {
-
-}
-
-#' Function to suppress counts in summarised_result objects
-#'
-#' @param result summarised_result object
-#' @param minCellCount Minimum count of records to report results.
-#'
-#' @return Table with suppressed counts
-#'
-#' @export
-suppress.summarised_result <- function(result,
+suppress.omop_result <- function(result,
                                        minCellCount = 5) {
-  variable = "estimate_value"
   estimateName = "count"
-  group = c("group_name", "group_level", "strata_name", "strata_level")
   groupCount = c("number subjects", "number records")
-  linkEstimates = list("count" = "percentage")
+  suppressed <- NA_character_
 
   # initial checks
   assertTibble(result)
   assertNumeric(minCellCount, integerish = TRUE, min = 0, length = 1)
 
-  # loop for different columns
-  for (col in variable) {
-    result <- result |>
-      # obscure groups flag
-      obscureGroups(minCellCount, col, estimateName, group, groupCount) |>
-      # obscure records
-      obscureRecords(minCellCount, col, estimateName) |>
-      # obscure linked
-      obscureLinked(linkEstimates, col) |>
-      # obscure col
-      obscureColumn(col, minCellCount, groupCount, linkEstimates)
-  }
+  result <- result |>
+    # obscured records
+    obscureRecords(minCellCount, estimateName) |>
+    # obscured records by group
+    obscureGroup(minCellCount, estimateName, groupCount) |>
+    # obscure column
+    obscureColumn(suppressed)
+
   return(result)
 }
 
-filterData <- function(result, minCellCount, variable, estimateName) {
-  if (!is.null(estimateName)) {
-    result <- result |>
-      dplyr::filter(.data$estimate_name %in% .env$estimateName)
-  }
-  result <- result |>
-    dplyr::filter(
-      as.numeric(.data[[variable]]) < .env$minCellCount &
-        as.numeric(.data[[variable]]) > 0
-    )
-  return(result)
-}
-obscureGroups <- function(result, minCellCount, variable, estimateName, group, groupCount) {
-  result <- result |> dplyr::mutate(obscure_group = 0)
-  if (!is.null(group) & all(group %in% colnames(result))) {
-    groupsToObscure <- result |>
-      dplyr::select(dplyr::all_of(c(group, variable, "variable_name", "estimate_name"))) |>
-      dplyr::filter(.data$variable_name %in% .env$groupCount) |>
-      filterData(minCellCount, variable, estimateName) |>
-      dplyr::select(dplyr::all_of(group)) |>
-      dplyr::distinct() |>
-      dplyr::mutate(obscure_group = 1)
-    result <- result |>
-      dplyr::select(-"obscure_group") |>
-      dplyr::left_join(groupsToObscure, by = group) |>
-      dplyr::mutate(
-        obscure_group = dplyr::if_else(is.na(.data$obscure_group), 0, 1)
-      )
-  }
-  return(result)
-}
-obscureRecords <- function(result, minCellCount, variable, estimateName) {
+obscureRecords <- function(result, minCellCount, estimateName) {
   recordsToObscure <- result |>
-    filterData(minCellCount, variable, estimateName) |>
-    dplyr::mutate(obscure_record = 1)
+    dplyr::filter(.data$estimate_name == .env$estimateName) |>
+    dplyr::mutate("estimate_value" = as.numeric(.data$estimate_value)) |>
+    dplyr::filter(
+      .data$estimate_value > 0 & .data$estimate_value < .env$minCellCount
+    ) |>
+    dplyr::mutate(
+      "estimate_value" = as.character(.data$estimate_value),
+      "obscure_record" = 1
+    )
   result <- result |>
     dplyr::left_join(recordsToObscure, by = colnames(result)) |>
     dplyr::mutate(
@@ -117,62 +67,45 @@ obscureRecords <- function(result, minCellCount, variable, estimateName) {
     )
   return(result)
 }
-obscureLinked <- function(result, linkEstimates, variable) {
-  not <- c(variable, "estimate_type", "obscure_linked", "obscure_group", "obscure_record")
-  cols <- colnames(result)
-  cols <- cols[!(cols %in% not)]
+obscureGroup <- function(result, minCellCount, estimateName, groupCount) {
+  groupsToObscure1 <- result |>
+    dplyr::group_by(dplyr::across(!c(
+      "estimate_name", "estimate_type", "estimate_value", "obscure_record"
+    ))) |>
+    dplyr::summarise(
+      "obscure_group_1" = max(.data$obscure_record), .groups = "drop"
+    )
+  cols1 <- colnames(groupsToObscure1)[colnames(groupsToObscure1) != "obscure_group_1"]
+  groupsToObscure2 <- result |>
+    dplyr::filter(
+      .data$variable_name %in% .env$groupCount &
+        .data$estimate_name %in% .env$estimateName &
+        .data$obscure_record == 1
+    ) |>
+    dplyr::select(!c(
+      "variable_name", "variable_level", "estimate_name", "estimate_type",
+      "estimate_value", "obscure_record"
+    )) |>
+    dplyr::distinct() |>
+    dplyr::mutate("obscure_group_2" = 1)
+  cols2 <- colnames(groupsToObscure2)[colnames(groupsToObscure2) != "obscure_group_2"]
   result <- result |>
-    dplyr::mutate(obscure_linked = 0)
-  for (k in seq_along(linkEstimates)) {
-    result <- result |>
-      dplyr::left_join(
-        result |>
-          dplyr::filter(
-            .data$estimate_name == names(linkEstimates)[k],
-            .data$obscure_record == 1,
-            .data$obscure_group != 1
-          ) |>
-          dplyr::inner_join(
-            dplyr::tibble(
-              estimate_name = names(linkEstimates)[k],
-              new_estimate_name = linkEstimates[[k]]
-            ),
-            by = "estimate_name"
-          ) |>
-          dplyr::select(-dplyr::all_of(c("estimate_name",not))) |>
-          dplyr::rename("estimate_name" = "new_estimate_name") |>
-          dplyr::mutate(obscure_linked_k = 1),
-        by = cols
-      ) |>
-      dplyr::mutate(obscure_linked = dplyr::if_else(
-        !is.na(.data$obscure_linked_k), 1, .data$obscure_linked
-      )) |>
-      dplyr::select(-"obscure_linked_k")
-  }
+    dplyr::left_join(groupsToObscure1, by = cols1) |>
+    dplyr::left_join(groupsToObscure2, by = cols2) |>
+    dplyr::mutate(obscure_group = dplyr::case_when(
+      obscure_group_2 == 1 & !.data$variable_name %in% .env$groupCount ~ 1,
+      obscure_group_1 == 1 & !.data$estimate_name %in% .env$estimateName ~ 1,
+      TRUE ~ 0
+    )) |>
+    dplyr::select(-c("obscure_group_1", "obscure_group_2"))
   return(result)
 }
-obscureColumn <- function(result, col, minCellCount, groupCount, linkEstimates) {
-  minCellCount <- paste0("<", minCellCount)
-  result <- result |>
-    dplyr::mutate(
-      !!col := dplyr::if_else(
-        .data$obscure_group == 1,
-        dplyr::if_else(
-          .data$variable_name %in% .env$groupCount,
-          .env$minCellCount,
-          as.character(NA)
-        ),
-        dplyr::if_else(
-          .data$obscure_record == 1,
-          .env$minCellCount,
-          dplyr::if_else(
-            .data$obscure_linked == 1,
-            as.character(NA),
-            as.character(.data[[col]])
-          )
-        )
-      )
-    ) |>
-    dplyr::select(-c("obscure_record", "obscure_group", "obscure_linked"))
-  return(result)
+obscureColumn <- function(result, suppressed) {
+  result |>
+    dplyr::mutate("estimate_value" = dplyr::if_else(
+      .data$obscure_group == 1 | .data$obscure_record == 1,
+      .env$suppressed,
+      .data$estimate_value
+    )) |>
+    dplyr::select(-c("obscure_record", "obscure_group"))
 }
