@@ -287,6 +287,15 @@ cdmSource <- function(cdm) {
 #' @export
 #'
 `[[<-.cdm_reference` <- function(cdm, name, value) {
+  if (length(name) > 1) {
+    cli::cli_abort("You can only edit one table of a cdm_reference.")
+  }
+
+  # check name lowercase
+  if (all(name != tolower(name))) {
+    cli::cli_abort("name should be lowercase.")
+  }
+
   # check consistent naming of value
   if (!is.null(value)) {
     if (!"cdm_table" %in% class(value)) {
@@ -301,7 +310,7 @@ cdmSource <- function(cdm) {
               cdm_reference object or objectes that can be converted to a
               cdm_table. Please use insertTable to insert tibbles to a
               cdm_reference.",
-              "!" = "Error when tryong to convert to a cdm_table:",
+              "!" = "Error when trying to convert to a cdm_table:",
               as.character(e$message)
             ),
             call = call
@@ -314,30 +323,26 @@ cdmSource <- function(cdm) {
     }
     remoteName <- tableName(value)
     if (!is.na(remoteName) && name != remoteName) {
-      cli::cli_abort(
-        "You can't assign a table named {remoteName} to {name}. Please use
-        compute to change table name."
-      )
+      cli::cli_inform(c(
+        "!" = "You can't assign a table named {remoteName} to {name}.",
+        "i" = "The table {remoteName} will be computed to {name}. Please note
+        that if you are working with a database this will create a new permanent
+        table."
+      ))
+      value <- value |>
+        compute(name = name, temporary = FALSE, overwrite = FALSE)
+      cli::cli_alert_success("The table {remoteName} was computed to {name}.")
     }
-    if (remoteName %in% omopTables()) {
+    if (name %in% omopTables()) {
       value <- value |> newOmopTable()
     }
-    if (remoteName %in% achillesTables()) {
+    if (name %in% achillesTables()) {
       value <- value |> newAchillesTable()
     }
   }
 
-  if (length(name) > 1) {
-    cli::cli_abort("You can only edit one table of a cdm_reference.")
-  }
-
-  # check name lowercase
-  if (all(name != tolower(name))) {
-    cli::cli_abort("name should be lowercase.")
-  }
-
   # remove cdm_reference
-  attr(value, "cdm_reference") <- NULL
+  value <- noReference(value)
 
   # assign
   cl <- class(cdm)
