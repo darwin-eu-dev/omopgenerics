@@ -26,8 +26,8 @@
 #' @export
 #'
 newCdmReference <- function(tables,
-                         cdmName,
-                         cdmVersion = NULL) {
+                            cdmName,
+                            cdmVersion = NULL) {
   # inputs
   assertList(tables, named = TRUE, class = "cdm_table")
   assertCharacter(cdmName, length = 1)
@@ -63,8 +63,8 @@ getVersion <- function(cdm) {
       version <- substr(version, 2, nchar(version))
     }
     substr(version, 1, 3)
-    },
-    error = function(e) {"5.3"}
+  },
+  error = function(e) {"5.3"}
   )
   return(version)
 }
@@ -531,4 +531,31 @@ str.cdm_reference <- function(object, ...) {
 
 getSourceType <- function(x) {
   attr(x, "source_type")
+}
+
+
+#' Create an empty cdm_reference
+#'
+#' @param cdmName Name of the cdm_reference
+#' @param cdmVersion Version of the cdm_reference
+#'
+#' @export
+#'
+#' @return An empty cdm_reference
+#'
+emptyCdmReference <- function(cdmName, cdmVersion = NULL) {
+  cdmFromTables(
+    tables = list(
+      "person" = emptyOmopTableInternal("person"),
+      "observation_period" = emptyOmopTableInternal("observation_period")
+    ),
+    cdmName = cdmName,
+    cdmVersion = cdmVersion
+  )
+}
+
+emptyOmopTableInternal <- function(name) {
+  fieldsTables |>
+    dplyr::filter(.data$cdm_table_name == name & .data$type == "cdm_table") |>
+    emptyTable()
 }

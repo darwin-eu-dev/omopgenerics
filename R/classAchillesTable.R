@@ -49,19 +49,16 @@ newAchillesTable <- function(table) {
 #' @return The cdm_reference with an achilles empty table
 #'
 emptyAchillesTable <- function(name, cdm) {
-  # check input
   assertChoice(name, achillesTables(), length = 1)
   assertClass(cdm, "cdm_reference")
-
-  # create tibble
-  # TODO correct column type
-  x <- achillesColumns(name) |>
-    rlang::rep_named(list(character())) |>
-    dplyr::as_tibble()
+  table <- fieldsTables |>
+    dplyr::filter(
+      .data$cdm_table_name == .env$name &
+        .data$type == "achilles" &
+        grepl(cdmVersion(cdm), .data$cdm_version)
+    ) |>
+    emptyTable()
   cdm <- insertTable(cdm = cdm, name = name, table = x, overwrite = FALSE)
-
-  # validate
   cdm[[name]] <- cdm[[name]] |> newAchillesTable()
-
   return(cdm)
 }

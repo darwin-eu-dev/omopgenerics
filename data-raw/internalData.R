@@ -69,7 +69,7 @@ fieldsCohorts <- tibble(
     ),
     is_required = TRUE,
     cdm_datatype = c(
-      "integer", "integer", "integer", "integer", "varchar(255", "integer",
+      "integer", "integer", "integer", "integer", "varchar(255)", "integer",
       "integer"
     ),
     cdm_version = "5.3; 5.4"
@@ -83,7 +83,7 @@ fieldsAchilles <- dplyr::tibble(
     "category"
   ),
   is_required = TRUE,
-  cdm_datatype = NA,
+  cdm_datatype = c("integer", rep("varchar(255)", 6), "logical", "varchar(255)"),
   cdm_version = "5.3; 5.4"
 ) |>
   dplyr::union_all(dplyr::tibble(
@@ -93,7 +93,7 @@ fieldsAchilles <- dplyr::tibble(
       "stratum_5", "count_value"
     ),
     is_required = TRUE,
-    cdm_datatype = NA,
+    cdm_datatype = c("integer", rep("varchar(255)", 5), "integer"),
     cdm_version = "5.3; 5.4"
   )) |>
   dplyr::union_all(dplyr::tibble(
@@ -105,7 +105,9 @@ fieldsAchilles <- dplyr::tibble(
       "p90_value"
     ),
     is_required = TRUE,
-    cdm_datatype = NA,
+    cdm_datatype = c(
+      "integer", rep("varchar(255)", 5), rep("integer", 3), rep("float", 7)
+    ),
     cdm_version = "5.3; 5.4"
   ))
 

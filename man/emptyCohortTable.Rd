@@ -2,7 +2,7 @@
 % Please edit documentation in R/classCohortTable.R
 \name{emptyCohortTable}
 \alias{emptyCohortTable}
-\title{Create an empty cohort table}
+\title{Create an empty cohort_table object}
 \usage{
 emptyCohortTable(name, cdm)
 }
@@ -15,5 +15,5 @@ emptyCohortTable(name, cdm)
 The cdm_reference with an empty cohort table
 }
 \description{
-Create an empty cohort table
+Create an empty cohort_table object
 }

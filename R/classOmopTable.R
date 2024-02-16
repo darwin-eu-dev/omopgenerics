@@ -51,8 +51,14 @@ newOmopTable <- function(table) {
 emptyOmopTable <- function(name, cdm) {
   assertChoice(name, omopTables(), length = 1)
   assertClass(cdm, "cdm_reference")
-  # create table
-  cdm <- insertTable(cdm = cdm, name = name, table = table)
+  table <- fieldsTables |>
+    dplyr::filter(
+      .data$cdm_table_name == .env$name &
+        .data$type == "cdm_table" &
+        grepl(cdmVersion(cdm), .data$cdm_version)
+    ) |>
+    emptyTable()
+  cdm <- insertTable(cdm = cdm, name = name, table = table, overwrite = FALSE)
   cdm[[name]] <- newOmopTable(cdm[[name]])
   return(cdm)
 }
