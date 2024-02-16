@@ -11,7 +11,7 @@ randomPrefix(n = 5)
 \item{n}{Number of characters.}
 }
 \value{
-A ramdom prefix.
+A random prefix.
 }
 \description{
 Create a random prefix for tables, that contains a random sample of lowercase

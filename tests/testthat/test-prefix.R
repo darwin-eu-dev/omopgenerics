@@ -16,6 +16,14 @@ test_that("prefix", {
   expect_true(x[3] %in% letters)
   expect_true(x[4] == "_")
 
+  # temporray prefix
+  expect_true(tmpPrefix() == "tmp_001_")
+  expect_true(tmpPrefix() == "tmp_002_")
+  expect_true(getOption("tmp_prefix_number") == 2)
+  options(tmp_prefix_number = 123)
+  expect_true(tmpPrefix() == "tmp_124_")
+  expect_true(getOption("tmp_prefix_number") == 124)
+
   # table with prefix
   expect_no_error(x <- uniqueTableName(randomPrefix()))
   expect_true(nchar(x) == 16)

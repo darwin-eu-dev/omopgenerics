@@ -73,7 +73,7 @@ uniqueTableName <- function(prefix = "") {
 #'
 #' @param n Number of characters.
 #'
-#' @return A ramdom prefix.
+#' @return A random prefix.
 #' @export
 #'
 randomPrefix <- function(n = 5) {
@@ -81,5 +81,17 @@ randomPrefix <- function(n = 5) {
   paste0(
     paste0(sample(x = letters, size = n, replace = TRUE), collapse = ""), "_"
   )
+}
+
+#' Create a temporary prefix for tables, that contains a unique prefix that
+#' starts with tmp.
+#'
+#' @return A temporary prefix.
+#' @export
+#'
+tmpPrefix <- function() {
+  i <- getOption("tmp_prefix_number", 0) + 1
+  options(tmp_prefix_number = i)
+  sprintf("tmp_%03i_", i)
 }
 
