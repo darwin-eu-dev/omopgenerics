@@ -44,13 +44,9 @@ suppress.omop_result <- function(result,
   # initial checks
   assertTibble(result)
   assertNumeric(minCellCount, integerish = TRUE, min = 0, length = 1)
-  suppressedValue <- ifelse(
-    !is.null(suppressedValue), as.character(suppressedValue), suppressedValue
-  )
+  if (!is.null(suppressedValue)) suppressedValue <- as.character(suppressedValue)
   assertCharacter(suppressedValue, length = 1, null = TRUE, na = TRUE)
-  suppressedGroup <- ifelse(
-    !is.null(suppressedGroup), as.character(suppressedGroup), suppressedGroup
-  )
+  if (!is.null(suppressedGroup)) suppressedGroup <- as.character(suppressedGroup)
   assertCharacter(suppressedGroup, length = 1, null = TRUE, na = TRUE)
 
   result <- result |>
@@ -108,21 +104,31 @@ obscureGroup <- function(result, minCellCount, estimateName, groupCount) {
     dplyr::left_join(groupsToObscure1, by = cols1) |>
     dplyr::left_join(groupsToObscure2, by = cols2) |>
     dplyr::mutate(obscure_group = dplyr::case_when(
-      obscure_group_2 == 1 &
-        !.data$variable_name %in% .env$groupCount &
-        !.data$estimate_name %in% .env$estimateName ~ 1,
-      obscure_group_1 == 1 &
-        !.data$estimate_name %in% .env$estimateName ~ 1,
+      obscure_group_2 == 1 & !.data$variable_name %in% .env$groupCount ~ 1,
+      obscure_group_1 == 1 & !.data$estimate_name %in% .env$estimateName ~ 1,
       TRUE ~ 0
-    ))
+    )) |>
+    dplyr::select(-c("obscure_group_1", "obscure_group_2"))
   return(result)
 }
 obscureColumn <- function(result, suppressedValue, suppressedGroup) {
-  result |>
-    dplyr::mutate("estimate_value" = dplyr::case_when(
-      .data$obscure_group == 1 ~ .env$suppressedGroup,
-      .data$obscure_record == 1 ~ .env$suppressedValue,
-      TRUE ~ .data$estimate_value
-    )) |>
+  if (is.null(suppressedValue)) {
+    result <- result |> dplyr::filter(.data$obscure_record == 0)
+  } else {
+    result <- result |>
+      dplyr::mutate("estimate_value" = dplyr::if_else(
+        .data$obscure_record == 1, .env$suppressedValue, .data$estimate_value
+      ))
+  }
+  if (is.null(suppressedGroup)) {
+    result <- result |> dplyr::filter(.data$obscure_group == 0)
+  } else {
+    result <- result |>
+      dplyr::mutate("estimate_value" = dplyr::if_else(
+        .data$obscure_group == 1, .env$suppressedGroup, .data$estimate_value
+      ))
+  }
+  result <- result |>
     dplyr::select(-c("obscure_record", "obscure_group"))
+  return(result)
 }
