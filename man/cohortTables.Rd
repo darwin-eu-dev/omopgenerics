@@ -17,3 +17,9 @@ cohort tables
 Cohort tables that a cdm reference can contain in the OMOP Common Data
 Model.
 }
+\examples{
+\donttest{
+library(omopgenerics)
+cohortTables()
+}
+}
