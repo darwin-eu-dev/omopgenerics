@@ -17,12 +17,12 @@
 #' Drop a table from a cdm object.
 #'
 #' @param cdm A cdm reference.
-#' @param name Name(s) of the table(s) to insert. Tidyselect statements are
+#' @param name Name(s) of the table(s) to drop Tidyselect statements are
 #' supported.
 #'
 #' @export
 #'
-#' @return The table in the cdm reference.
+#' @return The cdm reference.
 #'
 dropTable <- function(cdm, name) {
   UseMethod("dropTable")
@@ -30,10 +30,14 @@ dropTable <- function(cdm, name) {
 
 #' @export
 dropTable.cdm_reference <- function(cdm, name) {
-  dropTable(cdmSource(cdm), name = name)
-  allTables <- names(cdm)
-  names(allTables) <- names(cdm)
-  toDrop <- names(tidyselect::eval_select(dplyr::any_of(name), data = allTables))
+  cols <- names(cdm)
+  toDrop <- cols |>
+    as.list() |>
+    rlang::set_names(cols) |>
+    dplyr::as_tibble() |>
+    dplyr::select(dplyr::all_of(name)) |>
+    colnames()
+  dropTable(cdm = cdmSource(cdm), name = name)
   if (length(toDrop) > 0) {
     for (nm in toDrop) {
       cdm[[nm]] <- NULL

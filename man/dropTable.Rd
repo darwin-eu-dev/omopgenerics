@@ -9,11 +9,11 @@ dropTable(cdm, name)
 \arguments{
 \item{cdm}{A cdm reference.}
 
-\item{name}{Name(s) of the table(s) to insert. Tidyselect statements are
+\item{name}{Name(s) of the table(s) to drop Tidyselect statements are
 supported.}
 }
 \value{
-The table in the cdm reference.
+The cdm reference.
 }
 \description{
 Drop a table from a cdm object.
