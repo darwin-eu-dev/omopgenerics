@@ -474,26 +474,41 @@ cohortColumns <- function(table, version = "5.3") {
   requiredColumns(table = table, version = version, type = "cohort")
 }
 
-#' Tables containing the results of achilles analyses
+#' Names of the tables that contain the results of achilles analyses
 #'
 #' @param version Version of the OMOP Common Data Model.
 #'
-#' @return Names of tables returned by achilles analyses
+#' @return Names of the tables that are contain the results from the achilles
+#' analyses
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' achillesTables()
+#' }
 achillesTables <- function(version = "5.3"){
   assertVersion(version = version)
   tableChoice(version = version, type = "achilles")
 }
 
-#' Required columns for achilles result tables
+#' Required columns for each of the achilles result tables
 #'
-#' @param table Table to see required columns.
+#' @param table Table for which to see the required columns. One of
+#' "achilles_analysis", "achilles_results", or "achilles_results_dist".
 #' @param version Version of the OMOP Common Data Model.
 #'
-#' @return Names of columns for achilles result tables
+#' @return A vector containing the names of columns for the given
+#' achilles result table
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' achillesColumns("achilles_analysis")
+#' achillesColumns("achilles_results")
+#' achillesColumns("achilles_results_dist")
+#' }
 achillesColumns <- function(table, version = "5.3") {
   assertVersion(version = version)
   assertTable(table = table, version = version, type = "achilles")

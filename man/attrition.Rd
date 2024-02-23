@@ -7,7 +7,7 @@
 attrition(x)
 }
 \arguments{
-\item{x}{x.}
+\item{x}{An object for which to get an attrition summary.}
 }
 \value{
 A table with the attrition.
