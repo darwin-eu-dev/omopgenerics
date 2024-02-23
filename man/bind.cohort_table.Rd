@@ -2,7 +2,7 @@
 % Please edit documentation in R/methodBind.R
 \name{bind.cohort_table}
 \alias{bind.cohort_table}
-\title{Bind cohort_table}
+\title{Bind two or more cohort tables}
 \usage{
 \method{bind}{cohort_table}(..., name)
 }
@@ -13,8 +13,51 @@ provided.}
 \item{name}{Name of the new generated cohort set.}
 }
 \value{
-The cdm object with the new generated cohort set.
+The cdm object with a new generated cohort set containing all
+of the cohorts passed.
 }
 \description{
-Bind cohort_table
+Bind two or more cohort tables
+}
+\examples{
+\donttest{
+library(omopgenerics)
+
+cohort1 <- dplyr::tibble(
+  cohort_definition_id = 1,
+  subject_id = 1:3,
+  cohort_start_date = as.Date("2010-01-01"),
+  cohort_end_date = as.Date("2010-01-05")
+)
+cohort2 <- dplyr::tibble(
+  cohort_definition_id = c(2, 2, 3, 3, 3),
+  subject_id = c(1, 2, 3, 1, 2),
+  cohort_start_date = as.Date("2010-01-01"),
+  cohort_end_date = as.Date("2010-01-05")
+)
+cdm <- cdmFromTables(
+  tables = list(
+    "person" = dplyr::tibble(
+      person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+      race_concept_id = 0, ethnicity_concept_id = 0
+    ),
+    "observation_period" = dplyr::tibble(
+      observation_period_id = 1:3, person_id = 1:3,
+      observation_period_start_date = as.Date("2000-01-01"),
+      observation_period_end_date = as.Date("2025-12-31"),
+      period_type_concept_id = 0
+    )
+  ),
+  cdmName = "mock",
+  cohortTables = list(
+    "cohort1" = cohort1, "cohort2" = cohort2
+  )
+)
+
+cdm <- bind(cdm$cohort1,
+            cdm$cohort2,
+            name = "cohort3")
+settings(cdm$cohort3)
+cdm$cohort3
+}
 }
