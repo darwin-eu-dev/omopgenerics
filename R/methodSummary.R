@@ -287,7 +287,7 @@ getType <- function(x) {
     }
   } else if (is.logical(x)) {
     return("logical")
-  } else if (is(x, "Date")) {
+  } else if (methods::is(x, "Date")) {
     return("date")
   } else if (is.character(x)) {
     return("character")
