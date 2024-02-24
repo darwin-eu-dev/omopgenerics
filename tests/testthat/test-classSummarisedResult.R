@@ -148,3 +148,37 @@ test_that("test SummarisedResult object", {
   expect_error(newSummarisedResult(x = x))
 
 })
+
+
+test_that("test SummarisedResult object", {
+
+  x <- dplyr::tibble(
+    "cdm_name" = "cprd",
+    "result_type" = c("summarised_characteristics", "other_result"),
+    "package_name" = "PatientProfiles",
+    "package_version" = "0.4.0",
+    "group_name" = "sex",
+    "group_level" = "male",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable_name" = "Age group",
+    "variable_level" = "10 to 50",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
+
+  x <- newSummarisedResult(x = x)
+
+  x_filter<- x %>% dplyr::filter(result_type == "summarised_characteristics")
+
+  x_1 <- subsetResult(result = x, resultType = "summarised_characteristics")
+  expect_equal(unclass(x_filter),
+               unclass(x_1))
+
+  x_2 <- subsetResult(result = x, resultType = "something_else")
+  expect_equal(emptySummarisedResult(),x_2)
+
+})

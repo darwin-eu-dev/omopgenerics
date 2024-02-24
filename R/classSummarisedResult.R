@@ -268,7 +268,7 @@ estimateTypeChoices <- function() {
 #'
 subsetResult <- function(result, resultType) {
   # initial check
-  if (any(c("summarised_result", "compared_result") %in% class(result))) {
+  if (!any(c("summarised_result", "compared_result") %in% class(result))) {
     cli::cli_abort(
       "result object is not a valid summarised_result ot compared_result object"
     )
