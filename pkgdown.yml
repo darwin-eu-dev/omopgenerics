@@ -6,9 +6,8 @@ articles:
   a02_concept_set: a02_concept_set.html
   a03_cohort_table: a03_cohort_table.html
   a04_summarised_result: a04_summarised_result.html
-  a05_compared_result: a05_compared_result.html
   reexport: reexport.html
-last_built: 2024-02-24T20:52Z
+last_built: 2024-02-24T20:54Z
 urls:
   reference: https://darwin-eu-dev.github.io/omopgenerics/reference
   article: https://darwin-eu-dev.github.io/omopgenerics/articles
