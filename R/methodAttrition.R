@@ -16,7 +16,7 @@
 
 #' Get attrition from an object.
 #'
-#' @param x x.
+#' @param x An object for which to get an attrition summary.
 #'
 #' @return A table with the attrition.
 #'
@@ -27,11 +27,39 @@ attrition <- function(x) {
 
 #' Get cohort attrition from a cohort_table object.
 #'
-#' @param x A cohort_table object.
+#' @param x A cohort_table
 #'
 #' @return A table with the attrition.
 #'
 #' @export
+#'
+#' @examples
+#'  \donttest{
+#' library(omopgenerics)
+#' person <- dplyr::tibble(
+#'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'   race_concept_id = 0, ethnicity_concept_id = 0
+#' )
+#' observation_period <- dplyr::tibble(
+#'   observation_period_id = 1, person_id = 1,
+#'   observation_period_start_date = as.Date("2000-01-01"),
+#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   period_type_concept_id = 0
+#' )
+#' cohort <- dplyr::tibble(
+#'   cohort_definition_id = c(1, 1, 1, 2),
+#'   subject_id = 1,
+#'   cohort_start_date = as.Date(c("2020-01-01", "2021-01-01", "2022-01-01", "2022-01-01")),
+#'   cohort_end_date = as.Date(c("2020-01-01", "2021-01-01", "2022-01-01", "2022-01-01")),
+#' )
+#' cdm <- cdmFromTables(
+#'   tables = list("person" = person, "observation_period" = observation_period),
+#'   cdmName = "my_example_cdm",
+#'   cohortTables = list("cohort1" = cohort)
+#' )
+#'
+#' attrition(cdm$cohort1)
+#' }
 attrition.cohort_table <- function(x) {
   if (is.null(attr(x, "cohort_attrition"))) {
     cli::cli_abort("Cohort attrition does not exist for this cohort.")

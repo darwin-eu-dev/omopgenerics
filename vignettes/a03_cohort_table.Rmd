@@ -1,5 +1,5 @@
 ---
-title: "Cohort table"
+title: "Cohort tables"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{a03_cohort_table}
@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 library(omopgenerics)
+library(dplyr)
 ```
 
 A cohort is a **set of people that fulfill a certain set of criteria for a period of time**.
@@ -32,18 +33,62 @@ A `cohort_table` is created using the `newCohortTable()` function that is define
 
 - A cohort attrition.
 
-The cohort set and the cohort attrition will be instantiated in the database every time that we create a new cohort table. You can access the cohort set of a cohort_table using the function `settings()`:
-```{r, eval = FALSE}
+Let's start by creating a cdm reference with just two people.
+```{r}
+person <- tibble(
+  person_id = c(1,2),
+  gender_concept_id = 0, year_of_birth = 1990,
+  race_concept_id = 0, ethnicity_concept_id = 0
+)
+observation_period <- dplyr::tibble(
+  observation_period_id = c(1,2), person_id = c(1,2),
+  observation_period_start_date = as.Date("2000-01-01"),
+  observation_period_end_date = as.Date("2025-12-31"),
+  period_type_concept_id = 0
+)
+cdm <- cdmFromTables(
+  tables = list(
+    "person" = person,
+    "observation_period" = observation_period
+  ),
+  cdmName = "example_cdm"
+)
+cdm
+```
+
+Now let's say one of these people have a clinical event of interest, we can include them in a cohort table which can then be used as part of an analysis. 
+```{r}
+cohort <- tibble(
+  cohort_definition_id = 1, subject_id = 1,
+  cohort_start_date = as.Date("2020-01-01"),
+  cohort_end_date = as.Date("2020-01-10")
+)
+cdm$cohort <- cohort
+cdm$cohort <- newCohortTable(cdm$cohort)
+
+```
+
+The cohort table will be associated with settings and attrition. As we didn't specify these in newCohortTable() above they will have been automatically populated. You can access the cohort set of a cohort table using the function `settings()`
+```{r}
 settings(cdm$cohort)
 ```
 
-You can access the cohort attrition of a cohort_table using the function `attrition()`:
-```{r, eval = FALSE}
+Meanwhile, you can access the cohort attrition of a cohort table using the function `attrition()`
+```{r}
 attrition(cdm$cohort)
 ```
 
-Cohort attrition table is also used to compute the number of counts that each cohort has. It can be seen with the function `cohortCount()`. This entirely relies with the cohort attrition attribute and it is not performing any actual calculation.
-```{r, eval = FALSE}
+Cohort attrition table is also used to compute the number of counts that each cohort (ie from the last row of the attrition). It can be seen with the function `cohortCount()`. 
+```{r}
+cohortCount(cdm$cohort)
+```
+
+Note that because the cohort count is taken from the last row of attrition, if we make changes to a cohort we should then update attrition as we go. We can do this 
+```{r}
+cdm$cohort <- cdm$cohort |>
+  filter(cohort_start_date == as.Date("2019-01-01")) %>% 
+  recordCohortAttrition("Require cohort start January 1st 2019")
+attrition(cdm$cohort)
 cohortCount(cdm$cohort)
 ```
 
@@ -97,24 +142,43 @@ A cohort table must be a table with:
 
 You can bind two cohort tables using the method `bind()`. You can combine several cohort tables using this method. The only constrain is that cohort names must be unique across the different cohort tables. You have to provide a name for the new cohort table.
 
-```{r, eval = FALSE}
-cdm <- bind(cdm$cohort1, cdm$cohort2, cdm$cohort3, name = "my_new_cohort")
+```{r}
+asthma <- tibble(
+  cohort_definition_id = 1, subject_id = 1,
+  cohort_start_date = as.Date("2020-01-01"),
+  cohort_end_date = as.Date("2020-01-10")
+)
+cdm$asthma <- asthma
+cdm$asthma <- newCohortTable(cdm$asthma, 
+                             cohortSetRef = tibble(cohort_definition_id = 1,
+                                                   cohort_name = "asthma"))
 
-cdm$my_new_cohort
+copd <- tibble(
+  cohort_definition_id = 1, subject_id = 2,
+  cohort_start_date = as.Date("2020-01-01"),
+  cohort_end_date = as.Date("2020-01-10")
+)
+cdm$copd <- copd
+cdm$copd <- newCohortTable(cdm$copd, 
+                           cohortSetRef = tibble(cohort_definition_id = 1,
+                                                   cohort_name = "copd"))
 
-settings(cdm$my_new_cohort)
+cdm <- bind(cdm$asthma, 
+            cdm$copd,
+            name = "exposures")
+cdm$exposures
 
-attrition(cdm$my_new_cohort)
-
-cohortCount(cdm$my_new_cohort)
+settings(cdm$exposures)
+attrition(cdm$exposures)
+cohortCount(cdm$exposures)
 ```
-
 
 ## Export metadata about a cohort table
 
 You can export the metadata of a `cohort_table` using the function: `summary()`:
-```{r, eval = FALSE}
-summary(cdm$cohort)
+```{r}
+summary(cdm$exposures) |>
+  glimpse()
 ```
 
 This will provide a `summarised_result` object with the metadata of the cohort (cohort set, cohort counts and cohort attrition).

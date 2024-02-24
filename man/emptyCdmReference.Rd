@@ -17,3 +17,9 @@ An empty cdm_reference
 \description{
 Create an empty cdm_reference
 }
+\examples{
+\donttest{
+library(omopgenerics)
+emptyCdmReference(cdmName = "my_example_cdm")
+}
+}

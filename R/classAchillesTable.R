@@ -48,6 +48,13 @@ newAchillesTable <- function(table) {
 #'
 #' @return The cdm_reference with an achilles empty table
 #'
+#'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' cdm <- emptyCdmReference("my_example_cdm")
+#' emptyAchillesTable(cdm = cdm, name = "achilles_results" )
+#' }
 emptyAchillesTable <- function(cdm, name) {
   assertChoice(name, achillesTables(), length = 1)
   assertClass(cdm, "cdm_reference")

@@ -2,18 +2,28 @@
 % Please edit documentation in R/classCdmReference.R
 \name{achillesColumns}
 \alias{achillesColumns}
-\title{Required columns for achilles result tables}
+\title{Required columns for each of the achilles result tables}
 \usage{
 achillesColumns(table, version = "5.3")
 }
 \arguments{
-\item{table}{Table to see required columns.}
+\item{table}{Table for which to see the required columns. One of
+"achilles_analysis", "achilles_results", or "achilles_results_dist".}
 
 \item{version}{Version of the OMOP Common Data Model.}
 }
 \value{
-Names of columns for achilles result tables
+A vector containing the names of columns for the given
+achilles result table
 }
 \description{
-Required columns for achilles result tables
+Required columns for each of the achilles result tables
+}
+\examples{
+\donttest{
+library(omopgenerics)
+achillesColumns("achilles_analysis")
+achillesColumns("achilles_results")
+achillesColumns("achilles_results_dist")
+}
 }
