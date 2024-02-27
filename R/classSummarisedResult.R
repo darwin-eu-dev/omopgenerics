@@ -36,13 +36,16 @@ newSummarisedResult <- function(x) {
 }
 
 constructSummarisedResult <- function(x) {
-  x <- x |>
-    omopResult() |>
-    addClass("summarised_result")
-  x <- addClass(x, getClass(x))
-  return(x)
+  x |> addClass("summarised_result")
 }
 validateSummariseResult <- function(x) {
+  if (!"result_id" %in% colnames(x)) {
+    x <- x |> dplyr::mutate("result_id" = as.numeric(NA))
+    cli::cli_alert_warning(
+      "`result_id` column is missing, please add it as it is a compulsory column."
+    )
+  }
+
   # compulsory columns
   x <- checkColumns(x = x, "summarised_result")
 
@@ -50,12 +53,7 @@ validateSummariseResult <- function(x) {
   checkColumnsFormat(x = x, "summarised_result")
 
   # Cannot contain NA columns
-  notNaCols <- c(
-    "cdm_name", "group_name", "group_level", "strata_name", "strata_level",
-    "variable_name", "variable_type", "estimate_name", "estimate_type",
-    "additional_name", "additional_level"
-  )
-  checkNA(x = x, cols = notNaCols)
+  checkNA(x = x, "summarised_result")
 
   checkResultType(x = x)
 
@@ -103,7 +101,10 @@ checkResultType <- function(x) {
     )
   }
 }
-checkNA <- function(x, cols) {
+checkNA <- function(x, type) {
+  cols <- fieldsResults$result_field_name[
+    fieldsResults$result == type & fieldsResults$na_allowed == FALSE
+  ]
   for (col in cols) {
     if (any(is.na(unique(x[[col]])))) {
       cli::cli_abort("`{col}` must not contain NA.")
