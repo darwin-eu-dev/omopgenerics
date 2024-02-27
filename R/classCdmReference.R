@@ -405,7 +405,7 @@ cdmSource <- function(cdm) {
     if (!"cdm_table" %in% class(value)) {
       call <- parent.frame()
       value <- tryCatch(
-        expr = insertFromSource(cdm, value),
+        expr = cdmTableFromSource(cdmSource(cdm), value),
         error = function(e) {
           cli::cli_abort(
             message = c(
