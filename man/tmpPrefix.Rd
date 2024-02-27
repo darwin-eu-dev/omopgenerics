@@ -14,3 +14,7 @@ A temporary prefix.
 Create a temporary prefix for tables, that contains a unique prefix that
 starts with tmp.
 }
+\examples{
+library(omopgenerics)
+tmpPrefix()
+}

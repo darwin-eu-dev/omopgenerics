@@ -22,6 +22,35 @@
 #' @return Table with suppressed counts
 #' @export
 #'
+#' @examples
+#'
+#' library(omopgenerics)
+#' my_result <- dplyr::tibble(
+#'   "cdm_name" = "mock",
+#'   "result_type" = "summarised_characteristics",
+#'   "package_name" = "omopgenerics",
+#'   "package_version" = as.character(utils::packageVersion("omopgenerics")),
+#'   "group_name" = "overall",
+#'   "group_level" = "overall",
+#'   "strata_name" = c(rep("overall", 6), rep("sex", 3)),
+#'   "strata_level" = c(rep("overall", 6), "male", "female", "female"),
+#'   "variable_name" = c("number records", "age_group", "age_group",
+#'   "age_group", "age_group", "my_variable", "number records", "age_group",
+#'   "age_group"),
+#'   "variable_level" = c(NA, "<50", "<50", ">=50", ">=50", NA, NA,
+#'   "<50", "<50"),
+#'   "estimate_name" = c("count", "count", "percentage", "count", "percenatge",
+#'   "random", "count", "count", "percentage"),
+#'   "estimate_type" = c("integer", "integer", "percentage", "integer",
+#'   "percentage", "numeric", "integer", "integer", "percentage"),
+#'   "estimate_value" = c("10", "5", "50", "3", "30", "1", "3", "12", "6"),
+#'   "additional_name" = "overall",
+#'   "additional_level" = "overall"
+#' )
+#' my_result <- newSummarisedResult(my_result)
+#' my_result |> dplyr::glimpse()
+#' my_result <- suppress(my_result, minCellCount =5)
+#' my_result |> dplyr::glimpse()
 suppress <- function(result,
                      minCellCount = 5) {
   UseMethod("suppress")
@@ -29,7 +58,7 @@ suppress <- function(result,
 
 #' @export
 suppress.omop_result <- function(result,
-                                       minCellCount = 5) {
+                                 minCellCount = 5) {
   estimateName = "count"
   groupCount = c("number subjects", "number records")
   suppressed <- NA_character_

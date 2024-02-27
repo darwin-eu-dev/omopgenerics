@@ -15,3 +15,7 @@ A string that can be used as a dbplyr temp table name
 \description{
 Create a unique table name
 }
+\examples{
+library(omopgenerics)
+uniqueTableName()
+}
