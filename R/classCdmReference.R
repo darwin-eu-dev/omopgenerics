@@ -25,6 +25,29 @@
 #'
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' cdmTables <- list(
+#'   "person" = dplyr::tibble(
+#'     person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'     race_concept_id = 0, ethnicity_concept_id = 0
+#'   ) |>
+#'     newCdmTable(newLocalSource(), "person"),
+#'   "observation_period" = dplyr::tibble(
+#'     observation_period_id = 1, person_id = 1,
+#'     observation_period_start_date = as.Date("2000-01-01"),
+#'     observation_period_end_date = as.Date("2025-12-31"),
+#'     period_type_concept_id = 0
+#'   ) |>
+#'     newCdmTable(newLocalSource(), "observation_period")
+#' )
+#' cdm <- newCdmReference(tables = cdmTables, cdmName = "mock")
+#'
+#' my_new_table <- dplyr::tibble(a = "1")
+#' cdm$my_new_table <- my_new_table
+#' cdm
+#' }
 newCdmReference <- function(tables,
                             cdmName,
                             cdmVersion = NULL) {
@@ -307,6 +330,27 @@ cdmSource <- function(cdm) {
 #'
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' cdmTables <- list(
+#'   "person" = dplyr::tibble(
+#'     person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'     race_concept_id = 0, ethnicity_concept_id = 0
+#'   ) |>
+#'     newCdmTable(newLocalSource(), "person"),
+#'   "observation_period" = dplyr::tibble(
+#'     observation_period_id = 1, person_id = 1,
+#'     observation_period_start_date = as.Date("2000-01-01"),
+#'     observation_period_end_date = as.Date("2025-12-31"),
+#'     period_type_concept_id = 0
+#'   ) |>
+#'     newCdmTable(newLocalSource(), "observation_period")
+#' )
+#' cdm <- newCdmReference(tables = cdmTables, cdmName = "mock")
+#'
+#' cdmSourceType(cdm = cdm)
+#' }
 cdmSourceType <- function(cdm) {
   cdm |> cdmSource() |> sourceType()
 }
@@ -397,12 +441,34 @@ cdmSourceType <- function(cdm) {
 #'
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#'
+#' cdm <- cdmFromTables(
+#'   tables = list(
+#'     "person" = dplyr::tibble(
+#'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+#'       race_concept_id = 0, ethnicity_concept_id = 0
+#'     ),
+#'     "observation_period" = dplyr::tibble(
+#'       observation_period_id = 1:3, person_id = 1:3,
+#'       observation_period_start_date = as.Date("2000-01-01"),
+#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       period_type_concept_id = 0
+#'     )
+#'   ),
+#'   cdmName = "mock"
+#' )
+#'
+#' cdm$person
+#' }
 `$<-.cdm_reference` <- function(cdm, name, value) {
   cdm[[name]] <- value
   return(cdm)
 }
 
-#' Assign an table to a cdm reference.
+#' Assign a table to a cdm reference.
 #'
 #' @param cdm A cdm reference.
 #' @param name Name where to assign the new table.
@@ -422,12 +488,12 @@ cdmSourceType <- function(cdm) {
         error = function(e) {
           cli::cli_abort(
             message = c(
-              "An object of class {class(value)} can not be assigned to an
-              element of a cdm_reference. You can only assign cdm_tables to a
-              cdm_reference object or objectes that can be converted to a
+              "An object of class {class(value)} cannot be assigned to
+              a cdm_reference. You can only assign cdm_tables to a
+              cdm_reference object or objects that can be converted to a
               cdm_table. Please use insertTable to insert tibbles to a
               cdm_reference.",
-              "!" = "Error when tryong to convert to a cdm_table:",
+              "!" = "Error when trying to convert to a cdm_table:",
               as.character(e$message)
             ),
             call = call

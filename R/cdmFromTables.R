@@ -28,6 +28,7 @@
 #'
 #' @examples
 #' \donttest{
+#' library(omopgenerics)
 #'person <- dplyr::tibble(
 #'  person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
 #'  race_concept_id = 0, ethnicity_concept_id = 0
@@ -84,6 +85,17 @@ cdmFromTables <- function(tables,
   return(cdm)
 }
 
+#' A new local source for the cdm
+#'
+#' @return A list in the format of a cdm source
+#' @export
+#'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' newLocalSource()
+#'}
+#'
 newLocalSource <- function() {
   structure(.Data = list(), class = "local_cdm") |>
     newCdmSource(sourceType = "local")
