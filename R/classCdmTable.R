@@ -79,6 +79,7 @@ cdmReference <- function(table) {
 #'
 #' @export
 #'
+#' @examples
 #' \donttest{
 #' library(omopgenerics)
 #'
@@ -113,6 +114,7 @@ tableName <- function(table) {
 #'
 #' @export
 #'
+#' @examples
 #' \donttest{
 #' library(omopgenerics)
 #'
