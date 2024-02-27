@@ -298,6 +298,19 @@ cdmSource <- function(cdm) {
   attr(cdm, "cdm_source")
 }
 
+#' Get the source type of a cdm_reference object.
+#'
+#' @param  cdm A cdm_reference object.
+#'
+#' @return A character vector with the type of source of the cdm_reference
+#' object.
+#'
+#' @export
+#'
+cdmSourceType <- function(cdm) {
+  cdm |> cdmSource() |> sourceType()
+}
+
 #' Subset a cdm reference object.
 #'
 #' @param x A cdm reference.
