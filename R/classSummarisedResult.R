@@ -259,62 +259,6 @@ estimateTypeChoices <- function() {
   )
 }
 
-#' Subset a summarised_result or compared_result object to a certain result_type.
-#'
-#' @param result A result object.
-#' @param resultType A result type identifier.
-#'
-#' @return A subsetted
-#'
-subsetResult <- function(result, resultType) {
-  # initial check
-  if (!any(c("summarised_result", "compared_result") %in% class(result))) {
-    cli::cli_abort(
-      "result object is not a valid summarised_result ot compared_result object"
-    )
-  }
-  assertCharacter(resultType)
-
-  # subset
-  x <- result$result_type |> strsplit(split = " and ")
-  result <- result |> dplyr::filter(grepl(resultType, x))
-
-  if ("summarised_result" %in% class(result)) {
-    result <- newSummarisedResult(result)
-  } else {
-    result <- newComparedResult(result)
-  }
-
-  return(result)
-}
-
-# checkSentence <- function(x, cols) {
-#   for (col in cols) {
-#     notCase <- unique(x[[col]])
-#     notCase <- notCase[!isSentenceCase(notCase)]
-#     if (length(notCase) > 0) {
-#       cli::cli_abort(
-#         "`{col}` must be in sentence case. Not sentence case values:
-#         {paste0(notCase[1:min(5, length(notCase))], collapse = ', ')}{ifelse(length(notCase)>5, '...', '.')}"
-#       )
-#     }
-#   }
-#   invisible(NULL)
-# }
-# checkSnake <- function(x, cols) {
-#   for (col in cols) {
-#     notCase <- unique(x[[col]])
-#     notCase <- notCase[!isSnakeCase(notCase)]
-#     if (length(notCase) > 0) {
-#       cli::cli_abort(
-#         "`{col}` must be in snake case. Not snake case values:
-#         {paste0(notCase[1:min(5, length(notCase))], collapse = ', ')}{ifelse(length(notCase)>5, '...', '.')}"
-#       )
-#     }
-#   }
-#   invisible(NULL)
-# }
-
 #' Empty `summarised_result` object.
 #'
 #' @return An empty `summarised_result` object.
