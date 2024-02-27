@@ -422,12 +422,12 @@ cdmSourceType <- function(cdm) {
         error = function(e) {
           cli::cli_abort(
             message = c(
-              "An object of class {class(value)} can not be assigned to an
-              element of a cdm_reference. You can only assign cdm_tables to a
-              cdm_reference object or objectes that can be converted to a
+              "An object of class {class(value)} cannot be assigned to
+              a cdm_reference. You can only assign cdm_tables to a
+              cdm_reference object or objects that can be converted to a
               cdm_table. Please use insertTable to insert tibbles to a
               cdm_reference.",
-              "!" = "Error when tryong to convert to a cdm_table:",
+              "!" = "Error when trying to convert to a cdm_table:",
               as.character(e$message)
             ),
             call = call
