@@ -35,7 +35,7 @@ dropTable.cdm_reference <- function(cdm, name) {
     as.list() |>
     rlang::set_names(cols) |>
     dplyr::as_tibble() |>
-    dplyr::select(dplyr::all_of(name)) |>
+    dplyr::select(dplyr::any_of(name)) |>
     colnames()
   dropTable(cdm = cdmSource(cdm), name = name)
   if (length(toDrop) > 0) {
