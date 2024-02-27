@@ -264,6 +264,28 @@ summary.cohort_table <- function(object, ...) {
   return(x)
 }
 
+#' Summary a summarised_result
+#'
+#' @param object A summarised_result object.
+#' @param ... For compatibility (not used).
+#'
+#' @return A summary of the result_types contained in a summarised_result
+#' object.
+#'
+#' @export
+#'
+summary.summarised_result <- function(object, ...) {
+  nCdm <- object$cdm_name |> unique() |> length()
+  nId <- object$result_id |> unique() |> length()
+  nType <- object$result_type |> unique() |> length()
+  cli::cli_inform(c(
+    "i" = "A summarised_result object with {nrow(object)} rows, {nId} different
+    result_id, {nCdm} different cdm names, and {nType} different result type:",
+    "CDM names: {paste0(object$cdm_name, collapse = ', ')}",
+    "result types: {paste0(object$result_type, collapse = ', ')}"
+  ))
+}
+
 getTypes <- function(x) {
   for (col in colnames(x)) {
     x <- x |> dplyr::mutate(!!col := getType(x[[col]]))
