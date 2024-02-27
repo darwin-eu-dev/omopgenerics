@@ -151,6 +151,9 @@
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newConceptSetExpression.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newLocalSource.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newOmopTable.html</loc>
   </url>
   <url>
@@ -170,6 +173,12 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/print.cdm_reference.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/print.codelist.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/print.conceptSetExpression.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/recordCohortAttrition.html</loc>
