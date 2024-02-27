@@ -184,16 +184,22 @@ summary.cohort_table <- function(object, ...) {
 
   # settings part
   settingsSummary <- settings(object) |>
-    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+    dplyr::mutate(
+      "result_id" = .data$cohort_definition_id,
+      dplyr::across(dplyr::everything(), as.character)
+    ) |>
     tidyr::pivot_longer(
-      cols = !"cohort_name", names_to = "variable_name",
+      cols = !"result_id", names_to = "estimate_name",
       values_to = "estimate_value"
     ) |>
-    dplyr::left_join(getTypes(settings(object)), by = "variable_name") |>
+    dplyr::left_join(getTypes(settings(object)), by = "estimate_name") |>
     dplyr::mutate(
-      "result_type" = "cohort_settings",
-      "variable_level" = NA_character_,
-      "estimate_name" = "value"
+      "group_name" = "overall",
+      "group_level" = "overall",
+      "strata_name" = "overall",
+      "strata_level" = "overall",
+      "variable_name" = "settings",
+      "variable_level" = NA_character_
     )
 
   # counts summary
@@ -202,17 +208,23 @@ summary.cohort_table <- function(object, ...) {
       settings(object) |> dplyr::select("cohort_name", "cohort_definition_id"),
       by = "cohort_definition_id"
     ) |>
-    dplyr::select(-"cohort_definition_id") |>
+    dplyr::rename(
+      "result_id" = "cohort_definition_id", "strata_level" = "cohort_name"
+    ) |>
     dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
     tidyr::pivot_longer(
-      cols = !"cohort_name", names_to = "variable_name",
+      cols = !c("strata_level", "result_id"),
+      names_to = "variable_name",
       values_to = "estimate_value"
     ) |>
     dplyr::mutate(
       "result_type" = "cohort_count",
       "variable_level" = NA_character_,
       "estimate_name" = "count",
-      "estimate_type" = "integer"
+      "estimate_type" = "integer",
+      "group_name" = "cohort_table_name",
+      "group_level" = tableName(object),
+      "strata_name" = "cohort_name"
     )
 
   # attrition summary
@@ -221,7 +233,9 @@ summary.cohort_table <- function(object, ...) {
       settings(object) |> dplyr::select("cohort_name", "cohort_definition_id"),
       by = "cohort_definition_id"
     ) |>
-    dplyr::select(-"cohort_definition_id") |>
+    dplyr::rename(
+      "result_id" = "cohort_definition_id", "strata_level" = "cohort_name"
+    ) |>
     dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
     tidyr::pivot_longer(
       cols = c(
@@ -231,20 +245,27 @@ summary.cohort_table <- function(object, ...) {
       names_to = "variable_name", values_to = "estimate_value"
     ) |>
     dplyr::mutate(
+      "strata_name" = "cohort_name",
       "result_type" = "cohort_attrition",
       "estimate_name" = "count",
       "variable_level" = NA_character_,
       "estimate_type" = "integer",
-      "additional_name" = "reason_id and reason",
+      "group_name" = "cohort_table_name",
+      "group_level" = tableName(object),
+      "additional_name" = "reason_id &&& reason",
       "additional_level" = paste(
-        as.character(.data$reason_id), "and", .data$reason
+        as.character(.data$reason_id), "&&&", .data$reason
       )
     ) |>
     dplyr::select(-c("reason_id", "reason"))
 
   # final join
   x <- settingsSummary |>
+    dplyr::mutate("result_type" = "cohort_count") |>
     dplyr::union_all(countsSummary) |>
+    dplyr::union_all(
+      settingsSummary |> dplyr::mutate("result_type" = "cohort_attrition")
+    ) |>
     dplyr::mutate(
       "additional_name" = "overall", "additional_level" = "overall"
     ) |>
@@ -252,11 +273,7 @@ summary.cohort_table <- function(object, ...) {
     dplyr::mutate(
       "cdm_name" = cdmReference(object) |> cdmName(),
       "package_name" = "omopgenerics",
-      "package_version" = as.character(utils::packageVersion("omopgenerics")),
-      "group_name" = "cohort_table_name",
-      "group_level" = tableName(object),
-      "strata_name" = "cohort_name",
-      "strata_level" = .data$cohort_name
+      "package_version" = as.character(utils::packageVersion("omopgenerics"))
     ) |>
     dplyr::select(dplyr::all_of(resultColumns("summarised_result"))) |>
     newSummarisedResult()
@@ -293,7 +310,7 @@ getTypes <- function(x) {
   x |>
     utils::head(1) |>
     tidyr::pivot_longer(
-      cols = dplyr::everything(), names_to = "variable_name",
+      cols = dplyr::everything(), names_to = "estimate_name",
       values_to = "estimate_type"
     )
 }

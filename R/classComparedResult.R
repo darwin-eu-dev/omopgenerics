@@ -23,6 +23,10 @@
 #'
 newComparedResult <- function(x) {
 
+  lifecycle::deprecate_warn(
+    when = "0.1.0", what = "newComparedResult()", with = "newSummarisedResult()"
+  )
+
   #inital input check
   assertClass(x, "data.frame")
 
@@ -36,11 +40,8 @@ newComparedResult <- function(x) {
 }
 
 constructComparedResult <- function(x) {
-  x <- x |>
-    omopResult() |>
+  x |>
     addClass("compared_result")
-  x <- addClass(x, getClass(x))
-  return(x)
 }
 validateComparedResult <- function(x) {
   # compulsory columns
@@ -50,18 +51,7 @@ validateComparedResult <- function(x) {
   checkColumnsFormat(x = x, "compared_result")
 
   # Cannot contain NA columns
-  notNaCols <- c(
-    "cdm_name", "group_name_reference", "group_level_reference",
-    "strata_name_reference", "strata_level_reference",
-    "group_name_comparator", "group_level_comparator",
-    "strata_name_comparator", "strata_level_comparator",
-    "variable_name", "variable_type", "estimate_name", "estimate_type",
-    "additional_name_reference", "additional_level_reference",
-    "additional_name_comparator", "additional_level_comparator"
-  )
-  checkNA(x = x, cols = notNaCols)
-
-  checkResultType(x = x)
+  checkNA(x = x, "compared_result")
 
   # columPairs
   columnPairs <- c(
@@ -72,7 +62,7 @@ validateComparedResult <- function(x) {
     "additional_name_reference" = "additional_level_reference",
     "additional_name_comparator" = "additional_level_comparator"
   )
-  checkColumnPairs(x, columnPairs, " and ", "snake")
+  checkColumnPairs(x, columnPairs, " and | &&& ", "snake")
 
   # estimate_type
   checkColumnContent(
@@ -96,6 +86,11 @@ validateComparedResult <- function(x) {
 #' }
 #'
 emptyComparedResult <- function() {
+  lifecycle::deprecate_warn(
+    when = "0.1.0",
+    what = "emptyComparedResult()",
+    with = "emptySummarisedResult()"
+  )
   resultColumns("compared_result") |>
     rlang::rep_named(list(character())) |>
     dplyr::as_tibble() |>

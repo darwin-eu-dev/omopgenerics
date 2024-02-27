@@ -52,7 +52,9 @@ settings.cohort_table <- function(x) {
 settings.summarised_result <- function(x) {
   x |>
     dplyr::filter(.data$variable_name == "settings") |>
-    dplyr::select("result_id", "cdm_name", "estimate_name", "estimate_value") |>
+    dplyr::select(
+      "result_id", "cdm_name", "result_type", "estimate_name", "estimate_value"
+    ) |>
     tidyr::pivot_wider(
       names_from = "estimate_name", values_from = "estimate_value"
     )

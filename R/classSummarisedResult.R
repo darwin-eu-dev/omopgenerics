@@ -55,14 +55,12 @@ validateSummariseResult <- function(x) {
   # Cannot contain NA columns
   checkNA(x = x, "summarised_result")
 
-  checkResultType(x = x)
-
   # columPairs
   columnPairs <- c(
     "group_name" = "group_level", "strata_name" = "strata_level",
     "additional_name" = "additional_level"
   )
-  checkColumnPairs(x, columnPairs, " and ", "snake")
+  checkColumnPairs(x, columnPairs, " and | &&& ", "snake")
 
   # estimate_type
   checkColumnContent(
@@ -88,18 +86,6 @@ checkColumns <- function(x, resultName) {
     )
   }
   x |> dplyr::select(dplyr::all_of(cols))
-}
-checkResultType <- function(x) {
-  x <- unique(x$result_type) |> strsplit(split = " and ") |> unlist() |> unique()
-  if (length(x) > 0) x <- x[!isSnakeCase(x)]
-  x <- x[!is.na(x)]
-  if (length(x) > 0) {
-    err <- paste0(x, collapse = '\', \'')
-    cli::cli_abort(
-      "result_type must contain only snake case characters separated by ` and `
-      (if multiple). Incorrect format: '{err}'."
-    )
-  }
 }
 checkNA <- function(x, type) {
   cols <- fieldsResults$result_field_name[
@@ -194,18 +180,6 @@ isSnakeCase <- function(x) {
   } else {
     x
   }
-}
-getClass <- function(x, def) {
-  if (!is.null(x[["result_type"]])) {
-    cs <- unique(x[["result_type"]]) |>
-      strsplit(split = " and ") |>
-      unlist() |>
-      unique()
-    cs <- cs[!is.na(cs)]
-  } else {
-    cs <- character()
-  }
-  return(cs)
 }
 checkColumnContent <- function(x, col, content) {
   if (!all(x[[col]] %in% content)) {
