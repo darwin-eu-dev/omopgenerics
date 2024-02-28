@@ -494,11 +494,13 @@ populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
 #'   cdmName = "my_example_cdm"
 #' )
 #' cdm <- emptyCohortTable(cdm = cdm, name = "cohort2")
-#' cdm$cohort2 <- newCohortTable(cdm$cohort2)
+#'
+#' cdm
 #' cdm$cohort2
 #' settings(cdm$cohort2)
 #' attrition(cdm$cohort2)
 #' cohortCount(cdm$cohort2)
+#'
 emptyCohortTable <- function(cdm, name) {
   assertCharacter(name, length = 1)
   assertClass(cdm, "cdm_reference")
