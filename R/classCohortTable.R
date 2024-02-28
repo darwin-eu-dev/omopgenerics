@@ -33,6 +33,33 @@
 #'
 #' @export
 #'
+#' @examples
+#' person <- dplyr::tibble(
+#'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'   race_concept_id = 0, ethnicity_concept_id = 0
+#' )
+#' observation_period <- dplyr::tibble(
+#'   observation_period_id = 1, person_id = 1,
+#'   observation_period_start_date = as.Date("2000-01-01"),
+#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   period_type_concept_id = 0
+#' )
+#' cdm <- cdmFromTables(
+#'   tables = list("person" = person, "observation_period" = observation_period),
+#'   cdmName = "test"
+#' )
+#' cdm <- insertTable(
+#'   cdm = cdm,
+#'   name = "cohort1",
+#'   table = dplyr::tibble(
+#'     cohort_definition_id = 1, subject_id = 1,
+#'     cohort_start_date = as.Date("2020-01-01"),
+#'     cohort_end_date = as.Date("2020-01-10")
+#'   )
+#' )
+#' cdm
+#' cdm$cohort1 <- newCohortTable(table = cdm$cohort1)
+#' cdm
 newCohortTable <- function(table,
                            cohortSetRef = attr(table, "cohort_set"),
                            cohortAttritionRef = attr(table, "cohort_attrition"),
@@ -446,6 +473,28 @@ populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
 #'
 #' @return The cdm_reference with an empty cohort table
 #'
+#' @examples
+#' library(omopgenerics)
+#' person <- dplyr::tibble(
+#'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'   race_concept_id = 0, ethnicity_concept_id = 0
+#' )
+#' observation_period <- dplyr::tibble(
+#'   observation_period_id = 1, person_id = 1,
+#'   observation_period_start_date = as.Date("2000-01-01"),
+#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   period_type_concept_id = 0
+#' )
+#' cdm <- cdmFromTables(
+#'   tables = list("person" = person, "observation_period" = observation_period),
+#'   cdmName = "my_example_cdm"
+#' )
+#' cdm <- emptyCohortTable(cdm = cdm, name = "cohort2")
+#' cdm$cohort2 <- newCohortTable(cdm$cohort2)
+#' cdm$cohort2
+#' settings(cdm$cohort2)
+#' attrition(cdm$cohort2)
+#' cohortCount(cdm$cohort2)
 emptyCohortTable <- function(cdm, name) {
   assertCharacter(name, length = 1)
   assertClass(cdm, "cdm_reference")
