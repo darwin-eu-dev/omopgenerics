@@ -40,7 +40,7 @@ constructSummarisedResult <- function(x) {
 }
 validateSummariseResult <- function(x) {
   if (!"result_id" %in% colnames(x)) {
-    x <- x |> dplyr::mutate("result_id" = as.numeric(NA))
+    x <- x |> dplyr::mutate("result_id" = NA_character_)
     cli::cli_alert_warning(
       "`result_id` column is missing, please add it as it is a compulsory column."
     )
@@ -195,18 +195,6 @@ checkColumnContent <- function(x, col, content) {
   return(invisible(TRUE))
 }
 
-#' `omop_result` object constructor.
-#'
-#' @param x Table.
-#'
-#' @return A `omop_result` object
-#'
-#' @noRd
-#'
-omopResult <- function(x) {
-  x |> dplyr::as_tibble() |> addClass("omop_result")
-}
-
 #' Required columns that the result tables must have.
 #'
 #' @param table Table to see required columns.
@@ -223,7 +211,7 @@ resultColumns <- function(table) {
 #' Choices that can be present in `estimate_type` column.
 #'
 #' @return A character vector with the options that can be present in
-#' `estimate_type` column in the omop_result objects.
+#' `estimate_type` column in the summarised_result objects.
 #'
 #' @export
 #'

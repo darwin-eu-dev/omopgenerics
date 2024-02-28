@@ -142,6 +142,7 @@ summary.cdm_reference <- function(object, ...) {
     dplyr::union_all(cdmSourceSummary) |>
     dplyr::union_all(observationPeriodValues) |>
     dplyr::mutate(
+      "result_id" = NA_character_,
       "cdm_name" = cdmName(object),
       "package_name" = "omopgenerics",
       "package_version" = as.character(utils::packageVersion("omopgenerics")),

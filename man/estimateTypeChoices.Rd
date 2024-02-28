@@ -8,7 +8,7 @@ estimateTypeChoices()
 }
 \value{
 A character vector with the options that can be present in
-\code{estimate_type} column in the omop_result objects.
+\code{estimate_type} column in the summarised_result objects.
 }
 \description{
 Choices that can be present in \code{estimate_type} column.

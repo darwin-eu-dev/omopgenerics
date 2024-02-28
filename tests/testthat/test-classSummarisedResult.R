@@ -1,5 +1,6 @@
 test_that("test SummarisedResult object", {
   x <- dplyr::tibble(
+    "result_id" = NA_character_,
     "cdm_name" = "cprd",
     "result_type" = "summarised_characteristics",
     "package_name" = "PatientProfiles",
@@ -27,35 +28,16 @@ test_that("test SummarisedResult object", {
       sort()
   )
 
-  class <- x |> newSummarisedResult() |> class()
-  expect_true(all(
-    c("summarised_characteristics", "summarised_result") %in% class
-  ))
+  x |>
+    newSummarisedResult() |>
+    inherits("summarised_result") |>
+    expect_true()
 
   # check none character
   x <- dplyr::tibble(
+    "result_id" = NA_character_,
     "cdm_name" = 1,
     "result_type" = "summarised_characteristics",
-    "package_name" = "PatientProfiles",
-    "package_version" = "0.4.0",
-    "group_name" = "sex",
-    "group_level" = "male",
-    "strata_name" = "sex",
-    "strata_level" = "male",
-    "variable_name" = "Age group",
-    "variable_level" = "10 to 50",
-    "estimate_name" = "count",
-    "estimate_type" = "numeric",
-    "estimate_value" = "5",
-    "additional_name" = "overall",
-    "additional_level" = "overall"
-  )
-  expect_error(newSummarisedResult(x = x))
-
-  #check result_type
-  x <- dplyr::tibble(
-    "cdm_name" = "cprd",
-    "result_type" = "Summarised characteristics",
     "package_name" = "PatientProfiles",
     "package_version" = "0.4.0",
     "group_name" = "sex",
@@ -148,3 +130,4 @@ test_that("test SummarisedResult object", {
   expect_error(newSummarisedResult(x = x))
 
 })
+

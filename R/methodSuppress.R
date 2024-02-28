@@ -28,7 +28,7 @@ suppress <- function(result,
 }
 
 #' @export
-suppress.omop_result <- function(result,
+suppress.summarised_result <- function(result,
                                        minCellCount = 5) {
   estimateName = "count"
   groupCount = c("number subjects", "number records")

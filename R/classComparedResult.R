@@ -44,6 +44,13 @@ constructComparedResult <- function(x) {
     addClass("compared_result")
 }
 validateComparedResult <- function(x) {
+  if (!"result_id" %in% colnames(x)) {
+    x <- x |> dplyr::mutate("result_id" = NA_character_)
+    cli::cli_alert_warning(
+      "`result_id` column is missing, please add it as it is a compulsory column."
+    )
+  }
+
   # compulsory columns
   x <- checkColumns(x = x, "compared_result")
 
