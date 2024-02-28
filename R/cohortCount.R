@@ -54,8 +54,17 @@ cohortCount <- function(cohort) {
   if (is.null(attr(cohort, "cohort_attrition"))) {
     cli::cli_abort("Cohort count does not exist for this cohort.")
   }
-  attr(cohort, "cohort_attrition") |>
-    dplyr::collect() |>
+  cohort_attrition_df <- attr(cohort, "cohort_attrition") |>
+    dplyr::collect()
+
+  if(nrow(cohort_attrition_df) == 0){
+  dplyr::tibble(
+    cohort_definition_id = as.integer(),
+    number_records = as.integer(),
+    number_subjects = as.integer()
+  )
+  } else {
+  cohort_attrition_df |>
     dplyr::group_by(.data$cohort_definition_id) |>
     dplyr::filter(.data$reason_id == max(.data$reason_id, na.rm = TRUE)) |>
     dplyr::ungroup() |>
@@ -68,4 +77,5 @@ cohortCount <- function(cohort) {
       "number_records" = as.integer(.data$number_records),
       "number_subjects" = as.integer(.data$number_subjects)
     )
+  }
 }
