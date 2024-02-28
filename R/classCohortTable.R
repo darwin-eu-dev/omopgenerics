@@ -44,22 +44,26 @@
 #'   observation_period_end_date = as.Date("2025-12-31"),
 #'   period_type_concept_id = 0
 #' )
-#' cdm <- cdmFromTables(
-#'   tables = list("person" = person, "observation_period" = observation_period),
-#'   cdmName = "test"
+#' cohort1 <- dplyr::tibble(
+#'   cohort_definition_id = 1, subject_id = 1,
+#'   cohort_start_date = as.Date("2020-01-01"),
+#'   cohort_end_date = as.Date("2020-01-10")
 #' )
-#' cdm <- insertTable(
-#'   cdm = cdm,
-#'   name = "cohort1",
-#'   table = dplyr::tibble(
-#'     cohort_definition_id = 1, subject_id = 1,
-#'     cohort_start_date = as.Date("2020-01-01"),
-#'     cohort_end_date = as.Date("2020-01-10")
-#'   )
+#' cdm <- cdmFromTables(
+#'   tables = list(
+#'     "person" = person,
+#'     "observation_period" = observation_period,
+#'     "cohort1" = cohort1
+#'   ),
+#'   cdmName = "test"
 #' )
 #' cdm
 #' cdm$cohort1 <- newCohortTable(table = cdm$cohort1)
 #' cdm
+#' settings(cdm$cohort1)
+#' attrition(cdm$cohort1)
+#' cohortCount(cdm$cohort1)
+#'
 newCohortTable <- function(table,
                            cohortSetRef = attr(table, "cohort_set"),
                            cohortAttritionRef = attr(table, "cohort_attrition"),
