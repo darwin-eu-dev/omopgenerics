@@ -173,7 +173,6 @@ test_that("test create cohort", {
   expect_false("cdm_table" %in% class(x))
   expect_false("cdm_table" %in% attr(x, "cohort_set"))
   expect_false("cdm_table" %in% attr(x, "cohort_attrition"))
-  expect_false("cohort_table" %in% class(x))
 
   # remove cols
   expect_no_error(validateGeneratedCohortSet(cohort3))
@@ -254,3 +253,35 @@ test_that("test create cohort", {
   expect_error(newCohortTable(table = cdm$cohort1))
 })
 
+test_that("test collected cohort", {
+  person <- dplyr::tibble(
+    person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+    race_concept_id = 0, ethnicity_concept_id = 0
+  )
+  observation_period <- dplyr::tibble(
+    observation_period_id = 1, person_id = 1,
+    observation_period_start_date = as.Date("2000-01-01"),
+    observation_period_end_date = as.Date("2025-12-31"),
+    period_type_concept_id = 0
+  )
+  cdm <- cdmFromTables(
+    tables = list("person" = person, "observation_period" = observation_period),
+    cdmName = "test"
+  )
+  cdm <- insertTable(
+    cdm = cdm,
+    name = "cohort1",
+    table = dplyr::tibble(
+      cohort_definition_id = 1, subject_id = 1,
+      cohort_start_date = as.Date("2020-01-01"),
+      cohort_end_date = as.Date("2020-01-10")
+    )
+  )
+  cdm$cohort1 <- newCohortTable(table = cdm$cohort1)
+
+  local_cohort1 <- cdm$cohort1 %>% dplyr::collect()
+  expect_equal(attrition(cdm$cohort1), attrition(local_cohort1))
+  expect_equal(settings(cdm$cohort1), settings(local_cohort1))
+
+
+})

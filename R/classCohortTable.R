@@ -77,6 +77,8 @@ collect.cohort_table <- function(x, ...) {
   y <- x |> dplyr::collect()
   attr(y, "cohort_set") <- attr(x, "cohort_set") |> dplyr::collect()
   attr(y, "cohort_attrition") <- attr(x, "cohort_attrition") |> dplyr::collect()
+  y <- y |>
+    addClass(c("cohort_table", "GeneratedCohortSet"))
   return(y)
 }
 
