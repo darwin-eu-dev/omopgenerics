@@ -157,3 +157,36 @@ bind.cohort_table <- function(..., name) {
 
   return(cdm)
 }
+
+#' Bind two or more cohort tables
+#'
+#' @param ... Generated cohort set objects to bind. At least two must be
+#' provided.
+#' @param name Name of the new generated cohort set.
+#'
+#' @return The cdm object with a new generated cohort set containing all
+#' of the cohorts passed.
+#'
+#' @export
+#'
+bind.summarised_result <- function(...) {
+  # initial checks
+  results <- list(...)
+  assertList(results, class = "summarised_result")
+
+  results <- results |>
+    dplyr::bind_rows(.id = "list_id")
+
+  dic <- results |>
+    dplyr::select("result_id", "list_id") |>
+    dplyr::distinct() |>
+    dplyr::mutate("new_result_id" = dplyr::row_number())
+
+  results <- results |>
+    dplyr::inner_join(dic, by = c("result_id", "list_id")) |>
+    dplyr::select(-c("result_id", "list_id")) |>
+    dplyr::rename("result_id" = "new_result_id") |>
+    newSummarisedResult()
+
+  return(results)
+}
