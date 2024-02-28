@@ -51,7 +51,20 @@ validateCodelist <- function(x) {
   return(x)
 }
 
+
+#' Print a codelist
+#'
+#' @param x A codelist
+#' @param ...  Included for compatibility with generic. Not used.
+#'
+#' @return  Invisibly returns the input
 #' @export
+#'
+#' @examples
+#' codes <- list("disease X" = c(1,2,3),
+#'               "disease Y" = c(4,5))
+#' codes <- newCodelist(codes)
+#' print(codes)
 print.codelist <- function(x, ...) {
   cli::cli_h1("{length(x)} codelist{?s}")
   cli::cat_line("")

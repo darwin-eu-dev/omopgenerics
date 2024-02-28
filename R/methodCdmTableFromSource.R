@@ -14,29 +14,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Convert a table that is not a cdm_table but have the same original source to
-#' a cdm_table.
-#' This Table is not meant to be used to insert tables in the cdm, please use
-#' insertTable instead.
+#' This is an internal developer focused function that creates a cdm_table from
+#' a table that shares the source but it is not a cdm_table.
+#' Please use insertTable if you want to insert a table to a cdm_reference
+#' object.
 #'
-#' @param cdm A cdm_reference object.
+#' @param src A cdm_source object.
 #' @param value A table that shares source with the cdm_reference object.
 #'
-#' @return A table in the cdm_reference environment
+#' @return A cdm_table.
 #'
 #' @export
 #'
-insertFromSource <- function(cdm, value) {
-  lifecycle::deprecate_warn(
-    when = "0.1.0", what = "insertFromSource()", with = "cdmTableFromSource()"
-  )
-  UseMethod("insertFromSource", cdmSource(cdm))
+cdmTableFromSource <- function(src, value) {
+  UseMethod("cdmTableFromSource", src)
 }
 
 #' @export
-insertFromSource.local_cdm <- function(cdm, value) {
+cdmTableFromSource.local_cdm <- function(src, value) {
   assertClass(value, "data.frame")
-  src <- cdmSource(cdm)
   value <- newCdmTable(table = value, src = src, name = NA_character_)
   return(value)
 }
