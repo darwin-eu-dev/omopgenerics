@@ -124,7 +124,7 @@ an analysis.</p>
 <span>  cohort_start_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-01"</span><span class="op">)</span>,</span>
 <span>  cohort_end_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-10"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">cdm</span><span class="op">$</span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="va">cohort</span></span>
+<span><span class="va">cdm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/insertTable.html">insertTable</a></span><span class="op">(</span>cdm <span class="op">=</span> <span class="va">cdm</span>, name <span class="op">=</span> <span class="st">"cohort"</span>, table <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span></span>
 <span><span class="va">cdm</span><span class="op">$</span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newCohortTable.html">newCohortTable</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">$</span><span class="va">cohort</span><span class="op">)</span></span></code></pre></div>
 <p>The cohort table will be associated with settings and attrition. As
 we didn’t specify these in newCohortTable() above they will have been
@@ -299,21 +299,22 @@ function: <code><a href="https://rdrr.io/r/base/summary.html" class="external-li
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">$</span><span class="va">exposures</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 14</span></span>
-<span><span class="co">#&gt; Columns: 15</span></span>
+<span><span class="co">#&gt; Rows: 20</span></span>
+<span><span class="co">#&gt; Columns: 16</span></span>
+<span><span class="co">#&gt; $ result_id        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "1", "1", "2", "2", "1", "1", "2", "2", "3", "3", "4"…</span></span>
 <span><span class="co">#&gt; $ cdm_name         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "example_cdm", "example_cdm", "example_cdm", "example…</span></span>
-<span><span class="co">#&gt; $ result_type      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "cohort_settings", "cohort_settings", "cohort_count",…</span></span>
+<span><span class="co">#&gt; $ result_type      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "cohort_count", "cohort_count", "cohort_count", "coho…</span></span>
 <span><span class="co">#&gt; $ package_name     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "omopgenerics", "omopgenerics", "omopgenerics", "omop…</span></span>
 <span><span class="co">#&gt; $ package_version  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "0.0.3.900", "0.0.3.900", "0.0.3.900", "0.0.3.900", "…</span></span>
-<span><span class="co">#&gt; $ group_name       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "cohort_table_name", "cohort_table_name", "cohort_tab…</span></span>
-<span><span class="co">#&gt; $ group_level      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "exposures", "exposures", "exposures", "exposures", "…</span></span>
-<span><span class="co">#&gt; $ strata_name      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "cohort_name", "cohort_name", "cohort_name", "cohort_…</span></span>
-<span><span class="co">#&gt; $ strata_level     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "asthma", "copd", "asthma", "asthma", "copd", "copd",…</span></span>
-<span><span class="co">#&gt; $ variable_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "cohort_definition_id", "cohort_definition_id", "numb…</span></span>
-<span><span class="co">#&gt; $ variable_level   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA</span></span>
-<span><span class="co">#&gt; $ estimate_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "value", "value", "count", "count", "count", "count",…</span></span>
-<span><span class="co">#&gt; $ estimate_type    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "integer", "integer", "integer", "integer", "integer"…</span></span>
-<span><span class="co">#&gt; $ estimate_value   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "1", "2", "1", "1", "1", "1", "1", "1", "0", "0", "1"…</span></span>
+<span><span class="co">#&gt; $ group_name       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall", "overall", "overall", "cohort_t…</span></span>
+<span><span class="co">#&gt; $ group_level      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall", "overall", "overall", "exposure…</span></span>
+<span><span class="co">#&gt; $ strata_name      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall", "overall", "overall", "cohort_n…</span></span>
+<span><span class="co">#&gt; $ strata_level     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall", "overall", "overall", "asthma",…</span></span>
+<span><span class="co">#&gt; $ variable_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "settings", "settings", "settings", "settings", "numb…</span></span>
+<span><span class="co">#&gt; $ variable_level   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…</span></span>
+<span><span class="co">#&gt; $ estimate_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "cohort_definition_id", "cohort_name", "cohort_defini…</span></span>
+<span><span class="co">#&gt; $ estimate_type    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "integer", "character", "integer", "character", "inte…</span></span>
+<span><span class="co">#&gt; $ estimate_value   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "1", "asthma", "2", "copd", "1", "1", "1", "1", "1", …</span></span>
 <span><span class="co">#&gt; $ additional_name  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall", "overall", "overall", "overall"…</span></span>
 <span><span class="co">#&gt; $ additional_level <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall", "overall", "overall", "overall"…</span></span></code></pre></div>
 <p>This will provide a <code>summarised_result</code> object with the

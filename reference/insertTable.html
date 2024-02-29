@@ -77,7 +77,34 @@
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>The cdm reference.</p>
+<p>The cdm reference.
+library(omopgenerics)
+library(dplyr, warn.conflicts = FALSE)</p>
+
+
+<p>person &lt;- tibble(
+person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+race_concept_id = 0, ethnicity_concept_id = 0
+)
+observation_period &lt;- tibble(
+observation_period_id = 1, person_id = 1,
+observation_period_start_date = as.Date("2000-01-01"),
+observation_period_end_date = as.Date("2025-12-31"),
+period_type_concept_id = 0
+)
+cdm &lt;- cdmFromTables(
+tables = list("person" = person, "observation_period" = observation_period),
+cdmName = "my_example_cdm"
+)</p>
+
+
+<p>x &lt;- tibble(a = 1)</p>
+
+
+<p>cdm &lt;- insertTable(cdm = cdm, name = "new_table", table = x)</p>
+
+
+<p>cdm$new_table</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

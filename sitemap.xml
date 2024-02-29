@@ -49,6 +49,9 @@
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/bind.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/bind.summarised_result.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cash-.cdm_reference.html</loc>
   </url>
   <url>
@@ -196,6 +199,9 @@
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/settings.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/settings.summarised_result.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/sourceType.html</loc>
   </url>
   <url>
@@ -209,6 +215,9 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/summary.cohort_table.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/summary.summarised_result.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/suppress.html</loc>

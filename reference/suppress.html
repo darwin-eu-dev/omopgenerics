@@ -99,9 +99,11 @@
 <span class="r-in"><span>  <span class="st">"additional_level"</span> <span class="op">=</span> <span class="st">"overall"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">my_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="newSummarisedResult.html">newSummarisedResult</a></span><span class="op">(</span><span class="va">my_result</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> `result_id` column is missing, please add it as it is a compulsory column.</span>
 <span class="r-in"><span><span class="va">my_result</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ result_id        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ cdm_name         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "mock", "mock", "mock", "mock", "mock", "mock", "mock…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ result_type      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "summarised_characteristics", "summarised_characteris…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ package_name     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "omopgenerics", "omopgenerics", "omopgenerics", "omop…</span>
@@ -120,7 +122,8 @@
 <span class="r-in"><span><span class="va">my_result</span> <span class="op">&lt;-</span> <span class="fu">suppress</span><span class="op">(</span><span class="va">my_result</span>, minCellCount <span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">my_result</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ result_id        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> NA, NA, NA, NA, NA, NA, NA, NA, NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ cdm_name         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "mock", "mock", "mock", "mock", "mock", "mock", "mock…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ result_type      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "summarised_characteristics", "summarised_characteris…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ package_name     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "omopgenerics", "omopgenerics", "omopgenerics", "omop…</span>
@@ -136,6 +139,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ estimate_value   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "10", "5", "50", NA, NA, "1", NA, "12", "6"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ additional_name  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall", "overall", "overall", "overall"…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ additional_level <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall", "overall", "overall", "overall"…</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
