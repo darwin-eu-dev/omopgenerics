@@ -16,12 +16,13 @@
 
 #' It returns the participants that contributed to a particular analysis
 #'
-#' @param ... summarised_result object
+#' @param result A result object.
+#' @param ... ...
 #'
 #' @return Table with the participants
 #'
 #' @export
 #'
-participants <- function(...) {
+participants <- function(result, ...) {
   UseMethod("participants")
 }

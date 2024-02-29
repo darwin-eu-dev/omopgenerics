@@ -4,10 +4,12 @@
 \alias{participants}
 \title{It returns the participants that contributed to a particular analysis}
 \usage{
-participants(...)
+participants(result, ...)
 }
 \arguments{
-\item{...}{summarised_result object}
+\item{result}{A result object.}
+
+\item{...}{...}
 }
 \value{
 Table with the participants
