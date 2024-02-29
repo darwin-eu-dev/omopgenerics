@@ -33,6 +33,41 @@ settings <- function(x) {
 #'
 #' @export
 #'
+#' @examples
+#' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' person <- tibble(
+#'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'   race_concept_id = 0, ethnicity_concept_id = 0
+#' )
+#' observation_period <- tibble(
+#'   observation_period_id = 1, person_id = 1,
+#'   observation_period_start_date = as.Date("2000-01-01"),
+#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   period_type_concept_id = 0
+#' )
+#' cohort <- tibble(
+#'   cohort_definition_id = 1,
+#'   subject_id = 1,
+#'   cohort_start_date = as.Date("2010-01-01"),
+#'   cohort_end_date = as.Date("2012-01-01")
+#' )
+#' cdm <- cdmFromTables(
+#'   tables = list("person" = person, "observation_period" = observation_period),
+#'   cdmName = "test",
+#'   cohortTables = list("my_cohort" = cohort)
+#' )
+#'
+#' settings(cdm$my_cohort)
+#'
+#' cdm$my_cohort <- cdm$my_cohort |>
+#'   newCohortTable(cohortSetRef = tibble(
+#'     cohort_definition_id = 1, cohort_name = "new_name"
+#'   ))
+#'
+#' settings(cdm$my_cohort)
+#'
 settings.cohort_table <- function(x) {
   if (is.null(attr(x, "cohort_set"))) {
     cli::cli_abort("Cohort settings does not exist for this cohort.")
@@ -50,6 +85,37 @@ settings.cohort_table <- function(x) {
 #' @return A table with the settings.
 #'
 #' @export
+#'
+#' @examples
+#' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' person <- tibble(
+#'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'   race_concept_id = 0, ethnicity_concept_id = 0
+#' )
+#' observation_period <- tibble(
+#'   observation_period_id = 1, person_id = 1,
+#'   observation_period_start_date = as.Date("2000-01-01"),
+#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   period_type_concept_id = 0
+#' )
+#' cohort <- tibble(
+#'   cohort_definition_id = 1,
+#'   subject_id = 1,
+#'   cohort_start_date = as.Date("2010-01-01"),
+#'   cohort_end_date = as.Date("2012-01-01")
+#' )
+#' cdm <- cdmFromTables(
+#'   tables = list("person" = person, "observation_period" = observation_period),
+#'   cdmName = "test",
+#'   cohortTables = list("my_cohort" = cohort)
+#' )
+#'
+#' result <- summary(cdm$my_cohort)
+#'
+#' settings(result)
+#'
 settings.summarised_result <- function(x) {
   x |>
     dplyr::filter(.data$variable_name == "settings") |>
