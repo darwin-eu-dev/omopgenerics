@@ -4,7 +4,7 @@
 \alias{resultColumns}
 \title{Required columns that the result tables must have.}
 \usage{
-resultColumns(table)
+resultColumns(table = "summarised_result")
 }
 \arguments{
 \item{table}{Table to see required columns.}
@@ -14,4 +14,10 @@ Required columns
 }
 \description{
 Required columns that the result tables must have.
+}
+\examples{
+library(omopgenerics)
+
+resultColumns()
+
 }

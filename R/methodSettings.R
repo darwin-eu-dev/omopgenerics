@@ -32,6 +32,7 @@ settings <- function(x) {
 #' @return A table with the details of the cohort settings.
 #'
 #' @export
+#'
 settings.cohort_table <- function(x) {
   if (is.null(attr(x, "cohort_set"))) {
     cli::cli_abort("Cohort settings does not exist for this cohort.")

@@ -17,3 +17,9 @@ Standard tables
 Standard tables that a cdm reference can contain in the OMOP Common Data
 Model.
 }
+\examples{
+library(omopgenerics)
+
+omopTables()
+
+}

@@ -17,10 +17,10 @@
 
 #' 'codelist' object constructor
 #'
-#' @param x a named list where each element contains a vector of concept
-#' IDs
+#' @param x A named list where each element contains a vector of concept IDs.
 #'
-#' @return A codelist
+#' @return A codelist object.
+#'
 #' @export
 #'
 newCodelist <- function(x) {
@@ -61,10 +61,10 @@ validateCodelist <- function(x) {
 #' @export
 #'
 #' @examples
-#' codes <- list("disease X" = c(1,2,3),
-#'               "disease Y" = c(4,5))
+#' codes <- list("disease X" = c(1, 2, 3), "disease Y" = c(4, 5))
 #' codes <- newCodelist(codes)
 #' print(codes)
+#'
 print.codelist <- function(x, ...) {
   cli::cli_h1("{length(x)} codelist{?s}")
   cli::cat_line("")

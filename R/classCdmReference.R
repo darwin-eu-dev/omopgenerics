@@ -672,6 +672,11 @@ collect.cdm_reference <- function(x, ...) {
 #'
 #' @export
 #'
+#' @examples
+#' library(omopgenerics)
+#'
+#' omopTables()
+#'
 omopTables <- function(version = "5.3") {
   assertVersion(version = version)
   tableChoice(version = version, type = "cdm_table")
@@ -686,6 +691,11 @@ omopTables <- function(version = "5.3") {
 #' @return Required columns
 #'
 #' @export
+#'
+#' @examples
+#' library(omopgenerics)
+#'
+#' omopColumns("person")
 #'
 omopColumns <- function(table, version = "5.3") {
   assertVersion(version = version)

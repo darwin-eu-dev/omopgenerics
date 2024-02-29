@@ -21,6 +21,7 @@
 #' @return A table with the attrition.
 #'
 #' @export
+#'
 attrition <- function(x) {
   UseMethod("attrition")
 }

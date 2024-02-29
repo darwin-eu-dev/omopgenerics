@@ -19,6 +19,7 @@
 #' @param x Table.
 #'
 #' @return A summarisedResult object
+#'
 #' @export
 #'
 newSummarisedResult <- function(x) {
@@ -203,7 +204,12 @@ checkColumnContent <- function(x, col, content) {
 #'
 #' @export
 #'
-resultColumns <- function(table) {
+#' @examples
+#' library(omopgenerics)
+#'
+#' resultColumns()
+#'
+resultColumns <- function(table = "summarised_result") {
   assertChoice(table, unique(fieldsResults$result))
   fieldsResults$result_field_name[fieldsResults$result == table]
 }
@@ -214,6 +220,11 @@ resultColumns <- function(table) {
 #' `estimate_type` column in the summarised_result objects.
 #'
 #' @export
+#'
+#' @examples
+#' library(omopgenerics)
+#'
+#' estimateTypeChoice()
 #'
 estimateTypeChoices <- function() {
   c(
@@ -229,11 +240,9 @@ estimateTypeChoices <- function() {
 #' @export
 #'
 #' @examples
-#' \donttest{
 #' library(omopgenerics)
 #'
 #' emptySummarisedResult()
-#' }
 #'
 emptySummarisedResult <- function() {
   resultColumns("summarised_result") |>
