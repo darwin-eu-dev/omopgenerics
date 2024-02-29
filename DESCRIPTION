@@ -49,6 +49,7 @@ Imports:
 Depends: 
     R (>= 4.1)
 Suggests: 
+    covr,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
