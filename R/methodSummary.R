@@ -24,6 +24,26 @@
 #'
 #' @export
 #'
+#' @examples
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' person <- tibble(
+#'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'   race_concept_id = 0, ethnicity_concept_id = 0
+#' )
+#' observation_period <- tibble(
+#'   observation_period_id = 1, person_id = 1,
+#'   observation_period_start_date = as.Date("2000-01-01"),
+#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   period_type_concept_id = 0
+#' )
+#' cdm <- cdmFromTables(
+#'   tables = list("person" = person, "observation_period" = observation_period),
+#'   cdmName = "test"
+#' )
+#'
+#' summary(cdm)
+#'
 summary.cdm_reference <- function(object, ...) {
   # snapshot date
   snapshotDate <- dplyr::tibble(
@@ -142,6 +162,7 @@ summary.cdm_reference <- function(object, ...) {
     dplyr::union_all(cdmSourceSummary) |>
     dplyr::union_all(observationPeriodValues) |>
     dplyr::mutate(
+      "result_id" = "1",
       "cdm_name" = cdmName(object),
       "package_name" = "omopgenerics",
       "package_version" = as.character(utils::packageVersion("omopgenerics")),
@@ -169,6 +190,32 @@ summary.cdm_reference <- function(object, ...) {
 #'
 #' @export
 #'
+#' @examples
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' person <- tibble(
+#'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'   race_concept_id = 0, ethnicity_concept_id = 0
+#' )
+#' observation_period <- tibble(
+#'   observation_period_id = 1, person_id = 1,
+#'   observation_period_start_date = as.Date("2000-01-01"),
+#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   period_type_concept_id = 0
+#' )
+#' cdm <- cdmFromTables(
+#'   tables = list("person" = person, "observation_period" = observation_period),
+#'   cdmName = "test",
+#'   cohortTables = list("cohort1" = tibble(
+#'     cohort_definition_id = 1,
+#'     subject_id = 1,
+#'     cohort_start_date = as.Date("2010-01-01"),
+#'     cohort_end_date = as.Date("2010-01-05")
+#'   ))
+#' )
+#'
+#' summary(cdm$cohort1)
+#'
 summary.cohort_table <- function(object, ...) {
   if (is.null(cdmReference(object))) {
     cli::cli_abort(
@@ -184,16 +231,22 @@ summary.cohort_table <- function(object, ...) {
 
   # settings part
   settingsSummary <- settings(object) |>
-    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+    dplyr::mutate(
+      "result_id" = .data$cohort_definition_id,
+      dplyr::across(dplyr::everything(), as.character)
+    ) |>
     tidyr::pivot_longer(
-      cols = !"cohort_name", names_to = "variable_name",
+      cols = !"result_id", names_to = "estimate_name",
       values_to = "estimate_value"
     ) |>
-    dplyr::left_join(getTypes(settings(object)), by = "variable_name") |>
+    dplyr::left_join(getTypes(settings(object)), by = "estimate_name") |>
     dplyr::mutate(
-      "result_type" = "cohort_settings",
-      "variable_level" = NA_character_,
-      "estimate_name" = "value"
+      "group_name" = "overall",
+      "group_level" = "overall",
+      "strata_name" = "overall",
+      "strata_level" = "overall",
+      "variable_name" = "settings",
+      "variable_level" = NA_character_
     )
 
   # counts summary
@@ -202,17 +255,23 @@ summary.cohort_table <- function(object, ...) {
       settings(object) |> dplyr::select("cohort_name", "cohort_definition_id"),
       by = "cohort_definition_id"
     ) |>
-    dplyr::select(-"cohort_definition_id") |>
+    dplyr::rename(
+      "result_id" = "cohort_definition_id", "strata_level" = "cohort_name"
+    ) |>
     dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
     tidyr::pivot_longer(
-      cols = !"cohort_name", names_to = "variable_name",
+      cols = !c("strata_level", "result_id"),
+      names_to = "variable_name",
       values_to = "estimate_value"
     ) |>
     dplyr::mutate(
       "result_type" = "cohort_count",
       "variable_level" = NA_character_,
       "estimate_name" = "count",
-      "estimate_type" = "integer"
+      "estimate_type" = "integer",
+      "group_name" = "cohort_table_name",
+      "group_level" = tableName(object),
+      "strata_name" = "cohort_name"
     )
 
   # attrition summary
@@ -221,7 +280,9 @@ summary.cohort_table <- function(object, ...) {
       settings(object) |> dplyr::select("cohort_name", "cohort_definition_id"),
       by = "cohort_definition_id"
     ) |>
-    dplyr::select(-"cohort_definition_id") |>
+    dplyr::rename(
+      "result_id" = "cohort_definition_id", "strata_level" = "cohort_name"
+    ) |>
     dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
     tidyr::pivot_longer(
       cols = c(
@@ -231,37 +292,96 @@ summary.cohort_table <- function(object, ...) {
       names_to = "variable_name", values_to = "estimate_value"
     ) |>
     dplyr::mutate(
+      "strata_name" = "cohort_name",
       "result_type" = "cohort_attrition",
       "estimate_name" = "count",
       "variable_level" = NA_character_,
       "estimate_type" = "integer",
-      "additional_name" = "reason_id and reason",
+      "group_name" = "cohort_table_name",
+      "group_level" = tableName(object),
+      "additional_name" = "reason_id &&& reason",
       "additional_level" = paste(
-        as.character(.data$reason_id), "and", .data$reason
+        as.character(.data$reason_id), "&&&", .data$reason
       )
     ) |>
     dplyr::select(-c("reason_id", "reason"))
 
   # final join
-  x <- settingsSummary |>
+  resultCounts <- settingsSummary |>
+    dplyr::mutate("result_type" = "cohort_count") |>
     dplyr::union_all(countsSummary) |>
+    dplyr::mutate(
+      "additional_name" = "overall", "additional_level" = "overall"
+    )  |>
+    addCdmDetails(object)
+
+  resultAttrition <-settingsSummary |>
+    dplyr::mutate("result_type" = "cohort_attrition") |>
     dplyr::mutate(
       "additional_name" = "overall", "additional_level" = "overall"
     ) |>
     dplyr::union_all(attritionSummary) |>
+    addCdmDetails(object)
+
+  x <- bind(resultCounts, resultAttrition)
+
+  return(x)
+}
+
+addCdmDetails <- function(res, object) {
+  res |>
     dplyr::mutate(
       "cdm_name" = cdmReference(object) |> cdmName(),
       "package_name" = "omopgenerics",
-      "package_version" = as.character(utils::packageVersion("omopgenerics")),
-      "group_name" = "cohort_table_name",
-      "group_level" = tableName(object),
-      "strata_name" = "cohort_name",
-      "strata_level" = .data$cohort_name
+      "package_version" = as.character(utils::packageVersion("omopgenerics"))
     ) |>
     dplyr::select(dplyr::all_of(resultColumns("summarised_result"))) |>
     newSummarisedResult()
+}
 
-  return(x)
+#' Summary a summarised_result
+#'
+#' @param object A summarised_result object.
+#' @param ... For compatibility (not used).
+#'
+#' @return A summary of the result_types contained in a summarised_result
+#' object.
+#'
+#' @export
+#'
+#' @examples
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' person <- tibble(
+#'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'   race_concept_id = 0, ethnicity_concept_id = 0
+#'  )
+#' observation_period <- tibble(
+#'   observation_period_id = 1, person_id = 1,
+#'   observation_period_start_date = as.Date("2000-01-01"),
+#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   period_type_concept_id = 0
+#' )
+#' cdm <- cdmFromTables(
+#'   tables = list("person" = person, "observation_period" = observation_period),
+#'   cdmName = "test"
+#' )
+#'
+#' result <- summary(cdm)
+#'
+#' summary(result)
+#'
+summary.summarised_result <- function(object, ...) {
+  cdms <- object$cdm_name |> unique()
+  ids <- object$result_id |> unique()
+  types <- object$result_type |> unique()
+  cli::cli_inform(c(
+    "i" = "A summarised_result object with {nrow(object)} rows, {length(ids)}
+    different result_id, {lengths(cdms)} different cdm names, and
+    {length(types)} different result type:",
+    "CDM names: {paste0(cdms, collapse = ', ')}",
+    "result types: {paste0(types, collapse = ', ')}"
+  ))
 }
 
 getTypes <- function(x) {
@@ -271,7 +391,7 @@ getTypes <- function(x) {
   x |>
     utils::head(1) |>
     tidyr::pivot_longer(
-      cols = dplyr::everything(), names_to = "variable_name",
+      cols = dplyr::everything(), names_to = "estimate_name",
       values_to = "estimate_type"
     )
 }

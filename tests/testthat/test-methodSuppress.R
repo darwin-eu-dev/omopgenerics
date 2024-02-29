@@ -1,5 +1,6 @@
 test_that("test supress methods", {
   x <- dplyr::tibble(
+    "result_id" = NA_character_,
     "cdm_name" = "mock",
     "result_type" = "summarised_characteristics",
     "package_name" = "omopgenerics",

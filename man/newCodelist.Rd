@@ -7,11 +7,10 @@
 newCodelist(x)
 }
 \arguments{
-\item{x}{a named list where each element contains a vector of concept
-IDs}
+\item{x}{A named list where each element contains a vector of concept IDs.}
 }
 \value{
-A codelist
+A codelist object.
 }
 \description{
 'codelist' object constructor

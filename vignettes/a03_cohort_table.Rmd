@@ -63,7 +63,7 @@ cohort <- tibble(
   cohort_start_date = as.Date("2020-01-01"),
   cohort_end_date = as.Date("2020-01-10")
 )
-cdm$cohort <- cohort
+cdm <- insertTable(cdm = cdm, name = "cohort", table = cohort)
 cdm$cohort <- newCohortTable(cdm$cohort)
 
 ```

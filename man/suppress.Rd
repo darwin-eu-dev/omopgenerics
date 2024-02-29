@@ -46,4 +46,5 @@ my_result <- newSummarisedResult(my_result)
 my_result |> dplyr::glimpse()
 my_result <- suppress(my_result, minCellCount =5)
 my_result |> dplyr::glimpse()
+
 }

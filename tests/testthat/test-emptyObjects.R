@@ -53,11 +53,5 @@ test_that("you cna create empty objects",{
   # summarised result
   expect_no_error(x <- emptySummarisedResult())
   expect_true(inherits(x, "summarised_result"))
-  expect_true(inherits(x, "omop_result"))
-
-  # compared result
-  expect_no_error(x <- emptyComparedResult())
-  expect_true(inherits(x, "compared_result"))
-  expect_true(inherits(x, "omop_result"))
 
 })

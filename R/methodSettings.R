@@ -32,6 +32,7 @@ settings <- function(x) {
 #' @return A table with the details of the cohort settings.
 #'
 #' @export
+#'
 settings.cohort_table <- function(x) {
   if (is.null(attr(x, "cohort_set"))) {
     cli::cli_abort("Cohort settings does not exist for this cohort.")
@@ -41,3 +42,22 @@ settings.cohort_table <- function(x) {
     dplyr::relocate(c("cohort_definition_id", "cohort_name")) |>
     dplyr::arrange(.data$cohort_definition_id)
 }
+
+#' Get settings from a summarised_result object.
+#'
+#' @param x A summarised_result object.
+#'
+#' @return A table with the settings.
+#'
+#' @export
+settings.summarised_result <- function(x) {
+  x |>
+    dplyr::filter(.data$variable_name == "settings") |>
+    dplyr::select(
+      "result_id", "cdm_name", "result_type", "estimate_name", "estimate_value"
+    ) |>
+    tidyr::pivot_wider(
+      names_from = "estimate_name", values_from = "estimate_value"
+    )
+}
+

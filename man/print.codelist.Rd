@@ -18,8 +18,8 @@ Invisibly returns the input
 Print a codelist
 }
 \examples{
-codes <- list("disease X" = c(1,2,3),
-              "disease Y" = c(4,5))
+codes <- list("disease X" = c(1, 2, 3), "disease Y" = c(4, 5))
 codes <- newCodelist(codes)
 print(codes)
+
 }

@@ -20,7 +20,7 @@ Retrieves the cdm reference into a local cdm.
 \examples{
 \donttest{
 library(omopgenerics)
-library(dplyr)
+library(dplyr, warn.conflicts = FALSE)
 
 cdm <- cdmFromTables(
   tables = list(

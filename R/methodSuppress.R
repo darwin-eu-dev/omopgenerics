@@ -51,14 +51,15 @@
 #' my_result |> dplyr::glimpse()
 #' my_result <- suppress(my_result, minCellCount =5)
 #' my_result |> dplyr::glimpse()
+#'
 suppress <- function(result,
                      minCellCount = 5) {
   UseMethod("suppress")
 }
 
 #' @export
-suppress.omop_result <- function(result,
-                                 minCellCount = 5) {
+suppress.summarised_result <- function(result,
+                                       minCellCount = 5) {
   estimateName = "count"
   groupCount = c("number subjects", "number records")
   suppressed <- NA_character_
