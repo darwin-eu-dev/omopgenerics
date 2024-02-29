@@ -224,7 +224,7 @@ resultColumns <- function(table = "summarised_result") {
 #' @examples
 #' library(omopgenerics)
 #'
-#' estimateTypeChoice()
+#' estimateTypeChoices()
 #'
 estimateTypeChoices <- function() {
   c(

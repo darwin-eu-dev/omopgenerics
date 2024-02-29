@@ -16,6 +16,6 @@ Choices that can be present in \code{estimate_type} column.
 \examples{
 library(omopgenerics)
 
-estimateTypeChoice()
+estimateTypeChoices()
 
 }
