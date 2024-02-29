@@ -38,7 +38,7 @@ suppress <- function(result,
 #' @export
 #'
 #' @examples
-#' libary(dplyr, warn.conflicts = FALSE)
+#' library(dplyr, warn.conflicts = FALSE)
 #' library(omopgenerics)
 #'
 #' my_result <- tibble(

@@ -18,7 +18,7 @@ summarised_result with suppressed counts.
 Function to suppress counts in result objects
 }
 \examples{
-libary(dplyr, warn.conflicts = FALSE)
+library(dplyr, warn.conflicts = FALSE)
 library(omopgenerics)
 
 my_result <- tibble(
