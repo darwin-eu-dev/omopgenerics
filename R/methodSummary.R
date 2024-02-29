@@ -24,6 +24,26 @@
 #'
 #' @export
 #'
+#' @examples
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' person <- tibble(
+#'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'   race_concept_id = 0, ethnicity_concept_id = 0
+#' )
+#' observation_period <- tibble(
+#'   observation_period_id = 1, person_id = 1,
+#'   observation_period_start_date = as.Date("2000-01-01"),
+#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   period_type_concept_id = 0
+#' )
+#' cdm <- cdmFromTables(
+#'   tables = list("person" = person, "observation_period" = observation_period),
+#'   cdmName = "test"
+#' )
+#'
+#' summary(cdm)
+#'
 summary.cdm_reference <- function(object, ...) {
   # snapshot date
   snapshotDate <- dplyr::tibble(
@@ -142,7 +162,7 @@ summary.cdm_reference <- function(object, ...) {
     dplyr::union_all(cdmSourceSummary) |>
     dplyr::union_all(observationPeriodValues) |>
     dplyr::mutate(
-      "result_id" = NA_character_,
+      "result_id" = "1",
       "cdm_name" = cdmName(object),
       "package_name" = "omopgenerics",
       "package_version" = as.character(utils::packageVersion("omopgenerics")),
@@ -169,6 +189,32 @@ summary.cdm_reference <- function(object, ...) {
 #' @return A summarised_result object with a summary of a cohort_table.
 #'
 #' @export
+#'
+#' @examples
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' person <- tibble(
+#'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'   race_concept_id = 0, ethnicity_concept_id = 0
+#' )
+#' observation_period <- tibble(
+#'   observation_period_id = 1, person_id = 1,
+#'   observation_period_start_date = as.Date("2000-01-01"),
+#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   period_type_concept_id = 0
+#' )
+#' cdm <- cdmFromTables(
+#'   tables = list("person" = person, "observation_period" = observation_period),
+#'   cdmName = "test",
+#'   cohortTables = list("cohort1" = tibble(
+#'     cohort_definition_id = 1,
+#'     subject_id = 1,
+#'     cohort_start_date = as.Date("2010-01-01"),
+#'     cohort_end_date = as.Date("2010-01-05")
+#'   ))
+#' )
+#'
+#' summary(cdm$cohort1)
 #'
 summary.cohort_table <- function(object, ...) {
   if (is.null(cdmReference(object))) {
@@ -261,16 +307,29 @@ summary.cohort_table <- function(object, ...) {
     dplyr::select(-c("reason_id", "reason"))
 
   # final join
-  x <- settingsSummary |>
+  resultCounts <- settingsSummary |>
     dplyr::mutate("result_type" = "cohort_count") |>
     dplyr::union_all(countsSummary) |>
-    dplyr::union_all(
-      settingsSummary |> dplyr::mutate("result_type" = "cohort_attrition")
-    ) |>
+    dplyr::mutate(
+      "additional_name" = "overall", "additional_level" = "overall"
+    )  |>
+    addCdmDetails(object)
+
+  resultAttrition <-settingsSummary |>
+    dplyr::mutate("result_type" = "cohort_attrition") |>
     dplyr::mutate(
       "additional_name" = "overall", "additional_level" = "overall"
     ) |>
     dplyr::union_all(attritionSummary) |>
+    addCdmDetails(object)
+
+  x <- bind(resultCounts, resultAttrition)
+
+  return(x)
+}
+
+addCdmDetails <- function(res, object) {
+  res |>
     dplyr::mutate(
       "cdm_name" = cdmReference(object) |> cdmName(),
       "package_name" = "omopgenerics",
@@ -278,8 +337,6 @@ summary.cohort_table <- function(object, ...) {
     ) |>
     dplyr::select(dplyr::all_of(resultColumns("summarised_result"))) |>
     newSummarisedResult()
-
-  return(x)
 }
 
 #' Summary a summarised_result
@@ -292,15 +349,38 @@ summary.cohort_table <- function(object, ...) {
 #'
 #' @export
 #'
+#' @examples
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' person <- tibble(
+#'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'   race_concept_id = 0, ethnicity_concept_id = 0
+#'  )
+#' observation_period <- tibble(
+#'   observation_period_id = 1, person_id = 1,
+#'   observation_period_start_date = as.Date("2000-01-01"),
+#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   period_type_concept_id = 0
+#' )
+#' cdm <- cdmFromTables(
+#'   tables = list("person" = person, "observation_period" = observation_period),
+#'   cdmName = "test"
+#' )
+#'
+#' result <- summary(cdm)
+#'
+#' summary(result)
+#'
 summary.summarised_result <- function(object, ...) {
-  nCdm <- object$cdm_name |> unique() |> length()
-  nId <- object$result_id |> unique() |> length()
-  nType <- object$result_type |> unique() |> length()
+  cdms <- object$cdm_name |> unique()
+  ids <- object$result_id |> unique()
+  types <- object$result_type |> unique()
   cli::cli_inform(c(
-    "i" = "A summarised_result object with {nrow(object)} rows, {nId} different
-    result_id, {nCdm} different cdm names, and {nType} different result type:",
-    "CDM names: {paste0(object$cdm_name, collapse = ', ')}",
-    "result types: {paste0(object$result_type, collapse = ', ')}"
+    "i" = "A summarised_result object with {nrow(object)} rows, {length(ids)}
+    different result_id, {lengths(cdms)} different cdm names, and
+    {length(types)} different result type:",
+    "CDM names: {paste0(cdms, collapse = ', ')}",
+    "result types: {paste0(types, collapse = ', ')}"
   ))
 }
 

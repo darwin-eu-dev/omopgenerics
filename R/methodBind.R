@@ -38,16 +38,16 @@ bind <- function(...) {
 #' @export
 #'
 #' @examples
-#' \donttest{
 #' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
 #'
-#' cohort1 <- dplyr::tibble(
+#' cohort1 <- tibble(
 #'   cohort_definition_id = 1,
 #'   subject_id = 1:3,
 #'   cohort_start_date = as.Date("2010-01-01"),
 #'   cohort_end_date = as.Date("2010-01-05")
 #' )
-#' cohort2 <- dplyr::tibble(
+#' cohort2 <- tibble(
 #'   cohort_definition_id = c(2, 2, 3, 3, 3),
 #'   subject_id = c(1, 2, 3, 1, 2),
 #'   cohort_start_date = as.Date("2010-01-01"),
@@ -55,11 +55,11 @@ bind <- function(...) {
 #' )
 #' cdm <- cdmFromTables(
 #'   tables = list(
-#'     "person" = dplyr::tibble(
+#'     "person" = tibble(
 #'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
 #'       race_concept_id = 0, ethnicity_concept_id = 0
 #'     ),
-#'     "observation_period" = dplyr::tibble(
+#'     "observation_period" = tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
 #'       observation_period_end_date = as.Date("2025-12-31"),
@@ -67,17 +67,13 @@ bind <- function(...) {
 #'     )
 #'   ),
 #'   cdmName = "mock",
-#'   cohortTables = list(
-#'     "cohort1" = cohort1, "cohort2" = cohort2
-#'   )
+#'   cohortTables = list("cohort1" = cohort1, "cohort2" = cohort2)
 #' )
 #'
-#' cdm <- bind(cdm$cohort1,
-#'             cdm$cohort2,
-#'             name = "cohort3")
+#' cdm <- bind(cdm$cohort1, cdm$cohort2, name = "cohort3")
 #' settings(cdm$cohort3)
 #' cdm$cohort3
-#' }
+#'
 bind.cohort_table <- function(..., name) {
   # initial checks
   cohorts <- list(...)
@@ -158,16 +154,45 @@ bind.cohort_table <- function(..., name) {
   return(cdm)
 }
 
-#' Bind two or more cohort tables
+#' Bind two or summarised_result objects
 #'
-#' @param ... Generated cohort set objects to bind. At least two must be
-#' provided.
-#' @param name Name of the new generated cohort set.
+#' @param ... summarised_result objects
 #'
-#' @return The cdm object with a new generated cohort set containing all
-#' of the cohorts passed.
+#' @return A summarised_result object the merged objects.
 #'
 #' @export
+#'
+#' @examples
+#' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' cdm <- cdmFromTables(
+#'   tables = list(
+#'     "person" = tibble(
+#'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+#'       race_concept_id = 0, ethnicity_concept_id = 0
+#'     ),
+#'     "observation_period" = tibble(
+#'       observation_period_id = 1:3, person_id = 1:3,
+#'       observation_period_start_date = as.Date("2000-01-01"),
+#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       period_type_concept_id = 0
+#'     )
+#'   ),
+#'   cdmName = "mock",
+#'   cohortTables = list("cohort1" = tibble(
+#'     cohort_definition_id = 1,
+#'     subject_id = 1:3,
+#'     cohort_start_date = as.Date("2010-01-01"),
+#'     cohort_end_date = as.Date("2010-01-05")
+#'   ))
+#' )
+#'
+#' result1 <- summary(cdm)
+#' result2 <- summary(cdm$cohort1)
+#'
+#' mergedResult <- bind(result1, result2)
+#' mergedResult
 #'
 bind.summarised_result <- function(...) {
   # initial checks
@@ -180,7 +205,7 @@ bind.summarised_result <- function(...) {
   dic <- results |>
     dplyr::select("result_id", "list_id") |>
     dplyr::distinct() |>
-    dplyr::mutate("new_result_id" = dplyr::row_number())
+    dplyr::mutate("new_result_id" = as.character(dplyr::row_number()))
 
   results <- results |>
     dplyr::inner_join(dic, by = c("result_id", "list_id")) |>

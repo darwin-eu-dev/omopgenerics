@@ -28,13 +28,15 @@
 #' @examples
 #' \donttest{
 #' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
+#'
 #' cdmTables <- list(
-#'   "person" = dplyr::tibble(
+#'   "person" = tibble(
 #'     person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
 #'     race_concept_id = 0, ethnicity_concept_id = 0
 #'   ) |>
 #'     newCdmTable(newLocalSource(), "person"),
-#'   "observation_period" = dplyr::tibble(
+#'   "observation_period" = tibble(
 #'     observation_period_id = 1, person_id = 1,
 #'     observation_period_start_date = as.Date("2000-01-01"),
 #'     observation_period_end_date = as.Date("2025-12-31"),
@@ -44,8 +46,6 @@
 #' )
 #' cdm <- newCdmReference(tables = cdmTables, cdmName = "mock")
 #'
-#' my_new_table <- dplyr::tibble(a = "1")
-#' cdm$my_new_table <- my_new_table
 #' cdm
 #' }
 newCdmReference <- function(tables,
@@ -227,14 +227,15 @@ checkOverlapObservation <- function(x, call = parent.frame()) {
 #' @examples
 #' \donttest{
 #' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
 #'
 #' cdm <- cdmFromTables(
 #'   tables = list(
-#'     "person" = dplyr::tibble(
+#'     "person" = tibble(
 #'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
 #'       race_concept_id = 0, ethnicity_concept_id = 0
 #'     ),
-#'     "observation_period" = dplyr::tibble(
+#'     "observation_period" = tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
 #'       observation_period_end_date = as.Date("2025-12-31"),
@@ -262,14 +263,15 @@ cdmName <- function(cdm) {
 #' @examples
 #' \donttest{
 #' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
 #'
 #' cdm <- cdmFromTables(
 #'   tables = list(
-#'     "person" = dplyr::tibble(
+#'     "person" = tibble(
 #'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
 #'       race_concept_id = 0, ethnicity_concept_id = 0
 #'     ),
-#'     "observation_period" = dplyr::tibble(
+#'     "observation_period" = tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
 #'       observation_period_end_date = as.Date("2025-12-31"),
@@ -297,14 +299,15 @@ cdmVersion <- function(cdm) {
 #' @examples
 #' \donttest{
 #' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
 #'
 #' cdm <- cdmFromTables(
 #'   tables = list(
-#'     "person" = dplyr::tibble(
+#'     "person" = tibble(
 #'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
 #'       race_concept_id = 0, ethnicity_concept_id = 0
 #'     ),
-#'     "observation_period" = dplyr::tibble(
+#'     "observation_period" = tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
 #'       observation_period_end_date = as.Date("2025-12-31"),
@@ -333,21 +336,23 @@ cdmSource <- function(cdm) {
 #' @examples
 #' \donttest{
 #' library(omopgenerics)
-#' cdmTables <- list(
-#'   "person" = dplyr::tibble(
-#'     person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
-#'     race_concept_id = 0, ethnicity_concept_id = 0
-#'   ) |>
-#'     newCdmTable(newLocalSource(), "person"),
-#'   "observation_period" = dplyr::tibble(
-#'     observation_period_id = 1, person_id = 1,
-#'     observation_period_start_date = as.Date("2000-01-01"),
-#'     observation_period_end_date = as.Date("2025-12-31"),
-#'     period_type_concept_id = 0
-#'   ) |>
-#'     newCdmTable(newLocalSource(), "observation_period")
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' cdm <- cdmFromTables(
+#'   tables = list(
+#'     "person" = tibble(
+#'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+#'       race_concept_id = 0, ethnicity_concept_id = 0
+#'     ),
+#'     "observation_period" = tibble(
+#'       observation_period_id = 1:3, person_id = 1:3,
+#'       observation_period_start_date = as.Date("2000-01-01"),
+#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       period_type_concept_id = 0
+#'     )
+#'   ),
+#'   cdmName = "mock"
 #' )
-#' cdm <- newCdmReference(tables = cdmTables, cdmName = "mock")
 #'
 #' cdmSourceType(cdm = cdm)
 #' }
@@ -367,14 +372,15 @@ cdmSourceType <- function(cdm) {
 #' @examples
 #' \donttest{
 #' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
 #'
 #' cdm <- cdmFromTables(
 #'   tables = list(
-#'     "person" = dplyr::tibble(
+#'     "person" = tibble(
 #'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
 #'       race_concept_id = 0, ethnicity_concept_id = 0
 #'     ),
-#'     "observation_period" = dplyr::tibble(
+#'     "observation_period" = tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
 #'       observation_period_end_date = as.Date("2025-12-31"),
@@ -401,14 +407,15 @@ cdmSourceType <- function(cdm) {
 #' @examples
 #' \donttest{
 #' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
 #'
 #' cdm <- cdmFromTables(
 #'   tables = list(
-#'     "person" = dplyr::tibble(
+#'     "person" = tibble(
 #'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
 #'       race_concept_id = 0, ethnicity_concept_id = 0
 #'     ),
-#'     "observation_period" = dplyr::tibble(
+#'     "observation_period" = tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
 #'       observation_period_end_date = as.Date("2025-12-31"),
@@ -618,7 +625,7 @@ print.cdm_reference <- function(x, ...) {
 #' @examples
 #' \donttest{
 #' library(omopgenerics)
-#' library(dplyr)
+#' library(dplyr, warn.conflicts = FALSE)
 #'
 #' cdm <- cdmFromTables(
 #'   tables = list(
