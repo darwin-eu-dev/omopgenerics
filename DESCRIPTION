@@ -1,6 +1,6 @@
 Package: omopgenerics
 Title: Methods and Classes for the OMOP Common Data Model
-Version: 0.0.3.900
+Version: 0.1.0
 Authors@R: c(
     person(
         "Marti", "Catala", email = "marti.catalasabate@ndorms.ox.ac.uk", 
