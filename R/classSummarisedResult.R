@@ -41,7 +41,7 @@ constructSummarisedResult <- function(x) {
 }
 validateSummariseResult <- function(x) {
   if (!"result_id" %in% colnames(x)) {
-    x <- x |> dplyr::mutate("result_id" = NA_character_)
+    x <- x |> dplyr::mutate("result_id" = as.integer(NA))
     cli::cli_alert_warning(
       "`result_id` column is missing, please add it as it is a compulsory column."
     )
@@ -51,7 +51,7 @@ validateSummariseResult <- function(x) {
   x <- checkColumns(x = x, "summarised_result")
 
   # all columns should be character
-  checkColumnsFormat(x = x, "summarised_result")
+  x <- checkColumnsFormat(x = x, "summarised_result")
 
   # Cannot contain NA columns
   checkNA(x = x, "summarised_result")
@@ -108,11 +108,17 @@ checkColumnsFormat <- function(x, resultName) {
   formats <- formats[id]
   expectedFormat <- expectedFormat[id]
   if (length(cols) > 0) {
+    err <- character()
+    warn <- character()
+    for (col in cols) {
+      tryCatch()
+    }
+
     err <- paste0(cols, ": format=", formats, " (expected=", expectedFormat, ")")
     names(err) <- rep("*", length(err))
     cli::cli_abort(c("The following cols does not have a correct format", err))
   }
-  invisible(NULL)
+  invisible(x)
 }
 checkColumnPairs <- function(x, pairs, sep, case) {
   for (k in seq_along(pairs)) {

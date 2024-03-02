@@ -134,7 +134,7 @@ fieldsResults <- dplyr::tibble(
     "additional_name", "additional_level"
   ),
   is_required = TRUE,
-  datatype = "character",
+  datatype = c("integer", rep("character", 15)),
   na_allowed = c(
     TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE,
     FALSE, FALSE, TRUE, FALSE, FALSE
@@ -161,7 +161,7 @@ fieldsResults <- dplyr::tibble(
       "additional_name_comparator", "additional_level_comparator"
     ),
     is_required = TRUE,
-    datatype = "character",
+    datatype = c("integer", rep("character", 21)),
     na_allowed = c(
       TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
       FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE
