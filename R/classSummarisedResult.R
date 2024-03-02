@@ -177,7 +177,7 @@ isSentenceCase <- function(x) {
 }
 isSnakeCase <- function(x) {
   if (length(x) > 0) {
-    x == snakecase::to_snake_case(x)
+    x == toSnakeCase(x)
   } else {
     x
   }
