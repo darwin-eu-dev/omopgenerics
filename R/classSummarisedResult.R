@@ -109,9 +109,11 @@ checkColumnsFormat <- function(x, resultName) {
   expectedFormat <- expectedFormat[id]
   if (length(cols) > 0) {
     err <- character()
-    warn <- character()
     for (col in cols) {
-      tryCatch()
+      mes <- tryCatch(
+        expr = {x[[col]] <- giveType(x[[col]])},
+
+      )
     }
 
     err <- paste0(cols, ": format=", formats, " (expected=", expectedFormat, ")")
@@ -200,6 +202,17 @@ checkColumnContent <- function(x, col, content) {
     ))
   }
   return(invisible(TRUE))
+}
+giveType <- function(x, type) {
+  switch(
+    type,
+    "integer" = as.integer(x),
+    "double" = as.double(x),
+    "character" = as.character(x),
+    "logical" = as.logical(x),
+    stop("type not recognised")
+  )
+
 }
 
 #' Required columns that the result tables must have.
