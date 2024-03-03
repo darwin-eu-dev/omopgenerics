@@ -109,16 +109,29 @@ checkColumnsFormat <- function(x, resultName) {
   expectedFormat <- expectedFormat[id]
   if (length(cols) > 0) {
     err <- character()
-    for (col in cols) {
-      mes <- tryCatch(
-        expr = {x[[col]] <- giveType(x[[col]])},
-
+    for (k in seq_along(cols)) {
+      res <- tryCatch(
+        expr = {
+          x <- x |>
+            dplyr::mutate(!!cols[k] := giveType(.data[[cols[k]]], expectedFormat[k]))
+          list(x = x, err = character())
+        },
+        error = function(e) {
+          list(x = x, err = cols[k])
+        }
       )
+      x <- res$x
+      err <- c(err, res$err)
     }
-
-    err <- paste0(cols, ": format=", formats, " (expected=", expectedFormat, ")")
-    names(err) <- rep("*", length(err))
-    cli::cli_abort(c("The following cols does not have a correct format", err))
+    if (length(err) > 0) {
+      err <- paste0(err, ": format=", formats, " (expected=", expectedFormat, ")")
+      names(err) <- rep("*", length(err))
+      cli::cli_abort(c("The following colum does not have a correct format", err))
+    } else {
+      err <- paste0(cols, ": from ", formats, " to ", expectedFormat)
+      names(err) <- rep("*", length(err))
+      cli::cli_inform(c("!" = "The following column type were changed:", err))
+    }
   }
   invisible(x)
 }
@@ -212,7 +225,6 @@ giveType <- function(x, type) {
     "logical" = as.logical(x),
     stop("type not recognised")
   )
-
 }
 
 #' Required columns that the result tables must have.
