@@ -136,7 +136,7 @@ bind.cohort_table <- function(..., name) {
       dplyr::select(-"cohort_definition_id") |>
       dplyr::rename("cohort_definition_id" = "new_cohort_definition_id")
   })
-  newCohort <- Reduce(dplyr::union_all, cohorts) |>
+  newCohort <- unionCohorts(cohorts) |>
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort"))) |>
     dplyr::compute(name = name, temporary = FALSE, overwrite = TRUE)
   newCohortSet <- newCohortSet |>
@@ -152,6 +152,56 @@ bind.cohort_table <- function(..., name) {
   )
 
   return(cdm)
+}
+
+unionCohorts <- function(cohorts) {
+  cols <- lapply(cohorts, colnames)
+  allColumns <- cols |> unlist() |> unique()
+  commonId <- lapply(allColumns, function(x) {
+    lapply(cols, function(xx) {
+      x %in% xx
+    }) |>
+      unlist() |>
+      all()
+  }) |>
+    unlist() |>
+    which()
+  common <- allColumns[commonId]
+  extra <- allColumns[!allColumns %in% common]
+
+  if (length(extra) > 0) {
+    for (k in seq_along(cohorts)) {
+      extracols <- extra[!extra %in% colnames(cohorts[[k]])]
+      missingCols <- missingColumns(cols = cols, extra = extracols)
+      for (i in unique(missingCols)) {
+        cohorts[[k]] <- cohorts[[k]] |>
+          dplyr::left_join(
+            cohorts[[i]] |>
+              utils::head(1) |>
+              dplyr::select(dplyr::all_of(c(
+                "cohort_definition_id", names(missingCols[missingCols == i])
+              ))) |>
+              dplyr::filter(is.na(.data$cohort_definition_id)),
+            by = "cohort_definition_id"
+          )
+      }
+    }
+  }
+
+  Reduce(dplyr::union_all, cohorts)
+}
+
+missingColumns <- function(cols, extra) {
+  lapply(extra, function(x) {
+    lapply(cols, function(xx) {
+      x %in% xx
+    }) |>
+      unlist() |>
+      which() |>
+      min()
+  }) |>
+    rlang::set_names(extra) |>
+    unlist()
 }
 
 #' Bind two or summarised_result objects

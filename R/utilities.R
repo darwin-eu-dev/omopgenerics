@@ -425,3 +425,6 @@ errorNull <- function(null) {
   }
   return(str)
 }
+toSnakeCase <- function(x) {
+  snakecase::to_snake_case(string = x, numerals = "asis")
+}

@@ -199,7 +199,7 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
   notSnake <- cohortNames[!isSnakeCase(cohortNames)]
   if (length(notSnake)) {
     oldName <- notSnake
-    newName <- snakecase::to_snake_case(notSnake)
+    newName <- toSnakeCase(notSnake)
     x <- paste0(oldName, " -> ", newName)
     names(x) <- rep("*", length(x))
     cli::cli_warn(c(
