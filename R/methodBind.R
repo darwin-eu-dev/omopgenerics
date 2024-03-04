@@ -255,7 +255,7 @@ bind.summarised_result <- function(...) {
   dic <- results |>
     dplyr::select("result_id", "list_id") |>
     dplyr::distinct() |>
-    dplyr::mutate("new_result_id" = as.character(dplyr::row_number()))
+    dplyr::mutate("new_result_id" = as.integer(dplyr::row_number()))
 
   results <- results |>
     dplyr::inner_join(dic, by = c("result_id", "list_id")) |>
