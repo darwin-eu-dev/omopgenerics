@@ -56,7 +56,7 @@
 #'   cohortTables = list("cohort1" = cohort)
 #' )
 #' cdm$cohort1 <- newCohortTable(table = cdm$cohort1,
-#'                               codelistRef = dplyr::tibble(
+#'                                 cohortCodelistRef = dplyr::tibble(
 #'                                 cohort_definition_id = c(1,1,1,2,2),
 #'                                 codelist_name =c("disease X", "disease X", "disease X",
 #'                                                  "disease Y", "disease Y"),
@@ -90,7 +90,10 @@ codelistFromCohort <- function(cohortTable,
       dplyr::filter(.data$cohort_definition_id %in% .env$cohortId)
   }
 
-
+  if(nrow(x) == 0){
+    cli::cli_warn("No codelists found")
+    return(newCodelist(list()))
+  }
 
   x <-  studySpecs <- split(
     x,

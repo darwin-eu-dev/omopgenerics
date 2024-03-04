@@ -8,7 +8,7 @@ newCohortTable(
   table,
   cohortSetRef = attr(table, "cohort_set"),
   cohortAttritionRef = attr(table, "cohort_attrition"),
-  codelistRef = attr(table, "cohort_codelist"),
+  cohortCodelistRef = attr(table, "cohort_codelist"),
   .softValidation = FALSE
 )
 }
@@ -22,7 +22,7 @@ subject_id, cohort_start_date, cohort_end_date.}
 number_subjects, number_records, reason_id, reason, excluded_subjects,
 excluded_records.}
 
-\item{codelistRef}{Table with at least: cohort_definition_id, codelist_name,
+\item{cohortCodelistRef}{Table with at least: cohort_definition_id, codelist_name,
 and concept_id.}
 
 \item{.softValidation}{Whether to perform a soft validation of consistency.

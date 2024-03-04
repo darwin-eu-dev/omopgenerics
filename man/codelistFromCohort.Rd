@@ -49,7 +49,7 @@ cdm <- cdmFromTables(
   cohortTables = list("cohort1" = cohort)
 )
 cdm$cohort1 <- newCohortTable(table = cdm$cohort1,
-                              codelistRef = dplyr::tibble(
+                                cohortCodelistRef = dplyr::tibble(
                                 cohort_definition_id = c(1,1,1,2,2),
                                 codelist_name =c("disease X", "disease X", "disease X",
                                                  "disease Y", "disease Y"),

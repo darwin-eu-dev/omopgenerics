@@ -25,11 +25,11 @@ test_that("test codelist from cohort", {
   )
   cdm$cohort1 <- newCohortTable(table = cdm$cohort1)
   # empty by default
-  expect_error(codelistFromCohort(cdm$cohort1))
+  expect_warning(codelistFromCohort(cdm$cohort1))
 
   # with attribute added
   cdm$cohort1 <- newCohortTable(table = cdm$cohort1,
-                                codelistRef = dplyr::tibble(
+                                cohortCodelistRef = dplyr::tibble(
                                   cohort_definition_id = c(1,1,1,2,2),
                                   codelist_name =c("disease X", "disease X", "disease X",
                                                    "disease Y", "disease Y"),
@@ -87,13 +87,12 @@ cdm <- cdmFromTables(
   cdmName = "my_example_cdm",
   cohortTables = list("cohort1" = cohort)
 )
-cdm$cohort1 <- newCohortTable(table = cdm$cohort1,
-                              codelistRef = dplyr::tibble(
+expect_error(cdm$cohort1 <- newCohortTable(table = cdm$cohort1,
+                              cohortCodelistRef = dplyr::tibble(
                                 not_a_cohort_definition_id = c(1,1,1,2,2),
                                 a_codelist_name =c("disease X", "disease X", "disease X",
                                                  "disease Y", "disease Y"),
                                 concept_id = c(1,2,3,4,5)
-                              ))
-expect_error(codelistFromCohort(cdm$cohort1))
+                              )))
 
 })

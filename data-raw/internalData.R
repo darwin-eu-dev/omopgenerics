@@ -81,7 +81,7 @@ fieldsCohorts <- tibble(
       ),
       is_required = TRUE,
       cdm_datatype = c(
-        "varchar(255)", "varchar(255)", "integer"
+        "integer", "varchar(255)", "integer"
       ),
       cdm_version = "5.3; 5.4"
     ))
