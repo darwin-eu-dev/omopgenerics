@@ -20,12 +20,29 @@
 #' @param minCellCount Minimum count of records to report results.
 #'
 #' @return Table with suppressed counts
+#'
+#' @export
+#'
+suppress <- function(result,
+                     minCellCount = 5) {
+  UseMethod("suppress")
+}
+
+#' Function to suppress counts in result objects
+#'
+#' @param result summarised_result object.
+#' @param minCellCount Minimum count of records to report results.
+#'
+#' @return summarised_result with suppressed counts.
+#'
 #' @export
 #'
 #' @examples
-#'
+#' library(dplyr, warn.conflicts = FALSE)
 #' library(omopgenerics)
-#' my_result <- dplyr::tibble(
+#'
+#' my_result <- tibble(
+#'   "result_id" = "1",
 #'   "cdm_name" = "mock",
 #'   "result_type" = "summarised_characteristics",
 #'   "package_name" = "omopgenerics",
@@ -48,17 +65,12 @@
 #'   "additional_level" = "overall"
 #' )
 #' my_result <- newSummarisedResult(my_result)
-#' my_result |> dplyr::glimpse()
-#' my_result <- suppress(my_result, minCellCount =5)
-#' my_result |> dplyr::glimpse()
-suppress <- function(result,
-                     minCellCount = 5) {
-  UseMethod("suppress")
-}
-
-#' @export
-suppress.omop_result <- function(result,
-                                 minCellCount = 5) {
+#' my_result |> glimpse()
+#' my_result <- suppress(my_result, minCellCount = 5)
+#' my_result |> glimpse()
+#'
+suppress.summarised_result <- function(result,
+                                       minCellCount = 5) {
   estimateName = "count"
   groupCount = c("number subjects", "number records")
   suppressed <- NA_character_

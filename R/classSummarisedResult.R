@@ -19,6 +19,7 @@
 #' @param x Table.
 #'
 #' @return A summarisedResult object
+#'
 #' @export
 #'
 newSummarisedResult <- function(x) {
@@ -36,35 +37,31 @@ newSummarisedResult <- function(x) {
 }
 
 constructSummarisedResult <- function(x) {
-  x <- x |>
-    omopResult() |>
-    addClass("summarised_result")
-  x <- addClass(x, getClass(x))
-  return(x)
+  x |> addClass("summarised_result")
 }
 validateSummariseResult <- function(x) {
+  if (!"result_id" %in% colnames(x)) {
+    x <- x |> dplyr::mutate("result_id" = as.integer(NA))
+    cli::cli_alert_warning(
+      "`result_id` column is missing, please add it as it is a compulsory column."
+    )
+  }
+
   # compulsory columns
   x <- checkColumns(x = x, "summarised_result")
 
   # all columns should be character
-  checkColumnsFormat(x = x, "summarised_result")
+  x <- checkColumnsFormat(x = x, "summarised_result")
 
   # Cannot contain NA columns
-  notNaCols <- c(
-    "cdm_name", "group_name", "group_level", "strata_name", "strata_level",
-    "variable_name", "variable_type", "estimate_name", "estimate_type",
-    "additional_name", "additional_level"
-  )
-  checkNA(x = x, cols = notNaCols)
-
-  checkResultType(x = x)
+  checkNA(x = x, "summarised_result")
 
   # columPairs
   columnPairs <- c(
     "group_name" = "group_level", "strata_name" = "strata_level",
     "additional_name" = "additional_level"
   )
-  checkColumnPairs(x, columnPairs, " and ", "snake")
+  checkColumnPairs(x, columnPairs, " and | &&& ", "snake")
 
   # estimate_type
   checkColumnContent(
@@ -91,19 +88,10 @@ checkColumns <- function(x, resultName) {
   }
   x |> dplyr::select(dplyr::all_of(cols))
 }
-checkResultType <- function(x) {
-  x <- unique(x$result_type) |> strsplit(split = " and ") |> unlist() |> unique()
-  if (length(x) > 0) x <- x[!isSnakeCase(x)]
-  x <- x[!is.na(x)]
-  if (length(x) > 0) {
-    err <- paste0(x, collapse = '\', \'')
-    cli::cli_abort(
-      "result_type must contain only snake case characters separated by ` and `
-      (if multiple). Incorrect format: '{err}'."
-    )
-  }
-}
-checkNA <- function(x, cols) {
+checkNA <- function(x, type) {
+  cols <- fieldsResults$result_field_name[
+    fieldsResults$result == type & fieldsResults$na_allowed == FALSE
+  ]
   for (col in cols) {
     if (any(is.na(unique(x[[col]])))) {
       cli::cli_abort("`{col}` must not contain NA.")
@@ -120,11 +108,32 @@ checkColumnsFormat <- function(x, resultName) {
   formats <- formats[id]
   expectedFormat <- expectedFormat[id]
   if (length(cols) > 0) {
-    err <- paste0(cols, ": format=", formats, " (expected=", expectedFormat, ")")
-    names(err) <- rep("*", length(err))
-    cli::cli_abort(c("The following cols does not have a correct format", err))
+    err <- character()
+    for (k in seq_along(cols)) {
+      res <- tryCatch(
+        expr = {
+          x <- x |>
+            dplyr::mutate(!!cols[k] := giveType(.data[[cols[k]]], expectedFormat[k]))
+          list(x = x, err = character())
+        },
+        error = function(e) {
+          list(x = x, err = cols[k])
+        }
+      )
+      x <- res$x
+      err <- c(err, res$err)
+    }
+    if (length(err) > 0) {
+      err <- paste0(err, ": format=", formats, " (expected=", expectedFormat, ")")
+      names(err) <- rep("*", length(err))
+      cli::cli_abort(c("The following colum does not have a correct format", err))
+    } else {
+      err <- paste0(cols, ": from ", formats, " to ", expectedFormat)
+      names(err) <- rep("*", length(err))
+      cli::cli_inform(c("!" = "The following column type were changed:", err))
+    }
   }
-  invisible(NULL)
+  invisible(x)
 }
 checkColumnPairs <- function(x, pairs, sep, case) {
   for (k in seq_along(pairs)) {
@@ -189,22 +198,10 @@ isSentenceCase <- function(x) {
 }
 isSnakeCase <- function(x) {
   if (length(x) > 0) {
-    x == snakecase::to_snake_case(x)
+    x == toSnakeCase(x)
   } else {
     x
   }
-}
-getClass <- function(x, def) {
-  if (!is.null(x[["result_type"]])) {
-    cs <- unique(x[["result_type"]]) |>
-      strsplit(split = " and ") |>
-      unlist() |>
-      unique()
-    cs <- cs[!is.na(cs)]
-  } else {
-    cs <- character()
-  }
-  return(cs)
 }
 checkColumnContent <- function(x, col, content) {
   if (!all(x[[col]] %in% content)) {
@@ -219,17 +216,15 @@ checkColumnContent <- function(x, col, content) {
   }
   return(invisible(TRUE))
 }
-
-#' `omop_result` object constructor.
-#'
-#' @param x Table.
-#'
-#' @return A `omop_result` object
-#'
-#' @noRd
-#'
-omopResult <- function(x) {
-  x |> dplyr::as_tibble() |> addClass("omop_result")
+giveType <- function(x, type) {
+  switch(
+    type,
+    "integer" = as.integer(x),
+    "double" = as.double(x),
+    "character" = as.character(x),
+    "logical" = as.logical(x),
+    x
+  )
 }
 
 #' Required columns that the result tables must have.
@@ -240,7 +235,12 @@ omopResult <- function(x) {
 #'
 #' @export
 #'
-resultColumns <- function(table) {
+#' @examples
+#' library(omopgenerics)
+#'
+#' resultColumns()
+#'
+resultColumns <- function(table = "summarised_result") {
   assertChoice(table, unique(fieldsResults$result))
   fieldsResults$result_field_name[fieldsResults$result == table]
 }
@@ -248,9 +248,14 @@ resultColumns <- function(table) {
 #' Choices that can be present in `estimate_type` column.
 #'
 #' @return A character vector with the options that can be present in
-#' `estimate_type` column in the omop_result objects.
+#' `estimate_type` column in the summarised_result objects.
 #'
 #' @export
+#'
+#' @examples
+#' library(omopgenerics)
+#'
+#' estimateTypeChoices()
 #'
 estimateTypeChoices <- function() {
   c(
@@ -266,11 +271,9 @@ estimateTypeChoices <- function() {
 #' @export
 #'
 #' @examples
-#' \donttest{
 #' library(omopgenerics)
 #'
 #' emptySummarisedResult()
-#' }
 #'
 emptySummarisedResult <- function() {
   resultColumns("summarised_result") |>

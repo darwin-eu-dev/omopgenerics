@@ -33,6 +33,37 @@
 #'
 #' @export
 #'
+#' @examples
+#' person <- dplyr::tibble(
+#'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'   race_concept_id = 0, ethnicity_concept_id = 0
+#' )
+#' observation_period <- dplyr::tibble(
+#'   observation_period_id = 1, person_id = 1,
+#'   observation_period_start_date = as.Date("2000-01-01"),
+#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   period_type_concept_id = 0
+#' )
+#' cohort1 <- dplyr::tibble(
+#'   cohort_definition_id = 1, subject_id = 1,
+#'   cohort_start_date = as.Date("2020-01-01"),
+#'   cohort_end_date = as.Date("2020-01-10")
+#' )
+#' cdm <- cdmFromTables(
+#'   tables = list(
+#'     "person" = person,
+#'     "observation_period" = observation_period,
+#'     "cohort1" = cohort1
+#'   ),
+#'   cdmName = "test"
+#' )
+#' cdm
+#' cdm$cohort1 <- newCohortTable(table = cdm$cohort1)
+#' cdm
+#' settings(cdm$cohort1)
+#' attrition(cdm$cohort1)
+#' cohortCount(cdm$cohort1)
+#'
 newCohortTable <- function(table,
                            cohortSetRef = attr(table, "cohort_set"),
                            cohortAttritionRef = attr(table, "cohort_attrition"),
@@ -170,7 +201,7 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
   notSnake <- cohortNames[!isSnakeCase(cohortNames)]
   if (length(notSnake)) {
     oldName <- notSnake
-    newName <- snakecase::to_snake_case(notSnake)
+    newName <- toSnakeCase(notSnake)
     x <- paste0(oldName, " -> ", newName)
     names(x) <- rep("*", length(x))
     cli::cli_warn(c(
@@ -448,6 +479,33 @@ populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
 #'
 #' @return The cdm_reference with an empty cohort table
 #'
+#' @examples
+#' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' person <- tibble(
+#'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'   race_concept_id = 0, ethnicity_concept_id = 0
+#' )
+#' observation_period <- tibble(
+#'   observation_period_id = 1, person_id = 1,
+#'   observation_period_start_date = as.Date("2000-01-01"),
+#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   period_type_concept_id = 0
+#' )
+#' cdm <- cdmFromTables(
+#'   tables = list("person" = person, "observation_period" = observation_period),
+#'   cdmName = "test"
+#' )
+#'
+#' cdm <- emptyCohortTable(cdm, "my_empty_cohort")
+#'
+#' cdm
+#' cdm$my_empty_cohort
+#' settings(cdm$my_empty_cohort)
+#' attrition(cdm$my_empty_cohort)
+#' cohortCount(cdm$my_empty_cohort)
+#'
 emptyCohortTable <- function(cdm, name) {
   assertCharacter(name, length = 1)
   assertClass(cdm, "cdm_reference")
@@ -481,4 +539,3 @@ getEmptyField <- function(datatype) {
   )
   return(empty)
 }
-
