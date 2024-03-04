@@ -65,8 +65,9 @@
 #' codelistFromCohort(cdm$cohort1)
 #' }
 codelistFromCohort <- function(cohortTable,
-                               cohortId = NULL) {
+                               cohortId) {
   assertClass(cohortTable, "cohort_table")
+  assertNumeric(cohortId, length = 1)
   if(is.null(attr(cohortTable, "cohort_codelist"))){
     cli::cli_abort("Codelist does not exist for this cohort.")
   }

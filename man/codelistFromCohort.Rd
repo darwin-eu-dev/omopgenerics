@@ -4,7 +4,7 @@
 \alias{codelistFromCohort}
 \title{Get codelist from a cohort_table object.}
 \usage{
-codelistFromCohort(cohortTable, cohortId = NULL)
+codelistFromCohort(cohortTable, cohortId)
 }
 \arguments{
 \item{cohortTable}{A cohort_table object.}
