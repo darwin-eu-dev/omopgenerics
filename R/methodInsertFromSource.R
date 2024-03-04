@@ -30,13 +30,12 @@ insertFromSource <- function(cdm, value) {
   lifecycle::deprecate_warn(
     when = "0.1.0", what = "insertFromSource()", with = "cdmTableFromSource()"
   )
-  UseMethod("insertFromSource", cdmSource(cdm))
+  UseMethod("insertFromSource", cdm)
 }
 
 #' @export
 insertFromSource.local_cdm <- function(cdm, value) {
   assertClass(value, "data.frame")
-  src <- cdmSource(cdm)
   value <- newCdmTable(table = value, src = src, name = NA_character_)
   return(value)
 }
