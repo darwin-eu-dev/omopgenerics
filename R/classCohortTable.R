@@ -22,6 +22,8 @@
 #' @param cohortAttritionRef Table with at least: cohort_definition_id,
 #' number_subjects, number_records, reason_id, reason, excluded_subjects,
 #' excluded_records.
+#' @param codelistRef Table with at least: cohort_definition_id, codelist_name,
+#' and concept_id.
 #' @param .softValidation Whether to perform a soft validation of consistency.
 #' If set to FALSE four additional checks will be performed: 1) a check that
 #' cohort end date is not before cohort start date,  2) a check that there
@@ -67,6 +69,7 @@
 newCohortTable <- function(table,
                            cohortSetRef = attr(table, "cohort_set"),
                            cohortAttritionRef = attr(table, "cohort_attrition"),
+                           codelistRef = attr(table, "cohort_codelist"),
                            .softValidation = FALSE) {
   # initial checks
   assertClass(table, "cdm_table")
@@ -82,7 +85,8 @@ newCohortTable <- function(table,
   cohort <- constructGeneratedCohortSet(
     table = table,
     cohortSetRef = cohortSetRef,
-    cohortAttritionRef = cohortAttritionRef
+    cohortAttritionRef = cohortAttritionRef,
+    codelistRef = codelistRef
   )
 
   # validate
@@ -113,11 +117,13 @@ collect.cohort_table <- function(x, ...) {
 
 constructGeneratedCohortSet <- function(table,
                                         cohortSetRef,
-                                        cohortAttritionRef) {
+                                        cohortAttritionRef,
+                                        codelistRef) {
   table <- structure(
     .Data = table,
     "cohort_set" = noReference(cohortSetRef),
-    "cohort_attrition" = noReference(cohortAttritionRef)
+    "cohort_attrition" = noReference(cohortAttritionRef),
+    "cohort_codelist" = noReference(codelistRef)
   ) |>
     addClass(c("cohort_table", "GeneratedCohortSet"))
   return(table)
@@ -126,11 +132,13 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
   # get attributes
   cohort_set <- attr(cohort, "cohort_set")
   cohort_attrition <- attr(cohort, "cohort_attrition")
+  cohort_codelist <- attr(cohort, "cohort_codelist")
 
   # assertClass
   assertClass(cohort, "cdm_table")
   assertClass(cohort_set, "cdm_table")
   assertClass(cohort_attrition, "cdm_table")
+  # assertClass(cohort_codelist, "cdm_table")
 
   # check cdm reference
   if (!"cdm_reference" %in% names(attributes(cohort))) {
@@ -141,19 +149,24 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
   assertCharacter(tableName(cohort), length = 1, na = TRUE)
   assertCharacter(tableName(cohort_set), length = 1, na = TRUE)
   assertCharacter(tableName(cohort_attrition), length = 1, na = TRUE)
+  # assertCharacter(tableName(cohort_codelist), length = 1, na = TRUE)
   consistentNaming(
     cohortName = tableName(cohort),
     cohortSetName = tableName(cohort_set),
     cohortAttritionName = tableName(cohort_attrition)
+    # ,
+    # cohort_codelist = tableName(cohort_codelist)
   )
 
   # check source
   srcCohort <- tableSource(cohort)
   srcCohortSet <- tableSource(cohort_set)
   srcCohortAttrition <- tableSource(cohort_attrition)
+  # srcCohort_codelist <- tableSource(cohort_codelist)
   if (!equal(srcCohort, srcCohortSet, srcCohortAttrition)) {
+  # if (!equal(srcCohort, srcCohortSet, srcCohortAttrition, srcCohort_codelist)) {
     cli::cli_abort(
-      "The source must be the same for cohort, cohort_set and cohort_attrition."
+      "The source must be the same for cohort, cohort_set, and cohort_attrition."
     )
   }
 
@@ -171,11 +184,13 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
   checkColumnsCohort(cohort, "cohort")
   checkColumnsCohort(cohort_set, "cohort_set")
   checkColumnsCohort(cohort_attrition, "cohort_attrition")
+  # checkColumnsCohort(cohort_codelist, "cohort_codelist")
 
   # cohort_definition_id is coherent
   cdiCohort <- cdi(cohort)
   cdiCohortSet <- cdi(cohort_set)
   cdiCohortAttrition <- cdi(cohort_attrition)
+  # cdiCohortCodelist <- cdi(cohort_codelist)
   if (!all(cdiCohortSet == cdiCohortAttrition)) {
     cli::cli_abort(c(
       "Present cohort_definition_id must be the same:",
@@ -190,6 +205,13 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
       "*" = "cohort_set: {paste0(cdiCohortSet, collapse = ', ')}"
     ))
   }
+  # if (!all(cdiCohort %in% cdiCohortCodelist)) {
+  #   cli::cli_abort(c(
+  #     "There are cohort_definition_id that appear in cohort and not in cohort_codelist:",
+  #     "*" = "cohort: {paste0(cdiCohort, collapse = ', ')}",
+  #     "*" = "cohort_codelist: {paste0(cdiCohortCodelist, collapse = ', ')}"
+  #   ))
+  # }
 
   # cohort_name column
   cohortNames <- cohort_set |> dplyr::pull("cohort_name")
@@ -228,6 +250,8 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_set")))
   attr(cohort, "cohort_attrition") <- attr(cohort, "cohort_attrition") |>
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_attrition")))
+  # attr(cohort, "cohort_codelist") <- attr(cohort, "cohort_codelist") |>
+  #   dplyr::relocate(dplyr::all_of(cohortColumns("cohort_codelist")))
 
   if (!soft) {
     # check start before end
