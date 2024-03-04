@@ -71,7 +71,7 @@ validateSummariseResult <- function(x) {
   return(x)
 }
 checkColumns <- function(x, resultName) {
-  cols <- resultColumns(table = resultName)
+  cols <- resultColumns(table = resultName, internal = TRUE)
   notPresent <- cols[!cols %in% colnames(x)]
   if (length(notPresent) > 0) {
     cli::cli_abort(
@@ -100,7 +100,7 @@ checkNA <- function(x, type) {
   invisible(NULL)
 }
 checkColumnsFormat <- function(x, resultName) {
-  cols <- resultColumns(resultName)
+  cols <- resultColumns(resultName, internal = TRUE)
   expectedFormat <- fieldsResults$datatype[fieldsResults$result == resultName]
   formats <- lapply(x, typeof) |> unlist()
   id <- formats != expectedFormat
@@ -230,6 +230,7 @@ giveType <- function(x, type) {
 #' Required columns that the result tables must have.
 #'
 #' @param table Table to see required columns.
+#' @param internal For compatibility, do not use please.
 #'
 #' @return Required columns
 #'
@@ -240,7 +241,7 @@ giveType <- function(x, type) {
 #'
 #' resultColumns()
 #'
-resultColumns <- function(table = "summarised_result") {
+resultColumns <- function(table = "summarised_result", internal = FALSE) {
   assertChoice(table, unique(fieldsResults$result))
   fieldsResults$result_field_name[fieldsResults$result == table]
 }
@@ -276,7 +277,7 @@ estimateTypeChoices <- function() {
 #' emptySummarisedResult()
 #'
 emptySummarisedResult <- function() {
-  resultColumns("summarised_result") |>
+  resultColumns("summarised_result", internal = TRUE) |>
     rlang::rep_named(list(character())) |>
     dplyr::as_tibble() |>
     newSummarisedResult()

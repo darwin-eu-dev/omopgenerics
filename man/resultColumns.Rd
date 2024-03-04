@@ -4,10 +4,12 @@
 \alias{resultColumns}
 \title{Required columns that the result tables must have.}
 \usage{
-resultColumns(table = "summarised_result")
+resultColumns(table = "summarised_result", internal = FALSE)
 }
 \arguments{
 \item{table}{Table to see required columns.}
+
+\item{internal}{For compatibility, do not use please.}
 }
 \value{
 Required columns
