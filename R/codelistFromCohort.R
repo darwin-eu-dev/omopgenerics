@@ -95,7 +95,7 @@ codelistFromCohort <- function(cohortTable,
     return(newCodelist(list()))
   }
 
-  x <-  studySpecs <- split(
+  x <- split(
     x,
     x[, c("codelist_name")],
     drop = TRUE
