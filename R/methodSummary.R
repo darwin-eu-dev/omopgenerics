@@ -175,7 +175,7 @@ summary.cdm_reference <- function(object, ...) {
       "additional_name" = "overall",
       "additional_level" = "overall"
     ) |>
-    dplyr::select(dplyr::all_of(resultColumns("summarised_result", internal = TRUE))) |>
+    dplyr::select(dplyr::all_of(resultColumns("summarised_result"))) |>
     newSummarisedResult()
 
   return(x)
@@ -341,7 +341,7 @@ addCdmDetails <- function(res, object) {
       "package_name" = "omopgenerics",
       "package_version" = as.character(utils::packageVersion("omopgenerics"))
     ) |>
-    dplyr::select(dplyr::all_of(resultColumns("summarised_result", internal = TRUE))) |>
+    dplyr::select(dplyr::all_of(resultColumns("summarised_result"))) |>
     newSummarisedResult()
 }
 

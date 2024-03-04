@@ -37,7 +37,7 @@ newSummarisedResult <- function(x) {
 }
 
 constructSummarisedResult <- function(x) {
-  x |> addClass(c("summarised_result", "omop_result"))
+  x |> addClass("summarised_result")
 }
 validateSummariseResult <- function(x) {
   if (!"result_id" %in% colnames(x)) {
@@ -71,7 +71,7 @@ validateSummariseResult <- function(x) {
   return(x)
 }
 checkColumns <- function(x, resultName) {
-  cols <- resultColumns(table = resultName, internal = TRUE)
+  cols <- resultColumns(table = resultName)
   notPresent <- cols[!cols %in% colnames(x)]
   if (length(notPresent) > 0) {
     cli::cli_abort(
@@ -100,7 +100,7 @@ checkNA <- function(x, type) {
   invisible(NULL)
 }
 checkColumnsFormat <- function(x, resultName) {
-  cols <- resultColumns(resultName, internal = TRUE)
+  cols <- resultColumns(resultName)
   expectedFormat <- fieldsResults$datatype[fieldsResults$result == resultName]
   formats <- lapply(x, typeof) |> unlist()
   id <- formats != expectedFormat
@@ -230,7 +230,6 @@ giveType <- function(x, type) {
 #' Required columns that the result tables must have.
 #'
 #' @param table Table to see required columns.
-#' @param internal For compatibility, do not use please.
 #'
 #' @return Required columns
 #'
@@ -241,12 +240,9 @@ giveType <- function(x, type) {
 #'
 #' resultColumns()
 #'
-resultColumns <- function(table = "summarised_result", internal = FALSE) {
+resultColumns <- function(table = "summarised_result") {
   assertChoice(table, unique(fieldsResults$result))
   x <- fieldsResults$result_field_name[fieldsResults$result == table]
-  if (!internal) {
-    x <- x[x != "result_id"]
-  }
   return(x)
 }
 
@@ -281,7 +277,7 @@ estimateTypeChoices <- function() {
 #' emptySummarisedResult()
 #'
 emptySummarisedResult <- function() {
-  resultColumns("summarised_result", internal = TRUE) |>
+  resultColumns("summarised_result") |>
     rlang::rep_named(list(character())) |>
     dplyr::as_tibble() |>
     newSummarisedResult()

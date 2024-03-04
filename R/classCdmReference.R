@@ -491,22 +491,28 @@ cdmSourceType <- function(cdm) {
     if (!"cdm_table" %in% class(value)) {
       call <- parent.frame()
       value <- tryCatch(
-        expr = insertFromSource(cdmSource(cdm), value),
-        error = function(e) {
-          cli::cli_abort(
-            message = c(
-              "An object of class {class(value)} cannot be assigned to
+        expr = cdmTableFromSource(cdmSource(cdm), value),
+        error = function(e) {value}
+      )
+      if (!"cdm_table" %in% class(value)) {
+        value <- tryCatch(
+          expr = insertFromSource(cdm, value),
+          error = function(e) {
+            cli::cli_abort(
+              message = c(
+                "An object of class {class(value)} cannot be assigned to
               a cdm_reference. You can only assign cdm_tables to a
               cdm_reference object or objects that can be converted to a
               cdm_table. Please use insertTable to insert tibbles to a
               cdm_reference.",
-              "!" = "Error when trying to convert to a cdm_table:",
-              as.character(e$message)
-            ),
-            call = call
-          )
-        }
-      )
+                "!" = "Error when trying to convert to a cdm_table:",
+                as.character(e$message)
+              ),
+              call = call
+            )
+          }
+        )
+      }
     }
     if (!identical(tableSource(value), cdmSource(cdm))) {
       cli::cli_abort("Table and cdm does not share a common source.")
