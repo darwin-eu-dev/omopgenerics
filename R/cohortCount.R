@@ -53,7 +53,7 @@
 #'   cohortTables = list("cohort1" = cohort)
 #' )
 #'
-#' cohortCount(cdm$cohort1)
+#' cohortCount(cdm$cohort1, cohortId = 1)
 #' }
 cohortCount <- function(cohort) {
   assertClass(cohort, "cohort_table")
