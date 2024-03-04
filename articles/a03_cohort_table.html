@@ -247,13 +247,6 @@ cohort tables. You have to provide a name for the new cohort table.</p>
 <span>  cohort_end_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-10"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">cdm</span><span class="op">$</span><span class="va">asthma</span> <span class="op">&lt;-</span> <span class="va">asthma</span></span>
-<span><span class="co">#&gt; Warning: `insertFromSource()` was deprecated in omopgenerics 0.1.0.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `cdmTableFromSource()` instead.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">omopgenerics</span> package.</span></span>
-<span><span class="co">#&gt;   Please report the issue to the authors.</span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
 <span><span class="va">cdm</span><span class="op">$</span><span class="va">asthma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newCohortTable.html">newCohortTable</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">$</span><span class="va">asthma</span>, </span>
 <span>                             cohortSetRef <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>cohort_definition_id <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>                                                   cohort_name <span class="op">=</span> <span class="st">"asthma"</span><span class="op">)</span><span class="op">)</span></span>
