@@ -46,6 +46,6 @@ cdm <- cdmFromTables(
   cohortTables = list("cohort1" = cohort)
 )
 
-cohortCount(cdm$cohort1, cohortId = 1)
+cohortCount(cdm$cohort1)
 }
 }

@@ -55,6 +55,6 @@ cdm$cohort1 <- newCohortTable(table = cdm$cohort1,
                                                  "disease Y", "disease Y"),
                                 concept_id = c(1,2,3,4,5)
                               ))
-codelistFromCohort(cdm$cohort1)
+codelistFromCohort(cdm$cohort1, cohortId = 1)
 }
 }
