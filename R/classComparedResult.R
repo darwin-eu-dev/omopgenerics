@@ -55,7 +55,7 @@ validateComparedResult <- function(x) {
   x <- checkColumns(x = x, "compared_result")
 
   # all columns should be character
-  checkColumnsFormat(x = x, "compared_result")
+  x <- checkColumnsFormat(x = x, "compared_result")
 
   # Cannot contain NA columns
   checkNA(x = x, "compared_result")

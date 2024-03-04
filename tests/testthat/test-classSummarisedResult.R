@@ -1,6 +1,6 @@
 test_that("test SummarisedResult object", {
   x <- dplyr::tibble(
-    "result_id" = NA_character_,
+    "result_id" = as.integer(NA),
     "cdm_name" = "cprd",
     "result_type" = "summarised_characteristics",
     "package_name" = "PatientProfiles",
@@ -52,11 +52,11 @@ test_that("test SummarisedResult object", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
-  expect_error(newSummarisedResult(x = x))
+  expect_message(newSummarisedResult(x = x))
 
   #check wrong columns
   x <- dplyr::tibble(
-    "package" = "patientProfiles",
+    "package" = "PatientProfiles",
     "package_version" = "0.4.0",
     "group_name" = "sex",
     "group_level" = "male",

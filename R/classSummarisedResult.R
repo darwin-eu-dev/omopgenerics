@@ -41,7 +41,7 @@ constructSummarisedResult <- function(x) {
 }
 validateSummariseResult <- function(x) {
   if (!"result_id" %in% colnames(x)) {
-    x <- x |> dplyr::mutate("result_id" = NA_character_)
+    x <- x |> dplyr::mutate("result_id" = as.integer(NA))
     cli::cli_alert_warning(
       "`result_id` column is missing, please add it as it is a compulsory column."
     )
@@ -51,7 +51,7 @@ validateSummariseResult <- function(x) {
   x <- checkColumns(x = x, "summarised_result")
 
   # all columns should be character
-  checkColumnsFormat(x = x, "summarised_result")
+  x <- checkColumnsFormat(x = x, "summarised_result")
 
   # Cannot contain NA columns
   checkNA(x = x, "summarised_result")
@@ -108,11 +108,32 @@ checkColumnsFormat <- function(x, resultName) {
   formats <- formats[id]
   expectedFormat <- expectedFormat[id]
   if (length(cols) > 0) {
-    err <- paste0(cols, ": format=", formats, " (expected=", expectedFormat, ")")
-    names(err) <- rep("*", length(err))
-    cli::cli_abort(c("The following cols does not have a correct format", err))
+    err <- character()
+    for (k in seq_along(cols)) {
+      res <- tryCatch(
+        expr = {
+          x <- x |>
+            dplyr::mutate(!!cols[k] := giveType(.data[[cols[k]]], expectedFormat[k]))
+          list(x = x, err = character())
+        },
+        error = function(e) {
+          list(x = x, err = cols[k])
+        }
+      )
+      x <- res$x
+      err <- c(err, res$err)
+    }
+    if (length(err) > 0) {
+      err <- paste0(err, ": format=", formats, " (expected=", expectedFormat, ")")
+      names(err) <- rep("*", length(err))
+      cli::cli_abort(c("The following colum does not have a correct format", err))
+    } else {
+      err <- paste0(cols, ": from ", formats, " to ", expectedFormat)
+      names(err) <- rep("*", length(err))
+      cli::cli_inform(c("!" = "The following column type were changed:", err))
+    }
   }
-  invisible(NULL)
+  invisible(x)
 }
 checkColumnPairs <- function(x, pairs, sep, case) {
   for (k in seq_along(pairs)) {
@@ -194,6 +215,16 @@ checkColumnContent <- function(x, col, content) {
     ))
   }
   return(invisible(TRUE))
+}
+giveType <- function(x, type) {
+  switch(
+    type,
+    "integer" = as.integer(x),
+    "double" = as.double(x),
+    "character" = as.character(x),
+    "logical" = as.logical(x),
+    stop("type not recognised")
+  )
 }
 
 #' Required columns that the result tables must have.
