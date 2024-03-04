@@ -62,7 +62,7 @@
 #'                                                  "disease Y", "disease Y"),
 #'                                 concept_id = c(1,2,3,4,5)
 #'                               ))
-#' codelistFromCohort(cdm$cohort1)
+#' codelistFromCohort(cdm$cohort1, cohortId = 1)
 #' }
 codelistFromCohort <- function(cohortTable,
                                cohortId) {
