@@ -223,7 +223,7 @@ giveType <- function(x, type) {
     "double" = as.double(x),
     "character" = as.character(x),
     "logical" = as.logical(x),
-    stop("type not recognised")
+    x
   )
 }
 

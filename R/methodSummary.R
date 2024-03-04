@@ -162,7 +162,7 @@ summary.cdm_reference <- function(object, ...) {
     dplyr::union_all(cdmSourceSummary) |>
     dplyr::union_all(observationPeriodValues) |>
     dplyr::mutate(
-      "result_id" = "1",
+      "result_id" = as.integer(1),
       "cdm_name" = cdmName(object),
       "package_name" = "omopgenerics",
       "package_version" = as.character(utils::packageVersion("omopgenerics")),
@@ -232,8 +232,8 @@ summary.cohort_table <- function(object, ...) {
   # settings part
   settingsSummary <- settings(object) |>
     dplyr::mutate(
-      "result_id" = .data$cohort_definition_id,
-      dplyr::across(dplyr::everything(), as.character)
+      dplyr::across(dplyr::everything(), as.character),
+      "result_id" = as.integer(.data$cohort_definition_id)
     ) |>
     tidyr::pivot_longer(
       cols = !"result_id", names_to = "estimate_name",
@@ -258,7 +258,10 @@ summary.cohort_table <- function(object, ...) {
     dplyr::rename(
       "result_id" = "cohort_definition_id", "strata_level" = "cohort_name"
     ) |>
-    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+    dplyr::mutate(
+      dplyr::across(dplyr::everything(), as.character),
+      "result_id" = as.integer(.data$result_id)
+    ) |>
     tidyr::pivot_longer(
       cols = !c("strata_level", "result_id"),
       names_to = "variable_name",
@@ -283,7 +286,10 @@ summary.cohort_table <- function(object, ...) {
     dplyr::rename(
       "result_id" = "cohort_definition_id", "strata_level" = "cohort_name"
     ) |>
-    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+    dplyr::mutate(
+      dplyr::across(dplyr::everything(), as.character),
+      "result_id" = as.integer(.data$result_id)
+    ) |>
     tidyr::pivot_longer(
       cols = c(
         "number_records", "number_subjects", "excluded_records",
