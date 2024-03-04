@@ -36,6 +36,6 @@ insertFromSource <- function(cdm, value) {
 #' @export
 insertFromSource.local_cdm <- function(cdm, value) {
   assertClass(value, "data.frame")
-  value <- newCdmTable(table = value, src = src, name = NA_character_)
+  value <- newCdmTable(table = value, src = cdm, name = NA_character_)
   return(value)
 }
