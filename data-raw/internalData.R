@@ -73,7 +73,18 @@ fieldsCohorts <- tibble(
       "integer"
     ),
     cdm_version = "5.3; 5.4"
-  ))
+  )) |>
+    union_all(tibble(
+      cdm_table_name = "cohort_codelist",
+      cdm_field_name = c(
+        "cohort_definition_id", "codelist_name", "concept_id"
+      ),
+      is_required = TRUE,
+      cdm_datatype = c(
+        "integer", "varchar(255)", "integer"
+      ),
+      cdm_version = "5.3; 5.4"
+    ))
 
 fieldsAchilles <- dplyr::tibble(
   cdm_table_name = "achilles_analysis",
