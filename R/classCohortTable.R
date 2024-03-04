@@ -204,13 +204,13 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
       "*" = "cohort_set: {paste0(cdiCohortSet, collapse = ', ')}"
     ))
   }
-  # if (!all(cdiCohort %in% cdiCohortCodelist)) {
-  #   cli::cli_abort(c(
-  #     "There are cohort_definition_id that appear in cohort and not in cohort_codelist:",
-  #     "*" = "cohort: {paste0(cdiCohort, collapse = ', ')}",
-  #     "*" = "cohort_codelist: {paste0(cdiCohortCodelist, collapse = ', ')}"
-  #   ))
-  # }
+  if (!all(cdiCohortCodelist %in% cdiCohort)) {
+    cli::cli_abort(c(
+      "There are cohort_definition_id that appear in cohort and not in cohort_codelist:",
+      "*" = "cohort: {paste0(cdiCohort, collapse = ', ')}",
+      "*" = "cohort_codelist: {paste0(cdiCohortCodelist, collapse = ', ')}"
+    ))
+  }
 
   # cohort_name column
   cohortNames <- cohort_set |> dplyr::pull("cohort_name")
