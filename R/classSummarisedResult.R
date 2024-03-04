@@ -243,7 +243,11 @@ giveType <- function(x, type) {
 #'
 resultColumns <- function(table = "summarised_result", internal = FALSE) {
   assertChoice(table, unique(fieldsResults$result))
-  fieldsResults$result_field_name[fieldsResults$result == table]
+  x <- fieldsResults$result_field_name[fieldsResults$result == table]
+  if (!internal) {
+    x <- x[x != "result_id"]
+  }
+  return(x)
 }
 
 #' Choices that can be present in `estimate_type` column.
