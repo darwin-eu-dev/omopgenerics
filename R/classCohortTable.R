@@ -185,6 +185,11 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
   checkColumnsCohort(cohort_attrition, "cohort_attrition")
   checkColumnsCohort(cohort_codelist, "cohort_codelist")
 
+  # check cohort_codelist type colum
+  if(nrow(cohort_codelist) > 0){
+  checkCodelistType(cohort_codelist)
+  }
+
   # cohort_definition_id is coherent
   cdiCohort <- cdi(cohort)
   cdiCohortSet <- cdi(cohort_set)
@@ -333,7 +338,8 @@ defaultCohortCodelist <- function(cohort) {
   dplyr::tibble(
     cohort_definition_id = as.integer(),
     codelist_name = as.character(),
-    concept_id = as.integer()
+    concept_id = as.integer(),
+    type = as.character()
   )
 }
 checkStartEnd <- function(cohort, call = parent.frame()) {
@@ -445,6 +451,15 @@ checkObservationPeriod <- function(cohort, call = parent.frame()) {
     )
   }
   return(invisible(TRUE))
+}
+checkCodelistType <- function(cohort_codelist){
+codelist_types <- cohort_codelist |>
+    dplyr::pull("type")
+assertChoice(codelist_types,
+               c("index event",
+                       "inclusion criteria",
+                       "exclusion criteria",
+                       "exit criteria"))
 }
 consistentNaming <- function(cohortName,
                              cohortSetName,

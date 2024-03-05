@@ -4,13 +4,20 @@
 \alias{codelistFromCohort}
 \title{Get codelist from a cohort_table object.}
 \usage{
-codelistFromCohort(cohortTable, cohortId)
+codelistFromCohort(
+  cohortTable,
+  cohortId,
+  type = c("index event", "inclusion criteria", "exclusion criteria", "exit criteria")
+)
 }
 \arguments{
 \item{cohortTable}{A cohort_table object.}
 
 \item{cohortId}{A particular cohort definition id that is present in the
 cohort table.}
+
+\item{type}{The reason for the codelist. Can be "index event", "inclusion
+criteria", "exclusion criteria", or "exit criteria".}
 }
 \value{
 A table with the codelists used.
@@ -53,8 +60,9 @@ cdm$cohort1 <- newCohortTable(table = cdm$cohort1,
                                 cohort_definition_id = c(1,1,1,2,2),
                                 codelist_name =c("disease X", "disease X", "disease X",
                                                  "disease Y", "disease Y"),
-                                concept_id = c(1,2,3,4,5)
+                                concept_id = c(1,2,3,4,5),
+                                type = "index event"
                               ))
-codelistFromCohort(cdm$cohort1, cohortId = 1)
+codelistFromCohort(cdm$cohort1, cohortId = 1, type = "index event")
 }
 }
