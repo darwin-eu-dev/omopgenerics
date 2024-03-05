@@ -1,10 +1,10 @@
 test_that("prefix", {
   # unique table name
   options(dbplyr_table_name = 0)
-  expect_true(uniqueTableName() == "dbplyr_001")
-  expect_true(uniqueTableName() == "dbplyr_002")
+  expect_true(stringr::str_starts(uniqueTableName(), "dbplyr_001"))
+  expect_true(stringr::str_starts(uniqueTableName(),"dbplyr_002"))
   options(dbplyr_table_name = 100)
-  expect_true(uniqueTableName() == "dbplyr_101")
+  expect_true(stringr::str_starts(uniqueTableName(), "dbplyr_101"))
 
   # temporary prefix
   options(tmp_prefix_number = 0)
@@ -16,12 +16,13 @@ test_that("prefix", {
   expect_true(getOption("tmp_prefix_number") == 124)
 
   # table with prefix
+  options(tmp_prefix_number = 111)
   expect_no_error(x <- uniqueTableName(tmpPrefix()))
-  expect_true(nchar(x) == 18)
+  expect_true(nchar(x) == 29)
   x <- x |> strsplit(split = "_") |> unlist()
-  expect_true(length(x) == 4)
+  expect_true(length(x) == 5)
   expect_true(x[1] == "tmp")
-  expect_true(x[2] == "125")
+  expect_true(x[2] == "112")
   expect_true(x[3] == "dbplyr")
   expect_true(x[4] == "102")
 })
