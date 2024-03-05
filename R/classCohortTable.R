@@ -335,13 +335,13 @@ defaultCohortCodelist <- function(cohort) {
 #' Check whether a cohort table satisfies requirements
 #'
 #' @param cohort `cohort_table` object.
-#' @param checkStartEnd If TRUE a check that all cohort end dates come on or
+#' @param checkEndAfterStart If TRUE a check that all cohort end dates come on or
 #' after cohort start date will be performed.
-#' @param checkOverlap If TRUE a check that no individuals have overlapping
+#' @param checkOverlappingEntries If TRUE a check that no individuals have overlapping
 #' cohort entries will be performed.
-#' @param checkNaCohort If TRUE a check that there are no missing values in
+#' @param checkMissingValues If TRUE a check that there are no missing values in
 #' required fields will be performed.
-#' @param checkObservationPeriod If TRUE a check that cohort entries are within
+#' @param checkInObservation If TRUE a check that cohort entries are within
 #' the individuals observation periods will be performed.
 #' @param call The call for which to return the error message.
 #'

@@ -16,19 +16,19 @@ checkCohortRequirements(
 \arguments{
 \item{cohort}{\code{cohort_table} object.}
 
-\item{call}{The call for which to return the error message.}
-
-\item{checkStartEnd}{If TRUE a check that all cohort end dates come on or
+\item{checkEndAfterStart}{If TRUE a check that all cohort end dates come on or
 after cohort start date will be performed.}
 
-\item{checkOverlap}{If TRUE a check that no individuals have overlapping
+\item{checkOverlappingEntries}{If TRUE a check that no individuals have overlapping
 cohort entries will be performed.}
 
-\item{checkNaCohort}{If TRUE a check that there are no missing values in
+\item{checkMissingValues}{If TRUE a check that there are no missing values in
 required fields will be performed.}
 
-\item{checkObservationPeriod}{If TRUE a check that cohort entries are within
+\item{checkInObservation}{If TRUE a check that cohort entries are within
 the individuals observation periods will be performed.}
+
+\item{call}{The call for which to return the error message.}
 }
 \value{
 An error will be returned if any of the selected checks fail.
