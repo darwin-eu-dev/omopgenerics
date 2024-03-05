@@ -68,7 +68,7 @@ uniqueTableName <- function(prefix = "") {
   assertCharacter(x = prefix, length = 1)
   i <- getOption("dbplyr_table_name", 0) + 1
   options(dbplyr_table_name = i)
-  value <- paste0(sprintf("dbplyr_%03i", i), "_", round(as.numeric(Sys.time())))
+  value <- paste0(sprintf("og_%03i", i), "_", round(as.numeric(Sys.time())))
   paste0(prefix, value)
 }
 
