@@ -14,29 +14,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Read a table from the cdm_source and add it to to the cdm.
+#' List tables that can be accessed though a cdm object.
 #'
-#' @param cdm A cdm reference.
-#' @param name Name of a table to read in the cdm_source space.
+#' @param cdm A cdm reference or the source of a cdm reference.
 #'
 #' @export
 #'
-#' @return A cdm_reference with new table.
+#' @return A character vector with the names of tables.
 #'
-readTable <- function(cdm, name) {
-  UseMethod("readTable")
+listSourceTables <- function(cdm) {
+  UseMethod("listSourceTables")
 }
 
 #' @export
-readTable.cdm_reference <- function(cdm, name) {
-  tablesToRead <- listTables(cdm)
-  assertCharacter(name, length = 1)
-  if (!name %in% tablesToRead) {
-    cli::cli_abort(
-      "{name} is not a table that could be read from the cdm_source. Please use
-      listTables(cdm) to see the available tables."
-    )
-  }
-  cdm[[name]] <- readTable(cdmSource(cdm), name)
-  return(cdm)
+listSourceTables.cdm_reference <- function(cdm) {
+  listSourceTables(cdmSource(cdm))
+}
+
+#' @export
+listSourceTables.local_cdm <- function(cdm) {
+  character()
 }

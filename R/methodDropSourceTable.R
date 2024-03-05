@@ -24,28 +24,38 @@
 #'
 #' @return The table in the cdm reference.
 #'
-dropTable <- function(cdm, name) {
-  lifecycle::deprecate_soft(
-    when = "0.1.0", what = "dropTable()", with = "dropSourceTable()"
-  )
-  UseMethod("dropTable")
+dropSourceTable <- function(cdm, name) {
+  UseMethod("dropSourceTable")
 }
 
 #' @export
-dropTable.cdm_reference <- function(cdm, name) {
-  dropTable(cdmSource(cdm), name = name)
-  allTables <- names(cdm)
-  names(allTables) <- names(cdm)
-  toDrop <- names(tidyselect::eval_select(dplyr::any_of(name), data = allTables))
-  if (length(toDrop) > 0) {
-    for (nm in toDrop) {
+dropSourceTable.cdm_reference <- function(cdm, name) {
+  namesCdm <- names(cdm)
+  namesSource <- listSourceTables(cdm = cdm)
+  toDrop <- c(namesCdm, namesSource) |>
+    unique() |>
+    selectTables(name = name)
+  toDropCdm <- namesCdm[namesCdm %in% toDrop]
+  toDropSource <- namesSource[namesSource %in% toDrop]
+  dropSourceTable(cdmSource(cdm), name = toDropSource)
+  if (length(toDropCdm) > 0) {
+    for (nm in toDropCdm) {
       cdm[[nm]] <- NULL
     }
   }
   return(invisible(cdm))
 }
 
+selectTables <- function(tables, name) {
+  tables |>
+    as.list() |>
+    rlang::set_names(nm = tables) |>
+    dplyr::as_tibble() |>
+    dplyr::select(dplyr::any_of(name)) |>
+    colnames()
+}
+
 #' @export
-dropTable.local_cdm <- function(cdm, name) {
+dropSourceTable.local_cdm <- function(cdm, name) {
   return(invisible(TRUE))
 }
