@@ -3,7 +3,7 @@ test_that("bind no class", {
   expect_error(bind(x))
 })
 
-test_that("bind a cohort_set", {
+test_that("bind a cohort_table", {
   cohort1 <- dplyr::tibble(
     cohort_definition_id = 1,
     subject_id = 1:3,
@@ -81,5 +81,62 @@ test_that("bind a cohort_set", {
     )
   )
   expect_equal(attrition(newcdm$new_cohort) |> nrow(), 8)
+
+  cohort1 <- dplyr::tibble(
+    cohort_definition_id = 1,
+    subject_id = 1:3,
+    cohort_start_date = as.Date("2010-01-01"),
+    cohort_end_date = as.Date("2010-01-05"),
+    extra_column1 = 1
+  )
+  cohort2 <- dplyr::tibble(
+    cohort_definition_id = c(2, 2, 3, 3, 3),
+    subject_id = c(1, 2, 3, 1, 2),
+    cohort_start_date = as.Date("2010-01-01"),
+    cohort_end_date = as.Date("2010-01-05"),
+    extra_column2 = TRUE,
+    extra_column3 = "fjhhl"
+  )
+  cohort3 <- dplyr::tibble(
+    cohort_definition_id = 1:5,
+    subject_id = c(1, 2, 3, 1, 2),
+    cohort_start_date = as.Date("2010-01-01"),
+    cohort_end_date = as.Date("2010-01-05")
+  )
+  attr(cohort3, "cohort_set") <- dplyr::tibble(
+    cohort_definition_id = 1:5,
+    cohort_name = c(
+      "first_cohort", "second_cohort", "third_cohort", "fourth_cohort",
+      "fifth_cohort"
+    )
+  )
+  cdm <- cdmFromTables(
+    tables = list(
+      "person" = dplyr::tibble(
+        person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+        race_concept_id = 0, ethnicity_concept_id = 0
+      ),
+      "observation_period" = dplyr::tibble(
+        observation_period_id = 1:3, person_id = 1:3,
+        observation_period_start_date = as.Date("2000-01-01"),
+        observation_period_end_date = as.Date("2025-12-31"),
+        period_type_concept_id = 0
+      )
+    ),
+    cdmName = "mock",
+    cohortTables = list(
+      "cohort1" = cohort1, "cohort2" = cohort2, "cohort3" = cohort3
+    )
+  )
+
+  expect_no_error(
+    cdm <- bind(cdm$cohort1, cdm$cohort2, cdm$cohort3, name = "cohort6")
+  )
+  expect_true(all(
+    c("cohort_definition_id", "subject_id", "cohort_start_date",
+      "cohort_end_date", "extra_column1", "extra_column2", "extra_column3") %in%
+      colnames(cdm$cohort6)
+  ))
 })
+
 

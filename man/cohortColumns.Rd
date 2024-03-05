@@ -17,3 +17,9 @@ Required columns
 \description{
 Required columns for a generated cohort set.
 }
+\examples{
+\donttest{
+library(omopgenerics)
+cohortColumns("cohort")
+}
+}

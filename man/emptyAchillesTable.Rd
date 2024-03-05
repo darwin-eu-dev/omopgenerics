@@ -17,3 +17,10 @@ The cdm_reference with an achilles empty table
 \description{
 Create an empty achilles table
 }
+\examples{
+\donttest{
+library(omopgenerics)
+cdm <- emptyCdmReference("my_example_cdm")
+emptyAchillesTable(cdm = cdm, name = "achilles_results" )
+}
+}

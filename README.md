@@ -3,7 +3,13 @@
 
 # omopgenerics
 
+<!-- badges: start -->
+
+[![CRANstatus](https://www.r-pkg.org/badges/version/omopgenerics)](https://CRAN.R-project.org/package=omopgenerics)
 [![Lifecycle:Experimental](https://img.shields.io/badge/Lifecycle-Experimental-339999)](https://lifecycle.r-lib.org/articles/stages.html)
+[![Codecov test
+coverage](https://codecov.io/gh/darwin-eu-dev/OMOPGenerics/branch/main/graph/badge.svg)](https://app.codecov.io/gh/darwin-eu-dev/OMOPGenerics?branch=main)
+<!-- badges: end -->
 
 The omopgenerics package provides definitions of core classes and
 methods used by analytic pipelines that query the OMOP common data
@@ -23,6 +29,7 @@ And load it using the library command:
 
 ``` r
 library(omopgenerics)
+library(dplyr)
 ```
 
 ## Core classes and methods
@@ -119,7 +126,7 @@ containing specific concept IDs.
 ``` r
 condition_codes <- list("diabetes" = c(201820, 4087682, 3655269),
                         "asthma" = 317009)
-condition_codes <- codelist(condition_codes)
+condition_codes <- newCodelist(condition_codes)
 
 condition_codes
 #> 
@@ -159,6 +166,115 @@ condition_cs
 #> - asthma (1 concept criteria)
 ```
 
+### A cohort table
+
+A cohort is a set of persons who satisfy one or more inclusion criteria
+for a duration of time and, when defined, this table in a cdm reference
+has a cohort table class. Cohort tables are then associated with
+attributes such as settings and attrition.
+
+``` r
+person <- tibble(
+  person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+  race_concept_id = 0, ethnicity_concept_id = 0
+)
+observation_period <- dplyr::tibble(
+  observation_period_id = 1, person_id = 1,
+  observation_period_start_date = as.Date("2000-01-01"),
+  observation_period_end_date = as.Date("2025-12-31"),
+  period_type_concept_id = 0
+)
+diabetes <- tibble(
+  cohort_definition_id = 1, subject_id = 1,
+  cohort_start_date = as.Date("2020-01-01"),
+  cohort_end_date = as.Date("2020-01-10")
+)
+
+cdm <- cdmFromTables(
+  tables = list(
+    "person" = person,
+    "observation_period" = observation_period,
+    "diabetes" = diabetes
+  ),
+  cdmName = "example_cdm"
+)
+cdm$diabetes <- newCohortTable(cdm$diabetes)
+
+cdm$diabetes
+#> # A tibble: 1 × 4
+#>   cohort_definition_id subject_id cohort_start_date cohort_end_date
+#>                  <dbl>      <dbl> <date>            <date>         
+#> 1                    1          1 2020-01-01        2020-01-10
+settings(cdm$diabetes)
+#> # A tibble: 1 × 2
+#>   cohort_definition_id cohort_name
+#>                  <int> <chr>      
+#> 1                    1 cohort_1
+attrition(cdm$diabetes)
+#> # A tibble: 1 × 7
+#>   cohort_definition_id number_records number_subjects reason_id reason          
+#>                  <int>          <int>           <int>     <int> <chr>           
+#> 1                    1              1               1         1 Initial qualify…
+#> # ℹ 2 more variables: excluded_records <int>, excluded_subjects <int>
+cohortCount(cdm$diabetes)
+#> # A tibble: 1 × 3
+#>   cohort_definition_id number_records number_subjects
+#>                  <int>          <int>           <int>
+#> 1                    1              1               1
+```
+
 ### Summarised result
 
-### Compared result
+A summarised result provides a standard format for the results of an
+analysis performed against data mapped to the OMOP CDM.
+
+For example this format is used when we get a summary of the cdm as a
+whole
+
+``` r
+summary(cdm) |> 
+  dplyr::glimpse()
+#> Rows: 12
+#> Columns: 16
+#> $ result_id        <chr> "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1"…
+#> $ cdm_name         <chr> "example_cdm", "example_cdm", "example_cdm", "example…
+#> $ result_type      <chr> "cdm_snapshot", "cdm_snapshot", "cdm_snapshot", "cdm_…
+#> $ package_name     <chr> "omopgenerics", "omopgenerics", "omopgenerics", "omop…
+#> $ package_version  <chr> "0.0.3.900", "0.0.3.900", "0.0.3.900", "0.0.3.900", "…
+#> $ group_name       <chr> "overall", "overall", "overall", "overall", "overall"…
+#> $ group_level      <chr> "overall", "overall", "overall", "overall", "overall"…
+#> $ strata_name      <chr> "overall", "overall", "overall", "overall", "overall"…
+#> $ strata_level     <chr> "overall", "overall", "overall", "overall", "overall"…
+#> $ variable_name    <chr> "snapshot_date", "person_count", "observation_period_…
+#> $ variable_level   <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+#> $ estimate_name    <chr> "value", "count", "count", "source_name", "version", …
+#> $ estimate_type    <chr> "date", "integer", "integer", "character", "character…
+#> $ estimate_value   <chr> "2024-03-01", "1", "1", "", NA, "5.3", "", "", "", ""…
+#> $ additional_name  <chr> "overall", "overall", "overall", "overall", "overall"…
+#> $ additional_level <chr> "overall", "overall", "overall", "overall", "overall"…
+```
+
+and also when we summarise a cohort
+
+``` r
+summary(cdm$diabetes) |> 
+  dplyr::glimpse()
+#> Rows: 10
+#> Columns: 16
+#> $ result_id        <chr> "1", "1", "1", "1", "2", "2", "2", "2", "2", "2"
+#> $ cdm_name         <chr> "example_cdm", "example_cdm", "example_cdm", "example…
+#> $ result_type      <chr> "cohort_count", "cohort_count", "cohort_count", "coho…
+#> $ package_name     <chr> "omopgenerics", "omopgenerics", "omopgenerics", "omop…
+#> $ package_version  <chr> "0.0.3.900", "0.0.3.900", "0.0.3.900", "0.0.3.900", "…
+#> $ group_name       <chr> "overall", "overall", "cohort_table_name", "cohort_ta…
+#> $ group_level      <chr> "overall", "overall", "diabetes", "diabetes", "overal…
+#> $ strata_name      <chr> "overall", "overall", "cohort_name", "cohort_name", "…
+#> $ strata_level     <chr> "overall", "overall", "cohort_1", "cohort_1", "overal…
+#> $ variable_name    <chr> "settings", "settings", "number_records", "number_sub…
+#> $ variable_level   <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+#> $ estimate_name    <chr> "cohort_definition_id", "cohort_name", "count", "coun…
+#> $ estimate_type    <chr> "integer", "character", "integer", "integer", "intege…
+#> $ estimate_value   <chr> "1", "cohort_1", "1", "1", "1", "cohort_1", "1", "1",…
+#> $ additional_name  <chr> "overall", "overall", "overall", "overall", "overall"…
+#> $ additional_level <chr> "overall", "overall", "overall", "overall", "overall"…
+```

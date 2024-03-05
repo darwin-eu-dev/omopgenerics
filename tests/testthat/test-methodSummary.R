@@ -111,4 +111,13 @@ test_that("summary a generated cohort set", {
   expect_no_error(cdm <- bind(cdm$cohort1, cdm$cohort2, name = "cohort3"))
   expect_no_error(summary(cdm$cohort3))
 
+  x <- settings(summary(cdm$cohort3))
+  expect_true(inherits(x, "data.frame"))
+  expect_equal(
+    x |>
+      dplyr::select("cohort_definition_id", "cohort_name", "parameter") |>
+      dplyr::distinct(),
+    settings(cdm$cohort3)
+  )
+
 })

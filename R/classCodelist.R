@@ -17,10 +17,10 @@
 
 #' 'codelist' object constructor
 #'
-#' @param x a named list where each element contains a vector of concept
-#' IDs
+#' @param x A named list where each element contains a vector of concept IDs.
 #'
-#' @return A codelist
+#' @return A codelist object.
+#'
 #' @export
 #'
 newCodelist <- function(x) {
@@ -35,21 +35,36 @@ newCodelist <- function(x) {
 }
 
 constructCodelist <- function(x) {
-
-  class(x) <- c("codelist", class(x)[which(class(x) != "codelist")])
-
-  return(x)
+  x |> addClass("codelist")
 }
 
 validateCodelist <- function(x) {
 
   assertList(x, named = TRUE, class = c("numeric", "integer"))
-  checkNA(x, names(x))
+
+  for (nm in names(x)) {
+    if (any(is.na(unique(x[[nm]])))) {
+      cli::cli_abort("`{nm}` must not contain NA.")
+    }
+  }
 
   return(x)
 }
 
+
+#' Print a codelist
+#'
+#' @param x A codelist
+#' @param ...  Included for compatibility with generic. Not used.
+#'
+#' @return  Invisibly returns the input
 #' @export
+#'
+#' @examples
+#' codes <- list("disease X" = c(1, 2, 3), "disease Y" = c(4, 5))
+#' codes <- newCodelist(codes)
+#' print(codes)
+#'
 print.codelist <- function(x, ...) {
   cli::cli_h1("{length(x)} codelist{?s}")
   cli::cat_line("")

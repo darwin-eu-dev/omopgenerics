@@ -57,7 +57,30 @@ validateConceptSetExpression <- function(x) {
   return(x)
 }
 
+
+#' Print a concept set expression
+#'
+#' @param x A concept set expression
+#' @param ...  Included for compatibility with generic. Not used.
+#'
+#' @return  Invisibly returns the input
 #' @export
+#'
+#' @examples
+#' asthma_cs <- list("asthma_narrow" = dplyr::tibble(
+#'   "concept_id" = 1,
+#'   "excluded" = FALSE,
+#'   "descendants" = TRUE,
+#'   "mapped" = FALSE
+#' ),
+#' "asthma_broad" = dplyr::tibble(
+#'   "concept_id" = c(1,2),
+#'   "excluded" = FALSE,
+#'   "descendants" = TRUE,
+#'   "mapped" = FALSE
+#' ))
+#' asthma_cs <- newConceptSetExpression(asthma_cs)
+#' print(asthma_cs)
 print.conceptSetExpression <- function(x, ...) {
   cli::cli_h1("{length(x)} conceptSetExpression{?s}")
   cli::cat_line("")

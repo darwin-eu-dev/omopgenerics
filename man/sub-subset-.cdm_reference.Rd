@@ -2,7 +2,7 @@
 % Please edit documentation in R/classCdmReference.R
 \name{[[<-.cdm_reference}
 \alias{[[<-.cdm_reference}
-\title{Assign an table to a cdm reference.}
+\title{Assign a table to a cdm reference.}
 \usage{
 \method{[[}{cdm_reference}(cdm, name) <- value
 }
@@ -17,5 +17,5 @@
 The cdm reference.
 }
 \description{
-Assign an table to a cdm reference.
+Assign a table to a cdm reference.
 }

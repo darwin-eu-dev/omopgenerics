@@ -13,10 +13,8 @@ An empty \code{summarised_result} object.
 Empty \code{summarised_result} object.
 }
 \examples{
-\donttest{
 library(omopgenerics)
 
 emptySummarisedResult()
-}
 
 }
