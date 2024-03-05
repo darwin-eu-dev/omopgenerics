@@ -59,6 +59,6 @@ cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
   cohort_end_date = as.Date(c("2020-01-10", "2020-01-25"))
 ))
 cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
-checkCohortRequirements(cdm$cohort1)
+# checkCohortRequirements(cdm$cohort1)
 }
 }
