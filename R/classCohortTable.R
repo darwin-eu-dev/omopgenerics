@@ -345,10 +345,11 @@ defaultCohortCodelist <- function(cohort) {
 #' the individuals observation periods will be performed.
 #' @param call The call for which to return the error message.
 #'
-#' @return TRUE if checks pass, FALSE if any of the selected checks fail.
+#' @return An error will be returned if any of the selected checks fail.
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' library(omopgenerics)
 #' person <- dplyr::tibble(
 #'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
@@ -371,6 +372,7 @@ defaultCohortCodelist <- function(cohort) {
 #' ))
 #' cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
 #' checkCohortRequirements(cdm$cohort1)
+#' }
 checkCohortRequirements <- function(cohort,
                                     checkEndAfterStart = TRUE,
                                     checkOverlappingEntries = TRUE,

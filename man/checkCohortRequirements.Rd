@@ -31,12 +31,13 @@ required fields will be performed.}
 the individuals observation periods will be performed.}
 }
 \value{
-TRUE if checks pass, FALSE if any of the selected checks fail.
+An error will be returned if any of the selected checks fail.
 }
 \description{
 Check whether a cohort table satisfies requirements
 }
 \examples{
+\donttest{
 library(omopgenerics)
 person <- dplyr::tibble(
   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
@@ -59,4 +60,5 @@ cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
 ))
 cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
 checkCohortRequirements(cdm$cohort1)
+}
 }
