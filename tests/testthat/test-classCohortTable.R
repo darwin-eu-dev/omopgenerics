@@ -254,3 +254,76 @@ test_that("test create cohort", {
   expect_error(newCohortTable(table = cdm$cohort1))
 })
 
+test_that("test checkCohortRequirements", {
+  library(omopgenerics)
+  person <- dplyr::tibble(
+    person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+    race_concept_id = 0, ethnicity_concept_id = 0
+  )
+  observation_period <- dplyr::tibble(
+    observation_period_id = 1, person_id = 1,
+    observation_period_start_date = as.Date("2000-01-01"),
+    observation_period_end_date = as.Date("2025-12-31"),
+    period_type_concept_id = 0
+  )
+  cdm <- cdmFromTables(
+    tables = list("person" = person, "observation_period" = observation_period),
+    cdmName = "test"
+  )
+
+  # test overlap
+  cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
+    cohort_definition_id = 1, subject_id = 1,
+    cohort_start_date = as.Date(c("2020-01-01", "2020-01-10")),
+    cohort_end_date = as.Date(c("2020-01-10", "2020-01-25"))
+  ))
+  cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
+  expect_error(checkCohortRequirements(cdm$cohort1))
+  expect_no_error(checkCohortRequirements(cdm$cohort1, checkOverlappingEntries = FALSE))
+
+  # test NA
+  cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
+    cohort_definition_id = 1, subject_id = 1,
+    cohort_start_date = as.Date(NA),
+    cohort_end_date = as.Date("2020-01-10")
+  ))
+  cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
+  expect_error(checkCohortRequirements(cdm$cohort1))
+  expect_no_error(checkCohortRequirements(cdm$cohort1,
+                                          checkMissingValues = FALSE,
+                                          checkInObservation = FALSE))
+
+  # not in observation
+  cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
+    cohort_definition_id = 1, subject_id = 1,
+    cohort_start_date = as.Date("1020-01-01"),
+    cohort_end_date = as.Date("1020-01-10")
+  ))
+  cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
+  expect_error(checkCohortRequirements(cdm$cohort1))
+  expect_no_error(checkCohortRequirements(cdm$cohort1,
+                                          checkInObservation = FALSE))
+
+  # test start before end
+  cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
+    cohort_definition_id = 1, subject_id = 1,
+    cohort_start_date = as.Date(c("2020-01-01")),
+    cohort_end_date = as.Date(c("2019-01-10"))
+  ))
+  cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
+  expect_error(checkCohortRequirements(cdm$cohort1))
+  expect_no_error(checkCohortRequirements(cdm$cohort1, checkEndAfterStart = FALSE))
+
+  # all checks switched off - runs without error
+  expect_no_error( checkCohortRequirements(cdm$cohort1,
+                                            checkEndAfterStart = FALSE,
+                                            checkOverlappingEntries = FALSE,
+                                            checkMissingValues = FALSE,
+                                            checkInObservation = FALSE))
+
+  # not a cohort
+  expect_error(checkCohortRequirements(cdm))
+  expect_error(checkCohortRequirements(cdm$person))
+  expect_error(checkCohortRequirements("a"))
+
+})
