@@ -61,6 +61,9 @@
 #' cdm
 #'
 dropTable <- function(cdm, name) {
+  lifecycle::deprecate_soft(
+    when = "0.1.0", what = "dropTable()", with = "dropSourceTable()"
+  )
   UseMethod("dropTable")
 }
 
