@@ -20,6 +20,8 @@
 #' @param cohortTable A cohort_table object.
 #' @param cohortId A particular cohort definition id that is present in the
 #' cohort table.
+#' @param type The reason for the codelist. Can be "index event", "inclusion
+#' criteria", or "exit criteria".
 #'
 #' @return A table with the codelists used.
 #'
@@ -60,14 +62,29 @@
 #'                                 cohort_definition_id = c(1,1,1,2,2),
 #'                                 codelist_name =c("disease X", "disease X", "disease X",
 #'                                                  "disease Y", "disease Y"),
-#'                                 concept_id = c(1,2,3,4,5)
+#'                                 concept_id = c(1,2,3,4,5),
+#'                                 type = "index event"
 #'                               ))
-#' codelistFromCohort(cdm$cohort1, cohortId = 1)
+#' codelistFromCohort(cdm$cohort1, cohortId = 1, type = "index event")
 #' }
 codelistFromCohort <- function(cohortTable,
-                               cohortId) {
+                               cohortId,
+                               type = c("index event",
+                                        "inclusion criteria",
+                                        "exclusion criteria",
+                                        "exit criteria")) {
+
   assertClass(cohortTable, "cohort_table")
   assertNumeric(cohortId, length = 1)
+  if(nrow(settings(cohortTable) |>
+    dplyr::filter(.data$cohort_definition_id == .env$cohortId)) == 0){
+    cli::cli_abort("cohortId {cohortId} not found in settings for cohortTable {tableName(cohortTable)}")
+    }
+  assertChoice(type, c("index event",
+                       "inclusion criteria",
+                       "exclusion criteria",
+                       "exit criteria"))
+
   if(is.null(attr(cohortTable, "cohort_codelist"))){
     cli::cli_abort("Codelist does not exist for this cohort.")
   }
@@ -77,22 +94,20 @@ codelistFromCohort <- function(cohortTable,
     cli::cli_abort("Codelist does not have the expected columns: {cohortColumns('cohort_codelist')}")
   }
 
-  if(!is.null(cohortId) &&
-     nrow(settings(cohortTable) |>
-           dplyr::filter(.data$cohort_definition_id %in% .env$cohortId)) == 0){
-    cli::cli_abort("Codelist does not exist for the specified cohorts")
-  }
-
-  x <- attr(cohortTable, "cohort_codelist")  |>
+  x <- attr(cohortTable, "cohort_codelist") |>
+    dplyr::filter(.data$cohort_definition_id %in% .env$cohortId)  |>
     dplyr::collect()
 
-  if(!is.null(cohortId)){
-    x <- x |>
-      dplyr::filter(.data$cohort_definition_id %in% .env$cohortId)
+  if(nrow(x) == 0){
+    cli::cli_warn("No codelists found for the specified cohorts")
+    return(newCodelist(list()))
   }
 
+  x <- x |>
+        dplyr::filter(.data$type %in% {{type}})
+
   if(nrow(x) == 0){
-    cli::cli_warn("No codelists found")
+    cli::cli_warn("No codelists found for the specified type")
     return(newCodelist(list()))
   }
 

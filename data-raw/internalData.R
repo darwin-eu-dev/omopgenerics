@@ -77,11 +77,11 @@ fieldsCohorts <- tibble(
     union_all(tibble(
       cdm_table_name = "cohort_codelist",
       cdm_field_name = c(
-        "cohort_definition_id", "codelist_name", "concept_id"
+        "cohort_definition_id", "codelist_name", "concept_id" , "type"
       ),
       is_required = TRUE,
       cdm_datatype = c(
-        "integer", "varchar(255)", "integer"
+        "integer", "varchar(255)", "integer", "varchar(255)"
       ),
       cdm_version = "5.3; 5.4"
     ))

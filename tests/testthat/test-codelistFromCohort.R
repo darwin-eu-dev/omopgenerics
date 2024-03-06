@@ -26,6 +26,8 @@ test_that("test codelist from cohort", {
   cdm$cohort1 <- newCohortTable(table = cdm$cohort1)
   # empty by default
   expect_warning(codelistFromCohort(cdm$cohort1, cohortId = 1))
+  expect_warning(codelistFromCohort(cdm$cohort1, cohortId = 1,
+                                    type = "index event"))
 
   # with attribute added
   cdm$cohort1 <- newCohortTable(table = cdm$cohort1,
@@ -33,14 +35,23 @@ test_that("test codelist from cohort", {
                                   cohort_definition_id = c(1,1,1,2,2),
                                   codelist_name =c("disease X", "disease X", "disease X",
                                                    "disease Y", "disease Y"),
-                                  concept_id = c(1,2,3,4,5)
+                                  concept_id = c(1,2,3,4,5),
+                                  type = rep("index event", 5)
                                 ))
 
   # only works for a specific cohort definition id
-  codes_used_1 <- codelistFromCohort(cdm$cohort1, cohortId = 1)
+  codes_used_1 <- codelistFromCohort(cdm$cohort1, cohortId = 1,
+                                     type = "index event")
   expect_true("codelist" %in% class(codes_used_1))
   expect_equal(omopgenerics::newCodelist(list("disease X" = c(1,2,3))),
                codes_used_1)
+
+  expect_warning(codelistFromCohort(cdm$cohort1,
+                                     cohortId = 1,
+                                     type = "exit criteria")) # none with this type
+  expect_error(codelistFromCohort(cdm$cohort1,
+                     cohortId = 1,
+                     type = "another criteria"))
 
   codes_used_2 <- codelistFromCohort(cdm$cohort1, cohortId = 2)
   expect_true("codelist" %in% class(codes_used_2))
@@ -86,7 +97,20 @@ expect_error(cdm$cohort1 <- newCohortTable(table = cdm$cohort1,
                                 not_a_cohort_definition_id = c(1,1,1,2,2),
                                 a_codelist_name =c("disease X", "disease X", "disease X",
                                                  "disease Y", "disease Y"),
-                                concept_id = c(1,2,3,4,5)
+                                concept_id = c(1,2,3,4,5),
+                                type = "index event"
                               )))
+
+expect_error(newCohortTable(table = cdm$cohort1,
+               cohortCodelistRef = dplyr::tibble(
+                 cohort_definition_id = c(1,1,1,2,2),
+                 codelist_name =c("disease X", "disease X", "disease X",
+                                    "disease Y", "disease Y"),
+                 concept_id = c(1,2,3,4,5),
+                 type = "another name"
+               )))
+
+expect_no_error(newCohortTable(table = cdm$cohort1,
+               cohortCodelistRef = NULL))
 
 })
