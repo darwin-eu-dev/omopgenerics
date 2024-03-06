@@ -458,7 +458,6 @@ codelist_types <- cohort_codelist |>
 assertChoice(codelist_types,
                c("index event",
                        "inclusion criteria",
-                       "exclusion criteria",
                        "exit criteria"))
 }
 consistentNaming <- function(cohortName,

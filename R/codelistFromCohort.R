@@ -21,7 +21,7 @@
 #' @param cohortId A particular cohort definition id that is present in the
 #' cohort table.
 #' @param type The reason for the codelist. Can be "index event", "inclusion
-#' criteria", "exclusion criteria", or "exit criteria".
+#' criteria", or "exit criteria".
 #'
 #' @return A table with the codelists used.
 #'

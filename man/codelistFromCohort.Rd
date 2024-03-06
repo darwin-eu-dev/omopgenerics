@@ -17,7 +17,7 @@ codelistFromCohort(
 cohort table.}
 
 \item{type}{The reason for the codelist. Can be "index event", "inclusion
-criteria", "exclusion criteria", or "exit criteria".}
+criteria", or "exit criteria".}
 }
 \value{
 A table with the codelists used.
