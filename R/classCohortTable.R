@@ -186,7 +186,10 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
   checkColumnsCohort(cohort_codelist, "cohort_codelist")
 
   # check cohort_codelist type colum
-  if(nrow(cohort_codelist) > 0){
+  if(cohort_codelist |>
+     utils::head(10) |>
+     dplyr::tally() |>
+     dplyr::pull("n") > 0){
   checkCodelistType(cohort_codelist)
   }
 
