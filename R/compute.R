@@ -68,7 +68,8 @@ uniqueTableName <- function(prefix = "") {
   assertCharacter(x = prefix, length = 1)
   i <- getOption("dbplyr_table_name", 0) + 1
   options(dbplyr_table_name = i)
-  paste0(prefix, sprintf("dbplyr_%03i", i))
+  value <- paste0(sprintf("og_%03i", i), "_", round(as.numeric(Sys.time())))
+  paste0(prefix, value)
 }
 
 #' Create a temporary prefix for tables, that contains a unique prefix that
