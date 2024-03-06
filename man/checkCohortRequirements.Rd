@@ -10,6 +10,7 @@ checkCohortRequirements(
   checkOverlappingEntries = TRUE,
   checkMissingValues = TRUE,
   checkInObservation = TRUE,
+  type = "error",
   call = parent.frame()
 )
 }
@@ -27,6 +28,10 @@ required fields will be performed.}
 
 \item{checkInObservation}{If TRUE a check that cohort entries are within
 the individuals observation periods will be performed.}
+
+\item{type}{Can be either "error" or "warning". If "error" any check
+failure will result in an error, whereas if "warning" any check failure
+will result in a warning.}
 
 \item{call}{The call for which to return the error message.}
 }

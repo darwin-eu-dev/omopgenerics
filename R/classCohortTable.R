@@ -343,6 +343,9 @@ defaultCohortCodelist <- function(cohort) {
 #' required fields will be performed.
 #' @param checkInObservation If TRUE a check that cohort entries are within
 #' the individuals observation periods will be performed.
+#' @param type Can be either "error" or "warning". If "error" any check
+#' failure will result in an error, whereas if "warning" any check failure
+#' will result in a warning.
 #' @param call The call for which to return the error message.
 #'
 #' @return An error will be returned if any of the selected checks fail.
@@ -378,6 +381,7 @@ checkCohortRequirements <- function(cohort,
                                     checkOverlappingEntries = TRUE,
                                     checkMissingValues = TRUE,
                                     checkInObservation = TRUE,
+                                    type = "error",
                                     call = parent.frame()){
 
   assertClass(cohort, "cdm_table")
@@ -397,23 +401,23 @@ checkCohortRequirements <- function(cohort,
   }
 
   if(isTRUE(checkEndAfterStart)){
-    checkStartEnd(cohort = cohort, call = call)
+    checkStartEnd(cohort = cohort, type = type, call = call)
   }
   if(isTRUE(checkOverlappingEntries)){
-    checkOverlap(cohort = cohort, call = call)
+    checkOverlap(cohort = cohort, type = type, call = call)
   }
   if(isTRUE(checkMissingValues)){
-    checkNaCohort(cohort = cohort, call = call)
+    checkNaCohort(cohort = cohort, type = type, call = call)
   }
   if(isTRUE(checkInObservation)){
-    checkObservationPeriod(cohort = cohort, call = call)
+    checkObservationPeriod(cohort = cohort, type = type, call = call)
   }
 
   return(invisible(TRUE))
 
 }
 
-checkStartEnd <- function(cohort, call = parent.frame()) {
+checkStartEnd <- function(cohort, type = "error", call = parent.frame()) {
   x <- cohort |>
     dplyr::filter(.data$cohort_end_date < .data$cohort_start_date) |>
     dplyr::collect()
@@ -425,19 +429,31 @@ checkStartEnd <- function(cohort, call = parent.frame()) {
       dplyr::glimpse() |>
       print(width = Inf) |>
       utils::capture.output()
-    cli::cli_abort(
-      message = c(
-        "cohort_start_date must be <= tham cohort_end_date. There are {nrow(x)}
+    if(type == "error"){
+      cli::cli_abort(
+        message = c(
+          "cohort_start_date must be <= tham cohort_end_date. There are {nrow(x)}
         entries where cohort_end_date < cohort_start_date
         {ifelse(nrow(x)<=5, ':', ' first 5:')}",
-        x5[3:7]
-      ),
-      call = call
-    )
+          x5[3:7]
+        ),
+        call = call
+      )
+    } else {
+      cli::cli_warn(
+        message = c(
+          "cohort_start_date must be <= tham cohort_end_date. There are {nrow(x)}
+        entries where cohort_end_date < cohort_start_date
+        {ifelse(nrow(x)<=5, ':', ' first 5:')}",
+          x5[3:7]
+        )
+      )
+    }
+
   }
   return(invisible(TRUE))
 }
-checkOverlap <- function(cohort, call = parent.frame()) {
+checkOverlap <- function(cohort, type = "error", call = parent.frame()) {
   x <- cohort |>
     dplyr::group_by(.data$cohort_definition_id, .data$subject_id) |>
     dplyr::arrange(.data$cohort_start_date) |>
@@ -457,6 +473,9 @@ checkOverlap <- function(cohort, call = parent.frame()) {
       dplyr::glimpse() |>
       print(width = Inf) |>
       utils::capture.output()
+
+
+    if(type == "error"){
     cli::cli_abort(
       message = c(
         "There is overlap between entries in the cohort, {nrow(x)} overlap{?s}
@@ -465,10 +484,21 @@ checkOverlap <- function(cohort, call = parent.frame()) {
       ),
       call = call
     )
+      } else {
+      cli::cli_warn(
+        message = c(
+          "There is overlap between entries in the cohort, {nrow(x)} overlap{?s}
+        detected{ifelse(nrow(x)<=5, ':', ' first 5:')}",
+          x5[3:7]
+        )
+      )
+    }
+
+
   }
   return(invisible(TRUE))
 }
-checkNaCohort <- function(cohort, call = parent.frame()) {
+checkNaCohort <- function(cohort, type = "error", call = parent.frame()) {
   x <- cohort |>
     dplyr::select(
       "cohort_definition_id", "subject_id", "cohort_start_date",
@@ -484,15 +514,22 @@ checkNaCohort <- function(cohort, call = parent.frame()) {
       dplyr::pull("name") |>
       unique() |>
       paste0(collapse = ", ")
+
+    if(type == "error"){
     cli::cli_abort(
       "Cohort can't have NA values, there are NA values in the following
       columns: {x}",
       call = call
-    )
+    )} else {
+      cli::cli_warn(
+        "Cohort can't have NA values, there are NA values in the following
+      columns: {x}"
+      )
+      }
   }
   return(invisible(TRUE))
 }
-checkObservationPeriod <- function(cohort, call = parent.frame()) {
+checkObservationPeriod <- function(cohort, type = "error", call = parent.frame()) {
   cdm <- attr(cohort, "cdm_reference")
   x <- cohort |>
     dplyr::anti_join(
@@ -515,11 +552,20 @@ checkObservationPeriod <- function(cohort, call = parent.frame()) {
       by = cohortColumns("cohort")
     ) |>
     dplyr::collect()
+
   if (nrow(x) > 0) {
+    if(type == "error"){
     cli::cli_abort(
       message = "{nrow(x)} observation{?s} outside observation period.",
       call = call
     )
+  } else {
+    cli::cli_warn(
+      message = "{nrow(x)} observation{?s} outside observation period."
+    )
+  }
+
+
   }
   return(invisible(TRUE))
 }

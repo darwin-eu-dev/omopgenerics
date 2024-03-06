@@ -279,6 +279,7 @@ test_that("test checkCohortRequirements", {
   ))
   cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
   expect_error(checkCohortRequirements(cdm$cohort1))
+  expect_warning(checkCohortRequirements(cdm$cohort1, type = "warning"))
   expect_no_error(checkCohortRequirements(cdm$cohort1, checkOverlappingEntries = FALSE))
 
   # test NA
@@ -289,6 +290,7 @@ test_that("test checkCohortRequirements", {
   ))
   cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
   expect_error(checkCohortRequirements(cdm$cohort1))
+  expect_warning(checkCohortRequirements(cdm$cohort1, type = "warning"))
   expect_no_error(checkCohortRequirements(cdm$cohort1,
                                           checkMissingValues = FALSE,
                                           checkInObservation = FALSE))
@@ -301,6 +303,7 @@ test_that("test checkCohortRequirements", {
   ))
   cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
   expect_error(checkCohortRequirements(cdm$cohort1))
+  expect_warning(checkCohortRequirements(cdm$cohort1, type = "warning"))
   expect_no_error(checkCohortRequirements(cdm$cohort1,
                                           checkInObservation = FALSE))
 
@@ -312,14 +315,22 @@ test_that("test checkCohortRequirements", {
   ))
   cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
   expect_error(checkCohortRequirements(cdm$cohort1))
+  expect_warning(checkCohortRequirements(cdm$cohort1, type = "warning"))
   expect_no_error(checkCohortRequirements(cdm$cohort1, checkEndAfterStart = FALSE))
 
   # all checks switched off - runs without error
-  expect_no_error( checkCohortRequirements(cdm$cohort1,
+  expect_no_error(checkCohortRequirements(cdm$cohort1,
                                             checkEndAfterStart = FALSE,
                                             checkOverlappingEntries = FALSE,
                                             checkMissingValues = FALSE,
                                             checkInObservation = FALSE))
+
+  expect_no_warning(checkCohortRequirements(cdm$cohort1,
+                                          checkEndAfterStart = FALSE,
+                                          checkOverlappingEntries = FALSE,
+                                          checkMissingValues = FALSE,
+                                          checkInObservation = FALSE,
+                                          type = "warning"))
 
   # not a cohort
   expect_error(checkCohortRequirements(cdm))
