@@ -69,6 +69,7 @@ dropTable <- function(cdm, name) {
 
 #' @export
 dropTable.cdm_reference <- function(cdm, name) {
+  dropTable(cdm = cdmSource(cdm), name = name)
   cols <- names(cdm)
   toDrop <- cols |>
     as.list() |>
@@ -76,7 +77,6 @@ dropTable.cdm_reference <- function(cdm, name) {
     dplyr::as_tibble() |>
     dplyr::select(dplyr::any_of(name)) |>
     colnames()
-  dropTable(cdm = cdmSource(cdm), name = name)
   if (length(toDrop) > 0) {
     for (nm in toDrop) {
       cdm[[nm]] <- NULL
