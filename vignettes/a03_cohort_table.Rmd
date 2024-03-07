@@ -65,7 +65,6 @@ cohort <- tibble(
 )
 cdm <- insertTable(cdm = cdm, name = "cohort", table = cohort)
 cdm$cohort <- newCohortTable(cdm$cohort)
-
 ```
 
 The cohort table will be associated with settings and attrition. As we didn't specify these in newCohortTable() above they will have been automatically populated. You can access the cohort set of a cohort table using the function `settings()`
@@ -90,6 +89,24 @@ cdm$cohort <- cdm$cohort |>
   recordCohortAttrition("Require cohort start January 1st 2019")
 attrition(cdm$cohort)
 cohortCount(cdm$cohort)
+```
+
+An additional, optional, attribute keeps track of the concepts used to create the cohort. In this example we do not have a codelist associated with our cohort. 
+
+```{r}
+codelistFromCohort(cdm$cohort, cohortId = 1, type = "index event")
+```
+
+We could though associate our cohort with a codelist
+```{r}
+cdm$cohort <- newCohortTable(cdm$cohort, 
+                             cohortCodelistRef = dplyr::tibble(
+                                 cohort_definition_id = c(1,1),
+                                 codelist_name =c("disease X", "disease X"),
+                                 concept_id = c(101,102),
+                                 type = "index event"
+                               ))
+codelistFromCohort(cdm$cohort, cohortId = 1, type = "index event")
 ```
 
 Each one of the elements that define a cohort table have to fulfill certain criteria.
@@ -117,6 +134,18 @@ A cohort attrition must be a table with:
 - `cohort_definition_id` it must contain cohort ids, all the ids present in table must be present in the cohort attrition and the same ids must be present in cohort set.
 
 - There must exist unique pairs of `cohort_definition_id` and `reason_id`.
+
+### Cohort Codelist
+
+A cohort codelist must be a table with:
+
+- Lower case column names.
+
+- At least `r cohortColumns("cohort_codelist")` columns (`cohortColumns("cohort_codelist")`).
+
+- `cohort_definition_id` it must contain cohort ids, all the ids present in table must be present in the cohort attrition and the same ids must be present in cohort set.
+
+- `type` must be one of "index event", "inclusion criteria", and "exit criteria"
 
 ### Cohort Table
 
