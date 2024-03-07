@@ -65,9 +65,9 @@
 #'                                 concept_id = c(1,2,3,4,5),
 #'                                 type = "index event"
 #'                               ))
-#' codelistFromCohort(cdm$cohort1, cohortId = 1, type = "index event")
+#' cohortCodelist(cdm$cohort1, cohortId = 1, type = "index event")
 #' }
-codelistFromCohort <- function(cohortTable,
+cohortCodelist <- function(cohortTable,
                                cohortId,
                                type = c("index event",
                                         "inclusion criteria",
