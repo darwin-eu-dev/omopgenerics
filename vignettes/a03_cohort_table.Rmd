@@ -94,7 +94,7 @@ cohortCount(cdm$cohort)
 An additional, optional, attribute keeps track of the concepts used to create the cohort. In this example we do not have a codelist associated with our cohort. 
 
 ```{r}
-codelistFromCohort(cdm$cohort, cohortId = 1, type = "index event")
+cohortCodelist(cdm$cohort, cohortId = 1, type = "index event")
 ```
 
 We could though associate our cohort with a codelist
@@ -106,7 +106,7 @@ cdm$cohort <- newCohortTable(cdm$cohort,
                                  concept_id = c(101,102),
                                  type = "index event"
                                ))
-codelistFromCohort(cdm$cohort, cohortId = 1, type = "index event")
+cohortCodelist(cdm$cohort, cohortId = 1, type = "index event")
 ```
 
 Each one of the elements that define a cohort table have to fulfill certain criteria.

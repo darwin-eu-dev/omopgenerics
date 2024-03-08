@@ -25,8 +25,8 @@ test_that("test codelist from cohort", {
   )
   cdm$cohort1 <- newCohortTable(table = cdm$cohort1)
   # empty by default
-  expect_warning(codelistFromCohort(cdm$cohort1, cohortId = 1))
-  expect_warning(codelistFromCohort(cdm$cohort1, cohortId = 1,
+  expect_warning(cohortCodelist(cdm$cohort1, cohortId = 1))
+  expect_warning(cohortCodelist(cdm$cohort1, cohortId = 1,
                                     type = "index event"))
 
   # with attribute added
@@ -40,28 +40,28 @@ test_that("test codelist from cohort", {
                                 ))
 
   # only works for a specific cohort definition id
-  codes_used_1 <- codelistFromCohort(cdm$cohort1, cohortId = 1,
+  codes_used_1 <- cohortCodelist(cdm$cohort1, cohortId = 1,
                                      type = "index event")
   expect_true("codelist" %in% class(codes_used_1))
   expect_equal(omopgenerics::newCodelist(list("disease X" = c(1,2,3))),
                codes_used_1)
 
-  expect_warning(codelistFromCohort(cdm$cohort1,
+  expect_warning(cohortCodelist(cdm$cohort1,
                                      cohortId = 1,
                                      type = "exit criteria")) # none with this type
-  expect_error(codelistFromCohort(cdm$cohort1,
+  expect_error(cohortCodelist(cdm$cohort1,
                      cohortId = 1,
                      type = "another criteria"))
 
-  codes_used_2 <- codelistFromCohort(cdm$cohort1, cohortId = 2)
+  codes_used_2 <- cohortCodelist(cdm$cohort1, cohortId = 2)
   expect_true("codelist" %in% class(codes_used_2))
   expect_equal(omopgenerics::newCodelist(list("disease Y" = c(4,5))),
                codes_used_2)
 
   # only one id allowed
-  expect_error(codelistFromCohort(cdm$cohort1, cohortId = c(1,2)))
+  expect_error(cohortCodelist(cdm$cohort1, cohortId = c(1,2)))
   # error as none of the cohorts is present
-  expect_error(codelistFromCohort(cdm$cohort1, cohortId = 3))
+  expect_error(cohortCodelist(cdm$cohort1, cohortId = 3))
 
 })
 
