@@ -1,6 +1,6 @@
 Package: omopgenerics
 Title: Methods and Classes for the OMOP Common Data Model
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(
     person(
         "Marti", "Catala", email = "marti.catalasabate@ndorms.ox.ac.uk", 
@@ -40,7 +40,6 @@ Imports:
     dbplyr,
     dplyr,
     glue,
-    lifecycle,
     methods,
     rlang,
     snakecase,
