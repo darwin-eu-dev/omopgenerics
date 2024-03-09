@@ -1,0 +1,10 @@
+test_that("select cdm tables", {
+  cdm <- emptyCdmReference("test db")
+  expect_true(all(c("person", "observation_period") %in% names(cdm)))
+  cdm1 <- cdm |> dplyr::select("person")
+  expect_true("person" %in% names(cdm1))
+  expect_false("observation_period" %in% names(cdm1))
+  cdm2 <- cdm |> dplyr::select(!"person")
+  expect_false("person" %in% names(cdm2))
+  expect_true("observation_period" %in% names(cdm2))
+})
