@@ -57,11 +57,16 @@ validateSummariseResult <- function(x) {
   checkNA(x = x, "summarised_result")
 
   # columPairs
-  columnPairs <- c(
-    "group_name" = "group_level", "strata_name" = "strata_level",
-    "additional_name" = "additional_level"
+  validateNameLevel(
+    x = x, nameColumn = "group_name", levelColumn = "group_level", warn = TRUE
   )
-  checkColumnPairs(x, columnPairs, " and | &&& ", "snake")
+  validateNameLevel(
+    x = x, nameColumn = "strata_name", levelColumn = "strata_level", warn = TRUE
+  )
+  validateNameLevel(
+    x = x, nameColumn = "additional_name", levelColumn = "additional_level",
+    warn = TRUE
+  )
 
   # estimate_type
   checkColumnContent(
@@ -135,49 +140,82 @@ checkColumnsFormat <- function(x, resultName) {
   }
   invisible(x)
 }
-checkColumnPairs <- function(x, pairs, sep, case) {
-  for (k in seq_along(pairs)) {
-    group <- names(pairs)[k]
-    level <- unname(pairs)[k]
-    distinctPairs <- x |>
-      dplyr::select(
-        "group" = dplyr::all_of(group), "level" = dplyr::all_of(level)
-      ) |>
-      dplyr::distinct() |>
-      dplyr::mutate(dplyr::across(
-        c("group", "level"),
-        list(elements = ~ stringr::str_split(.x, pattern = sep))
-      )) |>
-      dplyr::mutate(dplyr::across(
-        dplyr::ends_with("elements"),
-        list(length = ~ lengths(.x))
-      ))
-    notMatch <- distinctPairs |>
-      dplyr::filter(
-        .data$group_elements_length != .data$level_elements_length
-      )
-    if (nrow(notMatch) > 0) {
-      unmatch <- notMatch |>
-        dplyr::select("group", "level") |>
-        dplyr::mutate("group_and_level" = paste0(
-          .env$group, ": ", .data$group, "; ", .env$level, ": ", .data$level
-        )) |>
-        dplyr::pull("group_and_level")
-      num <- length(unmatch)
-      nun <- min(num, 5)
-      unmatch <- unmatch[1:nun]
-      names(unmatch) <- rep("*", nun)
 
-      mes <- "group: `{group}` and level: `{level}` does not match in number of
+#' Validate if two columns are valid Name-Level pair.
+#'
+#' @param x A tibble.
+#' @param nameColumn Column name of the `name`.
+#' @param levelColumn Column name of the `level`.
+#' @param sep Separation pattern.
+#' @param warn Whether to throw a warning (TRUE) or an error (FALSE).
+#'
+#' @export
+#'
+validateNameLevel <- function(x,
+                              nameColumn,
+                              levelColumn,
+                              sep = " and | &&& ",
+                              warn = FALSE) {
+  # inital checks
+  assertClass(x, "data.frame")
+  assertCharacter(nameColumn, length = 1)
+  assertCharacter(levelColumn, length = 1)
+  assertTibble(dplyr::as_tibble(x), columns(nameColumn, levelColumn))
+  assertChoice(warn, c(TRUE, FALSE))
+
+  # distinct pairs
+  distinctPairs <- x |>
+    dplyr::select(
+      "name" = dplyr::all_of(nameColumn), "level" = dplyr::all_of(levelColumn)
+    ) |>
+    dplyr::distinct() |>
+    dplyr::mutate(dplyr::across(
+      c("name", "level"),
+      list(elements = ~ stringr::str_split(.x, pattern = sep))
+    )) |>
+    dplyr::mutate(dplyr::across(
+      dplyr::ends_with("elements"),
+      list(length = ~ lengths(.x))
+    ))
+
+  # pairs that dont match
+  notMatch <- distinctPairs |>
+    dplyr::filter(
+      .data$name_elements_length != .data$level_elements_length
+    )
+
+  # error / warning
+  if (nrow(notMatch) > 0) {
+    unmatch <- notMatch |>
+      dplyr::select("group", "level") |>
+      dplyr::mutate("group_and_level" = paste0(
+        .env$group, ": ", .data$group, "; ", .env$level, ": ", .data$level
+      )) |>
+      dplyr::pull("group_and_level")
+    num <- length(unmatch)
+    nun <- min(num, 5)
+    unmatch <- unmatch[1:nun]
+    names(unmatch) <- rep("*", nun)
+    mes <- "group: `{group}` and level: `{level}` does not match in number of
       arguments ({num} unmatch), first {nun} unmatch:"
+    if (warn) {
+      cli::cli_warn(c(mes, unmatch))
+    } else {
       cli::cli_abort(c(mes, unmatch))
     }
+  }
 
-    groupCase <- distinctPairs[["group_elements"]] |> unlist() |> unique()
-    if (!all(isCase(groupCase, case))) {
+  # check case
+  groupCase <- distinctPairs[["group_elements"]] |> unlist() |> unique()
+  if (!all(isCase(groupCase, "snake"))) {
+    if (warn) {
+      cli::cli_warn("elements in {group} are not {case} case")
+    } else {
       cli::cli_abort("elements in {group} are not {case} case")
     }
   }
+
+  return(invisible(x))
 }
 isCase <- function(x, case) {
   flag <- switch(
