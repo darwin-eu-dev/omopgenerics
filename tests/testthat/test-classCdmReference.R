@@ -84,4 +84,7 @@ test_that("test assign and extract from cdm object", {
   xuu <- unclass(x)
   expect_false("cdm_reference" %in% names(attributes(xuu[["c"]])))
   expect_false("cdm_reference" %in% names(attributes(xuu$c)))
+
+  # summary empty cdm
+  expect_no_warning(summary(emptyCdmReference("test")))
 })
