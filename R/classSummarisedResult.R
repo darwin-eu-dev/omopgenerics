@@ -37,7 +37,7 @@ newSummarisedResult <- function(x) {
 }
 
 constructSummarisedResult <- function(x) {
-  x |> addClass("summarised_result")
+  x |> addClass(c("summarised_result", "omop_result"))
 }
 validateSummariseResult <- function(x) {
   if (!"result_id" %in% colnames(x)) {
