@@ -27,8 +27,8 @@ select.cdm_reference <- function(.data, ...) {
   toDrop <- allTables[!allTables %in% toKeep]
   if (length(toDrop) > 0) {
     for (nm in toDrop) {
-      cdm[[nm]] <- NULL
+      .data[[nm]] <- NULL
     }
   }
-  return(cdm)
+  return(.data)
 }
