@@ -65,21 +65,27 @@ summary.cdm_reference <- function(object, ...) {
   )
 
   # observation period info
-  observation_period_info <- object[["observation_period"]] |>
-    dplyr::summarise(
-      count = dplyr::n(),
-      max = max(.data$observation_period_end_date, na.rm = TRUE),
-      min = min(.data$observation_period_start_date, na.rm = TRUE)
-    ) |>
-    dplyr::collect() |>
-    dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
+  if (object[["observation_period"]] |> dplyr::tally() |> dplyr::pull() > 0) {
+    observation_period_info <- object[["observation_period"]] |>
+      dplyr::summarise(
+        "count" = dplyr::n(),
+        "max" = max(.data$observation_period_end_date, na.rm = TRUE),
+        "min" = min(.data$observation_period_start_date, na.rm = TRUE)
+      ) |>
+      dplyr::collect() |>
+      dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
+  } else {
+    observation_period_info <- dplyr::tibble(
+      "count" = "0", "max" = NA_character_, "min" = NA_character_
+    )
+  }
 
   # observation period count
   observationPeriodCount <- dplyr::tibble(
     "variable_name" = "observation_period_count",
     "estimate_name" = "count",
     "estimate_type" = "integer",
-    "estimate_value" = as.character(observation_period_info$count)
+    "estimate_value" = observation_period_info$count
   )
 
   # cdm source data
