@@ -35,12 +35,8 @@
 exportResults <- function(resultList,
                           zipName,
                           outputFolder) {
-  errorMessage <- checkmate::makeAssertCollection()
-  checkmate::assertList(resultList, add = errorMessage)
-  checkmate::assertNamed(resultList, add = errorMessage)
-  checkmate::assertCharacter(zipName, add = errorMessage)
-  checkmate::assertDirectoryExists(outputFolder, add = errorMessage)
-  checkmate::reportAssertions(collection = errorMessage)
+  assertList(resultList, class = "data.frame", named = TRUE)
+  assertCharacter(zipName, length = 1)
 
   tempDir <- zipName
   tempDirCreated <- FALSE
