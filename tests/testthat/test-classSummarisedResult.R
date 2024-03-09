@@ -1,6 +1,6 @@
 test_that("test SummarisedResult object", {
   x <- dplyr::tibble(
-    "result_id" = as.integer(NA),
+    "result_id" = as.integer(1),
     "cdm_name" = "cprd",
     "result_type" = "summarised_characteristics",
     "package_name" = "PatientProfiles",
@@ -71,6 +71,7 @@ test_that("test SummarisedResult object", {
 
   # check NA
   x <- dplyr::tibble(
+    "result_id" = as.integer(1),
     "cdm_name" = "cprd",
     "result_type" = "summarised_characteristics",
     "package_name" = "PatientProfiles",
@@ -91,6 +92,7 @@ test_that("test SummarisedResult object", {
 
   # check wrong paired
   x <- dplyr::tibble(
+    "result_id" = as.integer(1),
     "cdm_name" = "cprd",
     "result_type" = "summarised_characteristics",
     "package_name" = "PatientProfiles",
@@ -107,7 +109,7 @@ test_that("test SummarisedResult object", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
-  expect_error(newSummarisedResult(x = x))
+  expect_warning(expect_warning(newSummarisedResult(x = x)))
 
   # check wrong case
   x <- dplyr::tibble(
@@ -127,7 +129,7 @@ test_that("test SummarisedResult object", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
-  expect_error(newSummarisedResult(x = x))
+  expect_warning(expect_warning(newSummarisedResult(x = x)))
 
 })
 

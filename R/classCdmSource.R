@@ -67,7 +67,7 @@ validateCdmSource <- function(src) {
   validateX(x = tab, name = name, fun = "compute")
 
   # drop table
-  if(!isTRUE(dropTable(cdm = src, name = name))) {
+  if(!isTRUE(dropSourceTable(cdm = src, name = name))) {
     cli::cli_abort("Source is invalid as table {name} couldn't be dropped.")
   }
 

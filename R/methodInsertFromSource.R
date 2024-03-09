@@ -19,6 +19,8 @@
 #' This Table is not meant to be used to insert tables in the cdm, please use
 #' insertTable instead.
 #'
+#' `r lifecycle::badge("deprecated")`
+#'
 #' @param cdm A cdm_reference object.
 #' @param value A table that shares source with the cdm_reference object.
 #'
@@ -27,9 +29,9 @@
 #' @export
 #'
 insertFromSource <- function(cdm, value) {
-  lifecycle::deprecate_warn(
-    when = "0.1.0", what = "insertFromSource()", with = "cdmTableFromSource()"
-  )
+  # lifecycle::deprecate_soft(
+  #   when = "0.1.0", what = "insertFromSource()", with = "cdmTableFromSource()"
+  # )
   UseMethod("insertFromSource", cdmSource(cdm))
 }
 
