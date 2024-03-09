@@ -14,10 +14,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#' Restrict the cdm object to a subset of tables.
+#'
+#' @param cdm A cdm_reference object.
+#' @param ... Selection of tables to use, it supports tidyselect expressions.
+#'
+#' @return A cdm_reference with only the specified tables.
+#'
 #' @export
-#' @importFrom dplyr select
-select.cdm_reference <- function(.data, ...) {
-  allTables <- names(.data)
+#'
+#' @examples
+#' cdm <- emptyCdmReference("my cdm")
+#' cdm
+#'
+#' cdm |>
+#'   cdmSelect("person")
+#'
+cdmSelect <- function(cdm, ...) {
+  assertClass(cdm, "cdm_reference")
+
+  allTables <- names(cdm)
   toKeep <- allTables |>
     as.list() |>
     rlang::set_names(allTables) |>
@@ -27,8 +43,8 @@ select.cdm_reference <- function(.data, ...) {
   toDrop <- allTables[!allTables %in% toKeep]
   if (length(toDrop) > 0) {
     for (nm in toDrop) {
-      .data[[nm]] <- NULL
+      cdm[[nm]] <- NULL
     }
   }
-  return(.data)
+  return(cdm)
 }
