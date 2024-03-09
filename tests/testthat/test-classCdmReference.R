@@ -86,5 +86,5 @@ test_that("test assign and extract from cdm object", {
   expect_false("cdm_reference" %in% names(attributes(xuu$c)))
 
   # summary empty cdm
-  expect_no_
+  expect_no_warning(summary(emptyCdmReference("test")))
 })
