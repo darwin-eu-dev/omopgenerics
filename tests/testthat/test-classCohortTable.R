@@ -255,7 +255,6 @@ test_that("test create cohort", {
 })
 
 test_that("test checkCohortRequirements", {
-  library(omopgenerics)
   person <- dplyr::tibble(
     person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
     race_concept_id = 0, ethnicity_concept_id = 0
@@ -290,7 +289,9 @@ test_that("test checkCohortRequirements", {
   ))
   cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
   expect_error(checkCohortRequirements(cdm$cohort1))
-  expect_warning(checkCohortRequirements(cdm$cohort1, type = "warning"))
+  expect_warning(expect_warning(
+    checkCohortRequirements(cdm$cohort1, type = "warning")
+  ))
   expect_no_error(checkCohortRequirements(cdm$cohort1,
                                           checkMissingValues = FALSE,
                                           checkInObservation = FALSE))

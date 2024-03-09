@@ -41,14 +41,20 @@ constructSummarisedResult <- function(x) {
 }
 validateSummariseResult <- function(x) {
   if (!"result_id" %in% colnames(x)) {
-    x <- x |> dplyr::mutate("result_id" = as.integer(NA))
-    cli::cli_alert_warning(
-      "`result_id` column is missing, please add it as it is a compulsory column."
-    )
+    x <- x |> dplyr::mutate("result_id" = as.integer(1))
+    warnResult <- TRUE
+  } else {
+    warnResult <- FALSE
   }
 
   # compulsory columns
   x <- checkColumns(x = x, "summarised_result")
+  if (warnResult) {
+    cli::cli_warn(c(
+      "!" = "`result_id` column is missing, please add it as it is a compulsory
+      column."
+    ))
+  }
 
   # all columns should be character
   x <- checkColumnsFormat(x = x, "summarised_result")
@@ -160,7 +166,7 @@ validateNameLevel <- function(x,
   assertClass(x, "data.frame")
   assertCharacter(nameColumn, length = 1)
   assertCharacter(levelColumn, length = 1)
-  assertTibble(dplyr::as_tibble(x), columns(nameColumn, levelColumn))
+  assertTibble(dplyr::as_tibble(x), columns = c(nameColumn, levelColumn))
   assertChoice(warn, c(TRUE, FALSE))
 
   # distinct pairs
@@ -187,17 +193,18 @@ validateNameLevel <- function(x,
   # error / warning
   if (nrow(notMatch) > 0) {
     unmatch <- notMatch |>
-      dplyr::select("group", "level") |>
-      dplyr::mutate("group_and_level" = paste0(
-        .env$group, ": ", .data$group, "; ", .env$level, ": ", .data$level
+      dplyr::select("name", "level") |>
+      dplyr::mutate("name_and_level" = paste0(
+        .env$nameColumn, ": ", .data$name, "; ", .env$levelColumn, ": ",
+        .data$level
       )) |>
-      dplyr::pull("group_and_level")
+      dplyr::pull("name_and_level")
     num <- length(unmatch)
     nun <- min(num, 5)
     unmatch <- unmatch[1:nun]
     names(unmatch) <- rep("*", nun)
-    mes <- "group: `{group}` and level: `{level}` does not match in number of
-      arguments ({num} unmatch), first {nun} unmatch:"
+    mes <- "name: `{nameColumn}` and level: `{levelColumn}` does not match in
+    number of arguments ({num} unmatch), first {nun} unmatch:"
     if (warn) {
       cli::cli_warn(c(mes, unmatch))
     } else {
@@ -206,18 +213,24 @@ validateNameLevel <- function(x,
   }
 
   # check case
-  groupCase <- distinctPairs[["group_elements"]] |> unlist() |> unique()
-  if (!all(isCase(groupCase, "snake"))) {
+  nameCase <- distinctPairs[["name_elements"]] |> unlist() |> unique()
+  notSnake <- nameCase[!isCase(nameCase, "snake")]
+  if (length(notSnake) > 0) {
+    mes <- c(
+      "!" = "{length(notSnake)} element{?s} in {nameColumn}
+      {ifelse(length(notSnake) == 1, 'is', 'are')} not snake_case."
+    )
     if (warn) {
-      cli::cli_warn("elements in {group} are not {case} case")
+      cli::cli_warn(message = mes)
     } else {
-      cli::cli_abort("elements in {group} are not {case} case")
+      cli::cli_abort(message = mes)
     }
   }
 
   return(invisible(x))
 }
 isCase <- function(x, case) {
+  if (length(x) == 0) return(logical())
   flag <- switch(
     case,
     "snake" = isSnakeCase(x),
@@ -318,5 +331,6 @@ emptySummarisedResult <- function() {
   resultColumns("summarised_result") |>
     rlang::rep_named(list(character())) |>
     dplyr::as_tibble() |>
+    dplyr::mutate("result_id" = as.integer()) |>
     newSummarisedResult()
 }
