@@ -1,5 +1,5 @@
 ---
-title: "Concept set"
+title: "Concept sets"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{a02_concept_set}
@@ -26,7 +26,7 @@ A concept set can be represented as either a codelist or a concept set expressio
 ```{r}
 condition_codes <- list("diabetes" = c(201820, 4087682, 3655269),
                         "asthma" = 317009)
-condition_codes <- codelist(condition_codes)
+condition_codes <- newCodelist(condition_codes)
 
 condition_codes
 ```
@@ -34,16 +34,15 @@ condition_codes
 A codelist must be named
 ```{r}
 condition_codes <- list(c(201820, 4087682, 3655269))
-codelist(condition_codes)
+newCodelist(condition_codes)
 ```
 
 And a codelist cannot have missing values
 ```{r}
 condition_codes <- list("diabetes" = c(201820, NA, 3655269),
                         "asthma" = 317009)
-codelist(condition_codes)
+newCodelist(condition_codes)
 ```
-
 
 ## Concept set expression
 A concept set expression provides a high-level definition of concepts that, when applied to a specific OMOP CDM vocabulary version (by making use of the concept hierarchies and relationships), will result in a codelist. 
@@ -97,5 +96,4 @@ condition_cs <- list(
 )
 newConceptSetExpression(condition_cs)
 ```
-
 

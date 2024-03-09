@@ -5,7 +5,7 @@ test_that("test that classes and attributes are keep", {
     newCdmTable(src = newLocalSource(), name = "xuxudecrema")
 
   # nothing
-  funs <- c("count", "rowwise", "tally", "ungroup")
+  funs <- c("collapse", "count", "rowwise", "tally", "ungroup")
   for (fun in funs) {
     expect_no_error(eval(parse(text = paste0("xn <- dplyr::", fun, "(x)"))))
     expect_identical(attr(x, "cdm_reference"), attr(xn, "cdm_reference"))

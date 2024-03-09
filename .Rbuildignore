@@ -13,3 +13,5 @@ _pkgdown.yml
 ^pkgdown$
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
+^codecov\.yml$
+^revdep$

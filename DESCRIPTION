@@ -1,6 +1,6 @@
 Package: omopgenerics
 Title: Methods and Classes for the OMOP Common Data Model
-Version: 0.0.2
+Version: 0.1.1
 Authors@R: c(
     person(
         "Marti", "Catala", email = "marti.catalasabate@ndorms.ox.ac.uk", 
@@ -34,22 +34,23 @@ Description: Provides definitions of core classes and methods used by analytic
 License: Apache License (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Imports: 
     cli,
     dbplyr,
     dplyr,
     glue,
+    lifecycle,
+    methods,
     rlang,
     snakecase,
     stringr,
     tidyr,
-    tidyselect,
-    checkmate,
     zip
 Depends: 
     R (>= 4.1)
 Suggests: 
+    covr,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/classCdmReference.R
 \name{cdmName}
 \alias{cdmName}
-\title{Name of a cdm_reference.}
+\title{Get the name of a cdm_reference.}
 \usage{
 cdmName(cdm)
 }
@@ -13,5 +13,29 @@ cdmName(cdm)
 Name of the cdm_reference.
 }
 \description{
-Name of a cdm_reference.
+Get the name of a cdm_reference.
+}
+\examples{
+\donttest{
+library(omopgenerics)
+library(dplyr, warn.conflicts = FALSE)
+
+cdm <- cdmFromTables(
+  tables = list(
+    "person" = tibble(
+      person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+      race_concept_id = 0, ethnicity_concept_id = 0
+    ),
+    "observation_period" = tibble(
+      observation_period_id = 1:3, person_id = 1:3,
+      observation_period_start_date = as.Date("2000-01-01"),
+      observation_period_end_date = as.Date("2025-12-31"),
+      period_type_concept_id = 0
+    )
+  ),
+  cdmName = "mock"
+)
+
+cdmName(cdm)
+}
 }

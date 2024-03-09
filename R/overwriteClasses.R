@@ -61,6 +61,17 @@ anti_join.cdm_table <- function(x, ...) {
 }
 
 #' @export
+#' @importFrom dplyr collapse
+collapse.cdm_table <- function(x, ...) {
+  cl <- class(x)
+  x <- keepClass(x)
+  res <- dplyr::collapse(x, ...)
+  res <- restoreClass(res, cl)
+  res <- restoreAttributes(res, keepAttributes(x, cl))
+  return(res)
+}
+
+#' @export
 #' @importFrom dplyr count
 count.cdm_table <- function(x, ...) {
   cl <- class(x)

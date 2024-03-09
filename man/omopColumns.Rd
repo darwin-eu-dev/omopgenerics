@@ -19,3 +19,9 @@ Required columns
 Required columns that the standard tables in the OMOP Common Data Model must
 have.
 }
+\examples{
+library(omopgenerics)
+
+omopColumns("person")
+
+}

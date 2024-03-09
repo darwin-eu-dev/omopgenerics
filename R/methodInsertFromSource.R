@@ -19,6 +19,8 @@
 #' This Table is not meant to be used to insert tables in the cdm, please use
 #' insertTable instead.
 #'
+#' `r lifecycle::badge("deprecated")`
+#'
 #' @param cdm A cdm_reference object.
 #' @param value A table that shares source with the cdm_reference object.
 #'
@@ -27,13 +29,16 @@
 #' @export
 #'
 insertFromSource <- function(cdm, value) {
-  UseMethod("insertFromSource", getCdmSource(cdm))
+  # lifecycle::deprecate_soft(
+  #   when = "0.1.0", what = "insertFromSource()", with = "cdmTableFromSource()"
+  # )
+  UseMethod("insertFromSource", cdmSource(cdm))
 }
 
 #' @export
 insertFromSource.local_cdm <- function(cdm, value) {
   assertClass(value, "data.frame")
-  src <- getCdmSource(cdm)
-  value <- newCdmTable(table = value, src = src, name = NA_character_)
+  cdm <- cdmSource(cdm)
+  value <- newCdmTable(table = value, src = cdm, name = NA_character_)
   return(value)
 }

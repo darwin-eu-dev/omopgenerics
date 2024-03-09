@@ -19,6 +19,7 @@
 #' @param x Table.
 #'
 #' @return A summarisedResult object
+#'
 #' @export
 #'
 newSummarisedResult <- function(x) {
@@ -36,35 +37,42 @@ newSummarisedResult <- function(x) {
 }
 
 constructSummarisedResult <- function(x) {
-  x <- x |>
-    omopResult() |>
-    addClass("summarised_result")
-  x <- addClass(x, getClass(x))
-  return(x)
+  x |> addClass("summarised_result")
 }
 validateSummariseResult <- function(x) {
+  if (!"result_id" %in% colnames(x)) {
+    x <- x |> dplyr::mutate("result_id" = as.integer(1))
+    warnResult <- TRUE
+  } else {
+    warnResult <- FALSE
+  }
+
   # compulsory columns
   x <- checkColumns(x = x, "summarised_result")
+  if (warnResult) {
+    cli::cli_warn(c(
+      "!" = "`result_id` column is missing, please add it as it is a compulsory
+      column."
+    ))
+  }
 
   # all columns should be character
-  checkColumnsFormat(x = x, "summarised_result")
+  x <- checkColumnsFormat(x = x, "summarised_result")
 
   # Cannot contain NA columns
-  notNaCols <- c(
-    "cdm_name", "group_name", "group_level", "strata_name", "strata_level",
-    "variable_name", "variable_type", "estimate_name", "estimate_type",
-    "additional_name", "additional_level"
-  )
-  checkNA(x = x, cols = notNaCols)
-
-  checkResultType(x = x)
+  checkNA(x = x, "summarised_result")
 
   # columPairs
-  columnPairs <- c(
-    "group_name" = "group_level", "strata_name" = "strata_level",
-    "additional_name" = "additional_level"
+  validateNameLevel(
+    x = x, nameColumn = "group_name", levelColumn = "group_level", warn = TRUE
   )
-  checkColumnPairs(x, columnPairs, " and ", "snake")
+  validateNameLevel(
+    x = x, nameColumn = "strata_name", levelColumn = "strata_level", warn = TRUE
+  )
+  validateNameLevel(
+    x = x, nameColumn = "additional_name", levelColumn = "additional_level",
+    warn = TRUE
+  )
 
   # estimate_type
   checkColumnContent(
@@ -91,19 +99,10 @@ checkColumns <- function(x, resultName) {
   }
   x |> dplyr::select(dplyr::all_of(cols))
 }
-checkResultType <- function(x) {
-  x <- unique(x$result_type) |> strsplit(split = " and ") |> unlist() |> unique()
-  if (length(x) > 0) x <- x[!isSnakeCase(x)]
-  x <- x[!is.na(x)]
-  if (length(x) > 0) {
-    err <- paste0(x, collapse = '\', \'')
-    cli::cli_abort(
-      "result_type must contain only snake case characters separated by ` and `
-      (if multiple). Incorrect format: '{err}'."
-    )
-  }
-}
-checkNA <- function(x, cols) {
+checkNA <- function(x, type) {
+  cols <- fieldsResults$result_field_name[
+    fieldsResults$result == type & fieldsResults$na_allowed == FALSE
+  ]
   for (col in cols) {
     if (any(is.na(unique(x[[col]])))) {
       cli::cli_abort("`{col}` must not contain NA.")
@@ -120,57 +119,118 @@ checkColumnsFormat <- function(x, resultName) {
   formats <- formats[id]
   expectedFormat <- expectedFormat[id]
   if (length(cols) > 0) {
-    err <- paste0(cols, ": format=", formats, " (expected=", expectedFormat, ")")
-    names(err) <- rep("*", length(err))
-    cli::cli_abort(c("The following cols does not have a correct format", err))
-  }
-  invisible(NULL)
-}
-checkColumnPairs <- function(x, pairs, sep, case) {
-  for (k in seq_along(pairs)) {
-    group <- names(pairs)[k]
-    level <- unname(pairs)[k]
-    distinctPairs <- x |>
-      dplyr::select(
-        "group" = dplyr::all_of(group), "level" = dplyr::all_of(level)
-      ) |>
-      dplyr::distinct() |>
-      dplyr::mutate(dplyr::across(
-        c("group", "level"),
-        list(elements = ~ stringr::str_split(.x, pattern = sep))
-      )) |>
-      dplyr::mutate(dplyr::across(
-        dplyr::ends_with("elements"),
-        list(length = ~ lengths(.x))
-      ))
-    notMatch <- distinctPairs |>
-      dplyr::filter(
-        .data$group_elements_length != .data$level_elements_length
+    err <- character()
+    for (k in seq_along(cols)) {
+      res <- tryCatch(
+        expr = {
+          x <- x |>
+            dplyr::mutate(!!cols[k] := giveType(.data[[cols[k]]], expectedFormat[k]))
+          list(x = x, err = character())
+        },
+        error = function(e) {
+          list(x = x, err = cols[k])
+        }
       )
-    if (nrow(notMatch) > 0) {
-      unmatch <- notMatch |>
-        dplyr::select("group", "level") |>
-        dplyr::mutate("group_and_level" = paste0(
-          .env$group, ": ", .data$group, "; ", .env$level, ": ", .data$level
-        )) |>
-        dplyr::pull("group_and_level")
-      num <- length(unmatch)
-      nun <- min(num, 5)
-      unmatch <- unmatch[1:nun]
-      names(unmatch) <- rep("*", nun)
+      x <- res$x
+      err <- c(err, res$err)
+    }
+    if (length(err) > 0) {
+      err <- paste0(err, ": format=", formats, " (expected=", expectedFormat, ")")
+      names(err) <- rep("*", length(err))
+      cli::cli_abort(c("The following colum does not have a correct format", err))
+    } else {
+      err <- paste0(cols, ": from ", formats, " to ", expectedFormat)
+      names(err) <- rep("*", length(err))
+      cli::cli_inform(c("!" = "The following column type were changed:", err))
+    }
+  }
+  invisible(x)
+}
 
-      mes <- "group: `{group}` and level: `{level}` does not match in number of
-      arguments ({num} unmatch), first {nun} unmatch:"
+#' Validate if two columns are valid Name-Level pair.
+#'
+#' @param x A tibble.
+#' @param nameColumn Column name of the `name`.
+#' @param levelColumn Column name of the `level`.
+#' @param sep Separation pattern.
+#' @param warn Whether to throw a warning (TRUE) or an error (FALSE).
+#'
+#' @export
+#'
+validateNameLevel <- function(x,
+                              nameColumn,
+                              levelColumn,
+                              sep = " and | &&& ",
+                              warn = FALSE) {
+  # inital checks
+  assertClass(x, "data.frame")
+  assertCharacter(nameColumn, length = 1)
+  assertCharacter(levelColumn, length = 1)
+  assertTibble(dplyr::as_tibble(x), columns = c(nameColumn, levelColumn))
+  assertChoice(warn, c(TRUE, FALSE))
+
+  # distinct pairs
+  distinctPairs <- x |>
+    dplyr::select(
+      "name" = dplyr::all_of(nameColumn), "level" = dplyr::all_of(levelColumn)
+    ) |>
+    dplyr::distinct() |>
+    dplyr::mutate(dplyr::across(
+      c("name", "level"),
+      list(elements = ~ stringr::str_split(.x, pattern = sep))
+    )) |>
+    dplyr::mutate(dplyr::across(
+      dplyr::ends_with("elements"),
+      list(length = ~ lengths(.x))
+    ))
+
+  # pairs that dont match
+  notMatch <- distinctPairs |>
+    dplyr::filter(
+      .data$name_elements_length != .data$level_elements_length
+    )
+
+  # error / warning
+  if (nrow(notMatch) > 0) {
+    unmatch <- notMatch |>
+      dplyr::select("name", "level") |>
+      dplyr::mutate("name_and_level" = paste0(
+        .env$nameColumn, ": ", .data$name, "; ", .env$levelColumn, ": ",
+        .data$level
+      )) |>
+      dplyr::pull("name_and_level")
+    num <- length(unmatch)
+    nun <- min(num, 5)
+    unmatch <- unmatch[1:nun]
+    names(unmatch) <- rep("*", nun)
+    mes <- "name: `{nameColumn}` and level: `{levelColumn}` does not match in
+    number of arguments ({num} unmatch), first {nun} unmatch:"
+    if (warn) {
+      cli::cli_warn(c(mes, unmatch))
+    } else {
       cli::cli_abort(c(mes, unmatch))
     }
+  }
 
-    groupCase <- distinctPairs[["group_elements"]] |> unlist() |> unique()
-    if (!all(isCase(groupCase, case))) {
-      cli::cli_abort("elements in {group} are not {case} case")
+  # check case
+  nameCase <- distinctPairs[["name_elements"]] |> unlist() |> unique()
+  notSnake <- nameCase[!isCase(nameCase, "snake")]
+  if (length(notSnake) > 0) {
+    mes <- c(
+      "!" = "{length(notSnake)} element{?s} in {nameColumn}
+      {ifelse(length(notSnake) == 1, 'is', 'are')} not snake_case."
+    )
+    if (warn) {
+      cli::cli_warn(message = mes)
+    } else {
+      cli::cli_abort(message = mes)
     }
   }
+
+  return(invisible(x))
 }
 isCase <- function(x, case) {
+  if (length(x) == 0) return(logical())
   flag <- switch(
     case,
     "snake" = isSnakeCase(x),
@@ -189,22 +249,10 @@ isSentenceCase <- function(x) {
 }
 isSnakeCase <- function(x) {
   if (length(x) > 0) {
-    x == snakecase::to_snake_case(x)
+    x == toSnakeCase(x)
   } else {
     x
   }
-}
-getClass <- function(x, def) {
-  if (!is.null(x[["result_type"]])) {
-    cs <- unique(x[["result_type"]]) |>
-      strsplit(split = " and ") |>
-      unlist() |>
-      unique()
-    cs <- cs[!is.na(cs)]
-  } else {
-    cs <- character()
-  }
-  return(cs)
 }
 checkColumnContent <- function(x, col, content) {
   if (!all(x[[col]] %in% content)) {
@@ -219,17 +267,15 @@ checkColumnContent <- function(x, col, content) {
   }
   return(invisible(TRUE))
 }
-
-#' `omop_result` object constructor.
-#'
-#' @param x Table.
-#'
-#' @return A `omop_result` object
-#'
-#' @noRd
-#'
-omopResult <- function(x) {
-  x |> dplyr::as_tibble() |> addClass("omop_result")
+giveType <- function(x, type) {
+  switch(
+    type,
+    "integer" = as.integer(x),
+    "double" = as.double(x),
+    "character" = as.character(x),
+    "logical" = as.logical(x),
+    x
+  )
 }
 
 #' Required columns that the result tables must have.
@@ -240,17 +286,28 @@ omopResult <- function(x) {
 #'
 #' @export
 #'
-resultColumns <- function(table) {
+#' @examples
+#' library(omopgenerics)
+#'
+#' resultColumns()
+#'
+resultColumns <- function(table = "summarised_result") {
   assertChoice(table, unique(fieldsResults$result))
-  fieldsResults$result_field_name[fieldsResults$result == table]
+  x <- fieldsResults$result_field_name[fieldsResults$result == table]
+  return(x)
 }
 
 #' Choices that can be present in `estimate_type` column.
 #'
 #' @return A character vector with the options that can be present in
-#' `estimate_type` column in the omop_result objects.
+#' `estimate_type` column in the summarised_result objects.
 #'
 #' @export
+#'
+#' @examples
+#' library(omopgenerics)
+#'
+#' estimateTypeChoices()
 #'
 estimateTypeChoices <- function() {
   c(
@@ -259,62 +316,6 @@ estimateTypeChoices <- function() {
   )
 }
 
-#' Subset a summarised_result or compared_result object to a certain result_type.
-#'
-#' @param result A result object.
-#' @param resultType A result type identifier.
-#'
-#' @return A subsetted
-#'
-subsetResult <- function(result, resultType) {
-  # initial check
-  if (any(c("summarised_result", "compared_result") %in% class(result))) {
-    cli::cli_abort(
-      "result object is not a valid summarised_result ot compared_result object"
-    )
-  }
-  assertCharacter(resultType)
-
-  # subset
-  x <- result$result_type |> strsplit(split = " and ")
-  result <- result |> dplyr::filter(grepl(resultType, x))
-
-  if ("summarised_result" %in% class(result)) {
-    result <- newSummarisedResult(result)
-  } else {
-    result <- newComparedResult(result)
-  }
-
-  return(result)
-}
-
-# checkSentence <- function(x, cols) {
-#   for (col in cols) {
-#     notCase <- unique(x[[col]])
-#     notCase <- notCase[!isSentenceCase(notCase)]
-#     if (length(notCase) > 0) {
-#       cli::cli_abort(
-#         "`{col}` must be in sentence case. Not sentence case values:
-#         {paste0(notCase[1:min(5, length(notCase))], collapse = ', ')}{ifelse(length(notCase)>5, '...', '.')}"
-#       )
-#     }
-#   }
-#   invisible(NULL)
-# }
-# checkSnake <- function(x, cols) {
-#   for (col in cols) {
-#     notCase <- unique(x[[col]])
-#     notCase <- notCase[!isSnakeCase(notCase)]
-#     if (length(notCase) > 0) {
-#       cli::cli_abort(
-#         "`{col}` must be in snake case. Not snake case values:
-#         {paste0(notCase[1:min(5, length(notCase))], collapse = ', ')}{ifelse(length(notCase)>5, '...', '.')}"
-#       )
-#     }
-#   }
-#   invisible(NULL)
-# }
-
 #' Empty `summarised_result` object.
 #'
 #' @return An empty `summarised_result` object.
@@ -322,15 +323,14 @@ subsetResult <- function(result, resultType) {
 #' @export
 #'
 #' @examples
-#' \donttest{
 #' library(omopgenerics)
 #'
 #' emptySummarisedResult()
-#' }
 #'
 emptySummarisedResult <- function() {
   resultColumns("summarised_result") |>
     rlang::rep_named(list(character())) |>
     dplyr::as_tibble() |>
+    dplyr::mutate("result_id" = as.integer()) |>
     newSummarisedResult()
 }

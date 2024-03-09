@@ -20,14 +20,37 @@
 #' @param cdmName Name of the cdm object.
 #' @param cohortTables List of tables that contains cohort, cohort_set and
 #' cohort_attrition can be provided as attributes.
+#' @param cdmVersion Version of the cdm_reference
 #'
 #' @return A `cdm_reference` object.
 #'
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' person <- tibble(
+#'   person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'   race_concept_id = 0, ethnicity_concept_id = 0
+#' )
+#' observation_period <- tibble(
+#'   observation_period_id = 1, person_id = 1,
+#'   observation_period_start_date = as.Date("2000-01-01"),
+#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   period_type_concept_id = 0
+#' )
+#' cdm <- cdmFromTables(
+#'   tables = list("person" = person, "observation_period" = observation_period),
+#'   cdmName = "test"
+#' )
+#'}
+#'
 cdmFromTables <- function(tables,
                           cdmName,
-                          cohortTables = list()) {
+                          cohortTables = list(),
+                          cdmVersion = NULL) {
   # check input
   assertList(tables, named = TRUE, class = "data.frame")
   assertList(cohortTables, named = TRUE, class = "data.frame")
@@ -40,6 +63,7 @@ cdmFromTables <- function(tables,
     }
   }
   assertCharacter(cdmName, length = 1)
+  assertCharacter(cdmVersion, length = 1, null = T)
 
   src <- newLocalSource()
   for (nm in names(tables)) {
@@ -47,7 +71,9 @@ cdmFromTables <- function(tables,
       dplyr::as_tibble() |>
       newCdmTable(src = src, name = nm)
   }
-  cdm <- newCdmReference(tables = tables, cdmName = cdmName)
+  cdm <- newCdmReference(
+    tables = tables, cdmName = cdmName, cdmVersion = cdmVersion
+  )
 
   for (nm in names(cohortTables)) {
     cdm <- insertTable(cdm = cdm, name = nm, table = cohortTables[[nm]])
@@ -61,6 +87,17 @@ cdmFromTables <- function(tables,
   return(cdm)
 }
 
+#' A new local source for the cdm
+#'
+#' @return A list in the format of a cdm source
+#' @export
+#'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' newLocalSource()
+#'}
+#'
 newLocalSource <- function() {
   structure(.Data = list(), class = "local_cdm") |>
     newCdmSource(sourceType = "local")

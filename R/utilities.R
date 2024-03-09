@@ -23,9 +23,6 @@ removeClass <- function(x, value) {
   base::class(x) <- base::class(x)[!(base::class(x) %in% value)]
   return(x)
 }
-getCdmSource <- function(x) {
-  attr(x, "cdm_source")
-}
 getVocabularyVersion <- function(x) {
   vocabVersion <- NULL
   if ("vocabulary_version" %in% colnames(x[["vocabulary"]])) {
@@ -427,4 +424,7 @@ errorNull <- function(null) {
     str <- "; it can not be NULL"
   }
   return(str)
+}
+toSnakeCase <- function(x) {
+  snakecase::to_snake_case(string = x, numerals = "asis")
 }

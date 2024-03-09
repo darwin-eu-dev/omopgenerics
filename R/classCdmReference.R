@@ -25,9 +25,32 @@
 #'
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' cdmTables <- list(
+#'   "person" = tibble(
+#'     person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+#'     race_concept_id = 0, ethnicity_concept_id = 0
+#'   ) |>
+#'     newCdmTable(newLocalSource(), "person"),
+#'   "observation_period" = tibble(
+#'     observation_period_id = 1, person_id = 1,
+#'     observation_period_start_date = as.Date("2000-01-01"),
+#'     observation_period_end_date = as.Date("2025-12-31"),
+#'     period_type_concept_id = 0
+#'   ) |>
+#'     newCdmTable(newLocalSource(), "observation_period")
+#' )
+#' cdm <- newCdmReference(tables = cdmTables, cdmName = "mock")
+#'
+#' cdm
+#' }
 newCdmReference <- function(tables,
-                         cdmName,
-                         cdmVersion = NULL) {
+                            cdmName,
+                            cdmVersion = NULL) {
   # inputs
   assertList(tables, named = TRUE, class = "cdm_table")
   assertCharacter(cdmName, length = 1)
@@ -45,7 +68,7 @@ newCdmReference <- function(tables,
   # constructor
   cdm <- constructCdmReference(
     tables = tables, cdmName = cdmName, cdmVersion = cdmVersion,
-    cdmSource = getTableSource(tables[[1]])
+    cdmSource = tableSource(tables[[1]])
   )
 
   # validate
@@ -63,8 +86,8 @@ getVersion <- function(cdm) {
       version <- substr(version, 2, nchar(version))
     }
     substr(version, 1, 3)
-    },
-    error = function(e) {"5.3"}
+  },
+  error = function(e) {"5.3"}
   )
   return(version)
 }
@@ -82,7 +105,7 @@ validateCdmReference <- function(cdm) {
   assertChoice(cdmVersion(cdm), c("5.3", "5.4"), length = 1)
 
   # assert source
-  assertClass(getCdmSource(cdm), "cdm_source")
+  assertClass(cdmSource(cdm), "cdm_source")
 
   # assert lowercase names
   x <- names(cdm)[names(cdm) != tolower(names(cdm))]
@@ -193,7 +216,7 @@ checkOverlapObservation <- function(x, call = parent.frame()) {
   }
 }
 
-#' Name of a cdm_reference.
+#' Get the name of a cdm_reference.
 #'
 #' @param cdm A cdm_reference object.
 #'
@@ -201,12 +224,35 @@ checkOverlapObservation <- function(x, call = parent.frame()) {
 #'
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' cdm <- cdmFromTables(
+#'   tables = list(
+#'     "person" = tibble(
+#'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+#'       race_concept_id = 0, ethnicity_concept_id = 0
+#'     ),
+#'     "observation_period" = tibble(
+#'       observation_period_id = 1:3, person_id = 1:3,
+#'       observation_period_start_date = as.Date("2000-01-01"),
+#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       period_type_concept_id = 0
+#'     )
+#'   ),
+#'   cdmName = "mock"
+#' )
+#'
+#' cdmName(cdm)
+#' }
 cdmName <- function(cdm) {
   assertClass(cdm, "cdm_reference")
   attr(cdm, "cdm_name")
 }
 
-#' Version of a cdm_reference.
+#' Get the version of a cdm_reference.
 #'
 #' @param cdm A cdm_reference object.
 #'
@@ -214,9 +260,104 @@ cdmName <- function(cdm) {
 #'
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' cdm <- cdmFromTables(
+#'   tables = list(
+#'     "person" = tibble(
+#'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+#'       race_concept_id = 0, ethnicity_concept_id = 0
+#'     ),
+#'     "observation_period" = tibble(
+#'       observation_period_id = 1:3, person_id = 1:3,
+#'       observation_period_start_date = as.Date("2000-01-01"),
+#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       period_type_concept_id = 0
+#'     )
+#'   ),
+#'   cdmName = "mock"
+#' )
+#'
+#' cdmVersion(cdm)
+#' }
 cdmVersion <- function(cdm) {
   assertClass(cdm, "cdm_reference")
   attr(cdm, "cdm_version")
+}
+
+#' Get the source of a cdm_reference.
+#'
+#' @param cdm A cdm_reference object.
+#'
+#' @return A cdm_source object.
+#'
+#' @export
+#'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' cdm <- cdmFromTables(
+#'   tables = list(
+#'     "person" = tibble(
+#'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+#'       race_concept_id = 0, ethnicity_concept_id = 0
+#'     ),
+#'     "observation_period" = tibble(
+#'       observation_period_id = 1:3, person_id = 1:3,
+#'       observation_period_start_date = as.Date("2000-01-01"),
+#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       period_type_concept_id = 0
+#'     )
+#'   ),
+#'   cdmName = "mock"
+#' )
+#'
+#' cdmSource(cdm)
+#' }
+cdmSource <- function(cdm) {
+  assertClass(cdm, "cdm_reference")
+  attr(cdm, "cdm_source")
+}
+
+#' Get the source type of a cdm_reference object.
+#'
+#' @param  cdm A cdm_reference object.
+#'
+#' @return A character vector with the type of source of the cdm_reference
+#' object.
+#'
+#' @export
+#'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' cdm <- cdmFromTables(
+#'   tables = list(
+#'     "person" = tibble(
+#'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+#'       race_concept_id = 0, ethnicity_concept_id = 0
+#'     ),
+#'     "observation_period" = tibble(
+#'       observation_period_id = 1:3, person_id = 1:3,
+#'       observation_period_start_date = as.Date("2000-01-01"),
+#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       period_type_concept_id = 0
+#'     )
+#'   ),
+#'   cdmName = "mock"
+#' )
+#'
+#' cdmSourceType(cdm = cdm)
+#' }
+cdmSourceType <- function(cdm) {
+  cdm |> cdmSource() |> sourceType()
 }
 
 #' Subset a cdm reference object.
@@ -225,7 +366,32 @@ cdmVersion <- function(cdm) {
 #' @param name The name of the table to extract from the cdm object.
 #'
 #' @return A single cdm table reference
+#'
 #' @export
+#'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' cdm <- cdmFromTables(
+#'   tables = list(
+#'     "person" = tibble(
+#'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+#'       race_concept_id = 0, ethnicity_concept_id = 0
+#'     ),
+#'     "observation_period" = tibble(
+#'       observation_period_id = 1:3, person_id = 1:3,
+#'       observation_period_start_date = as.Date("2000-01-01"),
+#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       period_type_concept_id = 0
+#'     )
+#'   ),
+#'   cdmName = "mock"
+#' )
+#'
+#' cdm$person
+#' }
 `$.cdm_reference` <- function(x, name) {
   x[[name]]
 }
@@ -237,6 +403,30 @@ cdmVersion <- function(cdm) {
 #'
 #' @return A single cdm table reference
 #' @export
+#'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' cdm <- cdmFromTables(
+#'   tables = list(
+#'     "person" = tibble(
+#'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+#'       race_concept_id = 0, ethnicity_concept_id = 0
+#'     ),
+#'     "observation_period" = tibble(
+#'       observation_period_id = 1:3, person_id = 1:3,
+#'       observation_period_start_date = as.Date("2000-01-01"),
+#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       period_type_concept_id = 0
+#'     )
+#'   ),
+#'   cdmName = "mock"
+#' )
+#'
+#' cdm[["person"]]
+#' }
 `[[.cdm_reference` <- function(x, name) {
   if (all(!name %in% names(x))) return(NULL)
   if (length(name) > 1) {
@@ -258,12 +448,34 @@ cdmVersion <- function(cdm) {
 #'
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#'
+#' cdm <- cdmFromTables(
+#'   tables = list(
+#'     "person" = dplyr::tibble(
+#'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+#'       race_concept_id = 0, ethnicity_concept_id = 0
+#'     ),
+#'     "observation_period" = dplyr::tibble(
+#'       observation_period_id = 1:3, person_id = 1:3,
+#'       observation_period_start_date = as.Date("2000-01-01"),
+#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       period_type_concept_id = 0
+#'     )
+#'   ),
+#'   cdmName = "mock"
+#' )
+#'
+#' cdm$person
+#' }
 `$<-.cdm_reference` <- function(cdm, name, value) {
   cdm[[name]] <- value
   return(cdm)
 }
 
-#' Assign an table to a cdm reference.
+#' Assign a table to a cdm reference.
 #'
 #' @param cdm A cdm reference.
 #' @param name Name where to assign the new table.
@@ -279,27 +491,33 @@ cdmVersion <- function(cdm) {
     if (!"cdm_table" %in% class(value)) {
       call <- parent.frame()
       value <- tryCatch(
-        expr = insertFromSource(cdm, value),
-        error = function(e) {
-          cli::cli_abort(
-            message = c(
-              "An object of class {class(value)} can not be assigned to an
-              element of a cdm_reference. You can only assign cdm_tables to a
-              cdm_reference object or objectes that can be converted to a
+        expr = cdmTableFromSource(cdmSource(cdm), value),
+        error = function(e) {value}
+      )
+      if (!"cdm_table" %in% class(value)) {
+        value <- tryCatch(
+          expr = insertFromSource(cdm, value),
+          error = function(e) {
+            cli::cli_abort(
+              message = c(
+                "An object of class {class(value)} cannot be assigned to
+              a cdm_reference. You can only assign cdm_tables to a
+              cdm_reference object or objects that can be converted to a
               cdm_table. Please use insertTable to insert tibbles to a
               cdm_reference.",
-              "!" = "Error when tryong to convert to a cdm_table:",
-              as.character(e$message)
-            ),
-            call = call
-          )
-        }
-      )
+                "!" = "Error when trying to convert to a cdm_table:",
+                as.character(e$message)
+              ),
+              call = call
+            )
+          }
+        )
+      }
     }
-    if (!identical(getTableSource(value), getCdmSource(cdm))) {
+    if (!identical(tableSource(value), cdmSource(cdm))) {
       cli::cli_abort("Table and cdm does not share a common source.")
     }
-    remoteName <- getTableName(value)
+    remoteName <- tableName(value)
     if (!is.na(remoteName) && name != remoteName) {
       cli::cli_abort(
         "You can't assign a table named {remoteName} to {name}. Please use
@@ -335,26 +553,39 @@ cdmVersion <- function(cdm) {
   return(cdm)
 }
 
-#' Obtain the cdm_reference that a table comes from.
-#'
-#' @param table A cdm_table.
-#'
-#' @export
-#'
-cdmReference <- function(table) {
-  assertClass(table, "cdm_table")
-  attr(table, "cdm_reference")
-}
-
 #' Print a CDM reference object
 #'
 #' @param x A cdm_reference object
 #' @param ... Included for compatibility with generic. Not used.
 #'
 #' @return Invisibly returns the input
+#'
 #' @export
+#'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#'
+#' cdm <- cdmFromTables(
+#'   tables = list(
+#'     "person" = dplyr::tibble(
+#'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+#'       race_concept_id = 0, ethnicity_concept_id = 0
+#'     ),
+#'     "observation_period" = dplyr::tibble(
+#'       observation_period_id = 1:3, person_id = 1:3,
+#'       observation_period_start_date = as.Date("2000-01-01"),
+#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       period_type_concept_id = 0
+#'     )
+#'   ),
+#'   cdmName = "mock"
+#' )
+#'
+#' print(cdm)
+#' }
 print.cdm_reference <- function(x, ...) {
-  type <- getCdmSource(x) |> getSourceType()
+  type <- cdmSource(x) |> sourceType()
   name <- cdmName(x)
   nms <- names(x)
   classes <- lapply(names(x), function(nm) {
@@ -395,6 +626,31 @@ print.cdm_reference <- function(x, ...) {
 #'
 #' @export
 #'
+#' @importFrom dplyr collect
+#'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' library(dplyr, warn.conflicts = FALSE)
+#'
+#' cdm <- cdmFromTables(
+#'   tables = list(
+#'     "person" = dplyr::tibble(
+#'       person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
+#'       race_concept_id = 0, ethnicity_concept_id = 0
+#'     ),
+#'     "observation_period" = dplyr::tibble(
+#'       observation_period_id = 1:3, person_id = 1:3,
+#'       observation_period_start_date = as.Date("2000-01-01"),
+#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       period_type_concept_id = 0
+#'     )
+#'   ),
+#'   cdmName = "mock"
+#' )
+#'
+#' collect(cdm)
+#' }
 collect.cdm_reference <- function(x, ...) {
   name <- cdmName(x)
   x <- unclass(x)
@@ -422,6 +678,11 @@ collect.cdm_reference <- function(x, ...) {
 #'
 #' @export
 #'
+#' @examples
+#' library(omopgenerics)
+#'
+#' omopTables()
+#'
 omopTables <- function(version = "5.3") {
   assertVersion(version = version)
   tableChoice(version = version, type = "cdm_table")
@@ -436,6 +697,11 @@ omopTables <- function(version = "5.3") {
 #' @return Required columns
 #'
 #' @export
+#'
+#' @examples
+#' library(omopgenerics)
+#'
+#' omopColumns("person")
 #'
 omopColumns <- function(table, version = "5.3") {
   assertVersion(version = version)
@@ -452,6 +718,11 @@ omopColumns <- function(table, version = "5.3") {
 #'
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' cohortTables()
+#' }
 cohortTables <- function(version = "5.3") {
   assertVersion(version = version)
   tableChoice(version = version, type = "cohort")
@@ -466,32 +737,52 @@ cohortTables <- function(version = "5.3") {
 #'
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' cohortColumns("cohort")
+#' }
 cohortColumns <- function(table, version = "5.3") {
   assertVersion(version = version)
   assertTable(table = table, version = version, type = "cohort")
   requiredColumns(table = table, version = version, type = "cohort")
 }
 
-#' Tables containing the results of achilles analyses
+#' Names of the tables that contain the results of achilles analyses
 #'
 #' @param version Version of the OMOP Common Data Model.
 #'
-#' @return Names of tables returned by achilles analyses
+#' @return Names of the tables that are contain the results from the achilles
+#' analyses
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' achillesTables()
+#' }
 achillesTables <- function(version = "5.3"){
   assertVersion(version = version)
   tableChoice(version = version, type = "achilles")
 }
 
-#' Required columns for achilles result tables
+#' Required columns for each of the achilles result tables
 #'
-#' @param table Table to see required columns.
+#' @param table Table for which to see the required columns. One of
+#' "achilles_analysis", "achilles_results", or "achilles_results_dist".
 #' @param version Version of the OMOP Common Data Model.
 #'
-#' @return Names of columns for achilles result tables
+#' @return A vector containing the names of columns for the given
+#' achilles result table
 #' @export
 #'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' achillesColumns("achilles_analysis")
+#' achillesColumns("achilles_results")
+#' achillesColumns("achilles_results_dist")
+#' }
 achillesColumns <- function(table, version = "5.3") {
   assertVersion(version = version)
   assertTable(table = table, version = version, type = "achilles")
@@ -522,13 +813,44 @@ requiredColumns <- function(table, version, type) {
 
 #' @export
 str.cdm_reference <- function(object, ...) {
-  src <- getCdmSource(object)
+  src <- cdmSource(object)
   mes <- glue::glue(
     "A cdm reference of {cdmName(object)} with {length(object)} tables: {paste0(names(object), collapse = ', ')}"
   )
   cat(mes, sep = "")
 }
 
-getSourceType <- function(x) {
-  attr(x, "source_type")
+#' Create an empty cdm_reference
+#'
+#' @param cdmName Name of the cdm_reference
+#' @param cdmVersion Version of the cdm_reference
+#'
+#' @export
+#'
+#' @return An empty cdm_reference
+#'
+#' @examples
+#' \donttest{
+#' library(omopgenerics)
+#' emptyCdmReference(cdmName = "my_example_cdm")
+#' }
+emptyCdmReference <- function(cdmName, cdmVersion = NULL) {
+  cdmFromTables(
+    tables = list(
+      "person" = emptyOmopTableInternal("person"),
+      "observation_period" = emptyOmopTableInternal("observation_period")
+    ),
+    cdmName = cdmName,
+    cdmVersion = cdmVersion
+  )
+}
+
+emptyOmopTableInternal <- function(name, version = "5.3") {
+  fieldsTables |>
+    dplyr::filter(
+      .data$cdm_table_name == name &
+        .data$type == "cdm_table" &
+        grepl(.env$version, .data$cdm_version)
+    ) |>
+    emptyTable()
 }

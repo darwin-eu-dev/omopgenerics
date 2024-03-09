@@ -33,7 +33,7 @@ compute.cdm_table <- function(x,
                               temporary = TRUE,
                               overwrite = TRUE,
                               ...) {
-  src <- getTableSource(x)
+  src <- tableSource(x)
   cl <- class(src)[class(src) != "cdm_source"]
   cx <- class(x)
   res <- x |>
@@ -54,14 +54,36 @@ compute.local_cdm <- function(x, ...) {
   return(x)
 }
 
-#' Create a unique table name for temp tables
+#' Create a unique table name
+#'
+#' @param prefix Prefix for the table names.
 #'
 #' @return A string that can be used as a dbplyr temp table name
 #' @export
 #'
-uniqueTableName <- function() {
+#' @examples
+#' library(omopgenerics)
+#' uniqueTableName()
+uniqueTableName <- function(prefix = "") {
+  assertCharacter(x = prefix, length = 1)
   i <- getOption("dbplyr_table_name", 0) + 1
   options(dbplyr_table_name = i)
-  sprintf("dbplyr_%03i", i)
+  value <- paste0(sprintf("og_%03i", i), "_", round(as.numeric(Sys.time())))
+  paste0(prefix, value)
+}
+
+#' Create a temporary prefix for tables, that contains a unique prefix that
+#' starts with tmp.
+#'
+#' @return A temporary prefix.
+#' @export
+#'
+#' @examples
+#' library(omopgenerics)
+#' tmpPrefix()
+tmpPrefix <- function() {
+  i <- getOption("tmp_prefix_number", 0) + 1
+  options(tmp_prefix_number = i)
+  sprintf("tmp_%03i_", i)
 }
 

@@ -69,11 +69,22 @@ fieldsCohorts <- tibble(
     ),
     is_required = TRUE,
     cdm_datatype = c(
-      "integer", "integer", "integer", "integer", "varchar(255", "integer",
+      "integer", "integer", "integer", "integer", "varchar(255)", "integer",
       "integer"
     ),
     cdm_version = "5.3; 5.4"
-  ))
+  )) |>
+    union_all(tibble(
+      cdm_table_name = "cohort_codelist",
+      cdm_field_name = c(
+        "cohort_definition_id", "codelist_name", "concept_id" , "type"
+      ),
+      is_required = TRUE,
+      cdm_datatype = c(
+        "integer", "varchar(255)", "integer", "varchar(255)"
+      ),
+      cdm_version = "5.3; 5.4"
+    ))
 
 fieldsAchilles <- dplyr::tibble(
   cdm_table_name = "achilles_analysis",
@@ -83,7 +94,7 @@ fieldsAchilles <- dplyr::tibble(
     "category"
   ),
   is_required = TRUE,
-  cdm_datatype = NA,
+  cdm_datatype = c("integer", rep("varchar(255)", 6), "logical", "varchar(255)"),
   cdm_version = "5.3; 5.4"
 ) |>
   dplyr::union_all(dplyr::tibble(
@@ -93,7 +104,7 @@ fieldsAchilles <- dplyr::tibble(
       "stratum_5", "count_value"
     ),
     is_required = TRUE,
-    cdm_datatype = NA,
+    cdm_datatype = c("integer", rep("varchar(255)", 5), "integer"),
     cdm_version = "5.3; 5.4"
   )) |>
   dplyr::union_all(dplyr::tibble(
@@ -105,7 +116,9 @@ fieldsAchilles <- dplyr::tibble(
       "p90_value"
     ),
     is_required = TRUE,
-    cdm_datatype = NA,
+    cdm_datatype = c(
+      "integer", rep("varchar(255)", 5), rep("integer", 3), rep("float", 7)
+    ),
     cdm_version = "5.3; 5.4"
   ))
 
@@ -121,6 +134,7 @@ fieldsTables <- fieldsTables |>
 fieldsResults <- dplyr::tibble(
   result = "summarised_result",
   result_field_name = c(
+    "result_id",
     "cdm_name",
     "result_type",
     "package_name", "package_version",
@@ -131,19 +145,20 @@ fieldsResults <- dplyr::tibble(
     "additional_name", "additional_level"
   ),
   is_required = TRUE,
-  datatype = "character",
+  datatype = c("integer", rep("character", 15)),
   na_allowed = c(
-    FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE,
+    TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE,
     FALSE, FALSE, TRUE, FALSE, FALSE
   ),
   pair = c(
-    rep(NA, 4), "name1", "level1", "name2", "level2", rep(NA, 5), "name3",
+    rep(NA, 5), "name1", "level1", "name2", "level2", rep(NA, 5), "name3",
     "level3"
   )
 ) |>
   dplyr::union_all(dplyr::tibble(
     result = "compared_result",
     result_field_name = c(
+      "result_id",
       "cdm_name",
       "result_type",
       "package_name", "package_version",
@@ -157,13 +172,13 @@ fieldsResults <- dplyr::tibble(
       "additional_name_comparator", "additional_level_comparator"
     ),
     is_required = TRUE,
-    datatype = "character",
+    datatype = c("integer", rep("character", 21)),
     na_allowed = c(
-      FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
-      FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE
+      TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
+      FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE
     ),
     pair = c(
-      rep(NA, 4), "name1", "level1", "name2", "level2", "name3", "level3",
+      rep(NA, 5), "name1", "level1", "name2", "level2", "name3", "level3",
       "name4", "level4", rep(NA, 5), "name5", "level5", "name6", "level6"
     )
   ))
