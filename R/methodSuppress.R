@@ -109,6 +109,12 @@ obscureRecords <- function(result, minCellCount, estimateName) {
   return(result)
 }
 obscureGroup <- function(result, minCellCount, estimateName, groupCount) {
+  obsLabels <- result |>
+    dplyr::select("variable_name") |>
+    dplyr::distinct() |>
+    dplyr::pull("variable_name")
+  obsLabels <- obsLabels[tolower(gsub("_", " ", obsLabels)) %in% groupCount]
+
   groupsToObscure1 <- result |>
     dplyr::group_by(dplyr::across(!c(
       "estimate_name", "estimate_type", "estimate_value", "obscure_record"
@@ -119,7 +125,7 @@ obscureGroup <- function(result, minCellCount, estimateName, groupCount) {
   cols1 <- colnames(groupsToObscure1)[colnames(groupsToObscure1) != "obscure_group_1"]
   groupsToObscure2 <- result |>
     dplyr::filter(
-      .data$variable_name %in% .env$groupCount &
+      .data$variable_name %in% .env$obsLabels &
         .data$estimate_name %in% .env$estimateName &
         .data$obscure_record == 1
     ) |>
