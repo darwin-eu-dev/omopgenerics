@@ -129,7 +129,7 @@ test_that("test SummarisedResult object", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
-  expect_warning(expect_warning(newSummarisedResult(x = x)))
+  expect_warning(newSummarisedResult(x = x))
 
 })
 

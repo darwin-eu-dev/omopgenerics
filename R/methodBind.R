@@ -249,19 +249,25 @@ bind.summarised_result <- function(...) {
   results <- list(...)
   assertList(results, class = "summarised_result")
 
+  settings <- lapply(results, settings) |>
+    dplyr::bind_rows(.id = "list_id")
   results <- results |>
     dplyr::bind_rows(.id = "list_id")
 
-  dic <- results |>
+  dic <- settings |>
     dplyr::select("result_id", "list_id") |>
     dplyr::distinct() |>
     dplyr::mutate("new_result_id" = as.integer(dplyr::row_number()))
 
+  settings <- settings |>
+    dplyr::inner_join(dic, by = c("result_id", "list_id")) |>
+    dplyr::select(-c("result_id", "list_id")) |>
+    dplyr::rename("result_id" = "new_result_id")
   results <- results |>
     dplyr::inner_join(dic, by = c("result_id", "list_id")) |>
     dplyr::select(-c("result_id", "list_id")) |>
     dplyr::rename("result_id" = "new_result_id") |>
-    newSummarisedResult()
+    newSummarisedResult(settings = settings)
 
   return(results)
 }

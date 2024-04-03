@@ -327,7 +327,7 @@ summary.cohort_table <- function(object, ...) {
     )  |>
     addCdmDetails(object)
 
-  resultAttrition <-settingsSummary |>
+  resultAttrition <- settingsSummary |>
     dplyr::mutate("result_type" = "cohort_attrition") |>
     dplyr::mutate(
       "additional_name" = "overall", "additional_level" = "overall"

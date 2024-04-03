@@ -4,13 +4,15 @@
 \alias{newSummarisedResult}
 \title{'summarised_results' object constructor}
 \usage{
-newSummarisedResult(x)
+newSummarisedResult(x, settings = NULL)
 }
 \arguments{
 \item{x}{Table.}
+
+\item{settings}{Settings for the summarised_result object.}
 }
 \value{
-A summarisedResult object
+A \code{summarised_result} object
 }
 \description{
 'summarised_results' object constructor

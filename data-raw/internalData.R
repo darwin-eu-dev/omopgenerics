@@ -135,9 +135,6 @@ fieldsResults <- dplyr::tibble(
   result = "summarised_result",
   result_field_name = c(
     "result_id",
-    "cdm_name",
-    "result_type",
-    "package_name", "package_version",
     "group_name", "group_level",
     "strata_name", "strata_level",
     "variable_name", "variable_level",
@@ -145,13 +142,13 @@ fieldsResults <- dplyr::tibble(
     "additional_name", "additional_level"
   ),
   is_required = TRUE,
-  datatype = c("integer", rep("character", 15)),
+  datatype = c("integer", rep("character", 11)),
   na_allowed = c(
-    TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE,
-    FALSE, FALSE, TRUE, FALSE, FALSE
+    TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE,
+    FALSE
   ),
   pair = c(
-    rep(NA, 5), "name1", "level1", "name2", "level2", rep(NA, 5), "name3",
+    rep(NA, 1), "name1", "level1", "name2", "level2", rep(NA, 5), "name3",
     "level3"
   )
 ) |>
@@ -159,9 +156,6 @@ fieldsResults <- dplyr::tibble(
     result = "compared_result",
     result_field_name = c(
       "result_id",
-      "cdm_name",
-      "result_type",
-      "package_name", "package_version",
       "group_name_reference", "group_level_reference",
       "strata_name_reference", "strata_level_reference",
       "group_name_comparator", "group_level_comparator",
@@ -172,13 +166,13 @@ fieldsResults <- dplyr::tibble(
       "additional_name_comparator", "additional_level_comparator"
     ),
     is_required = TRUE,
-    datatype = c("integer", rep("character", 21)),
+    datatype = c("integer", rep("character", 17)),
     na_allowed = c(
-      TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
-      FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE
+      TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE,
+      FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE
     ),
     pair = c(
-      rep(NA, 5), "name1", "level1", "name2", "level2", "name3", "level3",
+      rep(NA, 1), "name1", "level1", "name2", "level2", "name3", "level3",
       "name4", "level4", rep(NA, 5), "name5", "level5", "name6", "level6"
     )
   ))
