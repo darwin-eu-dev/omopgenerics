@@ -78,6 +78,11 @@ test_that("summary a cdm reference", {
     )
   }
 
+  expect_identical(
+    x$estimate_value[x$estimate_name == "source_type" & x$variable_name == "cdm"],
+    "local"
+  )
+
 })
 
 test_that("summary a generated cohort set", {

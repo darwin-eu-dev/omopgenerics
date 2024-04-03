@@ -135,6 +135,7 @@ summary.cdm_reference <- function(object, ...) {
       "cdm_source_name", "vocabulary_version", "cdm_version", "cdm_holder_name",
       "cdm_release_date", "cdm_description", "cdm_documentation_reference"
     ))) |>
+    dplyr::mutate("cdm_source_type" = cdmSourceType(cdm = object)) |>
     dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
     tidyr::pivot_longer(
       cols = dplyr::everything(), names_to = "variable",
