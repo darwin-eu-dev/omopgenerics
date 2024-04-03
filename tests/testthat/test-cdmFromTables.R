@@ -154,5 +154,4 @@ test_that("test cdmFromTables", {
     cdm = cdm, name = "drug_exposure", table = drug_exposure
   ))
   expect_true(inherits(cdm$drug_exposure, "omop_table"))
-
 })

@@ -216,9 +216,9 @@ checkOverlapObservation <- function(x, call = parent.frame()) {
   }
 }
 
-#' Get the name of a cdm_reference.
+#' Get the name of a cdm_reference associated object
 #'
-#' @param cdm A cdm_reference object.
+#' @param x A cdm_reference or cdm_table object.
 #'
 #' @return Name of the cdm_reference.
 #'
@@ -246,11 +246,24 @@ checkOverlapObservation <- function(x, call = parent.frame()) {
 #' )
 #'
 #' cdmName(cdm)
+#'
+#' cdmName(cdm$person)
+#'
 #' }
-cdmName <- function(cdm) {
-  assertClass(cdm, "cdm_reference")
-  attr(cdm, "cdm_name")
+cdmName <- function(x) {
+  UseMethod("cdmName")
 }
+
+#' @export
+cdmName.cdm_reference <- function(x) {
+  attr(x, "cdm_name")
+}
+
+#' @export
+cdmName.cdm_table <- function(x) {
+  x |> cdmReference() |> cdmName()
+}
+
 
 #' Get the version of a cdm_reference.
 #'
