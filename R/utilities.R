@@ -25,7 +25,7 @@ removeClass <- function(x, value) {
 }
 getVocabularyVersion <- function(x) {
   vocabVersion <- NULL
-  if ("vocabulary_version" %in% colnames(x[["vocabulary"]])) {
+  if ("vocabulary" %in% names(x) && "vocabulary_version" %in% colnames(x)) {
     vocabVersion <- x[["vocabulary"]] |>
       dplyr::filter(.data$vocabulary_id == "None") |>
       dplyr::pull(.data$vocabulary_version)
