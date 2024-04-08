@@ -450,9 +450,10 @@ addSettings <- function(result, columns = NULL) {
   if (length(notPresent)) {
     cli::cli_abort("The following columns are not present in settings: {paste0(notPresent, collapse = ', ')}.")
   }
+  toJoin <- columns[columns %in% colnames(result)]
   result |>
     dplyr::left_join(
       set |> dplyr::select(dplyr::all_of(c("result_id", columns))),
-      by = "result_id"
+      by = c("result_id", toJoin)
     )
 }
