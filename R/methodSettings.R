@@ -136,7 +136,7 @@ settings.summarised_result <- function(x) {
       unique()
     if (length(type == 1)) {
       set <- set |>
-        dplyr::mutate(!!col := giveType(.data[[col]], type))
+        dplyr::mutate(!!col := giveType(.data[[col]], .env$type))
     }
   }
   return(set)
