@@ -448,7 +448,7 @@ cdmSourceType <- function(cdm) {
     if (name > length(x)) {
       return(NULL)
     } else {
-      name <- names(cdm)[name]
+      name <- names(x)[name]
     }
   }
   if (all(!name %in% names(x))) {
