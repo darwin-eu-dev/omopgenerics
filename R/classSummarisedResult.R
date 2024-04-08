@@ -111,6 +111,7 @@ constructSummarisedResult <- function(x, set, call = parent.frame()) {
     .Data = x,
     class = unique(c("summarised_result", "omop_result", class(x))),
     settings = set |>
+      dplyr::mutate("result_id" = as.integer(.data$result_id)) |>
       dplyr::relocate("result_id") |>
       dplyr::arrange(.data$result_id)
   )
