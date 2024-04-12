@@ -437,7 +437,7 @@ errorNull <- function(null) {
 #' @examples
 #' toSnakeCase("myVariable")
 #'
-#' toSnakeCase("cohort1", "Cohort22b")
+#' toSnakeCase(c("cohort1", "Cohort22b"))
 #'
 toSnakeCase <- function(x) {
   snakecase::to_snake_case(string = x, numerals = "asis")
