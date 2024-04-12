@@ -18,6 +18,6 @@ Convert a character vector to snake case
 \examples{
 toSnakeCase("myVariable")
 
-toSnakeCase("cohort1", "Cohort22b")
+toSnakeCase(c("cohort1", "Cohort22b"))
 
 }
