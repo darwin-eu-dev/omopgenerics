@@ -428,3 +428,58 @@ errorNull <- function(null) {
 toSnakeCase <- function(x) {
   snakecase::to_snake_case(string = x, numerals = "asis")
 }
+
+
+#' Get the cohort definition id of a certain name
+#'
+#' @param cohort A cohort_table object.
+#' @param cohortName Names of the cohort of interest.
+#'
+#' @return Cohort definition ids
+#'
+#' @export
+#'
+getCohortId <- function(cohort, cohortName) {
+  # check inputs
+  assertClass(cohort, "cohort_table")
+  assertCharacter(cohortName)
+
+  set <- settings(cohort) |>
+    dplyr::select("cohort_definition_id", "cohort_name")
+  notPresent <- cohortName[!cohortName %in% set$cohort_name]
+  if (length(notPresent) > 0) {
+    cli::cli_warn(c(
+      "!" = "Cohorts names not found: {paste0(notPresent, collapse = ', ')}."
+    ))
+  }
+  x <- dplyr::tibble("cohort_name" = cohortName) |>
+    dplyr::inner_join(set, by = "cohort_name")
+  x$cohort_definition_id |> rlang::set_names(x$cohort_name)
+}
+
+#' Get the cohort name of a certain cohort definition id
+#'
+#' @param cohort A cohort_table object.
+#' @param cohortId Cohort deifnition id of interest.
+#'
+#' @return Cohort names
+#'
+#' @export
+#'
+getCohortName <- function(cohort, cohortId) {
+  # check inputs
+  assertClass(cohort, "cohort_table")
+  assertNumeric(cohortId, integerish = TRUE)
+
+  set <- settings(cohort) |>
+    dplyr::select("cohort_definition_id", "cohort_name")
+  notPresent <- cohortId[!cohortId %in% set$cohort_definition_id]
+  if (length(notPresent) > 0) {
+    cli::cli_warn(c(
+      "!" = "Cohorts definition ids not found: {paste0(notPresent, collapse = ', ')}."
+    ))
+  }
+  x <- dplyr::tibble("cohort_definition_id" = as.integer(cohortId)) |>
+    dplyr::inner_join(set, by = "cohort_definition_id")
+  x$cohort_name |> rlang::set_names(x$cohort_definition_id)
+}
