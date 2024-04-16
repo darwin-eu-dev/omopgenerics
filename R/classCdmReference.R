@@ -441,9 +441,18 @@ cdmSourceType <- function(cdm) {
 #' cdm[["person"]]
 #' }
 `[[.cdm_reference` <- function(x, name) {
-  if (all(!name %in% names(x))) return(NULL)
   if (length(name) > 1) {
     cli::cli_abort("You can only read one table of a cdm_reference.")
+  }
+  if (is.numeric(name)) {
+    if (name > length(x)) {
+      return(NULL)
+    } else {
+      name <- names(x)[name]
+    }
+  }
+  if (all(!name %in% names(x))) {
+    cli::cli_abort("{name} does not exist in the cdm_reference object.")
   }
   xraw <- unclass(x)
   tbl <- xraw[[name]]

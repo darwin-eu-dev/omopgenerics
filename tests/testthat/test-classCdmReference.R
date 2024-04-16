@@ -17,6 +17,12 @@ test_that("test cdm_reference", {
 
   expect_no_error(cdm <- newCdmReference(tables = cdmTables, cdmName = "mock"))
 
+  expect_error(cdm[["not_present"]])
+  expect_no_error(cdm[["person"]])
+  expect_no_error(cdm[["observation_period"]])
+  expect_identical(cdm[[1]], cdm[["person"]])
+  expect_true(is.null(cdm[[3]]))
+
   expect_identical(cdm, cdmReference(cdm$person))
 
   expect_identical("mock", cdmName(cdm))
