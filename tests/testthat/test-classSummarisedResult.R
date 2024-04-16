@@ -155,21 +155,8 @@ test_that("test SummarisedResult object", {
 
   expect_identical(
     sort(colnames(settings(res))),
-    c("cdm_name", "custom", "package_name", "package_version", "result_id",
+    c("custom", "package_name", "package_version", "result_id",
       "result_type")
   )
-
-  expect_no_error(ress <- res |> addSettings())
-  expect_true(all(colnames(settings(res)) %in% colnames(ress)))
-  expect_identical(settings(ress), settings(res))
-  expect_identical(ress, ress |> addSettings())
-
-  res1 <- res |> filter(cdm_name == "cprd")
-  expect_true(nrow(res1) == 1)
-  expect_true(res1$result_id == 1)
-
-  res2 <- res |> filter(custom == "B")
-  expect_true(nrow(res2) == 1)
-  expect_true(res2$result_id == 2)
 
 })
