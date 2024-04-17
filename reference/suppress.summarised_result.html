@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">omopgenerics</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,16 +102,14 @@
 <span class="r-in"><span>  <span class="st">"additional_level"</span> <span class="op">=</span> <span class="st">"overall"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">my_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="newSummarisedResult.html">newSummarisedResult</a></span><span class="op">(</span><span class="va">my_result</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> The following variables: result_type, package_name, package_version; were added to `settings`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> The following column type were changed:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> result_id: from character to integer</span>
 <span class="r-in"><span><span class="va">my_result</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ result_id        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1, 1, 1, 1, 1, 1, 1, 1, 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ cdm_name         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "mock", "mock", "mock", "mock", "mock", "mock", "mock…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ result_type      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "summarised_characteristics", "summarised_characteris…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ package_name     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "omopgenerics", "omopgenerics", "omopgenerics", "omop…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ package_version  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "0.1.2", "0.1.2", "0.1.2", "0.1.2", "0.1.2", "0.1.2",…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ group_name       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall", "overall", "overall", "overall"…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ group_level      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall", "overall", "overall", "overall"…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ strata_name      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall", "overall", "overall", "overall"…</span>
@@ -126,12 +124,9 @@
 <span class="r-in"><span><span class="va">my_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="suppress.html">suppress</a></span><span class="op">(</span><span class="va">my_result</span>, minCellCount <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">my_result</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Rows: 9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Columns: 13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ result_id        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1, 1, 1, 1, 1, 1, 1, 1, 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ cdm_name         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "mock", "mock", "mock", "mock", "mock", "mock", "mock…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ result_type      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "summarised_characteristics", "summarised_characteris…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ package_name     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "omopgenerics", "omopgenerics", "omopgenerics", "omop…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $ package_version  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "0.1.2", "0.1.2", "0.1.2", "0.1.2", "0.1.2", "0.1.2",…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ group_name       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall", "overall", "overall", "overall"…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ group_level      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall", "overall", "overall", "overall"…</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $ strata_name      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall", "overall", "overall", "overall"…</span>
