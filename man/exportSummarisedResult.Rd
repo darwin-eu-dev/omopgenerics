@@ -8,7 +8,7 @@ exportSummarisedResult(
   ...,
   minCellCount = 5,
   fileName = "results_{cdm_name}_{date}.csv",
-  path = here::here()
+  path = getwd()
 )
 }
 \arguments{
