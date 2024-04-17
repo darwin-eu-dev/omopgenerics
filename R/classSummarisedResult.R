@@ -39,6 +39,7 @@ newSummarisedResult <- function(x, settings = attr(x, "settings")) {
 }
 
 constructSummarisedResult <- function(x, set, call = parent.frame()) {
+  x <- x |> dplyr::as_tibble()
   settingsCols <- colnames(x)[
     !colnames(x) %in% resultColumns(table = "summarised_result")
   ]
