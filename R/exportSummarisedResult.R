@@ -27,7 +27,7 @@
 exportSummarisedResult <- function(...,
                                    minCellCount = 5,
                                    fileName = "results_{cdm_name}_{date}.csv",
-                                   path = here::here()) {
+                                   path = getwd()) {
   # initial checks
   results <- list(...)
   assertList(x = results, class = "summarised_result")
