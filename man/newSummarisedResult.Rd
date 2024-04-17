@@ -4,7 +4,7 @@
 \alias{newSummarisedResult}
 \title{'summarised_results' object constructor}
 \usage{
-newSummarisedResult(x, settings = NULL)
+newSummarisedResult(x, settings = attr(x, "settings"))
 }
 \arguments{
 \item{x}{Table.}
