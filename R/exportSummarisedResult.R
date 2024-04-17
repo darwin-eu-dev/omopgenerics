@@ -47,21 +47,22 @@ exportSummarisedResult <- function(...,
   fileName <- gsub(pattern = "\\{cdm_name\\}", replacement = cdmName, x = fileName)
 
   # date
-  date <- Sys.Date()
+  date <- gsub("-", "_", Sys.Date() |> as.character())
   fileName <- gsub(pattern = "\\{date\\}", replacement = date, x = fileName)
 
   # to tibble + pivot settings
   x <- results |>
     dplyr::as_tibble() |>
-    dplyr::union_all(settings(results) |> pivotSettings() |> dplyr::as_tibble())
+    dplyr::union_all(results |> pivotSettings() |> dplyr::as_tibble())
 
   utils::write.csv(
-    x, file = file.path(path, fileName), row.names = FALSE, na = "NA"
+    x, file = file.path(path, fileName), row.names = FALSE
   )
 }
 
 pivotSettings <- function(x) {
   x |>
+    settings() |>
     dplyr::mutate(dplyr::across(!"result_id", ~ as.character(.x))) |>
     tidyr::pivot_longer(
       cols = !"result_id",
@@ -70,7 +71,9 @@ pivotSettings <- function(x) {
     ) |>
     dplyr::filter(!is.na(.data$estimate_value)) |>
     dplyr::inner_join(
-      variableTypes(x) |>
+      x |>
+        settings() |>
+        variableTypes() |>
         dplyr::select(
           "estimate_name" = "variable_name", "estimate_type" = "variable_type"
         ) |>
@@ -90,7 +93,16 @@ pivotSettings <- function(x) {
       "additional_name" = "overall",
       "additional_level" = "overall"
     ) |>
-    dplyr::arrange(.data$result_id)
+    dplyr::arrange(.data$result_id) |>
+    dplyr::left_join(
+      x |>
+        dplyr::select("result_id", "cdm_name") |>
+        dplyr::distinct() |>
+        dplyr::group_by(.data$result_id) |>
+        dplyr::filter(dplyr::n() > 1) |>
+        dplyr::ungroup(),
+      by = "result_id"
+    )
 }
 variableTypes <- function(table) {
   assertTibble(table)
