@@ -17,7 +17,7 @@
 #' Export a summarised_result object to a csv file.
 #'
 #' @param ... A set of summarised_result objects.
-#' @param minCelCount Minimum count for suppression purposes.
+#' @param minCellCount Minimum count for suppression purposes.
 #' @param fileName Name of the file that will be created. Use {cdm_name} to
 #' refer to the cdmName of the objects and {date} to add the export date.
 #' @param path Path where to create the csv file.
@@ -55,7 +55,9 @@ exportSummarisedResult <- function(...,
     dplyr::as_tibble() |>
     dplyr::union_all(settings(results) |> pivotSettings() |> dplyr::as_tibble())
 
-  readr::write_csv(x, file = file.path(path, fileName))
+  utils::write.csv(
+    x, file = file.path(path, fileName), row.names = FALSE, na = "NA"
+  )
 }
 
 pivotSettings <- function(x) {
