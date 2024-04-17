@@ -40,6 +40,7 @@ exportSummarisedResult <- function(...,
     fileName <- paste0(fileName, ".csv")
   }
 
+  # bind and suppress
   results <- bind(...) |> suppress(minCellCount = minCellCount)
 
   # cdm name
