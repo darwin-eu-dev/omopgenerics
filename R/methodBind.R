@@ -120,6 +120,39 @@ bind.cohort_table <- function(..., name) {
     dplyr::select(-c("cohort_definition_id", "cohort_id")) |>
     dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") |>
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_attrition")))
+  newCohortCodelist <- lapply(cohorts, function(x) {
+    xx <- attr(x, "cohort_codelist")
+    if (is.null(xx)) {
+      xx <- dplyr::tibble(
+        "cohort_definition_id" = integer(),
+        "codelist_name" = character(),
+        "concept_id" = integer(),
+        "type" = character()
+      )
+    } else {
+      xx <- xx |>
+        dplyr::collect() |>
+        dplyr::mutate(
+          "cohort_definition_id" = as.integer(.data$cohort_definition_id),
+          "codelist_name" = as.character(.data$codelist_name),
+          "concept_id" = as.integer(.data$concept_id),
+          "type" = as.character(.data$type)
+        ) |>
+        dplyr::select(dplyr::all_of(cohortColumns("cohort_codelist")))
+    }
+    return(xx)
+  }) |>
+    dplyr::bind_rows(.id = "cohort_id") |>
+    dplyr::left_join(
+      newCohortSet |>
+        dplyr::select(
+          "cohort_definition_id", "cohort_id", "new_cohort_definition_id"
+        ),
+      by = c("cohort_definition_id", "cohort_id")
+    ) |>
+    dplyr::select(-c("cohort_definition_id", "cohort_id")) |>
+    dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") |>
+    dplyr::relocate(dplyr::all_of(cohortColumns("cohort_codelist")))
   cohorts <- lapply(seq_len(length(cohorts)), function(x) {
     cohorts[[x]] |>
       dplyr::left_join(
@@ -148,7 +181,8 @@ bind.cohort_table <- function(..., name) {
   cdm[[name]] <- newCohortTable(
     table = newCohort,
     cohortSetRef = newCohortSet,
-    cohortAttritionRef = newCohortAttrition
+    cohortAttritionRef = newCohortAttrition,
+    cohortCodelistRef = newCohortCodelist
   )
 
   return(cdm)
