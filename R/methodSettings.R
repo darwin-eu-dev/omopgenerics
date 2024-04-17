@@ -117,28 +117,6 @@ settings.cohort_table <- function(x) {
 #' settings(result)
 #'
 settings.summarised_result <- function(x) {
-  settingsRaw <- x |>
-    dplyr::filter(.data$variable_name == "settings") |>
-    dplyr::select(
-      "result_id", "cdm_name", "result_type", "estimate_name", "estimate_type",
-      "estimate_value"
-    )
-  set <- settingsRaw |>
-    dplyr::select(-"estimate_type") |>
-    tidyr::pivot_wider(
-      names_from = "estimate_name", values_from = "estimate_value"
-    )
-  cols <- settingsRaw |> dplyr::pull("estimate_name") |> unique()
-  for (col in cols) {
-    type <- settingsRaw |>
-      dplyr::filter(.data$estimate_name == .env$col) |>
-      dplyr::pull("estimate_type") |>
-      unique()
-    if (length(type == 1)) {
-      set <- set |>
-        dplyr::mutate(!!col := giveType(.data[[col]], .env$type))
-    }
-  }
-  return(set)
+  attr(x, "settings")
 }
 

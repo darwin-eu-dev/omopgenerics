@@ -275,7 +275,8 @@ keepAttributes <- function(x, cl) {
 }
 keepClass <- function(x) {
   removeClass(x = x, value = c(
-    "cdm_table", "omop_table", "achilles_table", "cohort_table"
+    "cdm_table", "omop_table", "achilles_table", "cohort_table",
+    "summarised_result"
   ))
 }
 restoreAttributes <- function(x, at) {
