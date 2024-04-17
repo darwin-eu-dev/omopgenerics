@@ -42,52 +42,33 @@ exportSummarisedResult <- function(...,
 
   results <- bind(...) |> suppress(minCellCount = minCellCount)
 
-  cdmName <- results$cdm_name |> unique()
+  # cdm name
+  cdmName <- results$cdm_name |> unique() |> paste0(collapse = "_")
+  fileName <- gsub(pattern = "\\{cdm_name\\}", replacement = cdmName, x = fileName)
+
+  # date
   date <- Sys.Date()
+  fileName <- gsub(pattern = "\\{date\\}", replacement = date, x = fileName)
 
-  set <- settings(results)
+  # to tibble + pivot settings
+  x <- results |>
+    dplyr::as_tibble() |>
+    dplyr::union_all(settings(results) |> pivotSettings() |> dplyr::as_tibble())
 
+  readr::write_csv(x, file = file.path(path, fileName))
 }
 
-appendSettings <- function(x, colsSettings) {
-  # initial checks
-  assertCharacter(colsSettings, null = TRUE)
-  assertTibble(x, columns = colsSettings)
-
-  # check if there is already a x id
-  if("result_id" %in% colnames(x)) {
-    ids <- x |>
-      dplyr::select(dplyr::all_of(c("result_id", colsSettings))) |>
-      dplyr::distinct()
-    x <- x |>
-      dplyr::select(!dplyr::all_of(colsSettings))
-    # check result_id linked to one set of settings:
-    if (nrow(ids) != length(unique(ids$result_id))) {
-      cli::cli_abort("Settings do not match result ids.")
-    }
-  } else {
-    ids <- x |>
-      dplyr::select(dplyr::all_of(colsSettings)) |>
-      dplyr::distinct() |>
-      dplyr::mutate("result_id" = as.integer(dplyr::row_number()))
-    x <- x |>
-      dplyr::left_join(ids, by = colsSettings) |>
-      dplyr::select(!dplyr::all_of(colsSettings)) |>
-      dplyr::relocate("result_id")
-  }
-  # columns to match settings - result
-  colsToMatch <- c("result_id", "cdm_name", "result_type", "package_name", "package_version")
-  colsToMatch <- colsToMatch[colsToMatch %in% colnames(x)]
-  # format settings to summarised
-  settingsIds <- ids |>
-    dplyr::mutate(dplyr::across(dplyr::all_of(colsSettings), ~ as.character(.x))) |>
+pivotSettings <- function(x) {
+  x |>
+    dplyr::mutate(dplyr::across(!"result_id", ~ as.character(.x))) |>
     tidyr::pivot_longer(
-      cols = dplyr::all_of(colsSettings),
+      cols = !"result_id",
       names_to = "estimate_name",
       values_to = "estimate_value"
     ) |>
+    dplyr::filter(!is.na(.data$estimate_value)) |>
     dplyr::inner_join(
-      variableTypes(ids) |>
+      variableTypes(x) |>
         dplyr::select(
           "estimate_name" = "variable_name", "estimate_type" = "variable_type"
         ) |>
@@ -107,26 +88,8 @@ appendSettings <- function(x, colsSettings) {
       "additional_name" = "overall",
       "additional_level" = "overall"
     ) |>
-    dplyr::left_join(
-      x |> dplyr::distinct(dplyr::across(dplyr::all_of(colsToMatch))),
-      by = "result_id"
-    )
-  # check if there are non-summarised result columns
-  nonS <- !colnames(x) %in% c(omopgenerics::resultColumns(), colsSettings)
-  if(sum(nonS) > 0) {
-    toFillNa <- colnames(x)[nonS]
-    settingsIds[toFillNa] = NA_character_
-  }
-  settingsIds <- settingsIds |>
-    dplyr::select(dplyr::all_of(colnames(x)))
-  # append settings
-  x <- settingsIds |>
-    dplyr::union_all(x) |>
     dplyr::arrange(.data$result_id)
-  return(x)
 }
-
-
 variableTypes <- function(table) {
   assertTibble(table)
   if (ncol(table) > 0) {
@@ -149,7 +112,6 @@ variableTypes <- function(table) {
   }
   return(x)
 }
-
 assertClassification <- function(x) {
   switch (
     x,
