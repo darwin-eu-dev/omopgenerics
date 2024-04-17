@@ -23,11 +23,11 @@
 #'
 #' @export
 #'
-newSummarisedResult <- function(x, settings = NULL) {
+newSummarisedResult <- function(x, settings = attr(x, "settings")) {
 
   # inital input check
-  assertClass(x = x, class = "data.frame", call = call)
-  assertClass(x = settings, class = "data.frame", null = TRUE, call = call)
+  assertClass(x = x, class = "data.frame")
+  assertClass(x = settings, class = "data.frame", null = TRUE)
 
   # constructor
   x <- constructSummarisedResult(x, settings)
