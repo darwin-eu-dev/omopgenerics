@@ -1,9 +1,9 @@
 test_that("prefix", {
   # unique table name
-  options(dbplyr_table_name = 0)
+  options(og_table_name = 0)
   expect_true(stringr::str_starts(uniqueTableName(), "og_001"))
   expect_true(stringr::str_starts(uniqueTableName(),"og_002"))
-  options(dbplyr_table_name = 100)
+  options(og_table_name = 100)
   expect_true(stringr::str_starts(uniqueTableName(), "og_101"))
 
   # temporary prefix
