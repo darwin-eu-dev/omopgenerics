@@ -79,5 +79,17 @@ print.codelist <- function(x, ...) {
     cli::cat_line(paste0("along with ", length(x)-10, " more codelists"))
   }
   invisible(x)
+}
 
+#' Empty `codelist` object.
+#'
+#' @return An empty codeist object.
+#'
+#' @export
+#'
+#' @examples
+#' emptyCodelist()
+#'
+emptyCodelist <- function() {
+  newCodelist(list())
 }
