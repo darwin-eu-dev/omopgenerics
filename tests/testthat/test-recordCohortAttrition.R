@@ -24,13 +24,16 @@ test_that("multiplication works", {
   expect_equal(cohortCount(cdm$cohort1)$number_records, c(3, 1))
   expect_equal(cohortCount(cdm$cohort1)$number_subjects, c(1, 1))
 
+  date <- as.Date("2021-06-01")
+
   cdm$cohort1 <- cdm$cohort1 |>
-    dplyr::filter(cohort_start_date < as.Date("2021-06-01")) |>
+    dplyr::filter(cohort_start_date < date) |>
     dplyr::compute(name = "cohort1", temporary = FALSE) |>
-    recordCohortAttrition(reason = "Before june 2021") |>
+    recordCohortAttrition(reason = "Before {date}") |>
     expect_no_error()
 
   expect_equal(cdm$cohort1 |> dplyr::tally() |> dplyr::pull(), 2)
+
 
   expect_equal(cohortCount(cdm$cohort1)$number_records, c(2, 0))
   expect_equal(cohortCount(cdm$cohort1)$number_subjects, c(1, 0))

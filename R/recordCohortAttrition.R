@@ -76,6 +76,8 @@ recordCohortAttrition <- function(cohort, reason, cohortId = NULL) {
     )
   }
 
+  reason <- glue::glue(reason, .envir = parent.frame())
+
   # get cohortId
   cohortId <- assertCohortId(cohort, cohortId)
 
