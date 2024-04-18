@@ -24,13 +24,16 @@ test_that("multiplication works", {
   expect_equal(cohortCount(cdm$cohort1)$number_records, c(3, 1))
   expect_equal(cohortCount(cdm$cohort1)$number_subjects, c(1, 1))
 
+  date <- as.Date("2021-06-01")
+
   cdm$cohort1 <- cdm$cohort1 |>
-    dplyr::filter(cohort_start_date < as.Date("2021-06-01")) |>
+    dplyr::filter(cohort_start_date < date) |>
     dplyr::compute(name = "cohort1", temporary = FALSE) |>
-    recordCohortAttrition(reason = "Before june 2021") |>
+    recordCohortAttrition(reason = "Before {date}") |>
     expect_no_error()
 
   expect_equal(cdm$cohort1 |> dplyr::tally() |> dplyr::pull(), 2)
+  expect_true(paste0("Before ", date) %in% attrition(cdm$cohort1)$reason)
 
   expect_equal(cohortCount(cdm$cohort1)$number_records, c(2, 0))
   expect_equal(cohortCount(cdm$cohort1)$number_subjects, c(1, 0))
@@ -43,7 +46,7 @@ test_that("multiplication works", {
       number_records = c(3, 2, 1, 0),
       number_subjects = c(1, 1, 1, 0),
       reason_id = c(1, 2, 1, 2),
-      reason = rep(c("Initial qualifying events", "Before june 2021"), 2),
+      reason = rep(c("Initial qualifying events", "Before 2021-06-01"), 2),
       excluded_records = c(0, 1, 0, 1),
       excluded_subjects = c(0, 0, 0, 1)
     )
@@ -70,7 +73,7 @@ test_that("multiplication works", {
       number_records = c(3, 2, 1, 1, 0, 0),
       number_subjects = c(1, 1, 1, 1, 0, 0),
       reason_id = c(1, 2, 3, 1, 2, 3),
-      reason = rep(c("Initial qualifying events", "Before june 2021", "First record"), 2),
+      reason = rep(c("Initial qualifying events", "Before 2021-06-01", "First record"), 2),
       excluded_records = c(0, 1, 1, 0, 1, 0),
       excluded_subjects = c(0, 0, 0, 0, 1, 0)
     )
