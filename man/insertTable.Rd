@@ -4,7 +4,7 @@
 \alias{insertTable}
 \title{Insert a table to a cdm object.}
 \usage{
-insertTable(cdm, name, table, overwrite = TRUE)
+insertTable(cdm, name, table, overwrite = TRUE, temporary = FALSE)
 }
 \arguments{
 \item{cdm}{A cdm reference or the source of a cdm reference.}
@@ -14,6 +14,8 @@ insertTable(cdm, name, table, overwrite = TRUE)
 \item{table}{Table to insert to the cdm.}
 
 \item{overwrite}{Whether to overwrite an existent table.}
+
+\item{temporary}{Whether to create a temporary table.}
 }
 \value{
 The cdm reference.
