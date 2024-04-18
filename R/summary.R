@@ -386,15 +386,21 @@ addCdmDetails <- function(res, object) {
 #'
 summary.summarised_result <- function(object, ...) {
   cdms <- object$cdm_name |> unique()
+  cdms <- cdms[!is.na(cdms)]
   ids <- object$result_id |> unique()
-  types <- object$result_type |> unique()
-  cli::cli_inform(c(
-    "i" = "A summarised_result object with {nrow(object)} rows, {length(ids)}
-    different result_id, {lengths(cdms)} different cdm names, and
-    {length(types)} different result type:",
-    "CDM names: {paste0(cdms, collapse = ', ')}",
-    "result types: {paste0(types, collapse = ', ')}"
-  ))
+  set <- object |> settings() |> colnames()
+  set <- set[set != "result_id"]
+  cli::cli_inform(
+    "A summarised_result object with {nrow(object)} rows, {length(ids)}
+    different result_id, {lengths(cdms)} different cdm names, and {length(set)}
+    settings."
+  )
+  if (length(cdms) > 0) {
+    cli::cli_inform("CDM names: {cdms}.")
+  }
+  if (length(set) > 0) {
+    cli::cli_inform("Settings: {set}.")
+  }
 }
 
 getTypes <- function(x) {
