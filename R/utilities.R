@@ -425,6 +425,20 @@ errorNull <- function(null) {
   }
   return(str)
 }
+
+#' Convert a character vector to snake case
+#'
+#' @param x Character vector to convert
+#'
+#' @return A snake_case vector
+#'
+#' @export
+#'
+#' @examples
+#' toSnakeCase("myVariable")
+#'
+#' toSnakeCase(c("cohort1", "Cohort22b"))
+#'
 toSnakeCase <- function(x) {
   snakecase::to_snake_case(string = x, numerals = "asis")
 }
