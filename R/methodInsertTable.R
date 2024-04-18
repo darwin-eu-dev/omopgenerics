@@ -20,6 +20,7 @@
 #' @param name Name of the table to insert.
 #' @param table Table to insert to the cdm.
 #' @param overwrite Whether to overwrite an existent table.
+#' @param temporary Whether to create a temporary table.
 #'
 #' @export
 #'
@@ -48,19 +49,21 @@
 #'
 #' cdm$new_table
 #'
-insertTable <- function(cdm, name, table, overwrite = TRUE) {
+insertTable <- function(cdm, name, table, overwrite = TRUE, temporary = FALSE) {
   assertCharacter(name, length = 1, minNumCharacter = 1, na = TRUE)
   assertClass(table, "data.frame")
   table <- dplyr::as_tibble(table)
+  assertLogical(temporary, length = 1)
   UseMethod("insertTable")
 }
 
 #' @export
-insertTable.cdm_reference <- function(cdm, name, table, overwrite = TRUE) {
+insertTable.cdm_reference <- function(cdm, name, table, overwrite = TRUE, temporary = FALSE) {
   value <- insertTable(
     cdm = cdmSource(cdm), name = name, table = table, overwrite = overwrite
   )
   attr(value, "cdm_reference") <- cdm
+  if (temporary) value <- value |> dplyr::compute(temporary = TRUE)
   cdm[[name]] <- value
   return(cdm)
 }
