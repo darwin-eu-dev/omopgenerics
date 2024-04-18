@@ -261,6 +261,28 @@ summarise.cdm_table <- function(.data, ...) {
   return(res)
 }
 
+#' @export
+#' @importFrom tidyr pivot_wider
+pivot_wider.cdm_table <- function(data, ...) {
+  cl <- class(data)
+  data <- keepClass(data)
+  res <- tidyr::pivot_wider(data, ...)
+  res <- restoreClass(res, cl)
+  res <- restoreAttributes(res, keepAttributes(data, cl))
+  return(res)
+}
+
+#' @export
+#' @importFrom tidyr pivot_longer
+pivot_longer.cdm_table <- function(data, ...) {
+  cl <- class(data)
+  data <- keepClass(data)
+  res <- tidyr::pivot_longer(data, ...)
+  res <- restoreClass(res, cl)
+  res <- restoreAttributes(res, keepAttributes(data, cl))
+  return(res)
+}
+
 keepAttributes <- function(x, cl) {
   xx <- list(
     tbl_source = attr(x, "tbl_source"),
