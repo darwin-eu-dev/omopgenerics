@@ -72,6 +72,88 @@
 <p>A <code>summarised_result</code> object</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://darwin-eu-dev.github.io/omopgenerics/">omopgenerics</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span> <span class="st">"result_id"</span> <span class="op">=</span> <span class="fl">1L</span>,</span></span>
+<span class="r-in"><span> <span class="st">"cdm_name"</span> <span class="op">=</span> <span class="st">"cprd"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"group_name"</span> <span class="op">=</span> <span class="st">"cohort_name"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"group_level"</span> <span class="op">=</span> <span class="st">"acetaminophen"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"strata_name"</span> <span class="op">=</span> <span class="st">"sex &amp;&amp;&amp; age_group"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"strata_level"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male &amp;&amp;&amp; &lt;40"</span>, <span class="st">"male &amp;&amp;&amp; &gt;=40"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span> <span class="st">"variable_name"</span> <span class="op">=</span> <span class="st">"number_subjects"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"variable_level"</span> <span class="op">=</span> <span class="cn">NA_character_</span>,</span></span>
+<span class="r-in"><span> <span class="st">"estimate_name"</span> <span class="op">=</span> <span class="st">"count"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"estimate_type"</span> <span class="op">=</span> <span class="st">"integer"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"estimate_value"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"5"</span>, <span class="st">"15"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"additional_name"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"additional_level"</span> <span class="op">=</span> <span class="st">"overall"</span></span></span>
+<span class="r-in"><span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">newSummarisedResult</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">x</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 13</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   result_id cdm_name group_name  group_level   strata_name       strata_level </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>         1 cprd     cohort_name acetaminophen sex &amp;&amp;&amp; age_group male &amp;&amp;&amp; &lt;40 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>         1 cprd     cohort_name acetaminophen sex &amp;&amp;&amp; age_group male &amp;&amp;&amp; &gt;=40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 7 more variables: variable_name &lt;chr&gt;, variable_level &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   estimate_name &lt;chr&gt;, estimate_type &lt;chr&gt;, estimate_value &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   additional_name &lt;chr&gt;, additional_level &lt;chr&gt;</span></span>
+<span class="r-in"><span><span class="fu"><a href="settings.html">settings</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 1</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   result_id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>         1</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> A summarised_result object with 2 rows, 1 different result_id, 1 different cdm</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> names, and 0 settings.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> CDM names: cprd.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span> <span class="st">"result_id"</span> <span class="op">=</span> <span class="fl">1L</span>,</span></span>
+<span class="r-in"><span> <span class="st">"cdm_name"</span> <span class="op">=</span> <span class="st">"cprd"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"group_name"</span> <span class="op">=</span> <span class="st">"cohort_name"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"group_level"</span> <span class="op">=</span> <span class="st">"acetaminophen"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"strata_name"</span> <span class="op">=</span> <span class="st">"sex &amp;&amp;&amp; age_group"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"strata_level"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"male &amp;&amp;&amp; &lt;40"</span>, <span class="st">"male &amp;&amp;&amp; &gt;=40"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span> <span class="st">"variable_name"</span> <span class="op">=</span> <span class="st">"number_subjects"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"variable_level"</span> <span class="op">=</span> <span class="cn">NA_character_</span>,</span></span>
+<span class="r-in"><span> <span class="st">"estimate_name"</span> <span class="op">=</span> <span class="st">"count"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"estimate_type"</span> <span class="op">=</span> <span class="st">"integer"</span>,</span></span>
+<span class="r-in"><span> <span class="st">"estimate_value"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"5"</span>, <span class="st">"15"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"additional_name"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span></span>
+<span class="r-in"><span>  <span class="st">"additional_level"</span> <span class="op">=</span> <span class="st">"overall"</span></span></span>
+<span class="r-in"><span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">newSummarisedResult</span><span class="op">(</span>settings <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    result_id <span class="op">=</span> <span class="fl">1L</span>, result_type <span class="op">=</span> <span class="st">"custom_summary"</span>, mock <span class="op">=</span> <span class="cn">TRUE</span>, value <span class="op">=</span> <span class="fl">5</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">x</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 13</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   result_id cdm_name group_name  group_level   strata_name       strata_level </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>         1 cprd     cohort_name acetaminophen sex &amp;&amp;&amp; age_group male &amp;&amp;&amp; &lt;40 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>         1 cprd     cohort_name acetaminophen sex &amp;&amp;&amp; age_group male &amp;&amp;&amp; &gt;=40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 7 more variables: variable_name &lt;chr&gt;, variable_level &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   estimate_name &lt;chr&gt;, estimate_type &lt;chr&gt;, estimate_value &lt;chr&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   additional_name &lt;chr&gt;, additional_level &lt;chr&gt;</span></span>
+<span class="r-in"><span><span class="fu"><a href="settings.html">settings</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   result_id result_type    mock  value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>         1 custom_summary TRUE      5</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> A summarised_result object with 2 rows, 1 different result_id, 1 different cdm</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> names, and 3 settings.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> CDM names: cprd.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Settings: result_type, mock, and value.</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
