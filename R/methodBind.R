@@ -305,3 +305,8 @@ bind.summarised_result <- function(...) {
 
   return(results)
 }
+
+#' @export
+bind.list <- function(...) {
+  do.call(bind, ...)
+}
