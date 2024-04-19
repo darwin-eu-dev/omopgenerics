@@ -8,7 +8,7 @@ validateNameLevel(
   x,
   nameColumn,
   levelColumn,
-  sep = " and | &&& ",
+  sep = lifecycle::deprecated(),
   warn = FALSE
 )
 }
@@ -19,7 +19,7 @@ validateNameLevel(
 
 \item{levelColumn}{Column name of the \code{level}.}
 
-\item{sep}{Separation pattern.}
+\item{sep}{deprecated, &&& is used always.}
 
 \item{warn}{Whether to throw a warning (TRUE) or an error (FALSE).}
 }

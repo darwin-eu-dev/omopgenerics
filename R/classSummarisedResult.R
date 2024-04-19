@@ -296,7 +296,7 @@ checkColumnsFormat <- function(x, resultName) {
 #' @param x A tibble.
 #' @param nameColumn Column name of the `name`.
 #' @param levelColumn Column name of the `level`.
-#' @param sep Separation pattern.
+#' @param sep deprecated, &&& is used always.
 #' @param warn Whether to throw a warning (TRUE) or an error (FALSE).
 #'
 #' @export
@@ -304,8 +304,9 @@ checkColumnsFormat <- function(x, resultName) {
 validateNameLevel <- function(x,
                               nameColumn,
                               levelColumn,
-                              sep = " and | &&& ",
+                              sep = lifecycle::deprecated(),
                               warn = FALSE) {
+  sep <- " &&& "
   # inital checks
   assertClass(x, "data.frame")
   assertCharacter(nameColumn, length = 1)
