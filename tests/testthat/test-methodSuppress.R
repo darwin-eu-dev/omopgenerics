@@ -1,10 +1,7 @@
 test_that("test supress methods", {
   x <- dplyr::tibble(
-    "result_id" = NA_character_,
+    "result_id" = as.integer(1),
     "cdm_name" = "mock",
-    "result_type" = "summarised_characteristics",
-    "package_name" = "omopgenerics",
-    "package_version" = as.character(utils::packageVersion("omopgenerics")),
     "group_name" = "overall",
     "group_level" = "overall",
     "strata_name" = c(rep("overall", 6), rep("sex", 3)),
@@ -18,7 +15,13 @@ test_that("test supress methods", {
     "additional_level" = "overall"
   )
 
-  obj <- newSummarisedResult(x)
+  obj <- newSummarisedResult(
+    x,
+    settings = dplyr::tibble(
+      "result_id" = as.integer(1),
+      "result_type" = "summarised_characteristics",
+      "package_name" = "omopgenerics",
+      "package_version" = as.character(utils::packageVersion("omopgenerics"))))
 
   result <- suppress(obj, minCellCount = 2)
   expect_identical(result, obj)
@@ -93,4 +96,63 @@ test_that("test supress methods", {
     obj |> dplyr::select(-"estimate_value")
   )
 
+  # contains count
+  x <- dplyr::tibble(
+    "result_id" = as.integer(1),
+    "cdm_name" = "mock",
+    "group_name" = "overall",
+    "group_level" = "overall",
+    "strata_name" ="overall",
+    "strata_level" = "overall",
+    "variable_name" = c("concept id name 1", "concept id name 1", "concept id name 2", "concept id name 2"),
+    "variable_level" = NA,
+    "estimate_name" = c("record_count", "person_count", "record_count", "person_count"),
+    "estimate_type" = c("integer", "integer", "integer", "integer"),
+    "estimate_value" = c("6", "3", "4", "4"),
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
+
+  obj <- newSummarisedResult(
+    x,
+    settings = dplyr::tibble(
+      "result_id" = as.integer(1),
+      "result_type" = "summarised_characteristics",
+      "package_name" = "omopgenerics",
+      "package_version" = as.character(utils::packageVersion("omopgenerics"))))
+
+  result <- suppress(obj)
+  expect_identical(result$estimate_value, c(6, NA_character_, NA_character_, NA_character_))
+
+
+  ##TODO: TEST when issue #284
+  # record outcome count
+  # x <- dplyr::tibble(
+  #   "result_id" = as.integer(1),
+  #   "cdm_name" = "mock",
+  #   "group_name" = "overall",
+  #   "group_level" = "overall",
+  #   "strata_name" ="overall",
+  #   "strata_level" = "overall",
+  #   "variable_name" = rep(c("number records", "number subjects", "number outcomes", "relative_risk"), 3),
+  #   "variable_level" = c(rep("control", 4), rep("exposed", 4), rep("other", 4)),
+  #   "estimate_name" = rep(c("count", "count", "count", "point_estimate"), 3),
+  #   "estimate_type" = rep(c("integer", "integer", "integer", "numeric"), 3),
+  #   "estimate_value" = c("10", "7", "4", "1.15", "10", "4", "2", "1.15", "10", "8", "6", "1.15"),
+  #   "additional_name" = "overall",
+  #   "additional_level" = "overall"
+  # )
+  #
+  # obj <- newSummarisedResult(
+  #   x,
+  #   settings = dplyr::tibble(
+  #     "result_id" = as.integer(1),
+  #     "result_type" = "summarised_characteristics",
+  #     "package_name" = "omopgenerics",
+  #     "package_version" = as.character(utils::packageVersion("omopgenerics"))))
+  #
+  # result <- suppress(obj)
+  # expect_identical(result$estimate_value, c("10", "7", NA_character_, NA_character_,
+  #                                           "10", NA_character_, NA_character_, NA_character_,
+  #                                           "10", "8", "5", "1.15"))
 })
