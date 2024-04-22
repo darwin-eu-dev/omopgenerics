@@ -176,21 +176,8 @@ joinSet <- function(set, addset) {
   return(set)
 }
 validateSummariseResult <- function(x) {
-  if (!"result_id" %in% colnames(x)) {
-    x <- x |> dplyr::mutate("result_id" = as.integer(1))
-    warnResult <- TRUE
-  } else {
-    warnResult <- FALSE
-  }
-
   # compulsory columns
   x <- checkColumns(x = x, "summarised_result")
-  if (warnResult) {
-    cli::cli_warn(c(
-      "!" = "`result_id` column is missing, please add it as it is a compulsory
-      column."
-    ))
-  }
 
   # all columns should be character
   x <- checkColumnsFormat(x = x, "summarised_result")
