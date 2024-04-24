@@ -88,6 +88,14 @@ newSummarisedResult <- function(x, settings = attr(x, "settings")) {
 
 constructSummarisedResult <- function(x, set, call = parent.frame()) {
   x <- x |> dplyr::as_tibble()
+
+  if (!is.null(set)) {
+    set <- set |> dplyr::as_tibble()
+    if (!"result_id" %in% colnames(set)) {
+      cli::cli_abort("result_id must be a column of settings argument", call = call)
+    }
+  }
+
   settingsCols <- colnames(x)[
     !colnames(x) %in% resultColumns(table = "summarised_result")
   ]
