@@ -74,32 +74,180 @@
 
     
     
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
 <p>A summarised result is a table that contains aggregated summary
-statistics (that is, a result set that contains no patient-level data).
-The table with a summarised result contains the following columns
-(although there can be additional ones):</p>
+statistics (that is, a result set that contains no patient-level
+data).</p>
+<p>Let’s look at an example result in this format. Here we have just one
+esitmate</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://darwin-eu-dev.github.io/omopgenerics/">omopgenerics</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    <span class="st">"result_id"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>    <span class="st">"cdm_name"</span> <span class="op">=</span> <span class="st">"my_cdm"</span>,</span>
+<span>    <span class="st">"group_name"</span> <span class="op">=</span> <span class="st">"sex"</span>,</span>
+<span>    <span class="st">"group_level"</span> <span class="op">=</span> <span class="st">"male"</span>,</span>
+<span>    <span class="st">"strata_name"</span> <span class="op">=</span> <span class="st">"sex"</span>,</span>
+<span>    <span class="st">"strata_level"</span> <span class="op">=</span> <span class="st">"male"</span>,</span>
+<span>    <span class="st">"variable_name"</span> <span class="op">=</span> <span class="st">"Age group"</span>,</span>
+<span>    <span class="st">"variable_level"</span> <span class="op">=</span> <span class="st">"10 to 50"</span>,</span>
+<span>    <span class="st">"estimate_name"</span> <span class="op">=</span> <span class="st">"count"</span>,</span>
+<span>    <span class="st">"estimate_type"</span> <span class="op">=</span> <span class="st">"numeric"</span>,</span>
+<span>    <span class="st">"estimate_value"</span> <span class="op">=</span> <span class="st">"5"</span>,</span>
+<span>    <span class="st">"additional_name"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    <span class="st">"additional_level"</span> <span class="op">=</span> <span class="st">"overall"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newSummarisedResult.html">newSummarisedResult</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">result</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 1</span></span>
+<span><span class="co">#&gt; Columns: 13</span></span>
+<span><span class="co">#&gt; $ result_id        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1</span></span>
+<span><span class="co">#&gt; $ cdm_name         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "my_cdm"</span></span>
+<span><span class="co">#&gt; $ group_name       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "sex"</span></span>
+<span><span class="co">#&gt; $ group_level      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "male"</span></span>
+<span><span class="co">#&gt; $ strata_name      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "sex"</span></span>
+<span><span class="co">#&gt; $ strata_level     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "male"</span></span>
+<span><span class="co">#&gt; $ variable_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Age group"</span></span>
+<span><span class="co">#&gt; $ variable_level   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "10 to 50"</span></span>
+<span><span class="co">#&gt; $ estimate_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "count"</span></span>
+<span><span class="co">#&gt; $ estimate_type    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "numeric"</span></span>
+<span><span class="co">#&gt; $ estimate_value   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "5"</span></span>
+<span><span class="co">#&gt; $ additional_name  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall"</span></span>
+<span><span class="co">#&gt; $ additional_level <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall"</span></span></code></pre></div>
+<p>We can also associate settings with our results. These will typically
+be used to explain how the result was created.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newSummarisedResult.html">newSummarisedResult</a></span><span class="op">(</span><span class="va">x</span>, </span>
+<span>                    settings <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>result_id <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                                             package <span class="op">=</span> <span class="st">"PatientProfiles"</span>,</span>
+<span>                                             study <span class="op">=</span> <span class="st">"my_characterisation_study"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">result</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 1</span></span>
+<span><span class="co">#&gt; Columns: 13</span></span>
+<span><span class="co">#&gt; $ result_id        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1</span></span>
+<span><span class="co">#&gt; $ cdm_name         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "my_cdm"</span></span>
+<span><span class="co">#&gt; $ group_name       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "sex"</span></span>
+<span><span class="co">#&gt; $ group_level      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "male"</span></span>
+<span><span class="co">#&gt; $ strata_name      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "sex"</span></span>
+<span><span class="co">#&gt; $ strata_level     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "male"</span></span>
+<span><span class="co">#&gt; $ variable_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Age group"</span></span>
+<span><span class="co">#&gt; $ variable_level   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "10 to 50"</span></span>
+<span><span class="co">#&gt; $ estimate_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "count"</span></span>
+<span><span class="co">#&gt; $ estimate_type    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "numeric"</span></span>
+<span><span class="co">#&gt; $ estimate_value   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "5"</span></span>
+<span><span class="co">#&gt; $ additional_name  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall"</span></span>
+<span><span class="co">#&gt; $ additional_level <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall"</span></span>
+<span><span class="fu"><a href="../reference/settings.html">settings</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
+<span><span class="co">#&gt;   result_id package         study                    </span></span>
+<span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>         1 PatientProfiles my_characterisation_study</span></span></code></pre></div>
+</div>
 <div class="section level2">
-<h2 id="additional-attributes">Additional attributes<a class="anchor" aria-label="anchor" href="#additional-attributes"></a>
+<h2 id="combining-summarised-results">Combining summarised results<a class="anchor" aria-label="anchor" href="#combining-summarised-results"></a>
 </h2>
-<div class="section level3">
-<h3 id="extra-aggregated-results">Extra aggregated results<a class="anchor" aria-label="anchor" href="#extra-aggregated-results"></a>
-</h3>
-<p>A summarised result may also contain other aggregated results as
-attributes of the main result.</p>
-</div>
-<div class="section level3">
-<h3 id="participants">Participants<a class="anchor" aria-label="anchor" href="#participants"></a>
-</h3>
-<p>A summarised result may, as an optional attribute, contain a
-reference to the patients that informed the result. The participants
-will contain a “subject_id” column which can be used to identify
-individuals in the person table (or other tables in the cdm
-reference).</p>
-</div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result_1</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    <span class="st">"result_id"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>    <span class="st">"cdm_name"</span> <span class="op">=</span> <span class="st">"my_cdm"</span>,</span>
+<span>    <span class="st">"group_name"</span> <span class="op">=</span> <span class="st">"sex"</span>,</span>
+<span>    <span class="st">"group_level"</span> <span class="op">=</span> <span class="st">"male"</span>,</span>
+<span>    <span class="st">"strata_name"</span> <span class="op">=</span> <span class="st">"sex"</span>,</span>
+<span>    <span class="st">"strata_level"</span> <span class="op">=</span> <span class="st">"male"</span>,</span>
+<span>    <span class="st">"variable_name"</span> <span class="op">=</span> <span class="st">"Age group"</span>,</span>
+<span>    <span class="st">"variable_level"</span> <span class="op">=</span> <span class="st">"10 to 50"</span>,</span>
+<span>    <span class="st">"estimate_name"</span> <span class="op">=</span> <span class="st">"count"</span>,</span>
+<span>    <span class="st">"estimate_type"</span> <span class="op">=</span> <span class="st">"numeric"</span>,</span>
+<span>    <span class="st">"estimate_value"</span> <span class="op">=</span> <span class="st">"5"</span>,</span>
+<span>    <span class="st">"additional_name"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    <span class="st">"additional_level"</span> <span class="op">=</span> <span class="st">"overall"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="va">result_1_settings</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>result_id <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                                   package <span class="op">=</span> <span class="st">"PatientProfiles"</span>,</span>
+<span>                                   study <span class="op">=</span> <span class="st">"my_characterisation_study"</span>,</span>
+<span>                                   analyis <span class="op">=</span> <span class="st">"stratified by age_group"</span><span class="op">)</span></span>
+<span><span class="va">result_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newSummarisedResult.html">newSummarisedResult</a></span><span class="op">(</span><span class="va">result_1</span>, settings <span class="op">=</span> <span class="va">result_1_settings</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">result_2</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    <span class="st">"result_id"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
+<span>    <span class="st">"cdm_name"</span> <span class="op">=</span> <span class="st">"my_cdm"</span>,</span>
+<span>    <span class="st">"group_name"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    <span class="st">"group_level"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    <span class="st">"strata_name"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    <span class="st">"strata_level"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    <span class="st">"variable_name"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    <span class="st">"variable_level"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    <span class="st">"estimate_name"</span> <span class="op">=</span> <span class="st">"count"</span>,</span>
+<span>    <span class="st">"estimate_type"</span> <span class="op">=</span> <span class="st">"numeric"</span>,</span>
+<span>    <span class="st">"estimate_value"</span> <span class="op">=</span> <span class="st">"55"</span>,</span>
+<span>    <span class="st">"additional_name"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    <span class="st">"additional_level"</span> <span class="op">=</span> <span class="st">"overall"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="va">result_2_settings</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>result_id <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                                   package <span class="op">=</span> <span class="st">"PatientProfiles"</span>,</span>
+<span>                                   study <span class="op">=</span> <span class="st">"my_characterisation_study"</span>,</span>
+<span>                                   analyis <span class="op">=</span> <span class="st">"overall analysis"</span><span class="op">)</span></span>
+<span><span class="va">result_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newSummarisedResult.html">newSummarisedResult</a></span><span class="op">(</span><span class="va">result_2</span>, settings <span class="op">=</span> <span class="va">result_2_settings</span><span class="op">)</span></span></code></pre></div>
+<p>Now we have our results we can combine them using bind. Because the
+two sets of results contain the same result ID, when the results are
+combined this will be automatically updated.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bind.html">bind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">result_1</span>, <span class="va">result_2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">result</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 2</span></span>
+<span><span class="co">#&gt; Columns: 13</span></span>
+<span><span class="co">#&gt; $ result_id        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1, 2</span></span>
+<span><span class="co">#&gt; $ cdm_name         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "my_cdm", "my_cdm"</span></span>
+<span><span class="co">#&gt; $ group_name       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "sex", "overall"</span></span>
+<span><span class="co">#&gt; $ group_level      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "male", "overall"</span></span>
+<span><span class="co">#&gt; $ strata_name      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "sex", "overall"</span></span>
+<span><span class="co">#&gt; $ strata_level     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "male", "overall"</span></span>
+<span><span class="co">#&gt; $ variable_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Age group", "overall"</span></span>
+<span><span class="co">#&gt; $ variable_level   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "10 to 50", "overall"</span></span>
+<span><span class="co">#&gt; $ estimate_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "count", "count"</span></span>
+<span><span class="co">#&gt; $ estimate_type    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "numeric", "numeric"</span></span>
+<span><span class="co">#&gt; $ estimate_value   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "5", "55"</span></span>
+<span><span class="co">#&gt; $ additional_name  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall"</span></span>
+<span><span class="co">#&gt; $ additional_level <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall"</span></span>
+<span><span class="fu"><a href="../reference/settings.html">settings</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 4</span></span></span>
+<span><span class="co">#&gt;   result_id package         study                     analyis                </span></span>
+<span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>         1 PatientProfiles my_characterisation_study stratified by age_group</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>         2 PatientProfiles my_characterisation_study overall analysis</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="exporting-summarised-result">Exporting summarised result<a class="anchor" aria-label="anchor" href="#exporting-summarised-result"></a>
+<h2 id="minimum-cell-count-suppression">Minimum cell count suppression<a class="anchor" aria-label="anchor" href="#minimum-cell-count-suppression"></a>
 </h2>
+<p>Once we have a summarised result, we can suppress the results based
+on some minimum cell count.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/suppress.html">suppress</a></span><span class="op">(</span><span class="va">result</span>, minCellCount <span class="op">=</span> <span class="fl">7</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 2</span></span>
+<span><span class="co">#&gt; Columns: 13</span></span>
+<span><span class="co">#&gt; $ result_id        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1, 2</span></span>
+<span><span class="co">#&gt; $ cdm_name         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "my_cdm", "my_cdm"</span></span>
+<span><span class="co">#&gt; $ group_name       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "sex", "overall"</span></span>
+<span><span class="co">#&gt; $ group_level      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "male", "overall"</span></span>
+<span><span class="co">#&gt; $ strata_name      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "sex", "overall"</span></span>
+<span><span class="co">#&gt; $ strata_level     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "male", "overall"</span></span>
+<span><span class="co">#&gt; $ variable_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Age group", "overall"</span></span>
+<span><span class="co">#&gt; $ variable_level   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "10 to 50", "overall"</span></span>
+<span><span class="co">#&gt; $ estimate_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "count", "count"</span></span>
+<span><span class="co">#&gt; $ estimate_type    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "numeric", "numeric"</span></span>
+<span><span class="co">#&gt; $ estimate_value   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> NA, "55"</span></span>
+<span><span class="co">#&gt; $ additional_name  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall"</span></span>
+<span><span class="co">#&gt; $ additional_level <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall"</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
