@@ -20,6 +20,9 @@
 #' reference.
 #' @param cdmName Name of the cdm object.
 #' @param cdmVersion Version of the cdm. Supported versions 5.3 and 5.4.
+#' @param .softValidation Whether to perform a soft validation of consistency.
+#' If set to FALSE, non overlapping observation periods are ensured.
+#'
 #'
 #' @return A `cdm_reference` object.
 #'
@@ -50,10 +53,12 @@
 #' }
 newCdmReference <- function(tables,
                             cdmName,
-                            cdmVersion = NULL) {
+                            cdmVersion = NULL,
+                            .softValidation = FALSE) {
   # inputs
   assertList(tables, named = TRUE, class = "cdm_table")
   assertCharacter(cdmName, length = 1)
+  assertLogical(.softValidation, length = 1)
 
   # get cdm version
   if (is.null(cdmVersion)) {
@@ -72,7 +77,7 @@ newCdmReference <- function(tables,
   )
 
   # validate
-  cdm <- validateCdmReference(cdm)
+  cdm <- validateCdmReference(cdm, soft = .softValidation)
 
   return(cdm)
 }
@@ -100,7 +105,7 @@ constructCdmReference <- function(tables, cdmName, cdmVersion, cdmSource) {
     class = "cdm_reference"
   )
 }
-validateCdmReference <- function(cdm) {
+validateCdmReference <- function(cdm, soft) {
   # assert version
   assertChoice(cdmVersion(cdm), c("5.3", "5.4"), length = 1)
 
@@ -157,7 +162,9 @@ validateCdmReference <- function(cdm) {
   }
 
   # not overlapping periods
-  checkOverlapObservation(cdm$observation_period)
+  if (!soft) {
+    checkOverlapObservation(cdm$observation_period)
+  }
 
   return(invisible(cdm))
 }
