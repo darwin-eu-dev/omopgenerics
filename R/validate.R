@@ -47,3 +47,54 @@ validateSnakeCase <- function(string,
   # return
   return(newString)
 }
+
+#' Validate a cdm object. You can also ensure that it contains a certain set of
+#' cdm tables
+#'
+#' @param cdm A cdm_reference object.
+#' @param cdmTables A set of tables that should be in the cdm object.
+#' @param call The corresponding function call is retrieved and mentioned in
+#' error messages as the source of the error.
+#'
+#' @export
+#'
+#' @return A cdm_reference object.
+#'
+validateCdm <- function(cdm,
+                        cdmTables = NULL,
+                        call = parent.frame()) {
+  checkCdm(cdm = cdm, cdmTables = cdmTables, call = call)
+  return(inviisble(cdm))
+}
+
+#' Validate an ageGroup list.
+#'
+#' @param ageGroup A age_group list.
+#' @param type Can be either, "message" or "silent".
+#' @param call The corresponding function call is retrieved and mentioned in
+#' error messages as the source of the error.
+#'
+#' @export
+#'
+#' @return The valid cdm_reference.
+#'
+validateAgeGroup <- function(ageGroup,
+                             type = "message",
+                             call = parent.frame()) {
+  # check input
+  if (!is.list(ageGroup)) {
+    ageGroup <- list(ageGroup)
+  }
+  assertList(x = ageGroup, class = c("numeric", "integer"), call = call)
+  assertChoice(x = type, choices = c("message", "silent"), length = 1, call = call)
+
+  # validation
+  lapply(ageGroup, function(x) {
+    if (length(x) != 2) {
+      report("", "error", call = call)
+    }
+  })
+
+  # return
+  return(newString)
+}

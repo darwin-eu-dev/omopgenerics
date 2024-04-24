@@ -43,6 +43,32 @@ checkSnakeCase <- function(string,
   return(invisible(NULL))
 }
 
+#' Check a cdm object. You can also ensure that it contains a certain set of
+#' cdm tables
+#'
+#' @param cdm A cdm_reference object.
+#' @param cdmTables A set of tables that should be in the cdm object.
+#' @param call The corresponding function call is retrieved and mentioned in
+#' error messages as the source of the error.
+#'
+#' @export
+#'
+#' @return A cdm_reference object.
+#'
+checkCdm <- function(cdm,
+                     cdmTables = NULL,
+                     call = parent.frame()) {
+  assertClass(cdm, "cdm_reference", class = "cdm_reference", call = call)
+  assertCharacter(cdmTables)
+  if (!is.null(cdmTables)) {
+    notPresent <- cdmTables[!cdmTables %in% names(cdm)]
+    if (length(notPresent) > 0) {
+      cli::cli_abort("{notPresent} not present in the cdm_reference object.")
+    }
+  }
+  return(inviisble(NULL))
+}
+
 # INTERNAL
 report <- function(x, type, call) {
   if (type == "error") {

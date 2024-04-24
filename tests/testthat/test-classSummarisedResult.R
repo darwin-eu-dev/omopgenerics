@@ -159,6 +159,8 @@ test_that("test SummarisedResult object", {
       "result_type")
   )
 
+  expect_identical(res, res |> newSummarisedResult())
+
   expect_identical(
     x |> newSummarisedResult(),
     x |> newSummarisedResult() |> newSummarisedResult()
