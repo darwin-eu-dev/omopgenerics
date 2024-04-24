@@ -9,19 +9,112 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
+  collapse = TRUE, message = FALSE, warning = FALSE,
   comment = "#>"
 )
 ```
 
-A summarised result is a table that contains aggregated summary statistics (that is, a result set that contains no patient-level data). The table with a summarised result contains the following columns (although there can be additional ones):
+## Introduction
+A summarised result is a table that contains aggregated summary statistics (that is, a result set that contains no patient-level data). 
 
-## Additional attributes
-### Extra aggregated results
-A summarised result may also contain other aggregated results as attributes of the main result.
+Let's look at an example result in this format. Here we have just one esitmate
+```{r}
+library(omopgenerics)
+library(dplyr)
 
-### Participants
-A summarised result may, as an optional attribute, contain a reference to the patients that informed the result. The participants will contain a "subject_id" column which can be used to identify individuals in the person table (or other tables in the cdm reference).
+x <- dplyr::tibble(
+    "result_id" = as.integer(1),
+    "cdm_name" = "my_cdm",
+    "group_name" = "sex",
+    "group_level" = "male",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable_name" = "Age group",
+    "variable_level" = "10 to 50",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
 
-## Exporting summarised result
+result <- newSummarisedResult(x)
+result |> 
+  dplyr::glimpse()
+```
 
+We can also associate settings with our results. These will typically be used to explain how the result was created.
+
+```{r}
+result <- newSummarisedResult(x, 
+                    settings = dplyr::tibble(result_id = 1,
+                                             package = "PatientProfiles",
+                                             study = "my_characterisation_study"))
+
+result |> glimpse()
+settings(result)
+```
+
+
+## Combining summarised results
+```{r}
+result_1 <- dplyr::tibble(
+    "result_id" = as.integer(1),
+    "cdm_name" = "my_cdm",
+    "group_name" = "sex",
+    "group_level" = "male",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable_name" = "Age group",
+    "variable_level" = "10 to 50",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
+result_1_settings <- dplyr::tibble(result_id = 1,
+                                   package = "PatientProfiles",
+                                   study = "my_characterisation_study",
+                                   analyis = "stratified by age_group")
+result_1 <- newSummarisedResult(result_1, settings = result_1_settings)
+
+
+result_2 <- dplyr::tibble(
+    "result_id" = as.integer(1),
+    "cdm_name" = "my_cdm",
+    "group_name" = "overall",
+    "group_level" = "overall",
+    "strata_name" = "overall",
+    "strata_level" = "overall",
+    "variable_name" = "overall",
+    "variable_level" = "overall",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "55",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
+result_2_settings <- dplyr::tibble(result_id = 1,
+                                   package = "PatientProfiles",
+                                   study = "my_characterisation_study",
+                                   analyis = "overall analysis")
+result_2 <- newSummarisedResult(result_2, settings = result_2_settings)
+```
+
+Now we have our results we can combine them using bind. Because the two sets of results contain the same result ID, when the results are combined this will be automatically updated.
+
+```{r}
+result <- bind(list(result_1, result_2))
+result |> 
+  dplyr::glimpse()
+settings(result)
+```
+
+## Minimum cell count suppression
+Once we have a summarised result, we can suppress the results based on some minimum cell count.
+
+```{r}
+suppress(result, minCellCount = 7) |> 
+  glimpse()
+```
