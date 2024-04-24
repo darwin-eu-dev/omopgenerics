@@ -230,6 +230,9 @@ validateSummariseResult <- function(x) {
     cli::cli_abort("There are ids present in the summary that do not have settings: {paste0(notPresent, collapse = ', ')}")
   }
 
+  # validate groupCount
+  checkGroupCount(x)
+
   return(x)
 }
 checkColumns <- function(x, resultName, call = parent.frame()) {
@@ -289,6 +292,51 @@ checkColumnsFormat <- function(x, resultName) {
     }
   }
   invisible(x)
+}
+checkGroupCount <- function(x) {
+  groupping <- c("group_name", "group_level", "strata_name", "strata_level")
+  obsLabels <- x |> dplyr::pull("variable_name") |> unique()
+  obsLabelsL <- tolower(gsub("_", " ", obsLabels))
+  res <- character()
+  n <- 0
+  for (gcount in groupCount) {
+    if (n < 5) {
+      ol <- obsLabels[obsLabelsL %in% gcount]
+      xx <- x |>
+        dplyr::filter(.data$variable_name %in% ol) |>
+        dplyr::select(dplyr::all_of(c(groupping, "variable_name"))) |>
+        dplyr::group_by(dplyr::across(dplyr::all_of(groupping))) |>
+        dplyr::filter(dplyr::n() > 1) |>
+        dplyr::group_split() |>
+        as.list()
+      for (k in seq_along(xx)) {
+        if (n < 5) {
+          res <- c(res, "*" = glue::glue("{nrow(xx[[k]])} '{gcount}' in variable_name for: {getGroupping(xx[[k]])}."))
+          n <- n + 1
+        }
+      }
+    }
+  }
+  if (length(res) > 0) {
+    res <- c(
+      "Each groupping (unique combination of: {groupping}) can not contain multipe group identifiers.",
+      "First {n} combination{?s}:",
+      res
+    )
+    cli::cli_abort(res)
+  }
+  return(invisible(NULL))
+}
+getGroupping <- function(x) {
+  x <- x |>
+    dplyr::select(-dplyr::any_of("variable_name")) |>
+    dplyr::distinct() |>
+    as.list()
+  lapply(seq_along(x), function(kk) {
+    paste0(names(x)[kk], ": ", x[[kk]])
+  }) |>
+    unlist() |>
+    paste0(collapse = ", ")
 }
 
 #' Validate if two columns are valid Name-Level pair.
