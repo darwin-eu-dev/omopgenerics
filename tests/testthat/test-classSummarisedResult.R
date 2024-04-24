@@ -164,4 +164,73 @@ test_that("test SummarisedResult object", {
     x |> newSummarisedResult() |> newSummarisedResult()
   )
 
+  x <- dplyr::tibble(
+    "result_id" = as.integer(c(1, 2)),
+    "cdm_name" = c("cprd", "eunomia"),
+    "group_name" = "sex",
+    "group_level" = "male",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable_name" = rep("number records", 2),
+    "variable_level" = NA_character_,
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
+  expect_error(x |> newSummarisedResult())
+
+  x <- dplyr::tibble(
+    "result_id" = as.integer(c(1, 2)),
+    "cdm_name" = c("cprd", "eunomia"),
+    "group_name" = "sex",
+    "group_level" = "male",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable_name" = c("number SUBJECTS", "number_subjects"),
+    "variable_level" = NA_character_,
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
+  expect_error(x |> newSummarisedResult())
+
+  x <- dplyr::tibble(
+    "result_id" = as.integer(c(1, 2)),
+    "cdm_name" = c("cprd", "eunomia"),
+    "group_name" = "sex",
+    "group_level" = "male",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable_name" = c("number subjects", "number records"),
+    "variable_level" = NA_character_,
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
+  expect_no_error(x |> newSummarisedResult())
+
+  x <- dplyr::tibble(
+    "result_id" = 1L,
+    "cdm_name" = "eunomia",
+    "group_name" = c("sex", "sex", "sex", "age_group", "age_group", "calendar"),
+    "group_level" = c("male", "female", "none", ">=40", "<40", "2020"),
+    "strata_name" = "overall",
+    "strata_level" = "overall",
+    "variable_name" = "number_subjects",
+    "variable_level" = NA_character_,
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
+  expect_no_error(x |> newSummarisedResult())
+  expect_error(x |> dplyr::union_all(x) |> newSummarisedResult())
+
 })

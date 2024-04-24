@@ -319,7 +319,7 @@ checkGroupCount <- function(x) {
   }
   if (length(res) > 0) {
     res <- c(
-      "Each groupping (unique combination of: {groupping}) can not contain multipe group identifiers.",
+      "Each groupping (unique combination of: {groupping}) can not contain repeated group identifiers ({groupCount}).",
       "First {n} combination{?s}:",
       res
     )
