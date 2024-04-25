@@ -72,7 +72,6 @@ suppress <- function(result,
 suppress.summarised_result <- function(result,
                                        minCellCount = 5) {
   estimateName = "count"
-  groupCount = c("number subjects", "number records", "number outcomes")
   suppressed <- NA_character_
 
   # initial checks
@@ -83,7 +82,7 @@ suppress.summarised_result <- function(result,
     # obscured records
     obscureRecords(minCellCount, estimateName) |>
     # obscured records by group
-    obscureGroup(minCellCount, estimateName, groupCount) |>
+    obscureGroup(minCellCount, estimateName) |>
     # obscure column
     obscureColumn(suppressed)
 
@@ -108,7 +107,7 @@ obscureRecords <- function(result, minCellCount, estimateName) {
     )
   return(result)
 }
-obscureGroup <- function(result, minCellCount, estimateName, groupCount) {
+obscureGroup <- function(result, minCellCount, estimateName) {
   obsLabels <- result |>
     dplyr::select("variable_name") |>
     dplyr::distinct() |>

@@ -177,6 +177,8 @@ fieldsResults <- dplyr::tibble(
     )
   ))
 
+groupCount <- c("number subjects", "number records")
+
 usethis::use_data(
-  fieldsTables, fieldsResults, internal = TRUE, overwrite = TRUE
+  fieldsTables, fieldsResults, groupCount, internal = TRUE, overwrite = TRUE
 )
