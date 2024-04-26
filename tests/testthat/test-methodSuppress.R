@@ -23,12 +23,24 @@ test_that("test supress methods", {
       "package_name" = "omopgenerics",
       "package_version" = as.character(utils::packageVersion("omopgenerics"))))
 
+  settingsTest <- function(minCellCount) {
+    dplyr::tibble(
+      "result_id" = as.integer(1),
+      "result_type" = "summarised_characteristics",
+      "package_name" = "omopgenerics",
+      "package_version" = as.character(utils::packageVersion("omopgenerics")),
+      "min_cell_count" = minCellCount)
+  }
+
+  objOut <- newSummarisedResult(x, settings = settingsTest(2))
   result <- suppress(obj, minCellCount = 2)
-  expect_identical(result, obj)
+  expect_identical(result, objOut)
 
+  objOut <- newSummarisedResult(x, settings = settingsTest(3))
   result <- suppress(obj, minCellCount = 3)
-  expect_identical(result, obj)
+  expect_identical(result, objOut)
 
+  objOut <- newSummarisedResult(x, settings = settingsTest(4))
   result <- suppress(obj, minCellCount = 4)
   expect_identical(
     result$estimate_value,
@@ -36,9 +48,10 @@ test_that("test supress methods", {
   )
   expect_identical(
     result |> dplyr::select(-"estimate_value"),
-    obj |> dplyr::select(-"estimate_value")
+    objOut |> dplyr::select(-"estimate_value")
   )
 
+  objOut <- newSummarisedResult(x, settings = settingsTest(5))
   result <- suppress(obj, minCellCount = 5)
   expect_identical(
     result$estimate_value,
@@ -46,9 +59,10 @@ test_that("test supress methods", {
   )
   expect_identical(
     result |> dplyr::select(-"estimate_value"),
-    obj |> dplyr::select(-"estimate_value")
+    objOut |> dplyr::select(-"estimate_value")
   )
 
+  objOut <- newSummarisedResult(x, settings = settingsTest(6))
   result <- suppress(obj, minCellCount = 6)
   expect_identical(
     result$estimate_value,
@@ -56,9 +70,10 @@ test_that("test supress methods", {
   )
   expect_identical(
     result |> dplyr::select(-"estimate_value"),
-    obj |> dplyr::select(-"estimate_value")
+    objOut |> dplyr::select(-"estimate_value")
   )
 
+  objOut <- newSummarisedResult(x, settings = settingsTest(10))
   result <- suppress(obj, minCellCount = 10)
   expect_identical(
     result$estimate_value,
@@ -66,9 +81,10 @@ test_that("test supress methods", {
   )
   expect_identical(
     result |> dplyr::select(-"estimate_value"),
-    obj |> dplyr::select(-"estimate_value")
+    objOut |> dplyr::select(-"estimate_value")
   )
 
+  objOut <- newSummarisedResult(x, settings = settingsTest(11))
   result <- suppress(obj, minCellCount = 11)
   expect_identical(
     result$estimate_value,
@@ -76,9 +92,10 @@ test_that("test supress methods", {
   )
   expect_identical(
     result |> dplyr::select(-"estimate_value"),
-    obj |> dplyr::select(-"estimate_value")
+    objOut |> dplyr::select(-"estimate_value")
   )
 
+  objOut <- newSummarisedResult(x, settings = settingsTest(12))
   result <- suppress(obj, minCellCount = 12)
   expect_identical(
     result$estimate_value,
@@ -86,15 +103,20 @@ test_that("test supress methods", {
   )
   expect_identical(
     result |> dplyr::select(-"estimate_value"),
-    obj |> dplyr::select(-"estimate_value")
+    objOut |> dplyr::select(-"estimate_value")
   )
 
+  objOut <- newSummarisedResult(x, settings = settingsTest(13))
   result <- suppress(obj, minCellCount = 13)
   expect_identical(result$estimate_value, rep(NA_character_, 9))
   expect_identical(
     result |> dplyr::select(-"estimate_value"),
-    obj |> dplyr::select(-"estimate_value")
+    objOut |> dplyr::select(-"estimate_value")
   )
+
+  # test already suppress input
+  expect_warning(result1 <- suppress(result, minCellCount = 10))
+  expect_identical(result, result1)
 
   # contains count
   x <- dplyr::tibble(
@@ -123,36 +145,4 @@ test_that("test supress methods", {
 
   result <- suppress(obj)
   expect_identical(result$estimate_value, c(6, NA_character_, NA_character_, NA_character_))
-
-
-  ##TODO: TEST when issue #284
-  # record outcome count
-  # x <- dplyr::tibble(
-  #   "result_id" = as.integer(1),
-  #   "cdm_name" = "mock",
-  #   "group_name" = "overall",
-  #   "group_level" = "overall",
-  #   "strata_name" ="overall",
-  #   "strata_level" = "overall",
-  #   "variable_name" = rep(c("number records", "number subjects", "number outcomes", "relative_risk"), 3),
-  #   "variable_level" = c(rep("control", 4), rep("exposed", 4), rep("other", 4)),
-  #   "estimate_name" = rep(c("count", "count", "count", "point_estimate"), 3),
-  #   "estimate_type" = rep(c("integer", "integer", "integer", "numeric"), 3),
-  #   "estimate_value" = c("10", "7", "4", "1.15", "10", "4", "2", "1.15", "10", "8", "6", "1.15"),
-  #   "additional_name" = "overall",
-  #   "additional_level" = "overall"
-  # )
-  #
-  # obj <- newSummarisedResult(
-  #   x,
-  #   settings = dplyr::tibble(
-  #     "result_id" = as.integer(1),
-  #     "result_type" = "summarised_characteristics",
-  #     "package_name" = "omopgenerics",
-  #     "package_version" = as.character(utils::packageVersion("omopgenerics"))))
-  #
-  # result <- suppress(obj)
-  # expect_identical(result$estimate_value, c("10", "7", NA_character_, NA_character_,
-  #                                           "10", NA_character_, NA_character_, NA_character_,
-  #                                           "10", "8", "5", "1.15"))
 })
