@@ -71,6 +71,17 @@ suppress <- function(result,
 #'
 suppress.summarised_result <- function(result,
                                        minCellCount = 5) {
+
+  # check if already suppressed
+  set <- settings(result)
+  if ("min_cell_count" %in% colnames(set)) {
+    prevSupp <- unique(set |> dplyr::pull("min_cell_count")) |> as.numeric()
+    if (prevSupp > minCellCount) {
+      cli::cli_warn("Results passed are already obscured for counts smaller than {prevSupp}.")
+      return(result)
+    }
+  }
+
   estimateName = "count"
   suppressed <- NA_character_
 
@@ -85,6 +96,11 @@ suppress.summarised_result <- function(result,
     obscureGroup(minCellCount, estimateName) |>
     # obscure column
     obscureColumn(suppressed)
+
+  # update settings
+  set <- set |>
+    dplyr::mutate("min_cell_count" = as.integer(.env$minCellCount))
+  result <- newSummarisedResult(x = result, settings = set)
 
   return(result)
 }
