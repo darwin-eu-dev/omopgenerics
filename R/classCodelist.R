@@ -83,7 +83,7 @@ print.codelist <- function(x, ...) {
 
 #' Empty `codelist` object.
 #'
-#' @return An empty codeist object.
+#' @return An empty codelist object.
 #'
 #' @export
 #'

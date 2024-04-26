@@ -474,7 +474,7 @@ getCohortId <- function(cohort, cohortName) {
 #' Get the cohort name of a certain cohort definition id
 #'
 #' @param cohort A cohort_table object.
-#' @param cohortId Cohort deifnition id of interest.
+#' @param cohortId Cohort definition id of interest.
 #'
 #' @return Cohort names
 #'
