@@ -71,7 +71,8 @@ suppress <- function(result,
 #'
 suppress.summarised_result <- function(result,
                                        minCellCount = 5) {
-  # checks
+
+  # check if already suppressed
   set <- settings(result)
   if ("min_cell_count" %in% colnames(set)) {
     prevSupp <- unique(set |> dplyr::pull("min_cell_count")) |> as.numeric()
@@ -82,7 +83,6 @@ suppress.summarised_result <- function(result,
   }
 
   estimateName = "count"
-  groupCount = c("number subjects", "number records", "number outcomes")
   suppressed <- NA_character_
 
   # initial checks
@@ -93,7 +93,7 @@ suppress.summarised_result <- function(result,
     # obscured records
     obscureRecords(minCellCount, estimateName) |>
     # obscured records by group
-    obscureGroup(minCellCount, estimateName, groupCount) |>
+    obscureGroup(minCellCount, estimateName) |>
     # obscure column
     obscureColumn(suppressed)
 
@@ -123,8 +123,7 @@ obscureRecords <- function(result, minCellCount, estimateName) {
     )
   return(result)
 }
-
-obscureGroup <- function(result, minCellCount, estimateName, groupCount) {
+obscureGroup <- function(result, minCellCount, estimateName) {
   obsLabels <- result |>
     dplyr::select("variable_name") |>
     dplyr::distinct() |>
@@ -163,7 +162,6 @@ obscureGroup <- function(result, minCellCount, estimateName, groupCount) {
     dplyr::select(-c("obscure_group_1", "obscure_group_2"))
   return(result)
 }
-
 obscureColumn <- function(result, suppressed) {
   result |>
     dplyr::mutate("estimate_value" = dplyr::if_else(
