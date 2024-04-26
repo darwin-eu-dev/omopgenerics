@@ -9,7 +9,7 @@ getCohortName(cohort, cohortId)
 \arguments{
 \item{cohort}{A cohort_table object.}
 
-\item{cohortId}{Cohort deifnition id of interest.}
+\item{cohortId}{Cohort definition id of interest.}
 }
 \value{
 Cohort names

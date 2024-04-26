@@ -7,7 +7,7 @@
 emptyCodelist()
 }
 \value{
-An empty codeist object.
+An empty codelist object.
 }
 \description{
 Empty \code{codelist} object.
