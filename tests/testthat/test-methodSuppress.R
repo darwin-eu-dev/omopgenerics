@@ -29,7 +29,7 @@ test_that("test supress methods", {
       "result_type" = "summarised_characteristics",
       "package_name" = "omopgenerics",
       "package_version" = as.character(utils::packageVersion("omopgenerics")),
-      "min_cell_count" = minCellCount)
+      "min_cell_count" = as.integer(minCellCount))
   }
 
   objOut <- newSummarisedResult(x, settings = settingsTest(2))
