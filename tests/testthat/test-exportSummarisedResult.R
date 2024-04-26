@@ -2,9 +2,6 @@ test_that("test export", {
   res <- dplyr::tibble(
     "result_id" = as.integer(1),
     "cdm_name" = "cprd",
-    "result_type" = "summarised_characteristics",
-    "package_name" = "PatientProfiles",
-    "package_version" = "0.4.0",
     "group_name" = "sex",
     "group_level" = "male",
     "strata_name" = "sex",
@@ -17,7 +14,14 @@ test_that("test export", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   ) |>
-    newSummarisedResult()
+    newSummarisedResult(
+      settings = dplyr::tibble(
+        "result_id" = 1L,
+        "result_type" = "summarised_characteristics",
+        "package_name" = "PatientProfiles",
+        "package_version" = "0.4.0",
+      )
+    )
 
   path <- tempdir()
   expect_no_error(exportSummarisedResult(res, path = path))
@@ -25,8 +29,11 @@ test_that("test export", {
   name <- paste0("results_cprd_", format(Sys.Date(), "%Y_%m_%d"), ".csv")
   expect_true(name %in% list.files(path))
 
+  resSuppr <- res |> newSummarisedResult(
+    settings = settings(res) |> dplyr::mutate("min_cell_count" = 5L)
+  )
   expect_identical(
-    read.csv(file = file.path(path, name)) |> newSummarisedResult(), res
+    read.csv(file = file.path(path, name)) |> newSummarisedResult(), resSuppr
   )
 
 })

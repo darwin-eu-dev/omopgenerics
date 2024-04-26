@@ -99,7 +99,7 @@ suppress.summarised_result <- function(result,
 
   # update settings
   set <- set |>
-    dplyr::mutate("min_cell_count" = .env$minCellCount)
+    dplyr::mutate("min_cell_count" = as.integer(.env$minCellCount))
   result <- newSummarisedResult(x = result, settings = set)
 
   return(result)

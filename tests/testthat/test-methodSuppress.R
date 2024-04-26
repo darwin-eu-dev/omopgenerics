@@ -127,7 +127,7 @@ test_that("test supress methods", {
     "strata_name" ="overall",
     "strata_level" = "overall",
     "variable_name" = c("concept id name 1", "concept id name 1", "concept id name 2", "concept id name 2"),
-    "variable_level" = NA,
+    "variable_level" = NA_character_,
     "estimate_name" = c("record_count", "person_count", "record_count", "person_count"),
     "estimate_type" = c("integer", "integer", "integer", "integer"),
     "estimate_value" = c("6", "3", "4", "4"),
