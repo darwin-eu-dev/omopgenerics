@@ -141,7 +141,8 @@ test_that("test create cohort", {
   x <- attrition(cohort2) |> as.data.frame()
   expect_equal(x, cohort_attrition2 |> as.data.frame())
   x <- attrition(cohort3) |> as.data.frame()
-  expect_equal(x, cohort_attrition3 |> as.data.frame())
+  # extra fields in attrition are not allowed since og 0.2.0
+  expect_equal(x, cohort_attrition3  |> dplyr::select(-"extra_field") |> as.data.frame())
 
   expect_true(is.integer(attrition(cohort2)$cohort_definition_id))
   expect_true(is.integer(attrition(cohort2)$number_records))
