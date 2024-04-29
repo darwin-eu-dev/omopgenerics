@@ -74,7 +74,7 @@ settings.cohort_table <- function(x) {
   }
   attr(x, "cohort_set") |>
     dplyr::collect() |>
-    dplyr::relocate(c("cohort_definition_id", "cohort_name")) |>
+    dplyr::select(dplyr::all_of(cohortColumns("cohort_set"))) |>
     dplyr::arrange(.data$cohort_definition_id)
 }
 
