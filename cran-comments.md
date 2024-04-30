@@ -9,8 +9,8 @@ As we change the standard output format, this will break the following packages:
 - CohortSurvival
 - CodelistGenerator
 - CohortCharacteristics
+- CDMConnector
 
 This is expected and a new release of all this packages is ready to submit once 
-this one is in CRAN.
-We submitted a new version of CDMConnector yesterday that should work with this 
-release. But the old one will break.
+this one is in CRAN. In most of the cases it only breaks tests and not the 
+functionality. All maintainers are aware of it.
