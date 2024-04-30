@@ -18,8 +18,8 @@
 #'
 #' @param ... A set of summarised_result objects.
 #' @param minCellCount Minimum count for suppression purposes.
-#' @param fileName Name of the file that will be created. Use {cdm_name} to
-#' refer to the cdmName of the objects and {date} to add the export date.
+#' @param fileName Name of the file that will be created. Use \{cdm_name\} to
+#' refer to the cdmName of the objects and \{date\} to add the export date.
 #' @param path Path where to create the csv file.
 #'
 #' @export
