@@ -842,11 +842,9 @@ requiredColumns <- function(table, version, type) {
 
 #' @export
 str.cdm_reference <- function(object, ...) {
-  src <- cdmSource(object)
-  mes <- glue::glue(
-    "A cdm reference of {cdmName(object)} with {length(object)} tables: {paste0(names(object), collapse = ', ')}"
+  cli::cli_text(
+    "A cdm reference of {cdmName(object)} with {length(object)} table{?s}: {names(object)}."
   )
-  cat(mes, sep = "")
 }
 
 #' Create an empty cdm_reference
