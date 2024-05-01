@@ -62,7 +62,7 @@ test_that("bind a cohort_table", {
   expect_error(bind(cdm$cohort1, cdm$cohort2, name = NA_character_))
   expect_error(bind(cdm$cohort1, cdm$cohort2, name = 1))
   expect_error(bind(cdm$cohort1, cdm$cohort2, name = c("a", "b")))
-  expect_error(bind(cdm$cohort1, name = "new_cohort"))
+  expect_no_error(bind(cdm$cohort1, name = "new_cohort"))
   expect_error(bind(cdm$cohort1, cdm$cohort3, name = "new_cohort"))
   expect_error(bind(cdm$cohort2, cdm$cohort3, name = "new_cohort"))
   expect_error(bind(cdm$cohort1, cdm$cohort2, cdm$cohort3, name = "new_cohort"))

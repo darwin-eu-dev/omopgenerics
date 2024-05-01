@@ -82,7 +82,7 @@ test_that("multiplication works", {
   cdm <- cdmFromTables(
     tables = list("person" = person, "observation_period" = observation_period),
     cdmName = "test",
-    cohortTables = list("cohort1" = cohort)
+    cohortTables = list("cohort1" = cohort, "cohort2" = cohort)
   )
 
   expect_equal(cohortCount(cdm$cohort1)$number_records, c(3, 1))
@@ -145,13 +145,24 @@ test_that("multiplication works", {
     )
   )
 
-  expect_error(
-    cdm$cohort1 <- cdm$cohort1 |>
-      dplyr::group_by(cohort_definition_id, subject_id) |>
-      dplyr::filter(cohort_start_date == min(cohort_start_date)) |>
-      dplyr::ungroup() |>
-      dplyr::compute(name = "cohort1", temporary = FALSE) |>
-      recordCohortAttrition(reason = "First record and blabla")
+  dose1 <- 1
+  dose2 <- 2
+  x <- rep(1, 5)
+
+  expect_no_error(
+    cdm$cohort2 <- cdm$cohort2 |>
+      recordCohortAttrition("At least {dose1} dose{?s}", 1) |>
+      recordCohortAttrition("At least {dose2} dose{?s}", 1) |>
+      recordCohortAttrition("At least {length(x)} dose{?s}", 1)
   )
+
+  expect_true(nrow(attrition(cdm$cohort2)) == 5)
+  a1 <- attrition(cdm$cohort2) |>
+    dplyr::filter(.data$cohort_definition_id == 1)
+  expect_true(nrow(a1) == 4)
+  expect_true(all(a1 |> dplyr::pull("reason") == c(
+    "Initial qualifying events", "At least 1 dose", "At least 2 doses",
+    "At least 5 doses"
+  )))
 
 })

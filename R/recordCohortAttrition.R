@@ -69,14 +69,8 @@ recordCohortAttrition <- function(cohort, reason, cohortId = NULL) {
   assertClass(cohort, "cohort_table")
   assertCharacter(reason, length = 1)
   assertNumeric(cohortId, integerish = TRUE, null = TRUE)
-  if (grepl(" and ", reason)) {
-    cli::cli_abort(
-      "reason can not contain ` and ` as it is a reserved word for the result
-      model"
-    )
-  }
 
-  reason <- glue::glue(reason, .envir = parent.frame())
+  reason <- cli::cli_text(reason, .envir = parent.frame()) |> cli::cli_fmt()
 
   # get cohortId
   cohortId <- assertCohortId(cohort, cohortId)
