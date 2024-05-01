@@ -842,9 +842,11 @@ requiredColumns <- function(table, version, type) {
 
 #' @export
 str.cdm_reference <- function(object, ...) {
-  cli::cli_text(
+  res <- cli::cli_text(
     "A cdm reference of {cdmName(object)} with {length(object)} table{?s}: {names(object)}."
-  )
+  ) |>
+    cli::cli_fmt()
+  cat(res)
 }
 
 #' Create an empty cdm_reference

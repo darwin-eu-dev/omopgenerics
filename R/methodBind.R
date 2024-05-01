@@ -78,11 +78,6 @@ bind.cohort_table <- function(..., name) {
   # initial checks
   cohorts <- list(...)
   assertList(cohorts, class = "cohort_table")
-  if (length(cohorts) < 2) {
-    cli::cli_abort(
-      "Only {length(cohorts)} cohort provided, at least 2 must be provided."
-    )
-  }
   assertCharacter(name, length = 1)
 
   # get cdm
