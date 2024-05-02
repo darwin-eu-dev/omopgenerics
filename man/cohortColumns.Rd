@@ -4,14 +4,18 @@
 \alias{cohortColumns}
 \title{Required columns for a generated cohort set.}
 \usage{
-cohortColumns(table, version = "5.3")
+cohortColumns(table, required = TRUE, version = "5.3")
 }
 \arguments{
 \item{table}{Either \code{cohort}, \code{cohort_set} or \code{cohort_attrition}}
 
+\item{required}{Whether to include only required fields.}
+
 \item{version}{Version of the OMOP Common Data Model.}
 }
 \value{
+Character vector with the column names
+
 Required columns
 }
 \description{
