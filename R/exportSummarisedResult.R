@@ -106,7 +106,7 @@ pivotSettings <- function(x) {
     )
 }
 variableTypes <- function(table) {
-  assertTibble(table)
+  assertTable(table)
   if (ncol(table) > 0) {
     x <- dplyr::tibble(
       "variable_name" = colnames(table),

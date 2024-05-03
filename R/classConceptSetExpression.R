@@ -46,7 +46,7 @@ validateConceptSetExpression <- function(x) {
   assertList(x, named = TRUE, class = c("tbl"))
 
   for(i in seq_along(x)){
-    assertTibble(x[[i]],
+    assertTable(x[[i]],
                  columns = c("concept_id", "excluded", "descendants", "mapped"))
     assertNumeric(x[[i]]$concept_id, integerish = TRUE)
     assertLogical(x[[i]]$excluded)

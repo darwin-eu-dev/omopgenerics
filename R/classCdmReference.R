@@ -735,7 +735,7 @@ omopTables <- function(version = "5.3") {
 #'
 omopColumns <- function(table, required = TRUE, version = "5.3") {
   assertVersion(version = version)
-  assertTable(table = table, version = version, type = "cdm_table")
+  assertTableName(table = table, version = version, type = "cdm_table")
   assertLogical(x = required, length = 1)
   getColumns(table = table, version = version, type = "cdm_table", required = required)
 }
@@ -778,7 +778,7 @@ cohortTables <- function(version = "5.3") {
 #' }
 cohortColumns <- function(table, required = TRUE, version = "5.3") {
   assertVersion(version = version)
-  assertTable(table = table, version = version, type = "cohort")
+  assertTableName(table = table, version = version, type = "cohort")
   assertLogical(x = required, length = 1)
   getColumns(table = table, version = version, type = "cohort", required = required)
 }
@@ -821,7 +821,7 @@ achillesTables <- function(version = "5.3"){
 #' }
 achillesColumns <- function(table, required = TRUE, version = "5.3") {
   assertVersion(version = version)
-  assertTable(table = table, version = version, type = "achilles")
+  assertTableName(table = table, version = version, type = "achilles")
   assertLogical(x = required, length = 1)
   getColumns(table = table, version = version, type = "achilles", required = required)
 }
@@ -829,7 +829,7 @@ achillesColumns <- function(table, required = TRUE, version = "5.3") {
 assertVersion <- function(version, call = parent.frame()) {
   assertChoice(x = version, choices = c("5.3", "5.4"), call = call)
 }
-assertTable <- function(table, version, type, call = parent.frame()) {
+assertTableName <- function(table, version, type, call = parent.frame()) {
   assertChoice(x = table, choices = tableChoice(version, type), call = call)
 }
 tableChoice <- function(version, type) {
