@@ -70,10 +70,9 @@ recordCohortAttrition <- function(cohort, reason, cohortId = NULL) {
   assertCharacter(reason, length = 1)
   assertNumeric(cohortId, integerish = TRUE, null = TRUE)
 
-  w <- getOption("width")
-  options("width" = 10000)
-  reason <- cli::cli_text(reason, .envir = parent.frame()) |> cli::cli_fmt()
-  options("width" = w)
+  reason <- cli::cli_text(reason, .envir = parent.frame()) |>
+    cli::cli_fmt() |>
+    paste0(collapse = " ")
 
   # get cohortId
   cohortId <- assertCohortId(cohort, cohortId)
