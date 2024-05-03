@@ -4,7 +4,11 @@
 \alias{emptySummarisedResult}
 \title{Empty \code{summarised_result} object.}
 \usage{
-emptySummarisedResult()
+emptySummarisedResult(settings = NULL)
+}
+\arguments{
+\item{settings}{Tibble/data.frame with the settings of the empty
+summarised_result. It has to contain at least \code{result_id} column.}
 }
 \value{
 An empty \code{summarised_result} object.

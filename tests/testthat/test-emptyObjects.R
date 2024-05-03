@@ -53,5 +53,11 @@ test_that("you cna create empty objects",{
   # summarised result
   expect_no_error(x <- emptySummarisedResult())
   expect_true(inherits(x, "summarised_result"))
+  expect_identical(settings(x), dplyr::tibble("result_id" = integer()))
+
+  set <- dplyr::tibble("result_id" = 1L, "my_setting" = TRUE)
+  expect_no_error(x <- emptySummarisedResult(settings = set))
+  expect_true(inherits(x, "summarised_result"))
+  expect_identical(settings(x), set)
 
 })

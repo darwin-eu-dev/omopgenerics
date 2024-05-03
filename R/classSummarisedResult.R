@@ -518,6 +518,9 @@ estimateTypeChoices <- function() {
 
 #' Empty `summarised_result` object.
 #'
+#' @param settings Tibble/data.frame with the settings of the empty
+#' summarised_result. It has to contain at least `result_id` column.
+#'
 #' @return An empty `summarised_result` object.
 #'
 #' @export
@@ -527,10 +530,10 @@ estimateTypeChoices <- function() {
 #'
 #' emptySummarisedResult()
 #'
-emptySummarisedResult <- function() {
+emptySummarisedResult <- function(settings = NULL) {
   resultColumns("summarised_result") |>
     rlang::rep_named(list(character())) |>
     dplyr::as_tibble() |>
     dplyr::mutate("result_id" = as.integer()) |>
-    newSummarisedResult()
+    newSummarisedResult(settings = settings)
 }
