@@ -148,21 +148,23 @@ test_that("multiplication works", {
   dose1 <- 1
   dose2 <- 2
   x <- rep(1, 5)
+  xx <- rep("abcd", 100) |> paste0(collapse = " ")
 
   expect_no_error(
     cdm$cohort2 <- cdm$cohort2 |>
       recordCohortAttrition("At least {dose1} dose{?s}", 1) |>
       recordCohortAttrition("At least {dose2} dose{?s}", 1) |>
-      recordCohortAttrition("At least {length(x)} dose{?s}", 1)
+      recordCohortAttrition("At least {length(x)} dose{?s}", 1) |>
+      recordCohortAttrition("{xx}", 1)
   )
 
-  expect_true(nrow(attrition(cdm$cohort2)) == 5)
+  expect_true(nrow(attrition(cdm$cohort2)) == 6)
   a1 <- attrition(cdm$cohort2) |>
     dplyr::filter(.data$cohort_definition_id == 1)
-  expect_true(nrow(a1) == 4)
+  expect_true(nrow(a1) == 5)
   expect_true(all(a1 |> dplyr::pull("reason") == c(
     "Initial qualifying events", "At least 1 dose", "At least 2 doses",
-    "At least 5 doses"
+    "At least 5 doses", xx
   )))
 
 })
