@@ -697,7 +697,7 @@ populateCohortCodelist <- function(table, cohortCodelistRef) {
 #' attrition(cdm$my_empty_cohort)
 #' cohortCount(cdm$my_empty_cohort)
 #'
-emptyCohortTable <- function(cdm, name, overwrite = FALSE) {
+emptyCohortTable <- function(cdm, name, overwrite = TRUE) {
   assertCharacter(name, length = 1)
   assertClass(cdm, "cdm_reference")
   table <- fieldsTables |>
