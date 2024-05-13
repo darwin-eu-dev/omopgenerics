@@ -4,7 +4,7 @@
 \alias{emptyCohortTable}
 \title{Create an empty cohort_table object}
 \usage{
-emptyCohortTable(cdm, name, overwrite = FALSE)
+emptyCohortTable(cdm, name, overwrite = TRUE)
 }
 \arguments{
 \item{cdm}{A cdm_reference to create the table.}
