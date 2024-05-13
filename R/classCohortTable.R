@@ -664,6 +664,7 @@ populateCohortCodelist <- function(table, cohortCodelistRef) {
 #'
 #' @param cdm A cdm_reference to create the table.
 #' @param name Name of the table to create.
+#' @param overwrite Whether to overwrite an existent table.
 #'
 #' @export
 #'
@@ -696,7 +697,7 @@ populateCohortCodelist <- function(table, cohortCodelistRef) {
 #' attrition(cdm$my_empty_cohort)
 #' cohortCount(cdm$my_empty_cohort)
 #'
-emptyCohortTable <- function(cdm, name) {
+emptyCohortTable <- function(cdm, name, overwrite = TRUE) {
   assertCharacter(name, length = 1)
   assertClass(cdm, "cdm_reference")
   table <- fieldsTables |>
@@ -706,8 +707,8 @@ emptyCohortTable <- function(cdm, name) {
         grepl(cdmVersion(cdm), .data$cdm_version)
     ) |>
     emptyTable()
-  cdm <- insertTable(cdm = cdm, name = name, table = table, overwrite = FALSE)
-  cdm[[name]] <- newCohortTable(cdm[[name]])
+  cdm <- insertTable(cdm = cdm, name = name, table = table, overwrite = overwrite)
+  cdm[[name]] <- newCohortTable(cdm[[name]], .softValidation = TRUE)
   return(cdm)
 }
 

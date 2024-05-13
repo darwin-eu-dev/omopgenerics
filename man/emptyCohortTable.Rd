@@ -4,12 +4,14 @@
 \alias{emptyCohortTable}
 \title{Create an empty cohort_table object}
 \usage{
-emptyCohortTable(cdm, name)
+emptyCohortTable(cdm, name, overwrite = TRUE)
 }
 \arguments{
 \item{cdm}{A cdm_reference to create the table.}
 
 \item{name}{Name of the table to create.}
+
+\item{overwrite}{Whether to overwrite an existent table.}
 }
 \value{
 The cdm_reference with an empty cohort table
