@@ -302,7 +302,7 @@ checkColumnsFormat <- function(x, resultName) {
   invisible(x)
 }
 checkGroupCount <- function(x) {
-  groupping <- c("group_name", "group_level", "strata_name", "strata_level")
+  groupping <- c("result_id", "group_name", "group_level", "strata_name", "strata_level")
   obsLabels <- x |> dplyr::pull("variable_name") |> unique()
   obsLabelsL <- tolower(gsub("_", " ", obsLabels))
   res <- character()
