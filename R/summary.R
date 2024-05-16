@@ -169,11 +169,8 @@ summary.cdm_reference <- function(object, ...) {
     dplyr::union_all(cdmSourceSummary) |>
     dplyr::union_all(observationPeriodValues) |>
     dplyr::mutate(
-      "result_id" = as.integer(1),
+      "result_id" = 1L,
       "cdm_name" = cdmName(object),
-      "package_name" = "omopgenerics",
-      "package_version" = as.character(utils::packageVersion("omopgenerics")),
-      "result_type" = "cdm_snapshot",
       "variable_level" = NA_character_,
       "group_name" = "overall",
       "group_level" = "overall",
@@ -183,7 +180,12 @@ summary.cdm_reference <- function(object, ...) {
       "additional_level" = "overall"
     ) |>
     dplyr::select(dplyr::all_of(resultColumns("summarised_result"))) |>
-    newSummarisedResult()
+    newSummarisedResult(settings = dplyr::tibble(
+      "result_id" = 1L,
+      "package_name" = "omopgenerics",
+      "package_version" = as.character(utils::packageVersion("omopgenerics")),
+      "result_type" = "cdm_snapshot"
+    ))
 
   return(x)
 }
