@@ -267,4 +267,21 @@ test_that("test SummarisedResult object", {
   expect_no_error(x |> newSummarisedResult())
   expect_error(x |> dplyr::union_all(x) |> newSummarisedResult())
 
+  x <- dplyr::tibble(
+    "result_id" = 1L,
+    "cdm_name" = "eunomia",
+    "group_name" = c("sex", "sex"),
+    "group_level" = c("male", "male"),
+    "strata_name" = "overall",
+    "strata_level" = "overall",
+    "variable_name" = "number_subjects",
+    "variable_level" = NA_character_,
+    "estimate_name" = c("count", "percentage"),
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
+  expect_no_error(x |> newSummarisedResult())
+
 })
