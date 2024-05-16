@@ -97,8 +97,9 @@ included in version 5.3 are as follows.</p>
 <span><span class="co">#&gt; Attaching package: 'omopgenerics'</span></span>
 <span><span class="co">#&gt; The following object is masked from 'package:stats':</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     filter</span></span>
-<span><span class="fu"><a href="../reference/omopTables.html">omopTables</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     filter</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/omopTables.html">omopTables</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "person"                "observation_period"    "visit_occurrence"     </span></span>
 <span><span class="co">#&gt;  [4] "visit_detail"          "condition_occurrence"  "drug_exposure"        </span></span>
 <span><span class="co">#&gt;  [7] "procedure_occurrence"  "device_exposure"       "measurement"          </span></span>
@@ -114,11 +115,11 @@ included in version 5.3 are as follows.</p>
 <span><span class="co">#&gt; [37] "attribute_definition"</span></span></code></pre></div>
 <p>The standard OMOP tables have required fields. We can check the
 required column of the person table, for example, like so</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/omopColumns.html">omopColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"person"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "person_id"            "gender_concept_id"    "year_of_birth"       </span></span>
 <span><span class="co">#&gt; [4] "race_concept_id"      "ethnicity_concept_id"</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/omopColumns.html">omopColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"observation_period"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "observation_period_id"         "person_id"                    </span></span>
 <span><span class="co">#&gt; [3] "observation_period_start_date" "observation_period_end_date"  </span></span>
@@ -134,13 +135,15 @@ cohort table is associated with a specific class of its own, a
 vignette. As with the standard OMOP CDM tables, cohort tables are
 expected to contain a specific set of fields (with no restriction placed
 on whether they include additional fields or not).</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cohortColumns.html">cohortColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"cohort"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "cohort_definition_id" "subject_id"           "cohort_start_date"   </span></span>
-<span><span class="co">#&gt; [4] "cohort_end_date"</span></span>
-<span><span class="fu"><a href="../reference/cohortColumns.html">cohortColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"cohort_set"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "cohort_definition_id" "cohort_name"</span></span>
-<span><span class="fu"><a href="../reference/cohortColumns.html">cohortColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"cohort_attrition"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [4] "cohort_end_date"</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cohortColumns.html">cohortColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"cohort_set"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "cohort_definition_id" "cohort_name"</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/cohortColumns.html">cohortColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"cohort_attrition"</span>, version <span class="op">=</span> <span class="st">"5.3"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "cohort_definition_id" "number_records"       "number_subjects"     </span></span>
 <span><span class="co">#&gt; [4] "reason_id"            "reason"               "excluded_records"    </span></span>
 <span><span class="co">#&gt; [7] "excluded_subjects"</span></span></code></pre></div>
@@ -151,17 +154,20 @@ on whether they include additional fields or not).</p>
 <p>The Achilles R package provides descriptive statistics on an OMOP CDM
 database. The results from Achilles are stored in tables in the
 database. The following tables are created with the given columns.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/achillesTables.html">achillesTables</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "achilles_analysis"     "achilles_results"      "achilles_results_dist"</span></span>
-<span><span class="fu"><a href="../reference/achillesColumns.html">achillesColumns</a></span><span class="op">(</span><span class="st">"achilles_analysis"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "achilles_analysis"     "achilles_results"      "achilles_results_dist"</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/achillesColumns.html">achillesColumns</a></span><span class="op">(</span><span class="st">"achilles_analysis"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "analysis_id"    "analysis_name"  "stratum_1_name" "stratum_2_name"</span></span>
 <span><span class="co">#&gt; [5] "stratum_3_name" "stratum_4_name" "stratum_5_name" "is_default"    </span></span>
-<span><span class="co">#&gt; [9] "category"</span></span>
-<span><span class="fu"><a href="../reference/achillesColumns.html">achillesColumns</a></span><span class="op">(</span><span class="st">"achilles_results"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [9] "category"</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/achillesColumns.html">achillesColumns</a></span><span class="op">(</span><span class="st">"achilles_results"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "analysis_id" "stratum_1"   "stratum_2"   "stratum_3"   "stratum_4"  </span></span>
-<span><span class="co">#&gt; [6] "stratum_5"   "count_value"</span></span>
-<span><span class="fu"><a href="../reference/achillesColumns.html">achillesColumns</a></span><span class="op">(</span><span class="st">"achilles_results_dist"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [6] "stratum_5"   "count_value"</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/achillesColumns.html">achillesColumns</a></span><span class="op">(</span><span class="st">"achilles_results_dist"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "analysis_id"  "stratum_1"    "stratum_2"    "stratum_3"    "stratum_4"   </span></span>
 <span><span class="co">#&gt;  [6] "stratum_5"    "count_value"  "min_value"    "max_value"    "avg_value"   </span></span>
 <span><span class="co">#&gt; [11] "stdev_value"  "median_value" "p10_value"    "p25_value"    "p75_value"   </span></span>
