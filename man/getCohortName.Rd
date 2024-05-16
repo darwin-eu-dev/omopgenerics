@@ -4,12 +4,13 @@
 \alias{getCohortName}
 \title{Get the cohort name of a certain cohort definition id}
 \usage{
-getCohortName(cohort, cohortId)
+getCohortName(cohort, cohortId = NULL)
 }
 \arguments{
 \item{cohort}{A cohort_table object.}
 
-\item{cohortId}{Cohort definition id of interest.}
+\item{cohortId}{Cohort definition id of interest. If NULL all cohort ids are
+shown.}
 }
 \value{
 Cohort names

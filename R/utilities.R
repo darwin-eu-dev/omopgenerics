@@ -447,19 +447,25 @@ toSnakeCase <- function(x) {
 #' Get the cohort definition id of a certain name
 #'
 #' @param cohort A cohort_table object.
-#' @param cohortName Names of the cohort of interest.
+#' @param cohortName Names of the cohort of interest. If NULL all cohort names
+#' are shown.
 #'
 #' @return Cohort definition ids
 #'
 #' @export
 #'
-getCohortId <- function(cohort, cohortName) {
+getCohortId <- function(cohort, cohortName = NULL) {
   # check inputs
   assertClass(cohort, "cohort_table")
-  assertCharacter(cohortName)
+  assertCharacter(cohortName, null = TRUE)
 
   set <- settings(cohort) |>
     dplyr::select("cohort_definition_id", "cohort_name")
+
+  if (is.null(cohortName)) {
+    cohortName <- set$cohort_name
+  }
+
   notPresent <- cohortName[!cohortName %in% set$cohort_name]
   if (length(notPresent) > 0) {
     cli::cli_warn(c(
@@ -474,19 +480,25 @@ getCohortId <- function(cohort, cohortName) {
 #' Get the cohort name of a certain cohort definition id
 #'
 #' @param cohort A cohort_table object.
-#' @param cohortId Cohort definition id of interest.
+#' @param cohortId Cohort definition id of interest. If NULL all cohort ids are
+#' shown.
 #'
 #' @return Cohort names
 #'
 #' @export
 #'
-getCohortName <- function(cohort, cohortId) {
+getCohortName <- function(cohort, cohortId = NULL) {
   # check inputs
   assertClass(cohort, "cohort_table")
-  assertNumeric(cohortId, integerish = TRUE)
+  assertNumeric(cohortId, integerish = TRUE, null = TRUE)
 
   set <- settings(cohort) |>
     dplyr::select("cohort_definition_id", "cohort_name")
+
+  if (is.null(cohortId)) {
+    cohortId <- set$cohort_definition_id
+  }
+
   notPresent <- cohortId[!cohortId %in% set$cohort_definition_id]
   if (length(notPresent) > 0) {
     cli::cli_warn(c(
