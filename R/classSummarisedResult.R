@@ -184,21 +184,8 @@ joinSet <- function(set, addset) {
   return(set)
 }
 validateSummariseResult <- function(x) {
-  if (!"result_id" %in% colnames(x)) {
-    x <- x |> dplyr::mutate("result_id" = as.integer(1))
-    warnResult <- TRUE
-  } else {
-    warnResult <- FALSE
-  }
-
   # compulsory columns
   x <- checkColumns(x = x, "summarised_result")
-  if (warnResult) {
-    cli::cli_warn(c(
-      "!" = "`result_id` column is missing, please add it as it is a compulsory
-      column."
-    ))
-  }
 
   # all columns should be character
   x <- checkColumnsFormat(x = x, "summarised_result")
@@ -357,7 +344,7 @@ getGroupping <- function(x) {
 #' @param x A tibble.
 #' @param nameColumn Column name of the `name`.
 #' @param levelColumn Column name of the `level`.
-#' @param sep Separation pattern.
+#' @param sep deprecated, &&& is used always.
 #' @param warn Whether to throw a warning (TRUE) or an error (FALSE).
 #'
 #' @export
@@ -365,8 +352,9 @@ getGroupping <- function(x) {
 validateNameLevel <- function(x,
                               nameColumn,
                               levelColumn,
-                              sep = " and | &&& ",
+                              sep = lifecycle::deprecated(),
                               warn = FALSE) {
+  sep <- " &&& "
   # inital checks
   assertClass(x, "data.frame")
   assertCharacter(nameColumn, length = 1)
