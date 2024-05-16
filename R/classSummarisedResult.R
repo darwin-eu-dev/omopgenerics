@@ -314,7 +314,9 @@ checkGroupCount <- function(x) {
     if (n < 5) {
       ol <- obsLabels[obsLabelsL %in% gcount]
       xx <- x |>
-        dplyr::filter(.data$variable_name %in% ol) |>
+        dplyr::filter(
+          .data$variable_name %in% ol & grepl("count", .data$estimate_name)
+        ) |>
         dplyr::select(dplyr::all_of(c(groupping, "variable_name"))) |>
         dplyr::group_by(dplyr::across(dplyr::all_of(groupping))) |>
         dplyr::filter(dplyr::n() > 1) |>
