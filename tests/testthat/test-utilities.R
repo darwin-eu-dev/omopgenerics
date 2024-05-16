@@ -28,6 +28,11 @@ test_that("test getCohortName and getCohortId", {
   )
 
   expect_identical(
+    getCohortId(cdm$my_first_cohort),
+    c("condition1" = 1, "drug1" = 2, "covid" = 3, "asthma" = 4)
+  )
+
+  expect_identical(
     getCohortId(cdm$my_first_cohort, "drug1"), c("drug1" = 2)
   )
   expect_identical(
@@ -44,6 +49,10 @@ test_that("test getCohortName and getCohortId", {
   ))
   expect_warning(getCohortId(cdm$my_first_cohort, "random"))
 
+  expect_identical(
+    getCohortName(cdm$my_first_cohort),
+    c("1" = "condition1", "2" = "drug1", "3" = "covid", "4" = "asthma")
+  )
   expect_identical(
     getCohortName(cdm$my_second_cohort, 1), c("1" = "cohort_1")
   )
