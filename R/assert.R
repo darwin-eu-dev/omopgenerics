@@ -50,7 +50,7 @@ assertCharacter <- function(x,
   if (assertNull(x, nm, null, msg, call)) {
     # assert class
     if (!is.character(x)) {
-      c("!" = "{.strong {nm} is not a character vector.}", msg) |>
+      c("!" = "{.strong `{nm}` is not a character vector.}", msg) |>
         cli::cli_abort(call = call)
     }
 
@@ -69,7 +69,7 @@ assertCharacter <- function(x,
     # minimum number of characters
     pos <- which(nchar(x) < minNumCharacter)
     if (length(pos) > 0) {
-      c("!" = "{.strong {nm} has less than {minNumCharacter} character{?s} in position: {pos}.}", msg) |>
+      c("!" = "{.strong `{nm}` has less than {minNumCharacter} character{?s} in position: {pos}.}", msg) |>
         cli::cli_abort(call = call)
     }
   }
@@ -87,6 +87,7 @@ assertCharacter <- function(x,
 #' @param unique Whether it has to contain unique elements.
 #' @param named Whether it has to be named.
 #' @param call Call argument that will be passed to `cli` error message.
+#' @param msg Custom error message.
 #'
 #' @export
 #'
@@ -97,46 +98,48 @@ assertChoice <- function(x,
                          null = FALSE,
                          unique = FALSE,
                          named = FALSE,
-                         call = parent.frame()) {
-  # create error message
-  errorMessage <- paste0(
-    paste0(substitute(x), collapse = ""),
-    " must be a choice between: ",
-    paste0(choices, collapse = ", "),
-    errorLength(length),
-    errorNa(na),
-    errorNull(null),
-    errorUnique(unique),
-    errorNamed(named),
-    "."
-  )
+                         call = parent.frame(),
+                         msg = NULL) {
+  nm <- paste0(substitute(x), collapse = "")
+  if (is.null(msg)) {
+    msg <- errorMessage(
+      nm = nm,
+      object = "a choice between {choices}" |>
+        cli::cli_text() |>
+        cli::cli_fmt() |>
+        paste0(collapse = " "),
+      length = length, na = na, null = null, unique = unique, named = named
+    )
+  }
 
   # assert null
-  if (assertNull(x, null, msg, call)) {
+  if (assertNull(x, nm, null, msg, call)) {
     # no NA vector
     xNoNa <- x[!is.na(x)]
 
     # assert class
-    if (!all(class(x) == class(choices))) {
-      cli::cli_abort(msg, call = call)
+    if (!identical(class(x), class(choices))) {
+      c("!" = "{.strong class of `{nm}` is {class(x)} different from class of choices {class(choices)}.}", msg) |>
+        cli::cli_abort(call = call)
     }
 
     # assert length
-    assertLength(x, length, msg, call)
+    assertLength(x, nm, length, msg, call)
 
     # assert na
-    assertNa(x, na, msg, call)
+    assertNa(x, nm, na, msg, call)
 
     # assert unique
-    assertUnique(x, unique, msg, call)
+    assertUnique(x, nm, unique, msg, call)
 
     # assert named
-    assertNamed(x, named, msg, call)
+    assertNamed(x, nm, named, msg, call)
 
     # assert choices
     if (base::length(xNoNa) > 0) {
       if (!all(xNoNa %in% choices)) {
-        cli::cli_abort(msg, call = call)
+        c("!" = "{.strong `{nm}` is not a choice between {choices}.}", msg) |>
+          cli::cli_abort(call = call)
       }
     }
   }
@@ -148,31 +151,69 @@ assertChoice <- function(x,
 #'
 #' @param x To check.
 #' @param class Expected class or classes.
+#' @param length Required length.
 #' @param null Whether it can be NULL.
 #' @param all Whether it should have all the classes or only at least one of
 #' them.
 #' @param extra Whether the object can have extra classes.
 #' @param call Call argument that will be passed to `cli`.
+#' @param msg Custom error message.
 #'
 #' @export
 #'
 assertClass <- function(x,
                         class,
+                        length = NULL,
                         null = TRUE,
                         all = FALSE,
                         extra = TRUE,
-                        call = parent.frame()) {
-  if (null & is.null(x)) {
-    return(invisible(x))
+                        call = parent.frame(),
+                        msg = NULL) {
+  nm <- paste0(substitute(x), collapse = "")
+  if (is.null(msg)) {
+    if (all) {
+      obj <- "an object with class: {class}"
+    } else {
+      obj <- "an object with at least one of these classes: {class}"
+    }
+    if (extra) {
+      obj <- paste0(obj, "; it can contain extra classes")
+    } else {
+      obj <- paste0(obj, "; it can not contain extra classes")
+    }
+    msg <- errorMessage(nm = nm, object = obj, null = null, length = length)
   }
-  # create error message
-  errorMessage <- paste0(
-    paste0(substitute(x), collapse = ""), " must have class: ",
-    paste0(class, collapse = ", "), "; but has class: ",
-    paste0(base::class(x), collapse = ", ") ,"."
-  )
-  if (!all(class %in% base::class(x))) {
-    cli::cli_abort(errorMessage, call = call)
+
+  # assert null
+  if (assertNull(x, nm, null, msg, call)) {
+    # class of the object
+    cl <- base::class(x)
+
+    # class
+    if (isTRUE(all)) {
+      if (!base::all(class %in% cl)) {
+        c("!" = "{.strong `{nm}` has class {cl}, but must have {class}.}", msg) |>
+          cli::cli_abort(call = call)
+      }
+    } else if (isFALSE(all)) {
+      if (!base::any(class %in% cl)) {
+        c("!" = "{.strong `{nm}` has class {cl}, but must have at least of the following: {class}.}", msg) |>
+          cli::cli_abort(call = call)
+      }
+    }
+
+    # extra classes
+    if (isFALSE(extra)) {
+      extraClasses <- cl[!cl %in% class]
+      if (length(extraClasses) > 0) {
+        c("!" = "{.strong `{nm}` extra class: {extraClasses} not allowed.}", msg) |>
+          cli::cli_abort(call = call)
+      }
+    }
+
+    # assert length
+    assertLength(x, nm, length, msg, call)
+
   }
   invisible(x)
 }
@@ -187,6 +228,7 @@ assertClass <- function(x,
 #' @param named Whether it has to be named.
 #' @param class Class that the elements must have.
 #' @param call Call argument that will be passed to `cli` error message.
+#' @param msg Custom error message.
 #'
 #' @export
 #'
@@ -197,54 +239,57 @@ assertList <- function(x,
                        unique = FALSE,
                        named = FALSE,
                        class = NULL,
-                       call = parent.frame()) {
-  # create error message
-  errorMessage <- paste0(
-    paste0(substitute(x), collapse = ""),
-    " must be a list",
-    errorLength(length),
-    errorNa(na),
-    errorNull(null),
-    errorNamed(named),
-    ifelse(
-      !is.null(class),
-      paste("; elements must have class:", paste0(class, collapse = ", ")),
-      ""
-    ),
-    "."
-  )
+                       call = parent.frame(),
+                       msg = NULL) {
+  nm <- paste0(substitute(x), collapse = "")
+  if (is.null(msg)) {
+    if (!is.null(class)) {
+      obj <- "a list with objects of class {class}" |>
+        cli::cli_text() |>
+        cli::cli_fmt() |>
+        paste0(collapse = " ")
+    } else {
+      obj <- "a list"
+    }
+    msg <- errorMessage(
+      nm = nm, object = obj, length = length, na = na, null = null,
+      unique = unique, named = named
+    )
+  }
 
   # assert null
-  if (assertNull(x, null, msg, call)) {
+  if (assertNull(x, nm, null, msg, call)) {
     # no NA vector
     xNoNa <- x[!is.na(x)]
 
     # assert class
     if (!is.list(x)) {
-      cli::cli_abort(msg, call = call)
+      c("!" = "{.strong `{nm}` is not a list.}", msg) |>
+        cli::cli_abort(call = call)
     }
 
     # assert length
-    assertLength(x, length, msg, call)
+    assertLength(x, nm, length, msg, call)
 
     # assert na
-    assertNa(x, na, msg, call)
+    assertNa(x, nm, na, msg, call)
 
     # assert unique
-    assertUnique(x, unique, msg, call)
+    assertUnique(x, nm, unique, msg, call)
 
     # assert named
-    assertNamed(x, named, msg, call)
+    assertNamed(x, nm, named, msg, call)
 
     # assert class
     if (!is.null(class)) {
       flag <- lapply(xNoNa, function(y) {
         any(class %in% base::class(y))
       }) |>
-        unlist() |>
-        all()
-      if (flag != TRUE) {
-        cli::cli_abort(msg, call = call)
+        unlist()
+      pos <- which(!flag)
+      if (length(pos) > 0) {
+        c("!" = "{.strong Elements {pos} does not have class {class}.}", msg) |>
+          cli::cli_abort(call = call)
       }
     }
   }
@@ -472,7 +517,7 @@ errorMessage <- function(nm,
                          null = NULL,
                          min = NULL,
                          max = NULL,
-                         minNumCharacter = NULL,
+                         minNumCharacter = 0,
                          numberColumns = NULL,
                          numberRows = NULL,
                          columns = NULL,
@@ -480,7 +525,7 @@ errorMessage <- function(nm,
                          distinct = NULL) {
   paste0(
     c(
-      "{nm} must be {object}",
+      "`{nm}` must be {object}",
       if (!is.null(length)) "with length = {length}",
       if (isFALSE(na)) "it can not contain NA",
       if (isTRUE(named)) "it has to be named",
