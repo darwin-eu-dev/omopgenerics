@@ -12,7 +12,8 @@ assertChoice(
   null = FALSE,
   unique = FALSE,
   named = FALSE,
-  call = parent.frame()
+  call = parent.frame(),
+  msg = NULL
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ assertChoice(
 \item{named}{Whether it has to be named.}
 
 \item{call}{Call argument that will be passed to \code{cli} error message.}
+
+\item{msg}{Custom error message.}
 }
 \description{
 Assert that an object is within a certain oprtions.

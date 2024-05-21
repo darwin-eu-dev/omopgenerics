@@ -7,16 +7,20 @@
 assertClass(
   x,
   class,
+  length = NULL,
   null = TRUE,
   all = FALSE,
   extra = TRUE,
-  call = parent.frame()
+  call = parent.frame(),
+  msg = NULL
 )
 }
 \arguments{
 \item{x}{To check.}
 
 \item{class}{Expected class or classes.}
+
+\item{length}{Required length.}
 
 \item{null}{Whether it can be NULL.}
 
@@ -26,6 +30,8 @@ them.}
 \item{extra}{Whether the object can have extra classes.}
 
 \item{call}{Call argument that will be passed to \code{cli}.}
+
+\item{msg}{Custom error message.}
 }
 \description{
 Assert that an object has a certain class.
