@@ -12,7 +12,8 @@ assertCharacter(
   unique = FALSE,
   named = FALSE,
   minNumCharacter = 0,
-  call = parent.frame()
+  call = parent.frame(),
+  msg = NULL
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ assertCharacter(
 \item{minNumCharacter}{Minimum number of characters.}
 
 \item{call}{Call argument that will be passed to \code{cli} error message.}
+
+\item{msg}{Custom error message.}
 }
 \description{
 Assert that an object is a character and fulfill certain conditions.
