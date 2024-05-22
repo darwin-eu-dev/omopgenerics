@@ -366,7 +366,9 @@ validateNameLevel <- function(x,
   assertClass(x, "data.frame")
   assertCharacter(nameColumn, length = 1)
   assertCharacter(levelColumn, length = 1)
-  assertTable(dplyr::as_tibble(x), columns = c(nameColumn, levelColumn))
+  assertTable(
+    dplyr::as_tibble(x), class = "tbl", columns = c(nameColumn, levelColumn)
+  )
   assertChoice(warn, c(TRUE, FALSE))
 
   # distinct pairs
