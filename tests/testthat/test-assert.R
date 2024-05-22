@@ -129,3 +129,100 @@ test_that("test assertClass", {
   expect_no_error(assertClass(x3, "ref", all = FALSE, extra = FALSE))
 
 })
+
+test_that("test assertList", {
+  # not list
+  expect_no_error(assertList(list()))
+  expect_error(assertList(1))
+
+  # length
+  expect_no_error(assertList(list(1, "wd"), length = 2))
+  expect_error(assertList(list(1, "wd"), length = 3))
+
+  # na
+  expect_no_error(assertList(list(1, NA, "ws"), na = TRUE))
+  expect_error(assertList(list(1, NA, "ws"), na = FALSE))
+  expect_no_error(assertList(list(c(1, NA), 2, "ws"), na = FALSE))
+
+  # null
+  expect_no_error(assertList(NULL, null = TRUE))
+  expect_no_error(assertList(list(1, "wd"), null = TRUE))
+  expect_error(assertList(NULL, null = FALSE))
+  expect_no_error(assertList(list(1, "wd"), null = FALSE))
+
+  # unique
+  expect_error(assertList(list(1, 2, NA, 2), unique = TRUE, na = TRUE))
+  expect_no_error(assertList(list(1, 2, NA, 2), unique = FALSE, na = TRUE))
+  expect_error(assertList(list(1, 2, NA, NA), unique = TRUE, na = TRUE))
+  expect_no_error(assertList(list(1, 2, NA, NA), unique = FALSE, na = TRUE))
+
+  # named
+  expect_error(assertList(list("sa"= 1, 2), named = TRUE))
+  expect_no_error(assertList(list("sa"= 1, "xzc" = 2), named = TRUE))
+  expect_no_error(assertList(list("sa"= 1, 2), named = FALSE))
+  expect_no_error(assertList(list("sa"= 1, "xzc" = 2), named = FALSE))
+
+  # class
+  expect_no_error(assertList(list(1, 2), class = "numeric"))
+  expect_error(assertList(list(1, 2), class = "character"))
+  expect_no_error(assertList(list(1, 2), class = c("character", "numeric")))
+  expect_error(assertList(list("1", "2"), class = "numeric"))
+  expect_no_error(assertList(list("1", "2"), class = "character"))
+  expect_no_error(assertList(list("1", "2"), class = c("character", "numeric")))
+  expect_error(assertList(list(1, "2"), class = "numeric"))
+  expect_error(assertList(list(1, "2"), class = "character"))
+  expect_no_error(assertList(list(1, "2"), class = c("character", "numeric")))
+})
+
+test_that("test assertLogical", {
+  # not logical
+  expect_no_error(assertLogical(TRUE))
+  expect_error(assertLogical(1))
+
+  # length
+  expect_error(assertLogical(TRUE, length = 5))
+  expect_no_error(assertLogical(c(T, T, F, F ,F), length = 5))
+
+  # na
+  expect_no_error(assertLogical(c(TRUE, NA), na = TRUE))
+  expect_no_error(assertLogical(c(TRUE, F), na = TRUE))
+  expect_error(assertLogical(c(TRUE, NA), na = FALSE))
+  expect_no_error(assertLogical(c(TRUE, F), na = FALSE))
+
+  # null
+  expect_no_error(assertLogical(NULL, null = TRUE))
+  expect_error(assertLogical(NULL, null = FALSE))
+  expect_no_error(assertLogical(TRUE, null = TRUE))
+  expect_no_error(assertLogical(TRUE, null = FALSE))
+
+  # named
+  expect_no_error(assertLogical(c("qwd" = TRUE), named = TRUE))
+  expect_error(assertLogical(TRUE, named = TRUE))
+  expect_error(assertLogical(c("qwd" = TRUE, FALSE), named = TRUE))
+  expect_no_error(assertLogical(c("qwd" = TRUE, "saz" = FALSE), named = TRUE))
+})
+
+test_that("test assertNumeric", {
+  # not numeric
+
+  # integerish
+
+  # min
+
+  # max
+
+  # length
+
+  # na
+
+  # null
+
+  # unique
+
+  # named
+
+})
+
+test_that("test assertTable", {
+
+})

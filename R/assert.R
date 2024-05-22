@@ -305,6 +305,7 @@ assertList <- function(x,
 #' @param null Whether it can be NULL.
 #' @param named Whether it has to be named.
 #' @param call Call argument that will be passed to `cli` error message.
+#' @param msg Custom error message.
 #'
 #' @export
 #'
@@ -313,33 +314,32 @@ assertLogical <- function(x,
                           na = FALSE,
                           null = FALSE,
                           named = FALSE,
-                          call = parent.frame()) {
-  # create error message
-  errorMessage <- paste0(
-    paste0(substitute(x), collapse = ""),
-    " must be a logical",
-    errorLength(length),
-    errorNa(na),
-    errorNull(null),
-    errorNamed(named),
-    "."
-  )
+                          call = parent.frame(),
+                          msg = NULL) {
+  nm <- paste0(substitute(x), collapse = "")
+  if (is.null(msg)) {
+    msg <- errorMessage(
+      nm = nm, object = "a logical", length = length, na = na, null = null,
+      named = named
+    )
+  }
 
   # assert null
-  if (assertNull(x, null, msg, call)) {
+  if (assertNull(x, nm, null, msg, call)) {
     # assert class
     if (!is.logical(x)) {
-      cli::cli_abort(msg, call = call)
+      c("!" = "{.strong `{nm}` is not logical.}", msg) |>
+        cli::cli_abort(call = call)
     }
 
     # assert length
-    assertLength(x, length, msg, call)
+    assertLength(x, nm, length, msg, call)
 
     # assert na
-    assertNa(x, na, msg, call)
+    assertNa(x, nm, na, msg, call)
 
     # assert named
-    assertNamed(x, named, msg, call)
+    assertNamed(x, nm, named, msg, call)
   }
 
   return(invisible(x))
@@ -357,6 +357,7 @@ assertLogical <- function(x,
 #' @param unique Whether it has to contain unique elements.
 #' @param named Whether it has to be named.
 #' @param call Call argument that will be passed to `cli` error message.
+#' @param msg Custom error message.
 #'
 #' @export
 #'
@@ -369,65 +370,64 @@ assertNumeric <- function(x,
                           null = FALSE,
                           unique = FALSE,
                           named = FALSE,
-                          call = parent.frame()) {
-  # create error message
-  errorMessage <- paste0(
-    paste0(substitute(x), collapse = ""),
-    " must be a numeric",
-    ifelse(integerish, "; it has to be integerish", character()),
-    ifelse(is.infinite(min), character(), paste0("; greater than", min)),
-    ifelse(is.infinite(max), character(), paste0("; smaller than", max)),
-    errorLength(length),
-    errorNa(na),
-    errorNull(null),
-    errorUnique(unique),
-    errorNamed(named),
-    "."
-  )
+                          call = parent.frame(),
+                          msg = NULL) {
+  nm <- paste0(substitute(x), collapse = "")
+  if (is.null(msg)) {
+    if (integerish) obj <- "an integerish numeric" else obj <- "a numeric"
+    msg <- errorMessage(
+      nm = nm, object = obj, min = min, max = max, length = length, na = na,
+      null = null, unique = unique, named = named
+    )
+  }
 
   # assert null
-  if (assertNull(x, null, msg, call)) {
+  if (assertNull(x, nm, null, msg, call)) {
     # no NA vector
     xNoNa <- x[!is.na(x)]
 
     # assert class
     if (!is.numeric(x)) {
-      cli::cli_abort(msg, call = call)
+      c("!" = "{.strong `{nm}` is not numeric.}", msg) |>
+        cli::cli_abort(call = call)
     }
 
     # assert integerish
     if (integerish & base::length(xNoNa) > 0) {
       err <- max(abs(xNoNa - round(xNoNa)))
       if (err > 0.0001) {
-        cli::cli_abort(msg, call = call)
+        c("!" = "{.strong `{nm}` is not integerish.}", msg) |>
+          cli::cli_abort(call = call)
       }
     }
 
     # assert lower bound
     if (!is.infinite(min) & base::length(xNoNa) > 0) {
       if (base::min(xNoNa) < min) {
-        cli::cli_abort(msg, call = call)
+        c("!" = "{.strong `{nm}` is not bigger or equal to {min}.}", msg) |>
+          cli::cli_abort(call = call)
       }
     }
 
     # assert upper bound
     if (!is.infinite(max) & base::length(xNoNa) > 0) {
       if (base::max(xNoNa) > max) {
-        cli::cli_abort(msg, call = call)
+        c("!" = "{.strong `{nm}` is not smaller or equal to {max}.}", msg) |>
+          cli::cli_abort(call = call)
       }
     }
 
     # assert length
-    assertLength(x, length, msg, call)
+    assertLength(x, nm, length, msg, call)
 
     # assert na
-    assertNa(x, na, msg, call)
+    assertNa(x, nm, na, msg, call)
 
     # assert unique
-    assertUnique(x, unique, msg, call)
+    assertUnique(x, nm, unique, msg, call)
 
     # assert named
-    assertNamed(x, named, msg, call)
+    assertNamed(x, nm, named, msg, call)
   }
 
   return(invisible(x))
@@ -444,6 +444,7 @@ assertNumeric <- function(x,
 #' @param distinct Whether it has to contain distinct rows.
 #' @param requireLocal Whether the table has to be a data.frame.
 #' @param call Call argument that will be passed to `cli` error message.
+#' @param msg Custom error message.
 #'
 #' @export
 #'
@@ -455,7 +456,8 @@ assertTable <- function(x,
                         null = FALSE,
                         distinct = FALSE,
                         requireLocal = FALSE,
-                        call = parent.frame()) {
+                        call = parent.frame(),
+                        msg = NULL) {
   # create error message
   errorMessage <- paste0(
     paste0(substitute(x), collapse = ""),
