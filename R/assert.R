@@ -436,12 +436,14 @@ assertNumeric <- function(x,
 #' Assert that an object is a table.
 #'
 #' @param x Variable to check.
+#' @param class A class that the table must have: "tbl", "data.fram", "tbl_sql",
+#' ...
 #' @param numberColumns Number of columns that it has to contain.
 #' @param numberRows Number of rows that it has to contain.
 #' @param columns Name of the columns required.
 #' @param allowExtraColumns Whether extra columns are allowed.
 #' @param null Whether it can be NULL.
-#' @param distinct Whether it has to contain distinct rows.
+#' @param unique Whether it has to contain unique rows.
 #' @param requireLocal Whether the table has to be a data.frame.
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
@@ -449,59 +451,79 @@ assertNumeric <- function(x,
 #' @export
 #'
 assertTable <- function(x,
+                        class = NULL,
                         numberColumns = NULL,
                         numberRows = NULL,
-                        columns = NULL,
+                        columns = character(),
                         allowExtraColumns = TRUE,
                         null = FALSE,
-                        distinct = FALSE,
-                        requireLocal = FALSE,
+                        unique = FALSE,
                         call = parent.frame(),
                         msg = NULL) {
-  # create error message
-  errorMessage <- paste0(
-    paste0(substitute(x), collapse = ""),
-    " must be a tibble",
-    ifelse(is.null(numberColumns), character(), paste0("; with at least ", numberColumns, " columns")),
-    ifelse(is.null(numberRows), character(), paste0("; with at least ", numberRows, " rows")),
-    ifelse(is.null(columns), character(), paste0("; the following columns must be present: ", paste0(columns, collapse = ", "))),
-    errorNull(null),
-    ifelse(distinct, "; it has to contain distinct rows", character()),
-    "."
-  )
+  nm <- paste0(substitute(x), collapse = "")
+  if (is.null(msg)) {
+    if (!is.null(class)) {
+      obj <- "a table of class: {class}" |>
+        cli::cli_text() |>
+        cli::cli_fmt() |>
+        paste0(collapse = " ")
+    } else {
+      obj <- "a table"
+    }
+    msg <- errorMessage(
+      nm = nm, object = obj, numberColumns = numberColumns,
+      numberRows = numberRows, columns = columns,
+      allowExtraColumns = allowExtraColumns, null = null, unique = unique
+    )
+  }
 
   # assert null
-  if (assertNull(x, null, msg, call)) {
+  if (assertNull(x, nm, null, msg, call)) {
     # assert class
-    if (!("tbl" %in% class(x))) {
-      cli::cli_abort(msg, call = call)
+    if (!is.null(class) && !any(class %in% base::class(x))) {
+      c("!" = "{.strong `{nm}` must be one of: {class}, but has class: {base::class(x)}.}", msg) |>
+        cli::cli_abort(call = call)
     }
 
     # assert numberColumns
     if (!is.null(numberColumns)) {
-      if (length(x) != numberColumns) {
-        cli::cli_abort(msg, call = call)
+      if (ncol(x) != numberColumns) {
+        c("!" = "{.strong `{nm}` must have {numberColumns} columns, but has {ncol(x)}.}", msg) |>
+          cli::cli_abort(call = call)
       }
     }
 
     # assert numberRows
     if (!is.null(numberRows)) {
       if (nrow(x) != numberRows) {
-        cli::cli_abort(msg, call = call)
+        c("!" = "{.strong `{nm}` must have {numberRows} rows, but has {nrow(x)}.}", msg) |>
+          cli::cli_abort(call = call)
       }
     }
 
     # assert columns
     if (!is.null(columns)) {
-      if (!all(columns %in% colnames(x))) {
-        cli::cli_abort(msg, call = call)
+      notPresent <- columns[!columns %in% colnames(x)]
+      if (length(notPresent) > 0) {
+        c("!" = "{.strong {notPresent} not present in `{nm}`.}", msg) |>
+          cli::cli_abort(call = call)
       }
     }
 
-    # assert distinct
-    if (distinct) {
+    # allow extra columns
+    if (!allowExtraColumns) {
+      extraCols <- colnames(x)[!colnames(x) %in% columns]
+      if (length(extraCols) > 0) {
+        c("!" = "{.strong `{nm}` contains not extra columns that are not allowed: {extraCols}.}", msg) |>
+          cli::cli_abort(call = call)
+      }
+    }
+
+    # assert unique.
+    if (unique) {
       if (nrow(x) != x |> dplyr::distinct() |> nrow()) {
-        cli::cli_abort(msg, call = call)
+        c("!" = "{.strong Rows are not unique.}", msg) |>
+          cli::cli_abort(call = call)
       }
     }
 
@@ -517,8 +539,8 @@ errorMessage <- function(nm,
                          named = NULL,
                          unique = NULL,
                          null = NULL,
-                         min = NULL,
-                         max = NULL,
+                         min = -Inf,
+                         max = Inf,
                          minNumCharacter = 0,
                          numberColumns = NULL,
                          numberRows = NULL,
@@ -533,8 +555,8 @@ errorMessage <- function(nm,
       if (isTRUE(named)) "it has to be named",
       if (isTRUE(unique)) "it has to contain unique elements",
       if (isFALSE(null)) "it can not be NULL",
-      if (is.numeric(min)) "greater or equal to {min}",
-      if (is.numeric(max)) "smaller or equal to {max}",
+      if (!is.infinite(min)) "greater or equal to {min}",
+      if (!is.infinite(max)) "smaller or equal to {max}",
       if (minNumCharacter > 0) "with at least {minNumCharacter} character per element",
       if (is.numeric(numberColumns)) "with exactly {numberColumns} columns",
       if (is.numeric(numberRows)) "with exactly {numberRows} rows",

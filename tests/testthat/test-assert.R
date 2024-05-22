@@ -204,25 +204,94 @@ test_that("test assertLogical", {
 
 test_that("test assertNumeric", {
   # not numeric
+  expect_no_error(assertNumeric(1.5))
+  expect_no_error(assertNumeric(1L))
+  expect_no_error(assertNumeric(1))
+  expect_error(assertNumeric(list(1)))
 
   # integerish
+  expect_error(assertNumeric(1.5, integerish = TRUE))
+  expect_no_error(assertNumeric(1L, integerish = TRUE))
+  expect_no_error(assertNumeric(1, integerish = TRUE))
+  expect_no_error(assertNumeric(c(1, NA), integerish = TRUE, na = TRUE))
+  expect_error(assertNumeric(c(1, NA, 0.5), integerish = TRUE, na = TRUE))
 
   # min
+  expect_no_error(assertNumeric(1.5, min = 1))
+  expect_error(assertNumeric(1.5, min = 2))
+  expect_no_error(assertNumeric(1L, min = 1))
+  expect_error(assertNumeric(c(1, 4, 5), min = 2))
+  expect_no_error(assertNumeric(c(8, 4, 5), min = 2))
 
   # max
+  expect_no_error(assertNumeric(1.5, max = 2))
+  expect_error(assertNumeric(1.5, max = 1))
+  expect_no_error(assertNumeric(1L, max = 1))
+  expect_error(assertNumeric(c(1, 4, 5), max = 2))
+  expect_no_error(assertNumeric(c(8, 4, 5), max = 20))
 
   # length
+  expect_error(assertNumeric(c(1, 4), length = 1))
+  expect_no_error(assertNumeric(c(1, 4), length = 2))
 
   # na
+  expect_no_error(assertNumeric(c(1, 4, NA), na = TRUE))
+  expect_error(assertNumeric(c(1, 4, NA), na = FALSE))
 
   # null
+  expect_no_error(assertNumeric(NULL, null = TRUE))
+  expect_error(assertNumeric(NULL, null = FALSE))
 
   # unique
+  expect_error(assertNumeric(c(1, 4, NA, 1), unique = TRUE, na = TRUE))
+  expect_no_error(assertNumeric(c(1, 4, NA, 1), unique = FALSE, na = TRUE))
 
   # named
-
+  expect_no_error(assertNumeric(c("1wq"= 1), named = TRUE))
+  expect_error(assertNumeric(c("qw2"= 1, NA), named = TRUE, na = TRUE))
+  expect_no_error(assertNumeric(c("qw2"= 1, "saca" = NA), named = TRUE, na = TRUE))
+  expect_no_error(assertNumeric(c("1wq"= 1), named = FALSE))
+  expect_no_error(assertNumeric(c("qw2"= 1, NA), named = FALSE, na = TRUE))
+  expect_no_error(assertNumeric(c("qw2"= 1, "saca" = NA), named = FALSE, na = TRUE))
 })
 
 test_that("test assertTable", {
+  # class
+  expect_error(assertTable(list(), class = "data.frame"))
+  expect_no_error(assertTable(data.frame(), class = "data.frame"))
+  expect_no_error(assertTable(dplyr::tibble(), class = "data.frame"))
+  expect_error(assertTable(data.frame(), class = "tbl"))
+  expect_no_error(assertTable(dplyr::tibble(), class = "tbl"))
+  expect_error(assertTable(list(), class = c("data.frame", "tbl")))
+  expect_no_error(assertTable(data.frame(), class = c("data.frame", "tbl")))
+  expect_no_error(assertTable(dplyr::tibble(), class = c("data.frame", "tbl")))
 
+  # numberColumns
+  expect_no_error(assertTable(dplyr::tibble(), numberColumns = 0))
+  expect_error(assertTable(dplyr::tibble(), numberColumns = 1))
+  expect_no_error(assertTable(dplyr::tibble(a = 1), numberColumns = 1))
+
+  # numberRows
+  expect_error(assertTable(dplyr::tibble(a = 1), numberRows = 2))
+  expect_no_error(assertTable(dplyr::tibble(a = c(1, 3)), numberRows = 2))
+
+  # columns
+  expect_error(assertTable(dplyr::tibble(a = 1), columns = c("b")))
+  expect_no_error(assertTable(dplyr::tibble(b = c(1, 3)), columns = c("b")))
+  expect_error(assertTable(dplyr::tibble(b = c(1, 3), a = 1), columns = c("b", "s")))
+  expect_no_error(assertTable(dplyr::tibble(b = c(1, 3), a = 1, s = 2), columns = c("b", "s")))
+
+  # allowExtraColumns
+  expect_error(assertTable(dplyr::tibble(b = 1, a = 1), columns = c("b"), allowExtraColumns = FALSE))
+  expect_no_error(assertTable(dplyr::tibble(b = 1), columns = c("b"), allowExtraColumns = FALSE))
+  expect_no_error(assertTable(dplyr::tibble(b = 1, a = 1), columns = c("b"), allowExtraColumns = TRUE))
+  expect_no_error(assertTable(dplyr::tibble(b = 1), columns = c("b"), allowExtraColumns = TRUE))
+
+  # null
+  expect_no_error(assertTable(NULL, null = TRUE))
+  expect_error(assertTable(NULL, null = FALSE))
+
+  # unique
+  expect_no_error(assertTable(dplyr::tibble(b = c(1, 1), a = c(1, 1)), unique = FALSE))
+  expect_error(assertTable(dplyr::tibble(b = c(1, 1), a = c(1, 1)), unique = TRUE))
 })
