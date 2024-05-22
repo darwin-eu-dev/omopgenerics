@@ -143,3 +143,29 @@ assertClassification <- function(x) {
     NA_character_
   )
 }
+setTypes <- function(x, types) {
+  cols <- types$variable_name |> unique()
+  for (col in cols) {
+    type <- types$variable_type[types$variable_name == col] |> unique()
+    if (length(type) > 1) {
+      cli::cli_inform("Multiple types ({type}) found for column {col}. It will be displayed as character.")
+    }
+    if (!type %in% estimateTypeChoices()) {
+      cli::cli_inform("Type: {type} for column: {col} not recognised.")
+    }
+    if (type %in% c("numeric", "proportion", "percentage")) {
+      x <- x |> dplyr::mutate(!!col := as.numeric(.data[[col]]))
+    } else if (type == "integer") {
+      x <- x |> dplyr::mutate(!!col := as.integer(.data[[col]]))
+    } else if (type == "date") {
+      x <- x |> dplyr::mutate(!!col := as.Date(.data[[col]]))
+    } else if (type == "logical") {
+      x <- x |> dplyr::mutate(!!col := as.logical(.data[[col]]))
+    } else if (type == "character") {
+      x <- x |> dplyr::mutate(!!col := as.character(.data[[col]]))
+    } else {
+      cli::cli_inform("need to implement suport for type: {type}.")
+    }
+  }
+  return(x)
+}

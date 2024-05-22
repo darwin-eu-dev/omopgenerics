@@ -94,6 +94,7 @@ constructSummarisedResult <- function(x, set, call = parent.frame()) {
     if (!"result_id" %in% colnames(set)) {
       cli::cli_abort("result_id must be a column of settings argument", call = call)
     }
+    set <- set |> settingsLong()
   }
 
   settingsCols <- colnames(x)[
@@ -110,10 +111,11 @@ constructSummarisedResult <- function(x, set, call = parent.frame()) {
   if (length(settingsCols) > 0) {
     cli::cli_alert_warning("The following variables: {paste0(settingsCols, collapse = ', ')}; were added to `settings`")
     set <- set |>
-      joinSet(
+      dplyr::union_all(
         x |>
           dplyr::select(dplyr::all_of(c("result_id", settingsCols))) |>
-          dplyr::distinct()
+          dplyr::distinct() |>
+          settingsLong()
       )
   }
   x <- x |> dplyr::select(!dplyr::all_of(settingsCols))
@@ -133,35 +135,22 @@ constructSummarisedResult <- function(x, set, call = parent.frame()) {
       cli::cli_alert_warning("The following settings have duplicate values for same result_id: {paste0(errorRows, collapse = ', ')}.")
     }
     extraSets <- extraSets |>
-      tidyr::pivot_wider(
-        names_from = c("estimate_type", "estimate_name"),
-        values_from = "estimate_value"
-      ) |>
-      dplyr::mutate(
-        dplyr::across(
-          .cols = dplyr::starts_with("numeric|proportion|percentage"),
-          .fns = as.numeric
-        ),
-        dplyr::across(
-          .cols = dplyr::starts_with("integer"),
-          .fns = as.integer
-        ),
-        dplyr::across(
-          .cols = dplyr::starts_with("date"),
-          .fns = as.Date
-        ),
-        dplyr::across(
-          .cols = dplyr::starts_with("logical"),
-          .fns = as.logical
-        )
-      ) |>
-      dplyr::rename_with(.fn = ~ sub("^[^_]*_", "", .x), .cols = !"result_id")
-    set <- set |> joinSet(extraSets)
+      dplyr::rename(
+        "setting_name" = "estimate_name",
+        "setting_type" = "estimate_type",
+        "setting_value" = "estimate_value"
+      )
+    set <- set |> dplyr::union_all(extraSets)
     x <- x |> dplyr::filter(.data$variable_name != "settings")
   }
 
   if (is.null(set)) {
-    set <- x |> dplyr::select("result_id") |> dplyr::distinct()
+    set <- dplyr::tibble(
+      "result_id" = integer(),
+      "setting_name" = character(),
+      "setting_type" = character(),
+      "setting_value" = character()
+    )
   }
 
   x <- structure(
@@ -174,14 +163,6 @@ constructSummarisedResult <- function(x, set, call = parent.frame()) {
   )
 
   return(x)
-}
-joinSet <- function(set, addset) {
-  if (is.null(set)) {
-    set <- addset
-  } else {
-    set <- addset |> dplyr::full_join(set, by = "result_id")
-  }
-  return(set)
 }
 validateSummariseResult <- function(x) {
   if (!"result_id" %in% colnames(x)) {
@@ -224,18 +205,17 @@ validateSummariseResult <- function(x) {
   )
 
   # settings
-  sets <- settings(x)
-  idSummary <- x |>
-    dplyr::select("result_id") |>
-    dplyr::distinct() |>
-    dplyr::pull()
-  idSettings <- sets |> dplyr::pull("result_id")
-  if (length(idSettings) != length(unique(idSettings))) {
-    cli::cli_abort("ids are not unique in settings")
-  }
-  notPresent <- idSummary[!idSummary %in% idSettings]
-  if (length(notPresent) > 0) {
-    cli::cli_abort("There are ids present in the summary that do not have settings: {paste0(notPresent, collapse = ', ')}")
+  repeatedSets <- attr(x, "settings") |>
+    dplyr::group_by(.data$result_id, .data$setting_name) |>
+    dplyr::tally() |>
+    dplyr::filter(.data$n > 1)
+  if (nrow(repeatedSets) > 0) {
+    cli::cli_abort(c(
+      "There are repeated settings:",
+      glue::glue(
+        "In result_id {repeatedSets$result_id} setting {repeatedSets$setting_name} is repeated {repeatedSets$n} times"
+      )
+    ))
   }
 
   # validate groupCount
@@ -350,6 +330,41 @@ getGroupping <- function(x) {
   }) |>
     unlist() |>
     paste0(collapse = ", ")
+}
+settingsLong <- function(set) {
+  if (!suppressWarnings(all(sort(colnames(set)) == c(
+    "result_id", "setting_name", "setting_type", "setting_value"
+  )))) {
+    if (identical("result_id", colnames(set))) {
+      set <- dplyr::tibble(
+        "result_id" = integer(),
+        "setting_name" = character(),
+        "setting_type" = character(),
+        "setting_value" = character()
+      )
+    } else {
+      set <- set |>
+        dplyr::mutate(dplyr::across(!"result_id", as.character)) |>
+        tidyr::pivot_longer(
+          cols = !"result_id",
+          names_to = "setting_name",
+          values_to = "setting_value"
+        ) |>
+        dplyr::inner_join(
+          variableTypes(set) |>
+            dplyr::rename(
+              "setting_name" = "variable_name", "setting_type" = "variable_type"
+            ),
+          by = "setting_name"
+        ) |>
+        dplyr::select(
+          "result_id", "setting_name", "setting_type", "setting_value"
+        )
+    }
+
+
+  }
+  return(set)
 }
 
 #' Validate if two columns are valid Name-Level pair.

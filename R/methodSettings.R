@@ -117,6 +117,16 @@ settings.cohort_table <- function(x) {
 #' settings(result)
 #'
 settings.summarised_result <- function(x) {
-  attr(x, "settings")
+  attr(x, "settings") |>
+    dplyr::select(-"setting_type") |>
+    tidyr::pivot_wider(
+      names_from = "setting_name", values_from = "setting_value"
+    ) |>
+    setTypes(
+      attr(x, "settings") |>
+        dplyr::select(
+          "variable_name" = "setting_name", "variable_type" = "setting_type"
+        )
+    )
 }
 
