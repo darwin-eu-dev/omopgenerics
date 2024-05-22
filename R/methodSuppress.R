@@ -86,7 +86,9 @@ suppress.summarised_result <- function(result,
   suppressed <- NA_character_
 
   # initial checks
-  assertTibble(result)
+  assertClass(
+    result, class = c("tbl", "data.frame", "summarised_result"), all = TRUE
+  )
   assertNumeric(minCellCount, integerish = TRUE, min = 0, length = 1)
 
   result <- result |>
