@@ -143,6 +143,7 @@ test_that("test assertList", {
   expect_no_error(assertList(list(1, NA, "ws"), na = TRUE))
   expect_error(assertList(list(1, NA, "ws"), na = FALSE))
   expect_no_error(assertList(list(c(1, NA), 2, "ws"), na = FALSE))
+  expect_no_error(assertList(list(NA), class = "character", na = TRUE))
 
   # null
   expect_no_error(assertList(NULL, null = TRUE))

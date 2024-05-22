@@ -10,7 +10,8 @@ assertLogical(
   na = FALSE,
   null = FALSE,
   named = FALSE,
-  call = parent.frame()
+  call = parent.frame(),
+  msg = NULL
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ assertLogical(
 \item{named}{Whether it has to be named.}
 
 \item{call}{Call argument that will be passed to \code{cli} error message.}
+
+\item{msg}{Custom error message.}
 }
 \description{
 Assert that an object is a logical.

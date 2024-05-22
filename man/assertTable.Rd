@@ -6,18 +6,22 @@
 \usage{
 assertTable(
   x,
+  class = NULL,
   numberColumns = NULL,
   numberRows = NULL,
-  columns = NULL,
+  columns = character(),
   allowExtraColumns = TRUE,
   null = FALSE,
-  distinct = FALSE,
-  requireLocal = FALSE,
-  call = parent.frame()
+  unique = FALSE,
+  call = parent.frame(),
+  msg = NULL
 )
 }
 \arguments{
 \item{x}{Variable to check.}
+
+\item{class}{A class that the table must have: "tbl", "data.fram", "tbl_sql",
+...}
 
 \item{numberColumns}{Number of columns that it has to contain.}
 
@@ -29,11 +33,11 @@ assertTable(
 
 \item{null}{Whether it can be NULL.}
 
-\item{distinct}{Whether it has to contain distinct rows.}
-
-\item{requireLocal}{Whether the table has to be a data.frame.}
+\item{unique}{Whether it has to contain unique rows.}
 
 \item{call}{Call argument that will be passed to \code{cli} error message.}
+
+\item{msg}{Custom error message.}
 }
 \description{
 Assert that an object is a table.

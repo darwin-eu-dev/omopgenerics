@@ -281,7 +281,7 @@ assertList <- function(x,
     assertNamed(x, nm, named, msg, call)
 
     # assert class
-    if (!is.null(class)) {
+    if (!is.null(class) && length(xNoNa) > 0) {
       flag <- lapply(xNoNa, function(y) {
         any(class %in% base::class(y))
       }) |>
@@ -444,7 +444,6 @@ assertNumeric <- function(x,
 #' @param allowExtraColumns Whether extra columns are allowed.
 #' @param null Whether it can be NULL.
 #' @param unique Whether it has to contain unique rows.
-#' @param requireLocal Whether the table has to be a data.frame.
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
