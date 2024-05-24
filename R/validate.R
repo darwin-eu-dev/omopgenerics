@@ -14,25 +14,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Validate a cdm reference object.
+#' Validate that the a variable is a valid name for a table in the cdm. A
+#' message will be shown if name had to be modified and/or the name is already
+#' part of the cdm.
 #'
 #' @param name Name of a new table to be added to a cdm object.
-#' @param cdm A cdm_reference object.
+#' @param cdm A cdm_reference object. It will tro
 #'
 #' @export
 #'
 validateName <- function(name, cdm = NULL) {
   nm <- paste0(substitute(name), collapse = "")
-  if (!is.character(name) && length(name) == 1) {
-    cli::cli_abort("`{nm}` must be a character of length 1.")
-  }
+  assertCharacter(name, length = 1)
   newName <- toSnakeCase(name)
   if (newName != name) {
     cli::cli_inform(c("!" = "`{nm}` was modified: {name} -> {newName}"))
   }
   if (!is.null(cdm)) {
     if (newName %in% names(cdm)) {
-      cli::cli_inform(c("!" = "There already exist a table in cdm[[{newName}]]. It will be overwritten."))
+      cli::cli_inform(c("!" = "There already exist a table named {.var {newName}}. It will be overwritten."))
     }
   }
   return(newName)
