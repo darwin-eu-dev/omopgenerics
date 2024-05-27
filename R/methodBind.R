@@ -177,7 +177,8 @@ bind.cohort_table <- function(..., name) {
     table = newCohort,
     cohortSetRef = newCohortSet,
     cohortAttritionRef = newCohortAttrition,
-    cohortCodelistRef = newCohortCodelist
+    cohortCodelistRef = newCohortCodelist,
+    .softValidation = TRUE
   )
 
   return(cdm)
