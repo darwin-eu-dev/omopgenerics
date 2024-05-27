@@ -148,18 +148,21 @@ bind.cohort_table <- function(..., name) {
     dplyr::select(-c("cohort_definition_id", "cohort_id")) |>
     dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") |>
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_codelist")))
+
+  # insert cohortSet
+  nm <- uniqueTableName(tmpPrefix())
+  cdm <- omopgenerics::insertTable(cdm = cdm, name = nm, table = newCohortSet)
   cohorts <- lapply(seq_len(length(cohorts)), function(x) {
     cohorts[[x]] |>
       dplyr::left_join(
-        newCohortSet |>
+        cdm[[nm]] |>
           dplyr::filter(.data$cohort_id == .env$x) |>
           dplyr::mutate(
             "cohort_definition_id" = as.integer(.data$cohort_definition_id),
             "cohort_name" = as.character(.data$cohort_name)
           ) |>
           dplyr::select("cohort_definition_id", "new_cohort_definition_id"),
-        by = c("cohort_definition_id"),
-        copy = TRUE
+        by = c("cohort_definition_id")
       ) |>
       dplyr::select(-"cohort_definition_id") |>
       dplyr::rename("cohort_definition_id" = "new_cohort_definition_id")
@@ -171,6 +174,8 @@ bind.cohort_table <- function(..., name) {
     dplyr::select(-c("cohort_definition_id", "cohort_id")) |>
     dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") |>
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_set")))
+
+  cdm <- dropTable(cdm = cdm, name = nm)
 
   # instantiate the new generated cohort set
   cdm[[name]] <- newCohortTable(
