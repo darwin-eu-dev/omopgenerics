@@ -175,7 +175,7 @@ bind.cohort_table <- function(..., name) {
     dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") |>
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_set")))
 
-  cdm <- dropTable(cdm = cdm, name = nm)
+  dropTable(cdm = cdm, name = nm)
 
   # instantiate the new generated cohort set
   cdm[[name]] <- newCohortTable(
