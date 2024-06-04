@@ -119,3 +119,25 @@ getCohortName <- function(cohort, cohortId = NULL) {
     dplyr::inner_join(set, by = "cohort_definition_id")
   x$cohort_name |> rlang::set_names(x$cohort_definition_id)
 }
+
+#' Get the person identifier of a column (whether subject_id or person_id), it
+#' will throw an error if it contains both.
+#'
+#' @param x A table.
+#'
+#' @export
+#'
+#' @return Person identifier column.
+#'
+getPersonIdentifier <- function(x) {
+  cols <- colnames(x)
+  id <- c("person_id", "subject_id")
+  id <- id[id %in% cols]
+  if (length(id) == 2) {
+    cli::cli_abort("The table contains both person_id and subjet_id as columns")
+  }
+  if (length(id) == 0) {
+    cli::cli_abort("The table does not contain neither person_id nor subjet_id as columns")
+  }
+  return(id)
+}
