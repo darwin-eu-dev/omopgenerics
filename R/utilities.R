@@ -127,6 +127,8 @@ getCohortName <- function(cohort, cohortId = NULL) {
 #' @param nChar Number of characters.
 #' @param prefix A prefix for the identifiers.
 #'
+#' @export
+#'
 #' @return A character vector with n unique identifiers.
 #'
 uniqueId <- function(n = 1, exclude = character(), nChar = 3, prefix = "id_") {
