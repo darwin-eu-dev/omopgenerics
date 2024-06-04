@@ -72,3 +72,18 @@ test_that("test getCohortName and getCohortId", {
   expect_error(getCohortName(cdm$my_second_cohort, "1"))
 
 })
+
+test_that("uniqueId", {
+  expect_no_error(uniqueId())
+  expect_true(is.character(uniqueId()))
+  expect_true(length(uniqueId()) == 1)
+  expect_true(length(uniqueId(n = 8)) == 8)
+  expect_true(grepl("pref_", uniqueId(prefix = "pref_")))
+  expect_true(nchar(uniqueId()) == 6)
+  expect_true(nchar(uniqueId(nChar = 4, prefix = "")) == 4)
+  xx <- letters[c(-1, -8)]
+  expect_identical(
+    uniqueId(n = 2, exclude = paste0("m", xx), nChar = 1, prefix = "m"),
+    c("ma", "mh")
+  )
+})
