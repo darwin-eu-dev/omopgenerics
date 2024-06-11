@@ -23,3 +23,27 @@
 validateCohort <- function(cohort) {
   assertClass(cohort, class = c("cohort_table", "cdm_table"), all = TRUE)
 }
+
+#' Validate A cohortId input.
+#'
+#' @param cohortId A cohortId vector to be validated.
+#' @param cohort A cohort_table object.
+#'
+#' @export
+#'
+validateCohortId <- function(cohortId, cohort) {
+  assertNumeric(cohortId, integerish = TRUE, null = TRUE, min = 1, unique = TRUE)
+  possibleCohortIds <- settings(cohort) |>
+    dplyr::pull("cohort_definition_id") |>
+    as.integer()
+  if (is.null(cohortId)) {
+    cohortId <- possibleCohortIds
+  } else {
+    cohortId <- as.integer(cohortId)
+    notPresent <- cohortId[!cohortId %in% possibleCohortIds]
+    if (length(notPresent) > 0) {
+      cli::cli_abort("cohort definition id: {notPresent} not defined in settings.")
+    }
+  }
+  return(cohortId)
+}
