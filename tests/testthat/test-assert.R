@@ -47,6 +47,9 @@ test_that("test assertCharacter", {
   # msg
   expect_error(assertCharacter(c("affac", "sadf", "asdsef"), length = 2, msg = "my custom message"))
   expect_error(assertCharacter(c("affac", NA, NA, "sadf", "sadf", "asdsef", NA), na = TRUE, unique = TRUE, msg = character()))
+
+  myVariable <- 1
+  expect_error(assertCharacter(myVariable))
 })
 
 test_that("test assertChoice", {
