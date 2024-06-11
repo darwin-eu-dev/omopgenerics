@@ -2,18 +2,22 @@
 % Please edit documentation in R/utilities.R
 \name{getPersonIdentifier}
 \alias{getPersonIdentifier}
-\title{Get the person identifier of a column (whether subject_id or person_id), it
-will throw an error if it contains both.}
+\title{Get the column name with the person identifier from a table (either
+subject_id or person_id), it will throw an error if it contains both or
+neither.}
 \usage{
-getPersonIdentifier(x)
+getPersonIdentifier(x, call = parent.frame())
 }
 \arguments{
 \item{x}{A table.}
+
+\item{call}{A call argument passed to cli functions.}
 }
 \value{
 Person identifier column.
 }
 \description{
-Get the person identifier of a column (whether subject_id or person_id), it
-will throw an error if it contains both.
+Get the column name with the person identifier from a table (either
+subject_id or person_id), it will throw an error if it contains both or
+neither.
 }
