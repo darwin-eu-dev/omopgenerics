@@ -14,6 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+#' Validate a cohort table input.
+#'
+#' @param cohort Object to be validated as a valid cohort input.
+#'
+#' @export
+#'
+validateCohort <- function(cohort) {
+  assertClass(cohort, class = c("cohort_table", "cdm_table"), all = TRUE)
+}
+
 #' Validate A cohortId input.
 #'
 #' @param cohortId A cohortId vector to be validated.
