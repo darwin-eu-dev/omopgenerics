@@ -120,6 +120,36 @@ getCohortName <- function(cohort, cohortId = NULL) {
   x$cohort_name |> rlang::set_names(x$cohort_definition_id)
 }
 
+#' Get the column name with the person identifier from a table (either
+#' subject_id or person_id), it will throw an error if it contains both or
+#' neither.
+#'
+#' @param x A table.
+#' @param call A call argument passed to cli functions.
+#'
+#' @export
+#'
+#' @return Person identifier column.
+#'
+getPersonIdentifier <- function(x, call = parent.frame()) {
+  cols <- colnames(x)
+  id <- c("person_id", "subject_id")
+  id <- id[id %in% cols]
+  if (length(id) == 2) {
+    cli::cli_abort(
+      message = "The table contains both person_id and subjet_id as columns",
+      call = call
+    )
+  }
+  if (length(id) == 0) {
+    cli::cli_abort(
+      message = "The table does not contain neither person_id nor subjet_id as columns",
+      call = call
+    )
+  }
+  return(id)
+}
+
 #' Get a unique Identifier with a certain number of characters and a prefix.
 #'
 #' @param n Number of identifiers.

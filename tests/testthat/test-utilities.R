@@ -73,6 +73,21 @@ test_that("test getCohortName and getCohortId", {
 
 })
 
+test_that("test getPersonIdentifier", {
+  expect_identical(
+    getPersonIdentifier(dplyr::tibble("person_id" = 1L, "a" = "a", "sdas" = 3)),
+    "person_id"
+  )
+  expect_identical(
+    getPersonIdentifier(dplyr::tibble("subject_id" = 1L, "a" = "a")),
+    "subject_id"
+  )
+  expect_error(
+    getPersonIdentifier(dplyr::tibble("subject_id" = 1L, "person_id" = "a"))
+  )
+  expect_error(getPersonIdentifier(dplyr::tibble("y" = 1L, "x" = "a")))
+})
+
 test_that("uniqueId", {
   expect_no_error(uniqueId())
   expect_true(is.character(uniqueId()))
