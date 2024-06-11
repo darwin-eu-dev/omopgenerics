@@ -149,3 +149,43 @@ getPersonIdentifier <- function(x, call = parent.frame()) {
   }
   return(id)
 }
+
+#' Get a unique Identifier with a certain number of characters and a prefix.
+#'
+#' @param n Number of identifiers.
+#' @param exclude Columns to exclude.
+#' @param nChar Number of characters.
+#' @param prefix A prefix for the identifiers.
+#'
+#' @export
+#'
+#' @return A character vector with n unique identifiers.
+#'
+uniqueId <- function(n = 1, exclude = character(), nChar = 3, prefix = "id_") {
+  # input check
+  assertNumeric(n, integerish = TRUE, min = 0)
+  assertCharacter(exclude)
+  assertNumeric(n, integerish = TRUE, min = 1)
+  assertCharacter(prefix, length = 1)
+
+  if (nChar >= 5) {
+    cli::cli_warn(c("!" = "if nChar >= 5 (nChar = {nChar}) it can be quite computationaly expensive"))
+  }
+
+  # get options for identifiers
+  idOptions <- do.call(tidyr::expand_grid, rep(list(letters), nChar)) |>
+    tidyr::unite(col = "id", dplyr::everything(), sep = "") |>
+    dplyr::mutate("id" = paste0(.env$prefix, .data$id)) |>
+    dplyr::filter(!.data$id %in% .env$exclude) |>
+    dplyr::pull()
+
+  if (length(idOptions) < n) {
+    cli::cli_abort("There are not enough options with the current input parameters. {length(idOptions)} options and {n} requested id{?s}.")
+  } else if (length(idOptions) == n) {
+    x <- idOptions
+  } else {
+    x <- sample(idOptions, size = n)
+  }
+
+  return(x)
+}
