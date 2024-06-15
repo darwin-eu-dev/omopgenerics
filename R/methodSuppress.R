@@ -133,12 +133,12 @@ obscureGroup <- function(result, minCellCount, estimateName) {
   obsLabels <- obsLabels[tolower(gsub("_", " ", obsLabels)) %in% groupCount]
 
   groupsToObscure1 <- result |>
-    dplyr::group_by(dplyr::across(!c(
-      "estimate_name", "estimate_type", "estimate_value", "obscure_record"
-    ))) |>
-    dplyr::summarise(
-      "obscure_group_1" = max(.data$obscure_record), .groups = "drop"
-    )
+    dplyr::filter(
+      obscure_record == 1 & grepl(.env$estimateName, .data$estimate_name)
+    ) |>
+    dplyr::mutate("estimate_name" = gsub("count", "percentage", .data$estimate_name)) |>
+    dplyr::select(-c("estimate_type", "estimate_value", "obscure_record")) |>
+    dplyr::mutate("obscure_group_1" = 1)
   cols1 <- colnames(groupsToObscure1)[colnames(groupsToObscure1) != "obscure_group_1"]
   groupsToObscure2 <- result |>
     dplyr::filter(
