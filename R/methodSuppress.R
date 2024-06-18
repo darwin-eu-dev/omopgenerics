@@ -134,7 +134,7 @@ obscureGroup <- function(result, minCellCount, estimateName) {
 
   groupsToObscure1 <- result |>
     dplyr::filter(
-      obscure_record == 1 & grepl(.env$estimateName, .data$estimate_name)
+      .data$obscure_record == 1 & grepl(.env$estimateName, .data$estimate_name)
     ) |>
     dplyr::mutate("estimate_name" = gsub("count", "percentage", .data$estimate_name)) |>
     dplyr::select(-c("estimate_type", "estimate_value", "obscure_record")) |>
