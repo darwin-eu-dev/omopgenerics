@@ -133,7 +133,15 @@ obscureGroup <- function(result, minCellCount, estimateName) {
     dplyr::pull("variable_name")
   obsLabels <- obsLabels[tolower(gsub("_", " ", obsLabels)) %in% groupCount]
 
-  # obscure the whole group within estimate_name
+  groupsToObscure0 <- result |>
+    dplyr::filter(
+      .data$obscure_record == 1 & .data$estimate_name %in% .env$estimateName
+    ) |>
+    dplyr::select(!c(
+      "estimate_name", "estimate_type", "estimate_value", "obscure_record"
+    )) |>
+    dplyr::mutate("obscure_group_0" = 1)
+  cols0 <- colnames(groupsToObscure0)[colnames(groupsToObscure0) != "obscure_group_0"]
   groupsToObscure1 <- result |>
     dplyr::filter(
       .data$obscure_record == 1 & .data$estimate_name %in% .env$estimateName
@@ -158,20 +166,16 @@ obscureGroup <- function(result, minCellCount, estimateName) {
   cols2 <- colnames(groupsToObscure2)[colnames(groupsToObscure2) != "obscure_group_2"]
 
   result <- result |>
+    dplyr::left_join(groupsToObscure0, by = cols0) |>
     dplyr::left_join(groupsToObscure1, by = cols1) |>
     dplyr::left_join(groupsToObscure2, by = cols2) |>
-    dplyr::mutate(
-      obscure_group = dplyr::case_when(
-        obscure_group_2 == 1 & !.data$variable_name %in% .env$groupCount ~ 1,
-        obscure_group_1 == 1 & !grepl(paste0(.env$estimateName, collapse = "|"), .data$estimate_name) ~ 1,
-        TRUE ~ 0
-      ),
-      # keep individuals counts > minCellCount
-      obscure_group = dplyr::if_else(
-        grepl(paste0(.env$estimateName, collapse = "|"), .data$estimate_name) & .data$obscure_record == 0,
-        0, .data$obscure_group)
-    ) |>
-    dplyr::select(-c("obscure_group_1", "obscure_group_2"))
+    dplyr::mutate(obscure_group = dplyr::case_when(
+      obscure_group_2 == 1 & !.data$variable_name %in% .env$groupCount ~ 1,
+      obscure_group_1 == 1 & !grepl(.env$estimateName, .data$estimate_name) ~ 1,
+      obscure_group_0 == 1 & !.data$estimate_name %in% .env$estimateName ~ 1,
+      .default = 0
+    )) |>
+    dplyr::select(-c("obscure_group_0", "obscure_group_1", "obscure_group_2"))
 
   return(result)
 }
