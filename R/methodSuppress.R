@@ -82,7 +82,8 @@ suppress.summarised_result <- function(result,
     }
   }
 
-  estimateName = "count"
+  estimateName = paste0(c("count", "denominator_count", "outcome_count",
+                          "record_count", "subject_count"), collapse = "|")
   suppressed <- NA_character_
 
   # initial checks
@@ -132,14 +133,16 @@ obscureGroup <- function(result, minCellCount, estimateName) {
     dplyr::pull("variable_name")
   obsLabels <- obsLabels[tolower(gsub("_", " ", obsLabels)) %in% groupCount]
 
+  # obscure the percentages
   groupsToObscure1 <- result |>
     dplyr::filter(
       .data$obscure_record == 1 & grepl(.env$estimateName, .data$estimate_name)
     ) |>
     dplyr::mutate("estimate_name" = gsub("count", "percentage", .data$estimate_name)) |>
-    dplyr::select(-c("estimate_type", "estimate_value", "obscure_record")) |>
+    dplyr::select(-c("estimate_name", "estimate_type", "estimate_value", "obscure_record")) |>
     dplyr::mutate("obscure_group_1" = 1)
   cols1 <- colnames(groupsToObscure1)[colnames(groupsToObscure1) != "obscure_group_1"]
+  # obscure the whole group within variable name value
   groupsToObscure2 <- result |>
     dplyr::filter(
       .data$variable_name %in% .env$obsLabels &
@@ -156,11 +159,17 @@ obscureGroup <- function(result, minCellCount, estimateName) {
   result <- result |>
     dplyr::left_join(groupsToObscure1, by = cols1) |>
     dplyr::left_join(groupsToObscure2, by = cols2) |>
-    dplyr::mutate(obscure_group = dplyr::case_when(
-      obscure_group_2 == 1 & !.data$variable_name %in% .env$groupCount ~ 1,
-      obscure_group_1 == 1 & !grepl(.env$estimateName, .data$estimate_name) ~ 1,
-      TRUE ~ 0
-    )) |>
+    dplyr::mutate(
+      obscure_group = dplyr::case_when(
+        obscure_group_2 == 1 & !.data$variable_name %in% .env$groupCount ~ 1,
+        obscure_group_1 == 1 & !grepl(.env$estimateName, .data$estimate_name) ~ 1,
+        TRUE ~ 0
+      ),
+      # keep individuals counts > minCellCount
+      obscure_group = dplyr::if_else(
+        grepl(.env$estimateName, .data$estimate_name) & .data$obscure_record == 0,
+        0, .data$obscure_group)
+    ) |>
     dplyr::select(-c("obscure_group_1", "obscure_group_2"))
   return(result)
 }

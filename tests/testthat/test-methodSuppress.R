@@ -167,4 +167,26 @@ test_that("test supress methods", {
   expect_true(is.na(xs$estimate_value[xs$estimate_name == "count_missing"]))
   expect_true(all(!is.na(xs$estimate_value[xs$estimate_name != "count_missing"])))
 
+  # TEST keep individual counts
+  x <- dplyr::tibble(
+    "result_id" = 1L,
+    "cdm_name" = "unknown",
+    "group_name" = "overall",
+    "group_level" = "overall",
+    "strata_name" = "overall",
+    "strata_level" = "overall",
+    "variable_name" = c("outcome", "outcome", "outcome", "outcome", "outcome", "outcome"),
+    "variable_level" = c("outcome1", "outcome1", "outcome1", "outcome2", "outcome2", "outcome2"),
+    "estimate_name" = c("denominator_count", "outcome_count", "prevalence", "denominator_count", "outcome_count", "prevalence"),
+    "estimate_type" = c("integer", "integer", "numeric", "integer", "integer", "numeric"),
+    "estimate_value" = c("7", "1", "5", "4", "0", "1"),
+    "additional_name" = c("overall"),
+    "additional_level" = c("overall")
+  ) |>
+    newSummarisedResult()
+  result <- suppress(x)
+  expect_true(
+    result$estimate_value == c("7", "NA", "NA", "NA", "0", "NA")
+  )
+
 })
