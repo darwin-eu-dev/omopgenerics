@@ -36,7 +36,7 @@ my_result <- tibble(
   "age_group"),
   "variable_level" = c(NA, "<50", "<50", ">=50", ">=50", NA, NA,
   "<50", "<50"),
-  "estimate_name" = c("count", "count", "percentage", "count", "percenatge",
+  "estimate_name" = c("count", "count", "percentage", "count", "percentage",
   "random", "count", "count", "percentage"),
   "estimate_type" = c("integer", "integer", "percentage", "integer",
   "percentage", "numeric", "integer", "integer", "percentage"),
