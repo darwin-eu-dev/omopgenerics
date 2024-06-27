@@ -186,7 +186,29 @@ test_that("test supress methods", {
     newSummarisedResult()
   result <- suppress(x)
   expect_true(
-    result$estimate_value == c("7", "NA", "NA", "NA", "0", "NA")
+    all(result$estimate_name[is.na(result$estimate_value)] == c("outcome_count", "prevalence", "denominator_count", "prevalence"))
+  )
+
+  # TEST keep individual counts
+  x <- dplyr::tibble(
+    "result_id" = 1L,
+    "cdm_name" = "unknown",
+    "group_name" = "overall",
+    "group_level" = "overall",
+    "strata_name" = "overall",
+    "strata_level" = "overall",
+    "variable_name" = c("outcome", "outcome", "outcome", "outcome", "outcome", "outcome"),
+    "variable_level" = c("outcome1", "outcome1", "outcome1", "outcome1", "outcome1", "outcome1"),
+    "estimate_name" = c("denominator_count", "outcome_count", "prevalence", "denominator_count", "outcome_count", "prevalence"),
+    "estimate_type" = c("integer", "integer", "numeric", "integer", "integer", "numeric"),
+    "estimate_value" = c("7", "1", "5", "4", "0", "1"),
+    "additional_name" = "time",
+    "additional_level" = c("1", "1", "1", "2", "2", "2"),
+  ) |>
+    newSummarisedResult()
+  result <- suppress(x)
+  expect_true(
+    all(result$estimate_name[is.na(result$estimate_value)] == c("outcome_count", "prevalence", "denominator_count", "prevalence"))
   )
 
 })
