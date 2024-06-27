@@ -111,8 +111,19 @@ newCohortTable <- function(table,
 collect.cohort_table <- function(x, ...) {
   x <- removeClass(x, "cohort_table")
   y <- x |> dplyr::collect()
-  attr(y, "cohort_set") <- attr(x, "cohort_set") |> dplyr::collect()
+
+  if(!is.null(attr(x, "cohort_set"))){
+    attr(y, "cohort_set") <- attr(x, "cohort_set") |> dplyr::collect()
+  } else {
+    cli::cli_abort("Table has class cohort_table but is missing cohort set attribute")
+  }
+
+  if(!is.null(attr(x, "cohort_attrition"))){
   attr(y, "cohort_attrition") <- attr(x, "cohort_attrition") |> dplyr::collect()
+  } else {
+    cli::cli_abort("Table has class cohort_table but is missing cohort attrition attribute")
+  }
+
   return(y)
 }
 
