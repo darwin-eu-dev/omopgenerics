@@ -138,7 +138,8 @@ suppressGroup <- function(result, groupSuppress) {
     dplyr::select(!dplyr::starts_with(c(
       "variable", "estimate", "suppress", "is_count"
     ))) |>
-    dplyr::mutate("suppress_group" = T)
+    dplyr::mutate("suppress_group" = T) |>
+    dplyr::distinct()
   joinCols <- colnames(supByGroup)[colnames(supByGroup) != "suppress_group"]
   result <- result |> dplyr::left_join(supByGroup, by = joinCols)
   result$suppress_group[is.na(result$suppress_group)] <- F
@@ -150,7 +151,8 @@ suppressVariable <- function(result, variableSuppress) {
       .data$suppress_record & .data$estimate_name %in% .env$variableSuppress
     ) |>
     dplyr::select(!dplyr::starts_with(c("estimate", "suppress", "is_count"))) |>
-    dplyr::mutate("suppress_variable" = T)
+    dplyr::mutate("suppress_variable" = T) |>
+    dplyr::distinct()
   joinCols <- colnames(supByVariable)[colnames(supByVariable) != "suppress_variable"]
   result <- result |> dplyr::left_join(supByVariable, by = joinCols)
   result$suppress_variable[is.na(result$suppress_variable)] <- F
@@ -173,7 +175,7 @@ suppressLinkage <- function(result, linkedSuppression) {
       ) |>
       dplyr::mutate("suppress_linked" = T)
   }
-  supByLinkage <- dplyr::bind_rows(supByLinkage)
+  supByLinkage <- dplyr::bind_rows(supByLinkage) |> dplyr::distinct()
 
   joinCols <- colnames(supByLinkage)[colnames(supByLinkage) != "suppress_linked"]
   result <- result |> dplyr::left_join(supByLinkage, by = joinCols)
