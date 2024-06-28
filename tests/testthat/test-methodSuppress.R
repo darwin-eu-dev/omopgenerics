@@ -167,7 +167,7 @@ test_that("test supress methods", {
   expect_true(is.na(xs$estimate_value[xs$estimate_name == "count_missing"]))
   expect_true(all(!is.na(xs$estimate_value[xs$estimate_name != "count_missing"])))
 
-  # TEST keep individual counts
+  # Test keep individual counts
   x <- dplyr::tibble(
     "result_id" = 1L,
     "cdm_name" = "unknown",
@@ -189,7 +189,7 @@ test_that("test supress methods", {
     all(result$estimate_name[is.na(result$estimate_value)] == c("outcome_count", "prevalence", "denominator_count", "prevalence"))
   )
 
-  # TEST keep individual counts
+  # Test keep individual counts
   x <- dplyr::tibble(
     "result_id" = 1L,
     "cdm_name" = "unknown",
@@ -211,4 +211,23 @@ test_that("test supress methods", {
     all(result$estimate_name[is.na(result$estimate_value)] == c("outcome_count", "prevalence", "denominator_count", "prevalence"))
   )
 
+  # Test duplicate
+  x <- dplyr::tibble(
+    "result_id" = 1L,
+    "cdm_name" = "unknown",
+    "group_name" = "overall",
+    "group_level" = "overall",
+    "strata_name" = "overall",
+    "strata_level" = "overall",
+    "variable_name" = c("outcome", "outcome", "outcome"),
+    "variable_level" = c("outcome1", "outcome1", "outcome1"),
+    "estimate_name" = c("denominator_count", "outcome_count", "prevalence"),
+    "estimate_type" = c("integer", "integer", "numeric"),
+    "estimate_value" = c("4", "1", "5"),
+    "additional_name" = "time",
+    "additional_level" = c("1", "1", "1"),
+  ) |>
+    newSummarisedResult()
+  result <- suppress(x)
+  expect_true(nrow(x) == nrow(result))
 })
