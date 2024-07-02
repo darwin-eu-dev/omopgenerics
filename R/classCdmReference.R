@@ -164,6 +164,7 @@ validateCdmReference <- function(cdm, soft) {
   # not overlapping periods
   if (!soft) {
     checkOverlapObservation(cdm$observation_period)
+    checkStartBeforeEndObservation(cdm$observation_period)
   }
 
   return(invisible(cdm))
@@ -222,7 +223,29 @@ checkOverlapObservation <- function(x, call = parent.frame()) {
     )
   }
 }
-
+checkStartBeforeEndObservation <- function(x, call = parent.frame()) {
+  x <- x |>
+    dplyr::filter(
+      .data$observation_period_start_date > .data$observation_period_end_date
+    ) |>
+    dplyr::collect()
+  if (nrow(x) > 0) {
+    x5 <- x |>
+      dplyr::ungroup() |>
+      utils::head(5) |>
+      dplyr::glimpse() |>
+      print(width = Inf) |>
+      utils::capture.output()
+    cli::cli_abort(
+      message = c(
+        "There are observation periods with start date after end date, {nrow(x)}
+        record{?s} detected{ifelse(nrow(x)<=5, ':', ' first 5:')}",
+        x5[3:7]
+      ),
+      call = call
+    )
+  }
+}
 #' Get the name of a cdm_reference associated object
 #'
 #' @param x A cdm_reference or cdm_table object.
