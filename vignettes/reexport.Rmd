@@ -74,11 +74,15 @@ If a package has a function to create a `cohort_table` object, this package shou
 
 - `cohortCodelist()`
 
+- `bind()`
+
 ## Summarised result
 
 If a package has a function to create an `summarised_result` object, this package should re-export the following functions:
 
 - `suppress()`
+
+- `bind()`
 
 - `settings()`
 
