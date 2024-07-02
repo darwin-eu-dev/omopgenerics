@@ -49,5 +49,36 @@ test_that("test that classes and attributes are keep", {
   expect_identical(attr(x, "cdm_reference"), attr(xn, "cdm_reference"))
   expect_identical(attr(x, "tbl_name"), attr(xn, "tbl_name"))
   expect_true("cdm_table" %in% class(xn))
+
+  # group_by + mutate
+  person <- dplyr::tibble(
+    person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
+    race_concept_id = 0, ethnicity_concept_id = 0
+  )
+  observation_period <- dplyr::tibble(
+    observation_period_id = 1, person_id = 1,
+    observation_period_start_date = as.Date("2000-01-01"),
+    observation_period_end_date = as.Date("2025-12-31"),
+    period_type_concept_id = 0
+  )
+  cohort1 <- dplyr::tibble(
+    cohort_definition_id = c(1,2),
+    subject_id = c(1,1),
+    cohort_start_date = as.Date("2020-01-01"),
+    cohort_end_date = as.Date("2020-01-10")
+  )
+  cdm <- cdmFromTables(
+    tables = list("person" = person, "observation_period" = observation_period),
+    cohortTables = list("cohort1" = cohort1),
+    cdmName = "test"
+  )
+
+  cl <- cdm$cohort1 |>
+    dplyr::group_by(.data$subject_id) |>
+    dplyr::mutate(a = 1) |>
+    class()
+
+  expect_true(all(c("cohort_table", "cdm_table") %in% cl))
+
 })
 
