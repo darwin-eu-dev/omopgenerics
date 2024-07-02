@@ -4,13 +4,7 @@
 \alias{validateNameLevel}
 \title{Validate if two columns are valid Name-Level pair.}
 \usage{
-validateNameLevel(
-  x,
-  nameColumn,
-  levelColumn,
-  sep = " and | &&& ",
-  warn = FALSE
-)
+validateNameLevel(x, nameColumn, levelColumn, sep = " &&& ", warn = FALSE)
 }
 \arguments{
 \item{x}{A tibble.}

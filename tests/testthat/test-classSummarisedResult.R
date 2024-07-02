@@ -97,10 +97,10 @@ test_that("test SummarisedResult object", {
     "result_type" = "summarised_characteristics",
     "package_name" = "PatientProfiles",
     "package_version" = "0.4.0",
-    "group_name" = "sex and cohort_name",
+    "group_name" = "sex &&& cohort_name",
     "group_level" = "male",
     "strata_name" = "sex",
-    "strata_level" = "male and cohort1",
+    "strata_level" = "male &&& cohort1",
     "variable_name" = "Age group",
     "variable_level" = "10 to 50",
     "estimate_name" = "count",
@@ -284,4 +284,42 @@ test_that("test SummarisedResult object", {
   )
   expect_no_error(x |> newSummarisedResult())
 
+})
+
+test_that("validateNameLevel", {
+  sr <- dplyr::tibble(
+    result_id = 1L,
+    cdm_name = "mock",
+    group_name = "cohort_name &&& age",
+    group_level = "acetaminophen &&& between 18 and 50",
+    strata_name = "overall",
+    strata_level = "overall",
+    variable_name = "number records",
+    variable_level = NA_character_,
+    estimate_name = "count",
+    estimate_type = "integer",
+    estimate_value = "5",
+    additional_name = "overall",
+    additional_level = "overall"
+  )
+  expect_no_error(sr |> newSummarisedResult())
+  expect_no_error(
+    sr |>
+      validateNameLevel(nameColumn = "group_name", levelColumn = "group_level")
+  )
+  expect_error(
+    sr |>
+      validateNameLevel(
+        nameColumn = "group_name", levelColumn = "group_level", sep = " and ")
+  )
+  expect_warning(expect_warning(
+    sr |>
+      validateNameLevel(
+        nameColumn = "group_name", levelColumn = "group_level", sep = " and ", warn = TRUE)
+  ))
+  expect_warning(
+    sr |>
+      validateNameLevel(
+        nameColumn = "group_name", levelColumn = "group_level", sep = " &&& | and ", warn = TRUE)
+  )
 })
