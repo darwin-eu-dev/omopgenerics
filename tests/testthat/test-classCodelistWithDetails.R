@@ -38,6 +38,6 @@ test_that("test codelist with details", {
   codes <- list("disease" = c(1,2,3))
   expect_error(codes <- newCodelistWithDetails(codes))
 
-  expect_no_error(emptyCodelistWithDetails()
+  expect_no_error(emptyCodelistWithDetails())
 
 })
