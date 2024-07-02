@@ -156,7 +156,7 @@ bind.cohort_table <- function(..., name) {
     cohorts[[x]] |>
       dplyr::left_join(
         cdm[[nm]] |>
-          dplyr::filter(.data$cohort_id == .env$x) |>
+          dplyr::filter(as.numeric(.data$cohort_id) == .env$x) |>
           dplyr::mutate(
             "cohort_definition_id" = as.integer(.data$cohort_definition_id),
             "cohort_name" = as.character(.data$cohort_name)
