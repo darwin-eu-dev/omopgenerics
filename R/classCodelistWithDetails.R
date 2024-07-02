@@ -1,4 +1,4 @@
-# Copyright 2023 DARWIN EU (C)
+# Copyright 2024 DARWIN EU (C)
 #
 # This file is part of omopgenerics
 #
@@ -17,57 +17,63 @@
 
 #' 'codelist' object constructor
 #'
-#' @param x A named list where each element contains a vector of concept IDs.
+#' @param x A named list where each element contains a tibble with the column
+#' concept_id
 #'
 #' @return A codelist object.
 #'
 #' @export
 #'
-newCodelist <- function(x) {
+newCodelistWithDetails <- function(x) {
 
   #constructor
-  x <- constructCodelist(x)
+  x <- constructCodelistWithDetails(x)
 
   # validate
-  x <- validateCodelist(x)
+  x <- validateCodelistWithDetails(x)
 
   return(x)
 }
 
-constructCodelist <- function(x) {
-  x |> addClass("codelist")
+constructCodelistWithDetails <- function(x) {
+  x |> addClass("codelist_with_details")
 }
 
-validateCodelist <- function(x) {
+validateCodelistWithDetails <- function(x) {
 
-  assertList(x, named = TRUE,
-             class = c("numeric", "integer", "integer64"))
+  assertList(x, named = TRUE, class = c("data.frame", "tbl_df"))
 
-  for (nm in names(x)) {
-    if (any(is.na(unique(x[[nm]])))) {
-      cli::cli_abort("`{nm}` must not contain NA.")
+    for (nm in names(x)) {
+      if(isFALSE(any("concept_id" %in% colnames(x[[nm]])))){
+        cli::cli_abort("`{nm}` column concept_id not found")
+      }
+
+      if (any(is.na(unique(x[[nm]]$concept_id)))) {
+        cli::cli_abort("`{nm}` must not contain NA in concept_id field.")
+      }
     }
-  }
 
   return(x)
 }
 
 
-#' Print a codelist
+#' Print a codelist with details
 #'
-#' @param x A codelist
+#' @param x A codelist with details
 #' @param ...  Included for compatibility with generic. Not used.
 #'
 #' @return  Invisibly returns the input
 #' @export
 #'
 #' @examples
-#' codes <- list("disease X" = c(1, 2, 3), "disease Y" = c(4, 5))
-#' codes <- newCodelist(codes)
+#' codes <- list("disease X" = dplyr::tibble(concept_id = c(1, 2, 3),
+#'                                           other= c("a", "b", "c")))
+#' codes <- newCodelistWithDetails(codes)
 #' print(codes)
 #'
-print.codelist <- function(x, ...) {
-  cli::cli_h1("{length(x)} codelist{?s}")
+print.codelist_with_details <- function(x, ...) {
+
+  cli::cli_h1("{length(x)} codelist{?s} with details")
   cli::cat_line("")
   if(length(x) <= 6){
     for(i in seq_along(x)){
@@ -89,8 +95,8 @@ print.codelist <- function(x, ...) {
 #' @export
 #'
 #' @examples
-#' emptyCodelist()
+#' emptyCodelistWithDetails()
 #'
-emptyCodelist <- function() {
-  newCodelist(list())
+emptyCodelistWithDetails <- function() {
+  newCodelistWithDetails(list())
 }
