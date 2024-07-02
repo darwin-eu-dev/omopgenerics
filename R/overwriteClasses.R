@@ -283,6 +283,17 @@ pivot_longer.cdm_table <- function(data, ...) {
   return(res)
 }
 
+#' @export
+#' @importFrom dplyr mutate
+mutate.cdm_table <- function(.data, ...) {
+  cl <- class(.data)
+  .data <- keepClass(.data)
+  res <- dplyr::mutate(.data, ...)
+  res <- restoreClass(res, cl)
+  res <- restoreAttributes(res, keepAttributes(.data, cl))
+  return(res)
+}
+
 keepAttributes <- function(x, cl) {
   xx <- list(
     tbl_source = attr(x, "tbl_source"),
