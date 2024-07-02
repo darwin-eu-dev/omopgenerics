@@ -23,6 +23,11 @@ test_that("test codelist works", {
                 "disease Y" = c(4,5))
   expect_error(codes <- newCodelist(codes))
 
+  codes <- list("disease X" = c(1,2,3),
+                "disease Y" = as.character(c(4,5)))
+  expect_error(codes <- newCodelist(codes))
+
+
 })
 
 test_that("test codelist with details", {
@@ -63,4 +68,5 @@ test_that("test codelist with details", {
   expect_error(codes <- newCodelist(codes))
 
 
-}
+})
+

@@ -54,6 +54,7 @@ validateCodelist <- function(x) {
 
 
   if(isFALSE(withDetails)){
+   assertList(x, named = TRUE, class = c("numeric", "integer", "integer64"))
   for (nm in names(x)) {
     if (any(is.na(unique(x[[nm]])))) {
       cli::cli_abort("`{nm}` must not contain NA.")
