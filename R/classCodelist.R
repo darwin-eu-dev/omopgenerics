@@ -40,12 +40,31 @@ constructCodelist <- function(x) {
 
 validateCodelist <- function(x) {
 
-  assertList(x, named = TRUE, class = c("numeric", "integer"))
+  assertList(x, named = TRUE)
 
+  withDetails <- list()
+  for(i in seq_along(x)){
+    withDetails[[i]] <- inherits(x[[i]], c("data.frame", "tbl_df"))
+  }
+  withDetails <- unique(unlist(withDetails))
+
+  if(length(withDetails) > 1){
+    cli::cli_abort("All items in the list must be the same type")
+  }
+
+
+  if(isFALSE(withDetails)){
   for (nm in names(x)) {
     if (any(is.na(unique(x[[nm]])))) {
       cli::cli_abort("`{nm}` must not contain NA.")
     }
+  }
+    } else{
+      for (nm in names(x)) {
+        if (any(is.na(unique(x[[nm]]$concept_id)))) {
+          cli::cli_abort("`{nm}` must not contain NA in concept_id field.")
+        }
+      }
   }
 
   return(x)
