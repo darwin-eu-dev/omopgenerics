@@ -97,8 +97,8 @@ containing specific concept IDs.</p>
 <span><span class="fu"><a href="../reference/newCodelist.html">newCodelist</a></span><span class="op">(</span><span class="va">condition_codes</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `validateCodelist()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="font-weight: bold;">`x` must be named.</span></span></span>
-<span><span class="co">#&gt; `x` must be a list with objects of class numeric and integer; it can not</span></span>
-<span><span class="co">#&gt; contain NA; it has to be named; it can not be NULL.</span></span></code></pre></div>
+<span><span class="co">#&gt; `x` must be a list with objects of class numeric, integer, and integer64; it</span></span>
+<span><span class="co">#&gt; can not contain NA; it has to be named; it can not be NULL.</span></span></code></pre></div>
 <p>And a codelist cannot have missing values</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condition_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"diabetes"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">201820</span>, <span class="cn">NA</span>, <span class="fl">3655269</span><span class="op">)</span>,</span>

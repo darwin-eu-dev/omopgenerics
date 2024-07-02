@@ -121,6 +121,9 @@
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyCodelist.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyCodelistWithDetails.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyCohortTable.html</loc>
   </url>
   <url>
@@ -172,6 +175,9 @@
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCodelist.html</loc>
   </url>
   <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCodelistWithDetails.html</loc>
+  </url>
+  <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCohortTable.html</loc>
   </url>
   <url>
@@ -203,6 +209,9 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/print.codelist.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/print.codelist_with_details.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/print.conceptSetExpression.html</loc>
