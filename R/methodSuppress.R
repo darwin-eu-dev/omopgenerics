@@ -56,7 +56,7 @@ suppress <- function(result,
 #'   "age_group"),
 #'   "variable_level" = c(NA, "<50", "<50", ">=50", ">=50", NA, NA,
 #'   "<50", "<50"),
-#'   "estimate_name" = c("count", "count", "percentage", "count", "percenatge",
+#'   "estimate_name" = c("count", "count", "percentage", "count", "percentage",
 #'   "random", "count", "count", "percentage"),
 #'   "estimate_type" = c("integer", "integer", "percentage", "integer",
 #'   "percentage", "numeric", "integer", "integer", "percentage"),
@@ -71,6 +71,11 @@ suppress <- function(result,
 #'
 suppress.summarised_result <- function(result,
                                        minCellCount = 5) {
+  # initial checks
+  assertClass(
+    result, class = c("tbl", "data.frame", "summarised_result"), all = TRUE
+  )
+  assertNumeric(minCellCount, integerish = TRUE, min = 0, length = 1)
 
   # check if already suppressed
   set <- settings(result)
@@ -82,94 +87,108 @@ suppress.summarised_result <- function(result,
     }
   }
 
-  estimateName = "count"
+  # suppression at cdm_name, group, strata and additional level
+  groupSuppress <- c("number subjects", "number records")
+  # suppression at cdm_name, group, strata, additional and variable level
+  variableSuppress <- c(
+    "count", "denominator_count", "outcome_count", "record_count",
+    "subject_count"
+  )
+  # linked suppression
+  linkedSuppression <- c(count = "percentage")
+  # value of suppression
   suppressed <- NA_character_
 
-  # initial checks
-  assertClass(
-    result, class = c("tbl", "data.frame", "summarised_result"), all = TRUE
-  )
-  assertNumeric(minCellCount, integerish = TRUE, min = 0, length = 1)
-
   result <- result |>
-    # obscured records
-    obscureRecords(minCellCount, estimateName) |>
-    # obscured records by group
-    obscureGroup(minCellCount, estimateName) |>
-    # obscure column
-    obscureColumn(suppressed)
+    # suppress records
+    suppressCounts(minCellCount) |>
+    # suppress records by group
+    suppressGroup(groupSuppress) |>
+    # suppress records by variable
+    suppressVariable(variableSuppress) |>
+    # suppress records by linkage
+    suppressLinkage(linkedSuppression) |>
+    # suppress column
+    suppressColumn(suppressed)
 
   # update settings
-  set <- set |>
-    dplyr::mutate("min_cell_count" = as.integer(.env$minCellCount))
+  set <- set |> dplyr::mutate("min_cell_count" = as.integer(.env$minCellCount))
   result <- newSummarisedResult(x = result, settings = set)
 
   return(result)
 }
 
-obscureRecords <- function(result, minCellCount, estimateName) {
-  recordsToObscure <- result |>
-    dplyr::filter(grepl(.env$estimateName, .data$estimate_name)) |>
-    dplyr::mutate("estimate_value" = as.numeric(.data$estimate_value)) |>
-    dplyr::filter(
-      .data$estimate_value > 0 & .data$estimate_value < .env$minCellCount
-    ) |>
-    dplyr::mutate(
-      "estimate_value" = as.character(.data$estimate_value),
-      "obscure_record" = 1
-    )
-  result <- result |>
-    dplyr::left_join(recordsToObscure, by = colnames(result)) |>
-    dplyr::mutate(
-      obscure_record = dplyr::if_else(is.na(.data$obscure_record), 0, 1)
-    )
+suppressCounts <- function(result, minCellCount) {
+  result$suppress_record <- F
+  result$is_count <- F
+  id <- which(grepl("count", result$estimate_name))
+  result$is_count[id] <- T
+  estimates <- as.numeric(result$estimate_value[id])
+  result$suppress_record[id[estimates > 0 & estimates < minCellCount]] <- T
   return(result)
 }
-obscureGroup <- function(result, minCellCount, estimateName) {
-  obsLabels <- result |>
-    dplyr::select("variable_name") |>
-    dplyr::distinct() |>
-    dplyr::pull("variable_name")
-  obsLabels <- obsLabels[tolower(gsub("_", " ", obsLabels)) %in% groupCount]
+suppressGroup <- function(result, groupSuppress) {
+  obsLabels <- unique(result$variable_name)
+  obsLabels <- obsLabels[tolower(gsub("_", " ", obsLabels)) %in% groupSuppress]
 
-  groupsToObscure1 <- result |>
-    dplyr::group_by(dplyr::across(!c(
-      "estimate_name", "estimate_type", "estimate_value", "obscure_record"
-    ))) |>
-    dplyr::summarise(
-      "obscure_group_1" = max(.data$obscure_record), .groups = "drop"
-    )
-  cols1 <- colnames(groupsToObscure1)[colnames(groupsToObscure1) != "obscure_group_1"]
-  groupsToObscure2 <- result |>
+  supByGroup <- result |>
     dplyr::filter(
-      .data$variable_name %in% .env$obsLabels &
-        grepl(.env$estimateName, .data$estimate_name) &
-        .data$obscure_record == 1
+      .data$suppress_record & .data$variable_name %in% .env$obsLabels
     ) |>
-    dplyr::select(!c(
-      "variable_name", "variable_level", "estimate_name", "estimate_type",
-      "estimate_value", "obscure_record"
-    )) |>
-    dplyr::distinct() |>
-    dplyr::mutate("obscure_group_2" = 1)
-  cols2 <- colnames(groupsToObscure2)[colnames(groupsToObscure2) != "obscure_group_2"]
-  result <- result |>
-    dplyr::left_join(groupsToObscure1, by = cols1) |>
-    dplyr::left_join(groupsToObscure2, by = cols2) |>
-    dplyr::mutate(obscure_group = dplyr::case_when(
-      obscure_group_2 == 1 & !.data$variable_name %in% .env$groupCount ~ 1,
-      obscure_group_1 == 1 & !grepl(.env$estimateName, .data$estimate_name) ~ 1,
-      TRUE ~ 0
-    )) |>
-    dplyr::select(-c("obscure_group_1", "obscure_group_2"))
+    dplyr::select(!dplyr::starts_with(c(
+      "variable", "estimate", "suppress", "is_count"
+    ))) |>
+    dplyr::mutate("suppress_group" = T) |>
+    dplyr::distinct()
+  joinCols <- colnames(supByGroup)[colnames(supByGroup) != "suppress_group"]
+  result <- result |> dplyr::left_join(supByGroup, by = joinCols)
+  result$suppress_group[is.na(result$suppress_group)] <- F
   return(result)
 }
-obscureColumn <- function(result, suppressed) {
+suppressVariable <- function(result, variableSuppress) {
+  supByVariable <- result |>
+    dplyr::filter(
+      .data$suppress_record & .data$estimate_name %in% .env$variableSuppress
+    ) |>
+    dplyr::select(!dplyr::starts_with(c("estimate", "suppress", "is_count"))) |>
+    dplyr::mutate("suppress_variable" = T) |>
+    dplyr::distinct()
+  joinCols <- colnames(supByVariable)[colnames(supByVariable) != "suppress_variable"]
+  result <- result |> dplyr::left_join(supByVariable, by = joinCols)
+  result$suppress_variable[is.na(result$suppress_variable)] <- F
+  return(result)
+}
+suppressLinkage <- function(result, linkedSuppression) {
+  supByLinkage <- list()
+  for (k in seq_along(linkedSuppression)) {
+    nm <- names(linkedSuppression)[k]
+    subs <- linkedSuppression[k] |> unname()
+    supByLinkage <- result |>
+      dplyr::filter(
+        .data$suppress_record & grepl(.env$nm, .data$estimate_name)
+      ) |>
+      dplyr::select(!dplyr::starts_with(c(
+        "estimate_type", "estimate_value", "suppress", "is_count"
+      ))) |>
+      dplyr::mutate(
+        "estimate_name" = gsub(.env$nm, .env$subs, .data$estimate_name)
+      ) |>
+      dplyr::mutate("suppress_linked" = T)
+  }
+  supByLinkage <- dplyr::bind_rows(supByLinkage) |> dplyr::distinct()
+
+  joinCols <- colnames(supByLinkage)[colnames(supByLinkage) != "suppress_linked"]
+  result <- result |> dplyr::left_join(supByLinkage, by = joinCols)
+  result$suppress_linked[is.na(result$suppress_linked)] <- F
+  return(result)
+}
+suppressColumn <- function(result, suppressed) {
   result |>
-    dplyr::mutate("estimate_value" = dplyr::if_else(
-      .data$obscure_group == 1 | .data$obscure_record == 1,
-      .env$suppressed,
-      .data$estimate_value
+    dplyr::mutate("estimate_value" = dplyr::case_when(
+      !.data$suppress_record & .data$is_count ~ .data$estimate_value,
+      .data$suppress_record | .data$suppress_group | .data$suppress_variable |
+        .data$suppress_linked ~ .env$suppressed,
+      TRUE ~ .data$estimate_value
     )) |>
-    dplyr::select(-c("obscure_record", "obscure_group"))
+    dplyr::select(!dplyr::starts_with(c("suppress", "is_count")))
 }

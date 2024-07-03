@@ -26,7 +26,7 @@
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
-#' @export
+#' @noRd
 #'
 assertCharacter <- function(x,
                             length = NULL,
@@ -89,7 +89,7 @@ assertCharacter <- function(x,
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
-#' @export
+#' @noRd
 #'
 assertChoice <- function(x,
                          choices,
@@ -159,7 +159,7 @@ assertChoice <- function(x,
 #' @param call Call argument that will be passed to `cli`.
 #' @param msg Custom error message.
 #'
-#' @export
+#' @noRd
 #'
 assertClass <- function(x,
                         class,
@@ -230,7 +230,7 @@ assertClass <- function(x,
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
-#' @export
+#' @noRd
 #'
 assertList <- function(x,
                        length = NULL,
@@ -307,7 +307,7 @@ assertList <- function(x,
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
-#' @export
+#' @noRd
 #'
 assertLogical <- function(x,
                           length = NULL,
@@ -359,7 +359,7 @@ assertLogical <- function(x,
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
-#' @export
+#' @noRd
 #'
 assertNumeric <- function(x,
                           integerish = FALSE,
@@ -447,7 +447,7 @@ assertNumeric <- function(x,
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
-#' @export
+#' @noRd
 #'
 assertTable <- function(x,
                         class = NULL,

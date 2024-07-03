@@ -8,7 +8,7 @@ test_that("test supress methods", {
     "strata_level" = c(rep("overall", 6), "male", "female", "female"),
     "variable_name" = c("number records", "age_group", "age_group", "age_group", "age_group", "my_variable", "number records", "age_group", "age_group"),
     "variable_level" = c(NA, "<50", "<50", ">=50", ">=50", NA, NA, "<50", "<50"),
-    "estimate_name" = c("count", "count", "percentage", "count", "percenatge", "random", "count", "count", "percentage"),
+    "estimate_name" = c("count", "count", "percentage", "count", "percentage", "random", "count", "count", "percentage"),
     "estimate_type" = c("integer", "integer", "percentage", "integer", "percentage", "numeric", "integer", "integer", "percentage"),
     "estimate_value" = c("10", "5", "50", "3", "30", "1", "3", "12", "6"),
     "additional_name" = "overall",
@@ -145,4 +145,89 @@ test_that("test supress methods", {
 
   result <- suppress(obj)
   expect_identical(result$estimate_value, c(6, NA_character_, NA_character_, NA_character_))
+
+  x <- dplyr::tibble(
+    "result_id" = 1L,
+    "cdm_name" = "unknown",
+    "group_name" = "overall",
+    "group_level" = "overall",
+    "strata_name" = "overall",
+    "strata_level" = "overall",
+    "variable_name" = c("number records", "a", "a"),
+    "variable_level" = NA_character_,
+    "estimate_name" = c("count", "count_missing", "median"),
+    "estimate_type" = c("integer", "integer", "numeric"),
+    "estimate_value" = c("7", "1", "5"),
+    "additional_name" = c("overall"),
+    "additional_level" = c("overall")
+  ) |>
+    newSummarisedResult()
+
+  expect_no_error(xs <- suppress(x))
+  expect_true(is.na(xs$estimate_value[xs$estimate_name == "count_missing"]))
+  expect_true(all(!is.na(xs$estimate_value[xs$estimate_name != "count_missing"])))
+
+  # Test keep individual counts
+  x <- dplyr::tibble(
+    "result_id" = 1L,
+    "cdm_name" = "unknown",
+    "group_name" = "overall",
+    "group_level" = "overall",
+    "strata_name" = "overall",
+    "strata_level" = "overall",
+    "variable_name" = c("outcome", "outcome", "outcome", "outcome", "outcome", "outcome"),
+    "variable_level" = c("outcome1", "outcome1", "outcome1", "outcome2", "outcome2", "outcome2"),
+    "estimate_name" = c("denominator_count", "outcome_count", "prevalence", "denominator_count", "outcome_count", "prevalence"),
+    "estimate_type" = c("integer", "integer", "numeric", "integer", "integer", "numeric"),
+    "estimate_value" = c("7", "1", "5", "4", "0", "1"),
+    "additional_name" = c("overall"),
+    "additional_level" = c("overall")
+  ) |>
+    newSummarisedResult()
+  result <- suppress(x)
+  expect_true(
+    all(result$estimate_name[is.na(result$estimate_value)] == c("outcome_count", "prevalence", "denominator_count", "prevalence"))
+  )
+
+  # Test keep individual counts
+  x <- dplyr::tibble(
+    "result_id" = 1L,
+    "cdm_name" = "unknown",
+    "group_name" = "overall",
+    "group_level" = "overall",
+    "strata_name" = "overall",
+    "strata_level" = "overall",
+    "variable_name" = c("outcome", "outcome", "outcome", "outcome", "outcome", "outcome"),
+    "variable_level" = c("outcome1", "outcome1", "outcome1", "outcome1", "outcome1", "outcome1"),
+    "estimate_name" = c("denominator_count", "outcome_count", "prevalence", "denominator_count", "outcome_count", "prevalence"),
+    "estimate_type" = c("integer", "integer", "numeric", "integer", "integer", "numeric"),
+    "estimate_value" = c("7", "1", "5", "4", "0", "1"),
+    "additional_name" = "time",
+    "additional_level" = c("1", "1", "1", "2", "2", "2"),
+  ) |>
+    newSummarisedResult()
+  result <- suppress(x)
+  expect_true(
+    all(result$estimate_name[is.na(result$estimate_value)] == c("outcome_count", "prevalence", "denominator_count", "prevalence"))
+  )
+
+  # Test duplicate
+  x <- dplyr::tibble(
+    "result_id" = 1L,
+    "cdm_name" = "unknown",
+    "group_name" = "overall",
+    "group_level" = "overall",
+    "strata_name" = "overall",
+    "strata_level" = "overall",
+    "variable_name" = c("outcome", "outcome", "outcome"),
+    "variable_level" = c("outcome1", "outcome1", "outcome1"),
+    "estimate_name" = c("denominator_count", "outcome_count", "prevalence"),
+    "estimate_type" = c("integer", "integer", "numeric"),
+    "estimate_value" = c("4", "1", "5"),
+    "additional_name" = "time",
+    "additional_level" = c("1", "1", "1"),
+  ) |>
+    newSummarisedResult()
+  result <- suppress(x)
+  expect_true(nrow(x) == nrow(result))
 })

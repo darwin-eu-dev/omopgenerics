@@ -365,7 +365,7 @@ getGroupping <- function(x) {
 validateNameLevel <- function(x,
                               nameColumn,
                               levelColumn,
-                              sep = " and | &&& ",
+                              sep = " &&& ",
                               warn = FALSE) {
   # inital checks
   assertClass(x, "data.frame")

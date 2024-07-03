@@ -148,18 +148,21 @@ bind.cohort_table <- function(..., name) {
     dplyr::select(-c("cohort_definition_id", "cohort_id")) |>
     dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") |>
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_codelist")))
+
+  # insert cohortSet
+  nm <- uniqueTableName(tmpPrefix())
+  cdm <- omopgenerics::insertTable(cdm = cdm, name = nm, table = newCohortSet)
   cohorts <- lapply(seq_len(length(cohorts)), function(x) {
     cohorts[[x]] |>
       dplyr::left_join(
-        newCohortSet |>
-          dplyr::filter(.data$cohort_id == .env$x) |>
+        cdm[[nm]] |>
+          dplyr::filter(as.numeric(.data$cohort_id) == .env$x) |>
           dplyr::mutate(
             "cohort_definition_id" = as.integer(.data$cohort_definition_id),
             "cohort_name" = as.character(.data$cohort_name)
           ) |>
           dplyr::select("cohort_definition_id", "new_cohort_definition_id"),
-        by = c("cohort_definition_id"),
-        copy = TRUE
+        by = c("cohort_definition_id")
       ) |>
       dplyr::select(-"cohort_definition_id") |>
       dplyr::rename("cohort_definition_id" = "new_cohort_definition_id")
@@ -172,12 +175,15 @@ bind.cohort_table <- function(..., name) {
     dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") |>
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_set")))
 
+  dropTable(cdm = cdm, name = nm)
+
   # instantiate the new generated cohort set
   cdm[[name]] <- newCohortTable(
     table = newCohort,
     cohortSetRef = newCohortSet,
     cohortAttritionRef = newCohortAttrition,
-    cohortCodelistRef = newCohortCodelist
+    cohortCodelistRef = newCohortCodelist,
+    .softValidation = TRUE
   )
 
   return(cdm)
@@ -280,18 +286,24 @@ bind.summarised_result <- function(...) {
 
   settings <- lapply(results, settings) |>
     dplyr::bind_rows(.id = "list_id")
+
   results <- results |>
     dplyr::bind_rows(.id = "list_id")
 
+  cols <- colnames(settings)[!colnames(settings) %in% c("list_id", "result_id")]
   dic <- settings |>
-    dplyr::select("result_id", "list_id") |>
+    dplyr::select(!dplyr::all_of(c("list_id", "result_id"))) |>
     dplyr::distinct() |>
-    dplyr::mutate("new_result_id" = as.integer(dplyr::row_number()))
+    dplyr::mutate("new_result_id" = as.integer(dplyr::row_number())) |>
+    dplyr::inner_join(settings, by = cols) |>
+    dplyr::select(c("list_id", "result_id", "new_result_id"))
 
   settings <- settings |>
     dplyr::inner_join(dic, by = c("result_id", "list_id")) |>
     dplyr::select(-c("result_id", "list_id")) |>
-    dplyr::rename("result_id" = "new_result_id")
+    dplyr::rename("result_id" = "new_result_id") |>
+    dplyr::distinct()
+
   results <- results |>
     dplyr::inner_join(dic, by = c("result_id", "list_id")) |>
     dplyr::select(-c("result_id", "list_id")) |>

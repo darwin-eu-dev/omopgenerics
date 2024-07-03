@@ -119,3 +119,73 @@ getCohortName <- function(cohort, cohortId = NULL) {
     dplyr::inner_join(set, by = "cohort_definition_id")
   x$cohort_name |> rlang::set_names(x$cohort_definition_id)
 }
+
+#' Get the column name with the person identifier from a table (either
+#' subject_id or person_id), it will throw an error if it contains both or
+#' neither.
+#'
+#' @param x A table.
+#' @param call A call argument passed to cli functions.
+#'
+#' @export
+#'
+#' @return Person identifier column.
+#'
+getPersonIdentifier <- function(x, call = parent.frame()) {
+  cols <- colnames(x)
+  id <- c("person_id", "subject_id")
+  id <- id[id %in% cols]
+  if (length(id) == 2) {
+    cli::cli_abort(
+      message = "The table contains both person_id and subjet_id as columns",
+      call = call
+    )
+  }
+  if (length(id) == 0) {
+    cli::cli_abort(
+      message = "The table does not contain neither person_id nor subjet_id as columns",
+      call = call
+    )
+  }
+  return(id)
+}
+
+#' Get a unique Identifier with a certain number of characters and a prefix.
+#'
+#' @param n Number of identifiers.
+#' @param exclude Columns to exclude.
+#' @param nChar Number of characters.
+#' @param prefix A prefix for the identifiers.
+#'
+#' @export
+#'
+#' @return A character vector with n unique identifiers.
+#'
+uniqueId <- function(n = 1, exclude = character(), nChar = 3, prefix = "id_") {
+  # input check
+  assertNumeric(n, integerish = TRUE, min = 0)
+  assertCharacter(exclude)
+  assertNumeric(n, integerish = TRUE, min = 1)
+  assertCharacter(prefix, length = 1)
+
+  if (nChar >= 5) {
+    cli::cli_warn(c("!" = "if nChar >= 5 (nChar = {nChar}) it can be quite computationaly expensive"))
+  }
+
+  # get options for identifiers
+  idOptions <- do.call(tidyr::expand_grid, rep(list(letters), nChar)) |>
+    tidyr::unite(col = "id", dplyr::everything(), sep = "") |>
+    dplyr::mutate("id" = paste0(.env$prefix, .data$id)) |>
+    dplyr::filter(!.data$id %in% .env$exclude) |>
+    dplyr::pull()
+
+  if (length(idOptions) < n) {
+    cli::cli_abort("There are not enough options with the current input parameters. {length(idOptions)} options and {n} requested id{?s}.")
+  } else if (length(idOptions) == n) {
+    x <- idOptions
+  } else {
+    x <- sample(idOptions, size = n)
+  }
+
+  return(x)
+}

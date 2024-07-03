@@ -139,4 +139,79 @@ test_that("bind a cohort_table", {
   ))
 })
 
+test_that("bind summarised_result", {
+  x <- dplyr::tibble(
+    "group_name" = "overall",
+    "group_level" = "overall",
+    "strata_name" = c("age_group", "age_group", "sex", "sex"),
+    "strata_level" = c("<40", ">40", "Female", "Male"),
+    "variable_name" = "number subjects",
+    "variable_level" = NA_character_,
+    "estimate_name" = "count",
+    "estimate_type" = "integer",
+    "estimate_value" = sample.int(100, 4) |> as.character(),
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
+  # empty summarisedResult
+  res1 <- emptySummarisedResult()
+  # no settings
+  res2 <- x |>
+    dplyr::mutate("result_id" = 1L, "cdm_name" = "cprd_gold") |>
+    newSummarisedResult()
+  res3 <- x |>
+    dplyr::mutate("result_id" = 1L, "cdm_name" = "cprd_gold") |>
+    newSummarisedResult(settings = dplyr::tibble(
+      "result_id" = 1L, result_type = "custom"
+    ))
+  res4 <- x |>
+    dplyr::mutate("result_id" = 3L, "cdm_name" = "cprd_gold") |>
+    newSummarisedResult(settings = dplyr::tibble(
+      "result_id" = 3L, result_type = "custom", param = TRUE
+    ))
+  res5 <- x |>
+    dplyr::mutate("result_id" = 1L, "cdm_name" = "eunomia") |>
+    newSummarisedResult(settings = dplyr::tibble(
+      "result_id" = 1L, result_type = "custom"
+    ))
+  res6 <- x |>
+    dplyr::mutate("result_id" = 5L, "cdm_name" = "cprd_gold") |>
+    newSummarisedResult(settings = dplyr::tibble(
+      "result_id" = 5L, washout = 35
+    ))
 
+  # two summarised_result
+  expect_no_error(new1 <- bind(res1, res2, res3, res4, res5, res6))
+  expect_identical(settings(new1), dplyr::tibble(
+    "result_id" = c(1L, 2L, 3L, 4L),
+    "result_type" = c(NA, "custom", "custom", NA),
+    "param" = c(NA, NA, TRUE, NA),
+    "washout" = c(NA, NA, NA, 35)
+  ))
+  attr(new1, "settings") <- NULL
+  expect_identical(
+    new1 |> dplyr::count(.data$result_id) |> dplyr::as_tibble(),
+    dplyr::tibble("result_id" = c(1L, 2L, 3L, 4L), "n" = c(4L, 8L, 4L, 4L))
+  )
+
+  # one of the summarised_result does not have settings
+  expect_no_error(new2 <- bind(res2, res3))
+
+  # if we bind the same summarised_result we get an error because number of
+  # subjects is repeated
+  expect_error(new3 <- bind(res2, res2))
+
+  # repeated settings
+  expect_no_error(new4 <- bind(res3, res5))
+  expect_identical(new4$result_id |> unique(), 1L)
+  expect_identical(
+    new4 |> settings() |> dplyr::pull("result_id") |> unique(), 1L
+  )
+
+  # repeated settings and empty stetings
+  expect_no_error(new5 <- bind(res3, res5, res2))
+  expect_identical(new5$result_id |> unique(), c(1L, 2L))
+  expect_identical(
+    new5 |> settings() |> dplyr::pull("result_id") |> unique(), c(1L, 2L)
+  )
+})
