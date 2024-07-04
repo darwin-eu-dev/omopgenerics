@@ -26,7 +26,7 @@
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
-#' @noRd
+#' @export
 #'
 assertCharacter <- function(x,
                             length = NULL,
@@ -89,7 +89,7 @@ assertCharacter <- function(x,
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
-#' @noRd
+#' @export
 #'
 assertChoice <- function(x,
                          choices,
@@ -159,7 +159,7 @@ assertChoice <- function(x,
 #' @param call Call argument that will be passed to `cli`.
 #' @param msg Custom error message.
 #'
-#' @noRd
+#' @export
 #'
 assertClass <- function(x,
                         class,
@@ -230,7 +230,7 @@ assertClass <- function(x,
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
-#' @noRd
+#' @export
 #'
 assertList <- function(x,
                        length = NULL,
@@ -307,7 +307,7 @@ assertList <- function(x,
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
-#' @noRd
+#' @export
 #'
 assertLogical <- function(x,
                           length = NULL,
@@ -359,7 +359,7 @@ assertLogical <- function(x,
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
-#' @noRd
+#' @export
 #'
 assertNumeric <- function(x,
                           integerish = FALSE,
@@ -447,7 +447,7 @@ assertNumeric <- function(x,
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
-#' @noRd
+#' @export
 #'
 assertTable <- function(x,
                         class = NULL,
@@ -538,7 +538,7 @@ assertTable <- function(x,
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
-#' @noRd
+#' @export
 #'
 assertTrue <- function(x,
                        null = FALSE,
@@ -638,3 +638,8 @@ assertNull <- function(x, nm, null, msg, call) {
   }
   return(!is.null(x))
 }
+
+xxxxx <- function() {
+  cli::cli_abort("asdf nou error message")
+}
+
