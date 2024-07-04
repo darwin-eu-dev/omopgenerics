@@ -4,12 +4,21 @@
 \alias{validateCohortId}
 \title{Validate A cohortId input.}
 \usage{
-validateCohortId(cohortId, cohort)
+validateCohortId(
+  cohortId,
+  cohort,
+  validation = "strict",
+  call = parent.frame()
+)
 }
 \arguments{
 \item{cohortId}{A cohortId vector to be validated.}
 
 \item{cohort}{A cohort_table object.}
+
+\item{validation}{How to perform validation: "strict", "relaxed", "none".}
+
+\item{call}{A call argument to pass to cli functions.}
 }
 \description{
 Validate A cohortId input.

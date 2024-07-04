@@ -4,10 +4,22 @@
 \alias{validateCohort}
 \title{Validate a cohort table input.}
 \usage{
-validateCohort(cohort)
+validateCohort(
+  cohort,
+  checkEndAfterStart = TRUE,
+  checkOverlappingEntries = TRUE,
+  checkMissingValues = TRUE,
+  checkInObservation = TRUE,
+  validation = "strict",
+  call = parent.frame()
+)
 }
 \arguments{
 \item{cohort}{Object to be validated as a valid cohort input.}
+
+\item{validation}{How to perform validation: "strict", "relaxed", "none".}
+
+\item{call}{A call argument to pass to cli functions.}
 }
 \description{
 Validate a cohort table input.

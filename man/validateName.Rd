@@ -2,19 +2,20 @@
 % Please edit documentation in R/validate.R
 \name{validateName}
 \alias{validateName}
-\title{Validate that the a variable is a valid name for a table in the cdm. A
-message will be shown if name had to be modified and/or the name is already
-part of the cdm.}
+\title{Validate that the a variable is a valid name for a table in the cdm.}
 \usage{
-validateName(name, cdm = NULL)
+validateName(name, cdm = NULL, validation = "strict", call = parent.frame())
 }
 \arguments{
 \item{name}{Name of a new table to be added to a cdm object.}
 
-\item{cdm}{A cdm_reference object. It will tro}
+\item{cdm}{A cdm_reference object. It will trow a warning if a table named
+name already exists in the cdm.}
+
+\item{validation}{How to perform validation: "strict", "relaxed", "none".}
+
+\item{call}{A call argument to pass to cli functions.}
 }
 \description{
-Validate that the a variable is a valid name for a table in the cdm. A
-message will be shown if name had to be modified and/or the name is already
-part of the cdm.
+Validate that the a variable is a valid name for a table in the cdm.
 }

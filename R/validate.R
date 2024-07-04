@@ -14,91 +14,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#' Input validation of arguments, arguments will be corrected accordingly.
-#' You can check the possible validated arguments and their validation in
-#' `argumentsValidation()`.
-#'
-#' @param ... Named arguments to validate.
-#' @param call Call object passed to cli messages.
-#' @param .options named list of internal arguments to be passed to the
-#' validation functions
-#'
-#' @export
-#'
-inputValidation <- function(..., call = parent.frame(), .options = list()) {
-
-}
-
-#' Details on the performed validation per argument.
-#'
-#' @param argumentName The of the argument to see the details. If NULL all
-#' available arguments are displayed.
-#' @param verbose Whether to print the details
-#'
-#' @return A tibble with the details of the validation (invisible).
-#'
-#' @export
-#'
-#' @examples
-#' argumentsValidation("cohortId")
-#' argumentsValidation()
-#'
-argumentsValidation <- function(argumentName = NULL, verbose = TRUE) {
-  # input validation
-  assertCharacter(argumentName, null = TRUE)
-
-  if (is.null(argumentName)) {
-    x <- argumentValidation
-  } else {
-    x <- argumentValidation |>
-      dplyr::filter(.data$argument_name %in% .env$argumentName)
-  }
-
-  if (nrow(x) == 0) return(invisible(x))
-
-  xx <- "\u00a0\u00a0\u00a0\u00a0-" |> glue::glue()
-  cli::cli_h1("Input validation")
-  for (k in seq_len(nrow(x))) {
-    cli::cli_h3("Argument: {.field {x$argument_name[[k]]}}")
-    cli::cli_inform(c("*" = "{.string Validation}: {x$validation[[k]]}"))
-    for (i in seq_along(x$required_arguments[[k]])) {
-      if (i == 1) cli::cli_inform(c("*" = "{.string Required arguments}:"))
-      nm <- names(x$required_arguments[[k]])
-      mes <- x$required_arguments[[k]][[i]]
-      cli::cli_text("{xx} {.var {nm}}: {mes}.")
-    }
-    for (i in seq_along(x$optional_arguments[[k]])) {
-      if (i == 1) cli::cli_inform(c("*" = "{.string Optional arguments}:"))
-      nm <- names(x$optional_arguments[[k]])
-      mes <- x$optional_arguments[[k]][[i]]
-      cli::cli_text("{xx} {.var {nm}}: {mes}.")
-    }
-  }
-  cli::cli_text()
-
-  return(invisible(x))
-}
-
-
-#' Validate that the a variable is a valid name for a table in the cdm. A
-#' message will be shown if name had to be modified and/or the name is already
-#' part of the cdm.
+#' Validate that the a variable is a valid name for a table in the cdm.
 #'
 #' @param name Name of a new table to be added to a cdm object.
-#' @param cdm A cdm_reference object. It will tro
+#' @param cdm A cdm_reference object. It will trow a warning if a table named
+#' name already exists in the cdm.
+#' @param validation How to perform validation: "strict", "relaxed", "none".
+#' @param call A call argument to pass to cli functions.
 #'
 #' @export
 #'
-validateName <- function(name, cdm = NULL) {
-  nm <- paste0(substitute(name), collapse = "")
-  assertCharacter(name, length = 1)
+validateName <- function(name,
+                         cdm = NULL,
+                         validation = "strict",
+                         call = parent.frame()) {
+  assertValidation(validation)
+  nm <- substitute(name) |> utils::capture.output()
+  assertCharacter(name, length = 1, call = call)
   newName <- toSnakeCase(name)
   if (newName != name) {
-    cli::cli_inform(c("!" = "`{nm}` was modified: {name} -> {newName}"))
+    if (validation == "strict") {
+      cli::cli_abort(c("!" = "`{nm}` is not snake_case it should be modified to: {newName}"))
+    } else if (validation == "relaxed") {
+      cli::cli_warn(c("!" = "`{nm}` was modified: {name} -> {newName}"))
+    }
   }
   if (!is.null(cdm)) {
     if (newName %in% names(cdm)) {
-      cli::cli_inform(c("!" = "There already exist a table named {.var {newName}}. It will be overwritten."))
+      if (validation == "strict") {
+        cli::cli_abort(c("!" = "There already exist a table named {.var {newName}}."))
+      } else if (validation == "relaxed") {
+        cli::cli_warn(c("!" = "There already exist a table named {.var {newName}}. It will be overwritten."))
+      }
     }
   }
   return(newName)
@@ -107,22 +54,67 @@ validateName <- function(name, cdm = NULL) {
 #' Validate a cohort table input.
 #'
 #' @param cohort Object to be validated as a valid cohort input.
+#' @param validation How to perform validation: "strict", "relaxed", "none".
+#' @param call A call argument to pass to cli functions.
 #'
 #' @export
 #'
-validateCohort <- function(cohort) {
-  assertClass(cohort, class = c("cohort_table", "cdm_table"), all = TRUE)
+validateCohort <- function(cohort,
+                           checkEndAfterStart = TRUE,
+                           checkOverlappingEntries = TRUE,
+                           checkMissingValues = TRUE,
+                           checkInObservation = TRUE,
+                           validation = "strict",
+                           call = parent.frame()) {
+  assertValidation(validation)
+  assertLogical(checkEndAfterStart, length = 1)
+  assertLogical(checkOverlappingEntries, length = 1)
+  assertLogical(checkMissingValues, length = 1)
+  assertLogical(checkInObservation, length = 1)
+
+  assertClass(cohort, class = c("cohort_table", "cdm_table"), all = TRUE, call = call)
+  # columns
+  notPresent <- cohortColumns("cohort")[!cohortColumns("cohort") %in% colnames(cohort)]
+  if (length(notPresent) > 0) {
+    if (validation == "strict") {
+      cli::cli_abort(c("!" = "columns: {.var {notPresent}} not present in cohort object"), call = call)
+    } else if (validation == "relaxed") {
+      cli::cli_warn(c("!" = "columns: {.var {notPresent}} not present in cohort object"), call = call)
+    }
+  }
+  cohort <- cohort |> dplyr::relocate(dplyr::any_of(cohortColumns("cohort")))
+
+  if(isTRUE(checkEndAfterStart)){
+    cohort <- checkStartEnd(cohort = cohort, validation = validation, call = call)
+  }
+  if(isTRUE(checkOverlappingEntries)){
+    cohort <- checkOverlap(cohort = cohort, validation = validation, call = call)
+  }
+  if(isTRUE(checkMissingValues)){
+    cohort <- checkNaCohort(cohort = cohort, validation = validation, call = call)
+  }
+  if(isTRUE(checkInObservation)){
+    cohort <- checkObservationPeriod(cohort = cohort, validation = validation, call = call)
+  }
+  return(cohort)
 }
 
 #' Validate A cohortId input.
 #'
 #' @param cohortId A cohortId vector to be validated.
 #' @param cohort A cohort_table object.
+#' @param validation How to perform validation: "strict", "relaxed", "none".
+#' @param call A call argument to pass to cli functions.
 #'
 #' @export
 #'
-validateCohortId <- function(cohortId, cohort) {
-  assertNumeric(cohortId, integerish = TRUE, null = TRUE, min = 1, unique = TRUE)
+validateCohortId <- function(cohortId,
+                             cohort,
+                             validation = "strict",
+                             call = parent.frame()) {
+  assertValidation(validation)
+  assertNumeric(cohortId, integerish = TRUE, null = TRUE, min = 1, unique = TRUE, call = call)
+  assertClass(cohort, class = "cohort_table", call = call)
   possibleCohortIds <- settings(cohort) |>
     dplyr::pull("cohort_definition_id") |>
     as.integer()
@@ -131,9 +123,19 @@ validateCohortId <- function(cohortId, cohort) {
   } else {
     cohortId <- as.integer(cohortId)
     notPresent <- cohortId[!cohortId %in% possibleCohortIds]
+    cohortId <- cohortId[cohortId %in% possibleCohortIds]
     if (length(notPresent) > 0) {
-      cli::cli_abort("cohort definition id: {notPresent} not defined in settings.")
+      if (validation == "strict" | length(cohortId) == 0) {
+        cli::cli_abort("cohort definition id: {notPresent} not defined in settings.", call = call)
+      } else if (validation == "relaxed") {
+        cli::cli_warn(c("!" = "cohort definition id: {notPresent} not considered as they are not defined in settings."), call = call)
+      }
     }
   }
   return(cohortId)
+}
+
+assertValidation <- function(validation, call = parent.frame()) {
+  assertChoice(validation, choices = c("strict", "relaxed", "none"),
+               length = 1, call = call)
 }

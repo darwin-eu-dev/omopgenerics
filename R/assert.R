@@ -37,7 +37,7 @@ assertCharacter <- function(x,
                             minNumCharacter = 0,
                             call = parent.frame(),
                             msg = NULL) {
-  nm <- paste0(substitute(x), collapse = "")
+  nm <- substitute(x) |> utils::capture.output()
   if (is.null(msg)) {
     msg <- errorMessage(
       nm = nm, object = "a character vector", length = length, na = na,
@@ -100,7 +100,7 @@ assertChoice <- function(x,
                          named = FALSE,
                          call = parent.frame(),
                          msg = NULL) {
-  nm <- paste0(substitute(x), collapse = "")
+  nm <- substitute(x) |> utils::capture.output()
   if (is.null(msg)) {
     msg <- errorMessage(
       nm = nm,
@@ -169,7 +169,7 @@ assertClass <- function(x,
                         extra = TRUE,
                         call = parent.frame(),
                         msg = NULL) {
-  nm <- paste0(substitute(x), collapse = "")
+  nm <- substitute(x) |> utils::capture.output()
   if (is.null(msg)) {
     if (all) {
       obj <- "an object with class: {class}"
@@ -241,7 +241,7 @@ assertList <- function(x,
                        class = NULL,
                        call = parent.frame(),
                        msg = NULL) {
-  nm <- paste0(substitute(x), collapse = "")
+  nm <- substitute(x) |> utils::capture.output()
   if (is.null(msg)) {
     if (!is.null(class)) {
       obj <- "a list with objects of class {class}" |>
@@ -316,7 +316,7 @@ assertLogical <- function(x,
                           named = FALSE,
                           call = parent.frame(),
                           msg = NULL) {
-  nm <- paste0(substitute(x), collapse = "")
+  nm <- substitute(x) |> utils::capture.output()
   if (is.null(msg)) {
     msg <- errorMessage(
       nm = nm, object = "a logical", length = length, na = na, null = null,
@@ -372,7 +372,7 @@ assertNumeric <- function(x,
                           named = FALSE,
                           call = parent.frame(),
                           msg = NULL) {
-  nm <- paste0(substitute(x), collapse = "")
+  nm <- substitute(x) |> utils::capture.output()
   if (is.null(msg)) {
     if (integerish) obj <- "an integerish numeric" else obj <- "a numeric"
     msg <- errorMessage(
@@ -459,7 +459,7 @@ assertTable <- function(x,
                         unique = FALSE,
                         call = parent.frame(),
                         msg = NULL) {
-  nm <- paste0(substitute(x), collapse = "")
+  nm <- substitute(x) |> utils::capture.output()
   if (is.null(msg)) {
     if (!is.null(class)) {
       obj <- "a table of class: {class}" |>
@@ -530,6 +530,31 @@ assertTable <- function(x,
 
   return(invisible(x))
 }
+
+#' Assert that an expression is TRUE.
+#'
+#' @param x Expression to check.
+#' @param null Whether it can be NULL.
+#' @param call Call argument that will be passed to `cli` error message.
+#' @param msg Custom error message.
+#'
+#' @noRd
+#'
+assertTrue <- function(x,
+                       null = FALSE,
+                       call = parent.frame(),
+                       msg = NULL) {
+  # error message
+  nm <- substitute(x) |> utils::capture.output()
+  if (is.null(msg)) msg <- c("!" = "{.strong `{nm}` is not TRUE.}")
+
+  if (assertNull(x, nm, null, msg, call)) {
+    if (!isTRUE(x)) cli::cli_abort(message = msg, call = call)
+  }
+
+  return(invisible(x))
+}
+
 
 errorMessage <- function(nm,
                          object,

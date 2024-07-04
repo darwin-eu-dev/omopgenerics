@@ -39,31 +39,5 @@ will result in a warning.}
 An error will be returned if any of the selected checks fail.
 }
 \description{
-Check whether a cohort table satisfies requirements
-}
-\examples{
-\donttest{
-library(omopgenerics)
-person <- dplyr::tibble(
-  person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
-  race_concept_id = 0, ethnicity_concept_id = 0
-)
-observation_period <- dplyr::tibble(
-  observation_period_id = 1, person_id = 1,
-  observation_period_start_date = as.Date("2000-01-01"),
-  observation_period_end_date = as.Date("2025-12-31"),
-  period_type_concept_id = 0
-)
-cdm <- cdmFromTables(
-  tables = list("person" = person, "observation_period" = observation_period),
-  cdmName = "test"
-)
-cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
-  cohort_definition_id = 1, subject_id = 1,
-  cohort_start_date = as.Date(c("2020-01-01", "2020-01-10")),
-  cohort_end_date = as.Date(c("2020-01-10", "2020-01-25"))
-))
-cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
-# checkCohortRequirements(cdm$cohort1)
-}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
