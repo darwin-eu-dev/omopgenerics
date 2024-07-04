@@ -54,6 +54,14 @@ validateName <- function(name,
 #' Validate a cohort table input.
 #'
 #' @param cohort Object to be validated as a valid cohort input.
+#' @param checkEndAfterStart If TRUE a check that all cohort end dates come on
+#' or after cohort start date will be performed.
+#' @param checkOverlappingEntries If TRUE a check that no individuals have
+#' overlapping cohort entries will be performed.
+#' @param checkMissingValues If TRUE a check that there are no missing values in
+#' required fields will be performed.
+#' @param checkInObservation If TRUE a check that cohort entries are within
+#' the individuals observation periods will be performed.
 #' @param validation How to perform validation: "strict", "relaxed", "none".
 #' @param call A call argument to pass to cli functions.
 #'

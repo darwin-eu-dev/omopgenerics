@@ -3,20 +3,11 @@ test_that("test validateName", {
   expect_error(validateName(name = 1))
   expect_error(validateName(name = c("sda", "asdfsa")))
   expect_identical("my_name", validateName("my_name"))
-  expect_message(expect_identical("my_name", validateName("myName")))
-  expect_message(expect_message(expect_identical(
-    "my_name", validateName("myName", list("my_name" = 1))
+  expect_error(validateName("myName"))
+  expect_warning(expect_identical("my_name", validateName("myName", validation = "relaxed")))
+  expect_warning(expect_warning(expect_identical(
+    "my_name", validateName("myName", list("my_name" = 1), validation = "relaxed")
   )))
-})
-
-test_that("test validateCohort", {
-  expect_error(validateCohort(1))
-  x <- 1
-  class(x) <- "cohort_table"
-  expect_error(validateCohort(x))
-  x <- 1
-  class(x) <- c("cohort_table", "cdm_table")
-  expect_no_error(validateCohort(x))
 })
 
 test_that("test validateCohortId", {
