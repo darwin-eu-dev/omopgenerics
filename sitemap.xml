@@ -7,22 +7,22 @@
     <loc>https://darwin-eu-dev.github.io/omopgenerics/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/a01_cdm_reference.html</loc>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/cdm_reference.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/a02_concept_set.html</loc>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/codelists.html</loc>
   </url>
   <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/a03_cohort_table.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/a04_summarised_result.html</loc>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/cohorts.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/index.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/reexport.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/summarised_result.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/authors.html</loc>
@@ -35,6 +35,30 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/achillesTables.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertCharacter.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertChoice.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertClass.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertList.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertLogical.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertNumeric.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertTable.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertTrue.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/attrition.cohort_table.html</loc>
@@ -278,6 +302,15 @@
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/uniqueTableName.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/validateCohort.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/validateCohortId.html</loc>
+  </url>
+  <url>
+    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/validateName.html</loc>
   </url>
   <url>
     <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/validateNameLevel.html</loc>

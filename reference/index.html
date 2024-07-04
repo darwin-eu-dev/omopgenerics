@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">omopgenerics</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,10 +24,13 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/a01_cdm_reference.html">The cdm reference</a>
-    <a class="dropdown-item" href="../articles/a02_concept_set.html">Concept sets</a>
-    <a class="dropdown-item" href="../articles/a03_cohort_table.html">Cohort tables</a>
-    <a class="dropdown-item" href="../articles/a04_summarised_result.html">A summarised result</a>
+    <h6 class="dropdown-header" data-toc-skip>Classes</h6>
+    <a class="dropdown-item" href="../articles/cdm_reference.html">The cdm reference</a>
+    <a class="dropdown-item" href="../articles/codelists.html">Concept sets</a>
+    <a class="dropdown-item" href="../articles/cohorts.html">Cohort tables</a>
+    <a class="dropdown-item" href="../articles/summarised_result.html">A summarised result</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Principles</h6>
     <a class="dropdown-item" href="../articles/reexport.html">Re-exporting functions from omopgnerics</a>
   </div>
 </li>
@@ -45,9 +48,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
       
-      
+      <h3 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h3>
+      <div class="section-desc"><p>General methods deffined by omopgenerics</p></div>
 
       
     </div><div id="" class="section level2">
@@ -56,16 +59,6 @@
       
 
       <dl><dt>
-          
-          <code><a href="achillesColumns.html">achillesColumns()</a></code> 
-        </dt>
-        <dd>Required columns for each of the achilles result tables</dd>
-      </dl><dl><dt>
-          
-          <code><a href="achillesTables.html">achillesTables()</a></code> 
-        </dt>
-        <dd>Names of the tables that contain the results of achilles analyses</dd>
-      </dl><dl><dt>
           
           <code><a href="attrition.html">attrition()</a></code> 
         </dt>
@@ -92,180 +85,46 @@
         <dd>Bind two or summarised_result objects</dd>
       </dl><dl><dt>
           
-          <code><a href="cash-.cdm_reference.html">`$`(<i>&lt;cdm_reference&gt;</i>)</a></code> 
+          <code><a href="participants.html">participants()</a></code> 
         </dt>
-        <dd>Subset a cdm reference object.</dd>
+        <dd>It returns the participants that contributed to a particular analysis</dd>
       </dl><dl><dt>
           
-          <code><a href="cash-set-.cdm_reference.html">`$&lt;-`(<i>&lt;cdm_reference&gt;</i>)</a></code> 
+          <code><a href="settings.html">settings()</a></code> 
         </dt>
-        <dd>Assign an table to a cdm reference.</dd>
+        <dd>Get settings from an object.</dd>
       </dl><dl><dt>
           
-          <code><a href="cdmFromTables.html">cdmFromTables()</a></code> 
+          <code><a href="settings.cohort_table.html">settings(<i>&lt;cohort_table&gt;</i>)</a></code> 
         </dt>
-        <dd>Create a cdm object from local tables</dd>
+        <dd>Get cohort settings from a cohort_table object.</dd>
       </dl><dl><dt>
           
-          <code><a href="cdmName.html">cdmName()</a></code> 
+          <code><a href="settings.summarised_result.html">settings(<i>&lt;summarised_result&gt;</i>)</a></code> 
         </dt>
-        <dd>Get the name of a cdm_reference associated object</dd>
+        <dd>Get settings from a summarised_result object.</dd>
       </dl><dl><dt>
           
-          <code><a href="cdmReference.html">cdmReference()</a></code> 
+          <code><a href="suppress.html">suppress()</a></code> 
         </dt>
-        <dd>Get the <code>cdm_reference</code> of a <code>cdm_table</code>.</dd>
+        <dd>Function to suppress counts in result objects</dd>
       </dl><dl><dt>
           
-          <code><a href="cdmSelect.html">cdmSelect()</a></code> 
+          <code><a href="suppress.summarised_result.html">suppress(<i>&lt;summarised_result&gt;</i>)</a></code> 
         </dt>
-        <dd>Restrict the cdm object to a subset of tables.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="cdmSource.html">cdmSource()</a></code> 
-        </dt>
-        <dd>Get the source of a cdm_reference.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="cdmSourceType.html">cdmSourceType()</a></code> 
-        </dt>
-        <dd>Get the source type of a cdm_reference object.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="cdmTableFromSource.html">cdmTableFromSource()</a></code> 
-        </dt>
-        <dd>This is an internal developer focused function that creates a cdm_table from a table that shares the source but it is not a cdm_table. Please use insertTable if you want to insert a table to a cdm_reference object.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="cdmVersion.html">cdmVersion()</a></code> 
-        </dt>
-        <dd>Get the version of a cdm_reference.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="checkCohortRequirements.html">checkCohortRequirements()</a></code> 
-        </dt>
-        <dd>Check whether a cohort table satisfies requirements</dd>
-      </dl><dl><dt>
-          
-          <code><a href="cohortCodelist.html">cohortCodelist()</a></code> 
-        </dt>
-        <dd>Get codelist from a cohort_table object.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="cohortColumns.html">cohortColumns()</a></code> 
-        </dt>
-        <dd>Required columns for a generated cohort set.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="cohortCount.html">cohortCount()</a></code> 
-        </dt>
-        <dd>Get cohort counts from a cohort_table object.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="cohortTables.html">cohortTables()</a></code> 
-        </dt>
-        <dd>Cohort tables that a cdm reference can contain in the OMOP Common Data Model.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="collect.cdm_reference.html">collect(<i>&lt;cdm_reference&gt;</i>)</a></code> 
-        </dt>
-        <dd>Retrieves the cdm reference into a local cdm.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="collect.cohort_table.html">collect(<i>&lt;cohort_table&gt;</i>)</a></code> 
-        </dt>
-        <dd>To collect a <code>cohort_table</code> object.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="compute.cdm_table.html">compute(<i>&lt;cdm_table&gt;</i>)</a></code> 
-        </dt>
-        <dd>Store results in a table.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="dropSourceTable.html">dropSourceTable()</a></code> 
-        </dt>
-        <dd>Drop a table from a cdm object.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="dropTable.html">dropTable()</a></code> 
-        </dt>
-        <dd>Drop a table from a cdm object.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="emptyAchillesTable.html">emptyAchillesTable()</a></code> 
-        </dt>
-        <dd>Create an empty achilles table</dd>
-      </dl><dl><dt>
-          
-          <code><a href="emptyCdmReference.html">emptyCdmReference()</a></code> 
-        </dt>
-        <dd>Create an empty cdm_reference</dd>
-      </dl><dl><dt>
-          
-          <code><a href="emptyCodelist.html">emptyCodelist()</a></code> 
-        </dt>
-        <dd>Empty <code>codelist</code> object.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="emptyCodelistWithDetails.html">emptyCodelistWithDetails()</a></code> 
-        </dt>
-        <dd>Empty <code>codelist</code> object.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="emptyCohortTable.html">emptyCohortTable()</a></code> 
-        </dt>
-        <dd>Create an empty cohort_table object</dd>
-      </dl><dl><dt>
-          
-          <code><a href="emptyOmopTable.html">emptyOmopTable()</a></code> 
-        </dt>
-        <dd>Create an empty omop table</dd>
-      </dl><dl><dt>
-          
-          <code><a href="emptySummarisedResult.html">emptySummarisedResult()</a></code> 
-        </dt>
-        <dd>Empty <code>summarised_result</code> object.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="estimateTypeChoices.html">estimateTypeChoices()</a></code> 
-        </dt>
-        <dd>Choices that can be present in <code>estimate_type</code> column.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="exportSummarisedResult.html">exportSummarisedResult()</a></code> 
-        </dt>
-        <dd>Export a summarised_result object to a csv file.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="getCohortId.html">getCohortId()</a></code> 
-        </dt>
-        <dd>Get the cohort definition id of a certain name</dd>
-      </dl><dl><dt>
-          
-          <code><a href="getCohortName.html">getCohortName()</a></code> 
-        </dt>
-        <dd>Get the cohort name of a certain cohort definition id</dd>
-      </dl><dl><dt>
-          
-          <code><a href="getPersonIdentifier.html">getPersonIdentifier()</a></code> 
-        </dt>
-        <dd>Get the column name with the person identifier from a table (either subject_id or person_id), it will throw an error if it contains both or neither.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="insertFromSource.html">insertFromSource()</a></code> 
-        </dt>
-        <dd>Convert a table that is not a cdm_table but have the same original source to a cdm_table. This Table is not meant to be used to insert tables in the cdm, please use insertTable instead.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="insertTable.html">insertTable()</a></code> 
-        </dt>
-        <dd>Insert a table to a cdm object.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="listSourceTables.html">listSourceTables()</a></code> 
-        </dt>
-        <dd>List tables that can be accessed though a cdm object.</dd>
-      </dl><dl><dt>
+        <dd>Function to suppress counts in result objects</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="create-new-objects">Create new objects<a class="anchor" aria-label="anchor" href="#create-new-objects"></a></h3>
+      <div class="section-desc"><p>To create new omopgenerics S3 classes objects</p></div>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
           
           <code><a href="newAchillesTable.html">newAchillesTable()</a></code> 
         </dt>
@@ -320,21 +179,143 @@
           <code><a href="newSummarisedResult.html">newSummarisedResult()</a></code> 
         </dt>
         <dd>'summarised_results' object constructor</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="creates-empty-objects">Creates empty objects<a class="anchor" aria-label="anchor" href="#creates-empty-objects"></a></h3>
+      <div class="section-desc"><p>To create empty omopgenerics S3 classes objects</p></div>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="emptyAchillesTable.html">emptyAchillesTable()</a></code> 
+        </dt>
+        <dd>Create an empty achilles table</dd>
       </dl><dl><dt>
           
-          <code><a href="omopColumns.html">omopColumns()</a></code> 
+          <code><a href="emptyCdmReference.html">emptyCdmReference()</a></code> 
         </dt>
-        <dd>Required columns that the standard tables in the OMOP Common Data Model must have.</dd>
+        <dd>Create an empty cdm_reference</dd>
       </dl><dl><dt>
           
-          <code><a href="omopTables.html">omopTables()</a></code> 
+          <code><a href="emptyCodelist.html">emptyCodelist()</a></code> 
         </dt>
-        <dd>Standard tables that a cdm reference can contain in the OMOP Common Data Model.</dd>
+        <dd>Empty <code>codelist</code> object.</dd>
       </dl><dl><dt>
           
-          <code><a href="participants.html">participants()</a></code> 
+          <code><a href="emptyCodelistWithDetails.html">emptyCodelistWithDetails()</a></code> 
         </dt>
-        <dd>It returns the participants that contributed to a particular analysis</dd>
+        <dd>Empty <code>codelist</code> object.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="emptyCohortTable.html">emptyCohortTable()</a></code> 
+        </dt>
+        <dd>Create an empty cohort_table object</dd>
+      </dl><dl><dt>
+          
+          <code><a href="emptyOmopTable.html">emptyOmopTable()</a></code> 
+        </dt>
+        <dd>Create an empty omop table</dd>
+      </dl><dl><dt>
+          
+          <code><a href="emptySummarisedResult.html">emptySummarisedResult()</a></code> 
+        </dt>
+        <dd>Empty <code>summarised_result</code> object.</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="cdm-reference-utility-functions">cdm_reference utility functions<a class="anchor" aria-label="anchor" href="#cdm-reference-utility-functions"></a></h3>
+      <div class="section-desc"><p>Utility functions for cdm_reference objects</p></div>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="cash-.cdm_reference.html">`$`(<i>&lt;cdm_reference&gt;</i>)</a></code> 
+        </dt>
+        <dd>Subset a cdm reference object.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cash-set-.cdm_reference.html">`$&lt;-`(<i>&lt;cdm_reference&gt;</i>)</a></code> 
+        </dt>
+        <dd>Assign an table to a cdm reference.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cdmFromTables.html">cdmFromTables()</a></code> 
+        </dt>
+        <dd>Create a cdm object from local tables</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cdmName.html">cdmName()</a></code> 
+        </dt>
+        <dd>Get the name of a cdm_reference associated object</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cdmReference.html">cdmReference()</a></code> 
+        </dt>
+        <dd>Get the <code>cdm_reference</code> of a <code>cdm_table</code>.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cdmSelect.html">cdmSelect()</a></code> 
+        </dt>
+        <dd>Restrict the cdm object to a subset of tables.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cdmSource.html">cdmSource()</a></code> 
+        </dt>
+        <dd>Get the source of a cdm_reference.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cdmSourceType.html">cdmSourceType()</a></code> 
+        </dt>
+        <dd>Get the source type of a cdm_reference object.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cdmTableFromSource.html">cdmTableFromSource()</a></code> 
+        </dt>
+        <dd>This is an internal developer focused function that creates a cdm_table from a table that shares the source but it is not a cdm_table. Please use insertTable if you want to insert a table to a cdm_reference object.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cdmVersion.html">cdmVersion()</a></code> 
+        </dt>
+        <dd>Get the version of a cdm_reference.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="collect.cdm_reference.html">collect(<i>&lt;cdm_reference&gt;</i>)</a></code> 
+        </dt>
+        <dd>Retrieves the cdm reference into a local cdm.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="compute.cdm_table.html">compute(<i>&lt;cdm_table&gt;</i>)</a></code> 
+        </dt>
+        <dd>Store results in a table.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="dropSourceTable.html">dropSourceTable()</a></code> 
+        </dt>
+        <dd>Drop a table from a cdm object.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="getPersonIdentifier.html">getPersonIdentifier()</a></code> 
+        </dt>
+        <dd>Get the column name with the person identifier from a table (either subject_id or person_id), it will throw an error if it contains both or neither.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="insertTable.html">insertTable()</a></code> 
+        </dt>
+        <dd>Insert a table to a cdm object.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="listSourceTables.html">listSourceTables()</a></code> 
+        </dt>
+        <dd>List tables that can be accessed though a cdm object.</dd>
       </dl><dl><dt>
           
           <code><a href="print.cdm_reference.html">print(<i>&lt;cdm_reference&gt;</i>)</a></code> 
@@ -342,54 +323,9 @@
         <dd>Print a CDM reference object</dd>
       </dl><dl><dt>
           
-          <code><a href="print.codelist.html">print(<i>&lt;codelist&gt;</i>)</a></code> 
-        </dt>
-        <dd>Print a codelist</dd>
-      </dl><dl><dt>
-          
-          <code><a href="print.codelist_with_details.html">print(<i>&lt;codelist_with_details&gt;</i>)</a></code> 
-        </dt>
-        <dd>Print a codelist with details</dd>
-      </dl><dl><dt>
-          
-          <code><a href="print.conceptSetExpression.html">print(<i>&lt;conceptSetExpression&gt;</i>)</a></code> 
-        </dt>
-        <dd>Print a concept set expression</dd>
-      </dl><dl><dt>
-          
           <code><a href="readSourceTable.html">readSourceTable()</a></code> 
         </dt>
         <dd>Read a table from the cdm_source and add it to to the cdm.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="recordCohortAttrition.html">recordCohortAttrition()</a></code> 
-        </dt>
-        <dd>Update cohort attrition.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="resultColumns.html">resultColumns()</a></code> 
-        </dt>
-        <dd>Required columns that the result tables must have.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="settings.html">settings()</a></code> 
-        </dt>
-        <dd>Get settings from an object.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="settings.cohort_table.html">settings(<i>&lt;cohort_table&gt;</i>)</a></code> 
-        </dt>
-        <dd>Get cohort settings from a cohort_table object.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="settings.summarised_result.html">settings(<i>&lt;summarised_result&gt;</i>)</a></code> 
-        </dt>
-        <dd>Get settings from a summarised_result object.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="sourceType.html">sourceType()</a></code> 
-        </dt>
-        <dd>Get the source type of a cdm_source.</dd>
       </dl><dl><dt>
           
           <code><a href="sub-sub-.cdm_reference.html">`[[`(<i>&lt;cdm_reference&gt;</i>)</a></code> 
@@ -405,27 +341,18 @@
           <code><a href="summary.cdm_reference.html">summary(<i>&lt;cdm_reference&gt;</i>)</a></code> 
         </dt>
         <dd>Summary a cdm reference</dd>
-      </dl><dl><dt>
-          
-          <code><a href="summary.cohort_table.html">summary(<i>&lt;cohort_table&gt;</i>)</a></code> 
-        </dt>
-        <dd>Summary a generated cohort set</dd>
-      </dl><dl><dt>
-          
-          <code><a href="summary.summarised_result.html">summary(<i>&lt;summarised_result&gt;</i>)</a></code> 
-        </dt>
-        <dd>Summary a summarised_result</dd>
-      </dl><dl><dt>
-          
-          <code><a href="suppress.html">suppress()</a></code> 
-        </dt>
-        <dd>Function to suppress counts in result objects</dd>
-      </dl><dl><dt>
-          
-          <code><a href="suppress.summarised_result.html">suppress(<i>&lt;summarised_result&gt;</i>)</a></code> 
-        </dt>
-        <dd>Function to suppress counts in result objects</dd>
-      </dl><dl><dt>
+      </dl></div><div class="section level2">
+      
+      <h3 id="cdm-table-utility-functions">cdm_table utility functions<a class="anchor" aria-label="anchor" href="#cdm-table-utility-functions"></a></h3>
+      <div class="section-desc"><p>Utility functions for cdm_table objects</p></div>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
           
           <code><a href="tableName.html">tableName()</a></code> 
         </dt>
@@ -435,16 +362,299 @@
           <code><a href="tableSource.html">tableSource()</a></code> 
         </dt>
         <dd>Get the table source of a <code>cdm_table</code>.</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="omop-table-utility-functions">omop_table utility functions<a class="anchor" aria-label="anchor" href="#omop-table-utility-functions"></a></h3>
+      <div class="section-desc"><p>Utility functions for omop_table objects</p></div>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="omopColumns.html">omopColumns()</a></code> 
+        </dt>
+        <dd>Required columns that the standard tables in the OMOP Common Data Model must have.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="omopTables.html">omopTables()</a></code> 
+        </dt>
+        <dd>Standard tables that a cdm reference can contain in the OMOP Common Data Model.</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="achilles-table-utility-functions">achilles_table utility functions<a class="anchor" aria-label="anchor" href="#achilles-table-utility-functions"></a></h3>
+      <div class="section-desc"><p>Utility functions for achilles_table objects</p></div>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="achillesColumns.html">achillesColumns()</a></code> 
+        </dt>
+        <dd>Required columns for each of the achilles result tables</dd>
+      </dl><dl><dt>
+          
+          <code><a href="achillesTables.html">achillesTables()</a></code> 
+        </dt>
+        <dd>Names of the tables that contain the results of achilles analyses</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="cohort-table-utility-functions">cohort_table utility functions<a class="anchor" aria-label="anchor" href="#cohort-table-utility-functions"></a></h3>
+      <div class="section-desc"><p>Utility functions for cohort_table objects</p></div>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="attrition.cohort_table.html">attrition(<i>&lt;cohort_table&gt;</i>)</a></code> 
+        </dt>
+        <dd>Get cohort attrition from a cohort_table object.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="bind.cohort_table.html">bind(<i>&lt;cohort_table&gt;</i>)</a></code> 
+        </dt>
+        <dd>Bind two or more cohort tables</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cohortCodelist.html">cohortCodelist()</a></code> 
+        </dt>
+        <dd>Get codelist from a cohort_table object.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cohortColumns.html">cohortColumns()</a></code> 
+        </dt>
+        <dd>Required columns for a generated cohort set.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cohortCount.html">cohortCount()</a></code> 
+        </dt>
+        <dd>Get cohort counts from a cohort_table object.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="cohortTables.html">cohortTables()</a></code> 
+        </dt>
+        <dd>Cohort tables that a cdm reference can contain in the OMOP Common Data Model.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="collect.cohort_table.html">collect(<i>&lt;cohort_table&gt;</i>)</a></code> 
+        </dt>
+        <dd>To collect a <code>cohort_table</code> object.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="getCohortId.html">getCohortId()</a></code> 
+        </dt>
+        <dd>Get the cohort definition id of a certain name</dd>
+      </dl><dl><dt>
+          
+          <code><a href="getCohortName.html">getCohortName()</a></code> 
+        </dt>
+        <dd>Get the cohort name of a certain cohort definition id</dd>
+      </dl><dl><dt>
+          
+          <code><a href="recordCohortAttrition.html">recordCohortAttrition()</a></code> 
+        </dt>
+        <dd>Update cohort attrition.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="settings.cohort_table.html">settings(<i>&lt;cohort_table&gt;</i>)</a></code> 
+        </dt>
+        <dd>Get cohort settings from a cohort_table object.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="summary.cohort_table.html">summary(<i>&lt;cohort_table&gt;</i>)</a></code> 
+        </dt>
+        <dd>Summary a generated cohort set</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="summarised-result-utility-functions">summarised_result utility functions<a class="anchor" aria-label="anchor" href="#summarised-result-utility-functions"></a></h3>
+      <div class="section-desc"><p>Utility functions for summarised_result objects</p></div>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="bind.summarised_result.html">bind(<i>&lt;summarised_result&gt;</i>)</a></code> 
+        </dt>
+        <dd>Bind two or summarised_result objects</dd>
+      </dl><dl><dt>
+          
+          <code><a href="estimateTypeChoices.html">estimateTypeChoices()</a></code> 
+        </dt>
+        <dd>Choices that can be present in <code>estimate_type</code> column.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="exportSummarisedResult.html">exportSummarisedResult()</a></code> 
+        </dt>
+        <dd>Export a summarised_result object to a csv file.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="resultColumns.html">resultColumns()</a></code> 
+        </dt>
+        <dd>Required columns that the result tables must have.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="settings.summarised_result.html">settings(<i>&lt;summarised_result&gt;</i>)</a></code> 
+        </dt>
+        <dd>Get settings from a summarised_result object.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="summary.summarised_result.html">summary(<i>&lt;summarised_result&gt;</i>)</a></code> 
+        </dt>
+        <dd>Summary a summarised_result</dd>
+      </dl><dl><dt>
+          
+          <code><a href="suppress.summarised_result.html">suppress(<i>&lt;summarised_result&gt;</i>)</a></code> 
+        </dt>
+        <dd>Function to suppress counts in result objects</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="codelist-utility-functions">codelist utility functions<a class="anchor" aria-label="anchor" href="#codelist-utility-functions"></a></h3>
+      <div class="section-desc"><p>Utility functions for codelist objects</p></div>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="print.codelist.html">print(<i>&lt;codelist&gt;</i>)</a></code> 
+        </dt>
+        <dd>Print a codelist</dd>
+      </dl><dl><dt>
+          
+          <code><a href="print.codelist_with_details.html">print(<i>&lt;codelist_with_details&gt;</i>)</a></code> 
+        </dt>
+        <dd>Print a codelist with details</dd>
+      </dl><dl><dt>
+          
+          <code><a href="print.conceptSetExpression.html">print(<i>&lt;conceptSetExpression&gt;</i>)</a></code> 
+        </dt>
+        <dd>Print a concept set expression</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="argument-validation">Argument validation<a class="anchor" aria-label="anchor" href="#argument-validation"></a></h3>
+      <div class="section-desc"><p>To validate input arguments of the functions</p></div>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="validateCohort.html">validateCohort()</a></code> 
+        </dt>
+        <dd>Validate a cohort table input.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="validateCohortId.html">validateCohortId()</a></code> 
+        </dt>
+        <dd>Validate A cohortId input.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="validateName.html">validateName()</a></code> 
+        </dt>
+        <dd>Validate that the a variable is a valid name for a table in the cdm.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="validateNameLevel.html">validateNameLevel()</a></code> 
+        </dt>
+        <dd>Validate if two columns are valid Name-Level pair.</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="general-assertions">General assertions<a class="anchor" aria-label="anchor" href="#general-assertions"></a></h3>
+      <div class="section-desc"><p>To assert that an object fulfills certain criteria</p></div>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="assertCharacter.html">assertCharacter()</a></code> 
+        </dt>
+        <dd>Assert that an object is a character and fulfill certain conditions.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="assertChoice.html">assertChoice()</a></code> 
+        </dt>
+        <dd>Assert that an object is within a certain oprtions.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="assertClass.html">assertClass()</a></code> 
+        </dt>
+        <dd>Assert that an object has a certain class.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="assertList.html">assertList()</a></code> 
+        </dt>
+        <dd>Assert that an object is a list.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="assertLogical.html">assertLogical()</a></code> 
+        </dt>
+        <dd>Assert that an object is a logical.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="assertNumeric.html">assertNumeric()</a></code> 
+        </dt>
+        <dd>Assert that an object is a numeric.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="assertTable.html">assertTable()</a></code> 
+        </dt>
+        <dd>Assert that an object is a table.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="assertTrue.html">assertTrue()</a></code> 
+        </dt>
+        <dd>Assert that an expression is TRUE.</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="utility-functions">Utility functions<a class="anchor" aria-label="anchor" href="#utility-functions"></a></h3>
+      <div class="section-desc"><p>To be used internally by other packages, not meant to be user focused functions</p></div>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="insertFromSource.html">insertFromSource()</a></code> 
+        </dt>
+        <dd>Convert a table that is not a cdm_table but have the same original source to a cdm_table. This Table is not meant to be used to insert tables in the cdm, please use insertTable instead.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sourceType.html">sourceType()</a></code> 
+        </dt>
+        <dd>Get the source type of a cdm_source.</dd>
       </dl><dl><dt>
           
           <code><a href="tmpPrefix.html">tmpPrefix()</a></code> 
         </dt>
         <dd>Create a temporary prefix for tables, that contains a unique prefix that starts with tmp.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="toSnakeCase.html">toSnakeCase()</a></code> 
-        </dt>
-        <dd>Convert a character vector to snake case</dd>
       </dl><dl><dt>
           
           <code><a href="uniqueId.html">uniqueId()</a></code> 
@@ -455,13 +665,35 @@
           <code><a href="uniqueTableName.html">uniqueTableName()</a></code> 
         </dt>
         <dd>Create a unique table name</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="deprecated">Deprecated<a class="anchor" aria-label="anchor" href="#deprecated"></a></h3>
+      <div class="section-desc"><p>Deprecated function that will be eliminated in future releases of the package</p></div>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="checkCohortRequirements.html">checkCohortRequirements()</a></code> 
+        </dt>
+        <dd>Check whether a cohort table satisfies requirements</dd>
       </dl><dl><dt>
           
-          <code><a href="validateNameLevel.html">validateNameLevel()</a></code> 
+          <code><a href="dropTable.html">dropTable()</a></code> 
         </dt>
-        <dd>Validate if two columns are valid Name-Level pair.</dd>
+        <dd>Drop a table from a cdm object.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="toSnakeCase.html">toSnakeCase()</a></code> 
+        </dt>
+        <dd>Convert a character vector to snake case</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
