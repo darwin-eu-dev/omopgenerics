@@ -2,3 +2,73 @@ url: https://darwin-eu-dev.github.io/omopgenerics/
 template:
   bootstrap: 5
 
+articles:
+- title: Classes
+  navbar: Classes
+  contents:
+  - cdm_reference
+  - codelists
+  - cohorts
+  - summarised_result
+- title: Principles
+  navbar: Principles
+  contents:
+  - reexport
+
+reference:
+- subtitle: Methods
+  desc: General methods deffined by omopgenerics
+- contents:
+  - matches("attrition|bind|participants|settings|suppress")
+- subtitle: Create new objects
+  desc: To create new omopgenerics S3 classes objects
+- contents:
+  - matches("new*")
+- subtitle: Creates empty objects
+  desc: To create empty omopgenerics S3 classes objects
+- contents:
+  - matches("empty*")
+- subtitle: cdm_reference utility functions
+  desc: Utility functions for cdm_reference objects
+- contents:
+  - matches("cdm*|dropSourceTable|listSourceTables|insertTable|getPersonIdentifier|readSourceTable|*.cdm_reference")
+- subtitle: cdm_table utility functions
+  desc: Utility functions for cdm_table objects
+- contents:
+  - matches("tableName|tableSource")
+- subtitle: omop_table utility functions
+  desc: Utility functions for omop_table objects
+- contents:
+  - matches("omop*")
+- subtitle: achilles_table utility functions
+  desc: Utility functions for achilles_table objects
+- contents:
+  - matches("achilles*")
+- subtitle: cohort_table utility functions
+  desc: Utility functions for cohort_table objects
+- contents:
+  - matches("cohort*|getCohortId|getCohortName|recordCohortAttrition|*.cohort_table")
+- subtitle: summarised_result utility functions
+  desc: Utility functions for summarised_result objects
+- contents:
+  - matches("exportSummarisedResult|estimateTypeChoices|resultColumns|*.summarised_result")
+- subtitle: codelist utility functions
+  desc: Utility functions for codelist objects
+- contents:
+  - matches("*.codelist|*.codelist_with_details|*.conceptSetExpression")
+- subtitle: Argument validation
+  desc: To validate input arguments of the functions
+- contents:
+  - matches("validate*")
+- subtitle: General assertions
+  desc: To assert that an object fulfills certain criteria
+- contents:
+  - matches("assert*")
+- subtitle: Utility functions
+  desc: To be used internally by other packages, not meant to be user focused functions
+- contents:
+  - matches("insertFromSource|sourceType|tmpPrefix|uniqueId|uniqueTableName")
+- subtitle: Deprecated
+  desc: Deprecated function that will be eliminated in future releases of the package
+- contents:
+  - matches("checkCohortRequirements|dropTable|toSnakeCase")

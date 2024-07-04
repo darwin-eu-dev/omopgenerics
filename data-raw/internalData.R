@@ -179,6 +179,14 @@ fieldsResults <- dplyr::tibble(
 
 groupCount <- c("number subjects", "number records")
 
-usethis::use_data(
-  fieldsTables, fieldsResults, groupCount, internal = TRUE, overwrite = TRUE
+argumentValidation <- dplyr::tribble(
+  ~"argument_name", ~"validation", ~"required_arguments", ~"optional_arguments",
+  "name", "It must be a character (NULL and NA allowed) of length 1. If NA it will be changed to NULL", list(), list("cdm" = "if name already exists in the cdm object a message will be displayed")
 )
+
+usethis::use_data(
+  fieldsTables, fieldsResults, groupCount, argumentValidation, internal = TRUE,
+  overwrite = TRUE
+)
+
+

@@ -72,9 +72,7 @@ getCohortId <- function(cohort, cohortName = NULL) {
   set <- settings(cohort) |>
     dplyr::select("cohort_definition_id", "cohort_name")
 
-  if (is.null(cohortName)) {
-    cohortName <- set$cohort_name
-  }
+  if (is.null(cohortName)) cohortName <- set$cohort_name
 
   notPresent <- cohortName[!cohortName %in% set$cohort_name]
   if (length(notPresent) > 0) {
@@ -105,9 +103,7 @@ getCohortName <- function(cohort, cohortId = NULL) {
   set <- settings(cohort) |>
     dplyr::select("cohort_definition_id", "cohort_name")
 
-  if (is.null(cohortId)) {
-    cohortId <- set$cohort_definition_id
-  }
+  if (is.null(cohortId)) cohortId <- set$cohort_definition_id
 
   notPresent <- cohortId[!cohortId %in% set$cohort_definition_id]
   if (length(notPresent) > 0) {
@@ -180,7 +176,7 @@ uniqueId <- function(n = 1, exclude = character(), nChar = 3, prefix = "id_") {
     dplyr::pull()
 
   if (length(idOptions) < n) {
-    cli::cli_abort("There are not enough options with the current input parameters. {length(idOptions)} options and {n} requested id{?s}.")
+    cli::cli_abort("There are not enough options with the current input parameters. {length(idOptions)} option{?s} and {n} requested id{?s}.")
   } else if (length(idOptions) == n) {
     x <- idOptions
   } else {
