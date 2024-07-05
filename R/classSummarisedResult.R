@@ -309,10 +309,12 @@ checkGroupCount <- function(x) {
   obsLabels <- x |> dplyr::pull("variable_name") |> unique()
 
   # to avoid invalid UTF-8 error
-  Encoding(obsLabels) <- "latin1"
-
-  obsLabelsL <- tolower(gsub("_", " ", obsLabels))
-
+  # Encoding(obsLabels) <- "latin1"
+  #
+  # obsLabelsL <- tolower(gsub("_", " ", obsLabels))
+  obsLabelsL <- tolower(stringr::str_replace_all(string = obsLabels,
+                                                 pattern = "_",
+                                                 replacement = " "))
 
   res <- character()
   n <- 0
