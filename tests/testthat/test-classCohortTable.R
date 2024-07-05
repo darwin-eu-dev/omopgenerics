@@ -255,7 +255,7 @@ test_that("test create cohort", {
   expect_error(newCohortTable(table = cdm$cohort1))
 })
 
-test_that("test validateCohort", {
+test_that("test validateCohortArgument", {
   person <- dplyr::tibble(
     person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
     race_concept_id = 0, ethnicity_concept_id = 0
@@ -278,9 +278,9 @@ test_that("test validateCohort", {
     cohort_end_date = as.Date(c("2020-01-10", "2020-01-25"))
   ))
   cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
-  expect_error(validateCohort(cdm$cohort1))
-  expect_warning(validateCohort(cdm$cohort1, validation = "warning"))
-  expect_no_error(validateCohort(cdm$cohort1, checkOverlappingEntries = FALSE))
+  expect_error(validateCohortArgument(cdm$cohort1))
+  expect_warning(validateCohortArgument(cdm$cohort1, validation = "warning"))
+  expect_no_error(validateCohortArgument(cdm$cohort1, checkOverlappingEntries = FALSE))
 
   # test NA
   cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
@@ -289,11 +289,11 @@ test_that("test validateCohort", {
     cohort_end_date = as.Date("2020-01-10")
   ))
   cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
-  expect_error(validateCohort(cdm$cohort1))
+  expect_error(validateCohortArgument(cdm$cohort1))
   expect_warning(expect_warning(
-    validateCohort(cdm$cohort1, validation = "warning")
+    validateCohortArgument(cdm$cohort1, validation = "warning")
   ))
-  expect_no_error(validateCohort(cdm$cohort1,
+  expect_no_error(validateCohortArgument(cdm$cohort1,
                                  checkMissingValues = FALSE,
                                  checkInObservation = FALSE))
 
@@ -304,9 +304,9 @@ test_that("test validateCohort", {
     cohort_end_date = as.Date("1020-01-10")
   ))
   cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
-  expect_error(validateCohort(cdm$cohort1))
-  expect_warning(validateCohort(cdm$cohort1, validation = "warning"))
-  expect_no_error(validateCohort(cdm$cohort1,
+  expect_error(validateCohortArgument(cdm$cohort1))
+  expect_warning(validateCohortArgument(cdm$cohort1, validation = "warning"))
+  expect_no_error(validateCohortArgument(cdm$cohort1,
                                  checkInObservation = FALSE))
 
   # test start before end
@@ -316,18 +316,18 @@ test_that("test validateCohort", {
     cohort_end_date = as.Date(c("2019-01-10"))
   ))
   cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
-  expect_error(validateCohort(cdm$cohort1))
-  expect_warning(validateCohort(cdm$cohort1, validation = "warning"))
-  expect_no_error(validateCohort(cdm$cohort1, checkEndAfterStart = FALSE))
+  expect_error(validateCohortArgument(cdm$cohort1))
+  expect_warning(validateCohortArgument(cdm$cohort1, validation = "warning"))
+  expect_no_error(validateCohortArgument(cdm$cohort1, checkEndAfterStart = FALSE))
 
   # all checks switched off - runs without error
-  expect_no_error(validateCohort(cdm$cohort1,
+  expect_no_error(validateCohortArgument(cdm$cohort1,
                                  checkEndAfterStart = FALSE,
                                  checkOverlappingEntries = FALSE,
                                  checkMissingValues = FALSE,
                                  checkInObservation = FALSE))
 
-  expect_no_warning(validateCohort(cdm$cohort1,
+  expect_no_warning(validateCohortArgument(cdm$cohort1,
                                    checkEndAfterStart = FALSE,
                                    checkOverlappingEntries = FALSE,
                                    checkMissingValues = FALSE,
@@ -335,9 +335,9 @@ test_that("test validateCohort", {
                                    validation = "warning"))
 
   # not a cohort
-  expect_error(validateCohort(cdm))
-  expect_error(validateCohort(cdm$person))
-  expect_error(validateCohort("a"))
+  expect_error(validateCohortArgument(cdm))
+  expect_error(validateCohortArgument(cdm$person))
+  expect_error(validateCohortArgument("a"))
 
 })
 

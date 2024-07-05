@@ -272,7 +272,7 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_codelist")))
 
   if (!soft) {
-    cohort <- validateCohort(
+    cohort <- validateCohortArgument(
       cohort = cohort,
       checkEndAfterStart = TRUE, # check start before end
       checkMissingValues = TRUE, # check NA
@@ -387,7 +387,7 @@ checkCohortRequirements <- function(cohort,
   lifecycle::deprecate_stop(
     when = "0.3.0",
     what = "checkCohortRequirements()",
-    with = "validateCohort()")
+    with = "validateCohortArgument()")
 }
 
 checkStartEnd <- function(cohort, validation, call) {
