@@ -312,6 +312,7 @@ checkGroupCount <- function(x) {
   # Encoding(obsLabels) <- "latin1"
   #
   # obsLabelsL <- tolower(gsub("_", " ", obsLabels))
+  print("test")
   obsLabelsL <- tolower(stringr::str_replace_all(string = obsLabels,
                                                  pattern = "_",
                                                  replacement = " "))
