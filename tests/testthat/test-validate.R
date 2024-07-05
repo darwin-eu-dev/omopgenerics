@@ -4,9 +4,9 @@ test_that("test validateName", {
   expect_error(validateName(name = c("sda", "asdfsa")))
   expect_identical("my_name", validateName("my_name"))
   expect_error(validateName("myName"))
-  expect_warning(expect_identical("my_name", validateName("myName", validation = "relaxed")))
+  expect_warning(expect_identical("my_name", validateName("myName", validation = "warning")))
   expect_warning(expect_warning(expect_identical(
-    "my_name", validateName("myName", list("my_name" = 1), validation = "relaxed")
+    "my_name", validateName("myName", list("my_name" = 1), validation = "warning")
   )))
 })
 

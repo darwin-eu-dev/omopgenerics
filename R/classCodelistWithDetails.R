@@ -39,21 +39,21 @@ constructCodelistWithDetails <- function(x) {
   x |> addClass("codelist_with_details")
 }
 
-validateCodelistWithDetails <- function(x) {
+validateCodelistWithDetails <- function(codelistWithDetails, call = parent.frame()) {
 
-  assertList(x, named = TRUE, class = c("data.frame", "tbl_df"))
+  assertList(codelistWithDetails, named = TRUE, class = c("data.frame", "tbl_df"), call = call)
 
-    for (nm in names(x)) {
-      if(isFALSE(any("concept_id" %in% colnames(x[[nm]])))){
-        cli::cli_abort("`{nm}` column concept_id not found")
+    for (nm in names(codelistWithDetails)) {
+      if(isFALSE(any("concept_id" %in% colnames(codelistWithDetails[[nm]])))){
+        cli::cli_abort("`{nm}` column concept_id not found", call = call)
       }
 
-      if (any(is.na(unique(x[[nm]]$concept_id)))) {
-        cli::cli_abort("`{nm}` must not contain NA in concept_id field.")
+      if (any(is.na(unique(codelistWithDetails[[nm]]$concept_id)))) {
+        cli::cli_abort("`{nm}` must not contain NA in concept_id field.", call = call)
       }
     }
 
-  return(x)
+  return(codelistWithDetails)
 }
 
 

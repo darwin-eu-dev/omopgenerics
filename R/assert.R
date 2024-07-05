@@ -164,7 +164,7 @@ assertChoice <- function(x,
 assertClass <- function(x,
                         class,
                         length = NULL,
-                        null = TRUE,
+                        null = FALSE,
                         all = FALSE,
                         extra = TRUE,
                         call = parent.frame(),
@@ -181,6 +181,7 @@ assertClass <- function(x,
     } else {
       obj <- paste0(obj, "; it can not contain extra classes")
     }
+    obj <- obj |> glue::glue()
     msg <- errorMessage(nm = nm, object = obj, null = null, length = length)
   }
 

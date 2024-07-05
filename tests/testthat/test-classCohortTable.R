@@ -279,7 +279,7 @@ test_that("test validateCohort", {
   ))
   cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
   expect_error(validateCohort(cdm$cohort1))
-  expect_warning(validateCohort(cdm$cohort1, validation = "relaxed"))
+  expect_warning(validateCohort(cdm$cohort1, validation = "warning"))
   expect_no_error(validateCohort(cdm$cohort1, checkOverlappingEntries = FALSE))
 
   # test NA
@@ -291,7 +291,7 @@ test_that("test validateCohort", {
   cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
   expect_error(validateCohort(cdm$cohort1))
   expect_warning(expect_warning(
-    validateCohort(cdm$cohort1, validation = "relaxed")
+    validateCohort(cdm$cohort1, validation = "warning")
   ))
   expect_no_error(validateCohort(cdm$cohort1,
                                  checkMissingValues = FALSE,
@@ -305,7 +305,7 @@ test_that("test validateCohort", {
   ))
   cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
   expect_error(validateCohort(cdm$cohort1))
-  expect_warning(validateCohort(cdm$cohort1, validation = "relaxed"))
+  expect_warning(validateCohort(cdm$cohort1, validation = "warning"))
   expect_no_error(validateCohort(cdm$cohort1,
                                  checkInObservation = FALSE))
 
@@ -317,7 +317,7 @@ test_that("test validateCohort", {
   ))
   cdm$cohort1 <- newCohortTable(cdm$cohort1, .softValidation = TRUE)
   expect_error(validateCohort(cdm$cohort1))
-  expect_warning(validateCohort(cdm$cohort1, validation = "relaxed"))
+  expect_warning(validateCohort(cdm$cohort1, validation = "warning"))
   expect_no_error(validateCohort(cdm$cohort1, checkEndAfterStart = FALSE))
 
   # all checks switched off - runs without error
@@ -332,7 +332,7 @@ test_that("test validateCohort", {
                                    checkOverlappingEntries = FALSE,
                                    checkMissingValues = FALSE,
                                    checkInObservation = FALSE,
-                                   validation = "relaxed"))
+                                   validation = "warning"))
 
   # not a cohort
   expect_error(validateCohort(cdm))

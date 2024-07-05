@@ -278,7 +278,7 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
       checkMissingValues = TRUE, # check NA
       checkOverlappingEntries = TRUE, # check overlap
       checkInObservation = TRUE, # check within observation period
-      validation = "strict"
+      validation = "error"
     )
   }
 
@@ -402,7 +402,7 @@ checkStartEnd <- function(cohort, validation, call) {
       dplyr::glimpse() |>
       print(width = Inf) |>
       utils::capture.output()
-    if(validation == "strict"){
+    if(validation == "error"){
       cli::cli_abort(
         message = c(
           "!" = "cohort_start_date must be <= tham cohort_end_date. There are {nrow(x)}
@@ -412,7 +412,7 @@ checkStartEnd <- function(cohort, validation, call) {
         ),
         call = call
       )
-    } else if (validation == "relaxed") {
+    } else if (validation == "warning") {
       cli::cli_warn(
         message = c(
           "!" = "cohort_start_date must be <= tham cohort_end_date. There are {nrow(x)}
@@ -447,7 +447,7 @@ checkOverlap <- function(cohort, validation, call) {
       print(width = Inf) |>
       utils::capture.output()
 
-    if (validation == "strict") {
+    if (validation == "error") {
       cli::cli_abort(
         message = c(
           "!" = "There is overlap between entries in the cohort, {nrow(x)} overlap{?s}
@@ -456,7 +456,7 @@ checkOverlap <- function(cohort, validation, call) {
         ),
         call = call
       )
-    } else if (validation == "relaxed") {
+    } else if (validation == "warning") {
       cli::cli_warn(
         message = c(
           "!" = "There is overlap between entries in the cohort, {nrow(x)}
@@ -487,13 +487,13 @@ checkNaCohort <- function(cohort, validation, call) {
       unique() |>
       paste0(collapse = ", ")
 
-    if (validation == "strict") {
+    if (validation == "error") {
       cli::cli_abort(
         c("!" = "Cohort can't have NA values, there are NA values in the
           following columns: {x}"),
         call = call
       )
-    } else if (validation == "relaxed") {
+    } else if (validation == "warning") {
       cli::cli_warn(
         c("!" = "Cohort can't have NA values, there are NA values in the
           following columns: {x}")
@@ -529,9 +529,9 @@ checkObservationPeriod <- function(cohort, validation, call) {
 
   if (x > 0) {
     mes <- c("!" = "{x} observation{?s} outside observation period.")
-    if(validation == "strict") {
+    if(validation == "error") {
       cli::cli_abort(message = mes, call = call)
-    } else if (validation == "relaxed") {
+    } else if (validation == "warning") {
       cli::cli_warn(message = mes)
     }
   }
