@@ -19,7 +19,11 @@ reference:
 - subtitle: Methods
   desc: General methods deffined by omopgenerics
 - contents:
-  - matches("attrition|bind|participants|settings|suppress")
+  - attrition
+  - bind
+  - participants
+  - settings
+  - suppress
 - subtitle: Create new objects
   desc: To create new omopgenerics S3 classes objects
 - contents:
@@ -31,7 +35,13 @@ reference:
 - subtitle: cdm_reference utility functions
   desc: Utility functions for cdm_reference objects
 - contents:
-  - matches("cdm*|dropSourceTable|listSourceTables|insertTable|getPersonIdentifier|readSourceTable|*.cdm_reference")
+  - matches("cdm*")
+  - listSourceTables
+  - dropSourceTable
+  - insertTable
+  - readSourceTable
+  - getPersonIdentifier
+  - matches("*.cdm_reference")
 - subtitle: cdm_table utility functions
   desc: Utility functions for cdm_table objects
 - contents:
