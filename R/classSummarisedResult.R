@@ -307,6 +307,7 @@ checkGroupCount <- function(x) {
     "strata_level"
   )
   obsLabels <- x |> dplyr::pull("variable_name") |> unique()
+  Encoding(obsLabels) <- "latin1"
   obsLabelsL <- tolower(gsub("_", " ", obsLabels))
   res <- character()
   n <- 0
