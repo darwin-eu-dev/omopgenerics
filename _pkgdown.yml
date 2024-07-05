@@ -19,7 +19,11 @@ reference:
 - subtitle: Methods
   desc: General methods deffined by omopgenerics
 - contents:
-  - matches("attrition|bind|participants|settings|suppress")
+  - attrition
+  - bind
+  - participants
+  - settings
+  - suppress
 - subtitle: Create new objects
   desc: To create new omopgenerics S3 classes objects
 - contents:
