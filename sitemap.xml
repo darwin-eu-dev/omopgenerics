@@ -1,318 +1,108 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/404.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/cdm_reference.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/codelists.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/cohorts.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/reexport.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/articles/summarised_result.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/index.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/achillesColumns.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/achillesTables.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertCharacter.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertChoice.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertClass.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertList.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertLogical.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertNumeric.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertTable.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertTrue.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/attrition.cohort_table.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/attrition.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/bind.cohort_table.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/bind.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/bind.summarised_result.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cash-.cdm_reference.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cash-set-.cdm_reference.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmFromTables.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmName.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmReference.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmSelect.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmSource.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmSourceType.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmTableFromSource.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmVersion.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/checkCohortRequirements.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cohortCodelist.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cohortColumns.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cohortCount.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cohortTables.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/collect.cdm_reference.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/collect.cohort_table.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/compute.cdm_table.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/dropSourceTable.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/dropTable.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyAchillesTable.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyCdmReference.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyCodelist.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyCodelistWithDetails.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyCohortTable.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyOmopTable.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptySummarisedResult.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/estimateTypeChoices.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/exportSummarisedResult.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/getCohortId.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/getCohortName.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/getPersonIdentifier.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/insertFromSource.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/insertTable.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/listSourceTables.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newAchillesTable.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCdmReference.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCdmSource.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCdmTable.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCodelist.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCodelistWithDetails.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCohortTable.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newConceptSetExpression.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newLocalSource.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newOmopTable.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newSummarisedResult.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/omopColumns.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/omopTables.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/omopgenerics-package.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/participants.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/print.cdm_reference.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/print.codelist.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/print.codelist_with_details.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/print.conceptSetExpression.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/readSourceTable.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/recordCohortAttrition.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/reexports.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/resultColumns.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/settings.cohort_table.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/settings.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/settings.summarised_result.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/sourceType.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/sub-sub-.cdm_reference.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/sub-subset-.cdm_reference.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/summary.cdm_reference.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/summary.cohort_table.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/summary.summarised_result.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/suppress.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/suppress.summarised_result.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/tableName.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/tableSource.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/tmpPrefix.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/toSnakeCase.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/uniqueId.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/uniqueTableName.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/validateCohort.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/validateCohortId.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/validateName.html</loc>
-  </url>
-  <url>
-    <loc>https://darwin-eu-dev.github.io/omopgenerics/reference/validateNameLevel.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/404.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/LICENSE.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/articles/cdm_reference.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/articles/codelists.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/articles/cohorts.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/articles/index.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/articles/reexport.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/articles/summarised_result.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/authors.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/index.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/achillesColumns.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/achillesTables.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertCharacter.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertChoice.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertClass.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertList.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertLogical.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertNumeric.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertTable.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/assertTrue.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/attrition.cohort_table.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/attrition.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/bind.cohort_table.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/bind.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/bind.summarised_result.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cash-.cdm_reference.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cash-set-.cdm_reference.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmFromTables.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmName.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmReference.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmSelect.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmSource.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmSourceType.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmTableFromSource.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cdmVersion.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/checkCohortRequirements.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cohortCodelist.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cohortColumns.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cohortCount.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/cohortTables.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/collect.cdm_reference.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/collect.cohort_table.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/compute.cdm_table.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/dropSourceTable.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/dropTable.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyAchillesTable.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyCdmReference.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyCodelist.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyCodelistWithDetails.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyCohortTable.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyOmopTable.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptySummarisedResult.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/estimateTypeChoices.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/exportSummarisedResult.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/getCohortId.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/getCohortName.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/getPersonIdentifier.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/index.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/insertFromSource.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/insertTable.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/listSourceTables.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newAchillesTable.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCdmReference.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCdmSource.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCdmTable.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCodelist.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCodelistWithDetails.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newCohortTable.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newConceptSetExpression.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newLocalSource.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newOmopTable.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/newSummarisedResult.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/omopColumns.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/omopTables.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/omopgenerics-package.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/participants.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/print.cdm_reference.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/print.codelist.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/print.codelist_with_details.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/print.conceptSetExpression.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/readSourceTable.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/recordCohortAttrition.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/reexports.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/resultColumns.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/settings.cohort_table.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/settings.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/settings.summarised_result.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/sourceType.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/sub-sub-.cdm_reference.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/sub-subset-.cdm_reference.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/summary.cdm_reference.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/summary.cohort_table.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/summary.summarised_result.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/suppress.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/suppress.summarised_result.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/tableName.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/tableSource.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/tmpPrefix.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/toSnakeCase.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/uniqueId.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/uniqueTableName.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/validateCohort.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/validateCohortId.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/validateName.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/validateNameLevel.html</loc></url>
 </urlset>
+
