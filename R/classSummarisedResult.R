@@ -307,7 +307,9 @@ checkGroupCount <- function(x) {
     "strata_level"
   )
   obsLabels <- x |> dplyr::pull("variable_name") |> unique()
-  obsLabelsL <- tolower(gsub("_", " ", obsLabels))
+  obsLabelsL <- tolower(stringr::str_replace_all(string = obsLabels,
+                                                 pattern = "_",
+                                                 replacement = " "))
   res <- character()
   n <- 0
   for (gcount in groupCount) {
