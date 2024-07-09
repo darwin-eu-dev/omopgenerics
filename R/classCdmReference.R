@@ -246,6 +246,7 @@ checkStartBeforeEndObservation <- function(x, call = parent.frame()) {
     )
   }
 }
+
 #' Get the name of a cdm_reference associated object
 #'
 #' @param x A cdm_reference or cdm_table object.
@@ -293,7 +294,6 @@ cdmName.cdm_reference <- function(x) {
 cdmName.cdm_table <- function(x) {
   x |> cdmReference() |> cdmName()
 }
-
 
 #' Get the version of a cdm_reference.
 #'
@@ -581,6 +581,9 @@ cdmSourceType <- function(cdm) {
     }
     if (remoteName %in% achillesTables()) {
       value <- value |> newAchillesTable()
+    }
+    if ("cohort_table" %in% class(value)) {
+      value <- value |> castCohort()
     }
   }
 

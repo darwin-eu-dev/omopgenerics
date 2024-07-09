@@ -35,6 +35,7 @@ newOmopTable <- function(table) {
 
   cols <- omopColumns(table = tableName(table))
   checkColumnsCdm(table, name, cols)
+  table <- castOmopColumns(table, name)
 
   return(table)
 }
@@ -77,4 +78,29 @@ emptyOmopTable <- function(cdm, name) {
   cdm <- insertTable(cdm = cdm, name = name, table = table, overwrite = FALSE)
   cdm[[name]] <- newOmopTable(cdm[[name]])
   return(cdm)
+}
+
+castOmopColumns <- function(table, name) {
+  cols <- fieldsTables |>
+    dplyr::filter(
+      .data$type == "cdm_table" & .data$cdm_table_name == .env$name) |>
+    dplyr::select("cdm_field_name", "cdm_datatype") |>
+    dplyr::mutate("cdm_datatype" = dplyr::if_else(
+      grepl("varchar", .data$cdm_datatype), "character", .data$cdm_datatype
+    )) |>
+    dplyr::group_split(.data$cdm_field_name) |>
+    purrr::map(dplyr::pull, "cdm_datatype") |>
+    as.list()
+}
+castColumns <- function(table, cols) {
+
+}
+funToCast <- function(x) {
+  x[x == "integer"] <- "as.integer"
+  x[x == "datetime"] <- "as.Date"
+  x[x == "character"] <- "as,character"
+  x[x == "date"] <- "as.Date"
+  x[x == "float"] <- "as.numeric"
+  x[x == "logical"] <- "as.logicla"
+  return(x)
 }
