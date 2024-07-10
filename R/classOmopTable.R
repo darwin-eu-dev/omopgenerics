@@ -85,22 +85,60 @@ castOmopColumns <- function(table, name) {
     dplyr::filter(
       .data$type == "cdm_table" & .data$cdm_table_name == .env$name) |>
     dplyr::select("cdm_field_name", "cdm_datatype") |>
-    dplyr::mutate("cdm_datatype" = dplyr::if_else(
-      grepl("varchar", .data$cdm_datatype), "character", .data$cdm_datatype
-    )) |>
-    dplyr::group_split(.data$cdm_field_name) |>
-    purrr::map(dplyr::pull, "cdm_datatype") |>
-    as.list()
+    dplyr::mutate("cdm_datatype" = dplyr::case_when(
+      grepl("varchar", .data$cdm_datatype) ~ "character",
+      .data$cdm_datatype == "float" ~ "numeric",
+      .data$cdm_datatype == "datetime" ~ "date",
+      .default = .data$cdm_datatype
+    ))
+  cols <- cols |>
+    split(f = as.factor(cols$cdm_field_name)) |>
+    lapply(dplyr::pull, "cdm_datatype")
+  castColumns(table, cols, name)
 }
-castColumns <- function(table, cols) {
-
+castColumns <- function(table, cols, name) {
+  colsToCast <- detectColsToCast(table, cols)
+  if (length(colsToCast) > 0) {
+    warnColsToCast(colsToCast, name)
+    table <- castTableColumns(table, colsToCast)
+  }
+  return(table)
+}
+detectColsToCast <- function(table, cols) {
+  colTypes <- table |>
+    utils::head(1) |>
+    dplyr::collect() |>
+    purrr::map(dplyr::type_sum) |>
+    lapply(assertClassification)
+  cols <- cols[sort(names(colTypes))]
+  colTypes <- colTypes[sort(names(cols))]
+  cols <- setdiff(cols, colTypes)
+  colsToCast <- list("new" = cols, "old" = colTypes[names(cols)])
+  return(colsToCast)
+}
+warnColsToCast <- function(colsToCast, name) {
+  msg <- NULL
+  nms <- names(colsToCast$new)
+  for (nm in nms) {
+    msg <- c(msg, "*" = paste0(nm, " from ", colsToCast$old[[nm]], " to ", colsToCast$new[[nm]]))
+  }
+  msg <- c("!" = "{length(colsToCast$new)} casted in {.strong {name}} as do not match expected column type:", msg) |>
+    glue::glue()
+  cli::cli_warn(message = msg)
+}
+castTableColumns <- function(table, colsToCast) {
+  cols <- colsToCast$new |> funToCast()
+  qC <- paste0(cols, "(.data[['", names(cols), "']])") |>
+    rlang::parse_exprs() |>
+    rlang::set_names(names(cols))
+  table <- table |> dplyr::mutate(!!!qC)
+  return(table)
 }
 funToCast <- function(x) {
   x[x == "integer"] <- "as.integer"
-  x[x == "datetime"] <- "as.Date"
-  x[x == "character"] <- "as,character"
+  x[x == "character"] <- "as.character"
   x[x == "date"] <- "as.Date"
-  x[x == "float"] <- "as.numeric"
+  x[x == "numeric"] <- "as.numeric"
   x[x == "logical"] <- "as.logicla"
   return(x)
 }
