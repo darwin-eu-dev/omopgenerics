@@ -94,51 +94,6 @@ castOmopColumns <- function(table, name) {
   cols <- cols |>
     split(f = as.factor(cols$cdm_field_name)) |>
     lapply(dplyr::pull, "cdm_datatype")
-  castColumns(table, cols, name)
-}
-castColumns <- function(table, cols, name) {
-  colsToCast <- detectColsToCast(table, cols)
-  if (length(colsToCast) > 0) {
-    warnColsToCast(colsToCast, name)
-    table <- castTableColumns(table, colsToCast)
-  }
+  table <- castColumns(table, cols, name)
   return(table)
-}
-detectColsToCast <- function(table, cols) {
-  colTypes <- table |>
-    utils::head(1) |>
-    dplyr::collect() |>
-    purrr::map(dplyr::type_sum) |>
-    lapply(assertClassification)
-  cols <- cols[sort(names(colTypes))]
-  colTypes <- colTypes[sort(names(cols))]
-  cols <- setdiff(cols, colTypes)
-  colsToCast <- list("new" = cols, "old" = colTypes[names(cols)])
-  return(colsToCast)
-}
-warnColsToCast <- function(colsToCast, name) {
-  msg <- NULL
-  nms <- names(colsToCast$new)
-  for (nm in nms) {
-    msg <- c(msg, "*" = paste0(nm, " from ", colsToCast$old[[nm]], " to ", colsToCast$new[[nm]]))
-  }
-  msg <- c("!" = "{length(colsToCast$new)} casted in {.strong {name}} as do not match expected column type:", msg) |>
-    glue::glue()
-  cli::cli_warn(message = msg)
-}
-castTableColumns <- function(table, colsToCast) {
-  cols <- colsToCast$new |> funToCast()
-  qC <- paste0(cols, "(.data[['", names(cols), "']])") |>
-    rlang::parse_exprs() |>
-    rlang::set_names(names(cols))
-  table <- table |> dplyr::mutate(!!!qC)
-  return(table)
-}
-funToCast <- function(x) {
-  x[x == "integer"] <- "as.integer"
-  x[x == "character"] <- "as.character"
-  x[x == "date"] <- "as.Date"
-  x[x == "numeric"] <- "as.numeric"
-  x[x == "logical"] <- "as.logicla"
-  return(x)
 }

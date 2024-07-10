@@ -583,7 +583,7 @@ cdmSourceType <- function(cdm) {
       value <- value |> newAchillesTable()
     }
     if ("cohort_table" %in% class(value)) {
-      value <- value |> castCohort()
+      #value <- value |> castCohort()
     }
   }
 
