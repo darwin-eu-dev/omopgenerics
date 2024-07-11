@@ -4,12 +4,14 @@
 \alias{newAchillesTable}
 \title{Create an achilles table from a cdm_table.}
 \usage{
-newAchillesTable(table, version = "5.3")
+newAchillesTable(table, version = "5.3", cast = FALSE)
 }
 \arguments{
 \item{table}{A cdm_table.}
 
 \item{version}{version of the cdm.}
+
+\item{cast}{Whether to cast columns to the correct type.}
 }
 \value{
 An achilles_table object

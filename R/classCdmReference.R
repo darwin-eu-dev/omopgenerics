@@ -132,10 +132,10 @@ validateCdmReference <- function(cdm, soft) {
   omopTables <- omopTables[omopTables %in% names(cdm)]
   for (nm in omopTables) {
     if (nm %in% c("person", "observation_period")) {
-      cdm[[nm]] <- newOmopTable(cdm[[nm]])
+      cdm[[nm]] <- newOmopTable(cdm[[nm]], version = cdmVersion(cdm), cast = !soft)
     } else {
       cdm[[nm]] <- tryCatch(
-        expr = {newOmopTable(cdm[[nm]])},
+        expr = {newOmopTable(cdm[[nm]], version = cdmVersion(cdm), cast = !soft)},
         error = function(e){
           cli::cli_warn(c(
             "{nm} table not included in cdm because:", as.character(e)
@@ -151,7 +151,7 @@ validateCdmReference <- function(cdm, soft) {
   achillesTables <- achillesTables[achillesTables %in% names(cdm)]
   for (nm in achillesTables) {
     cdm[[nm]] <- tryCatch(
-      expr = {newAchillesTable(cdm[[nm]])},
+      expr = {newAchillesTable(cdm[[nm]], version = cdmVersion(cdm), cast = !soft)},
       error = function(e){
         cli::cli_warn(c(
           "{nm} table not included in cdm because:", as.character(e)

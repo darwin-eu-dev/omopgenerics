@@ -18,12 +18,13 @@
 #'
 #' @param table A cdm_table.
 #' @param version version of the cdm.
+#' @param cast Whether to cast columns to the correct type.
 #'
 #' @return An omop_table object
 #'
 #' @export
 #'
-newOmopTable <- function(table, version = "5.3") {
+newOmopTable <- function(table, version = "5.3", cast = FALSE) {
   # create the structure
   assertClass(table, class = "cdm_table")
   table <- addClass(table, "omop_table")
@@ -36,7 +37,7 @@ newOmopTable <- function(table, version = "5.3") {
 
   cols <- omopColumns(table = tableName(table), version = version)
   checkColumnsCdm(table, name, cols)
-  table <- castOmopColumns(table, name, version)
+  if (cast) table <- castOmopColumns(table, name, version)
 
   return(table)
 }

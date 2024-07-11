@@ -1,13 +1,13 @@
 test_that("test cdmFromTables", {
   person <- dplyr::tibble(
-    person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
-    race_concept_id = 0, ethnicity_concept_id = 0
+    person_id = 1L, gender_concept_id = 0L, year_of_birth = 1990L,
+    race_concept_id = 0L, ethnicity_concept_id = 0L
   )
   observation_period <- dplyr::tibble(
-    observation_period_id = 1, person_id = 1,
+    observation_period_id = 1L, person_id = 1L,
     observation_period_start_date = as.Date("2000-01-01"),
     observation_period_end_date = as.Date("2025-12-31"),
-    period_type_concept_id = 0
+    period_type_concept_id = 0L
   )
   cdm <- cdmFromTables(
     tables = list("person" = person, "observation_period" = observation_period),
@@ -16,8 +16,8 @@ test_that("test cdmFromTables", {
     expect_no_error()
 
   cohort <- dplyr::tibble(
-    cohort_definition_id = 1,
-    subject_id = 1,
+    cohort_definition_id = 1L,
+    subject_id = 1L,
     cohort_start_date = as.Date("2020-01-01"),
     cohort_end_date = as.Date("2020-01-01")
   )
@@ -29,11 +29,11 @@ test_that("test cdmFromTables", {
     expect_no_error()
 
   expect_equal(settings(cdm$cohort1), dplyr::tibble(
-    "cohort_definition_id" = 1, "cohort_name" = "cohort_1"
+    "cohort_definition_id" = 1L, "cohort_name" = "cohort_1"
   ))
 
   attr(cohort, "cohort_set") <- dplyr::tibble(
-    "cohort_definition_id" = 1, "cohort_name" = "my_cohort"
+    "cohort_definition_id" = 1L, "cohort_name" = "my_cohort"
   )
   cdm <- cdmFromTables(
     tables = list("person" = person, "observation_period" = observation_period),
@@ -42,7 +42,7 @@ test_that("test cdmFromTables", {
   ) |>
     expect_no_error()
   expect_equal(settings(cdm$cohort1), dplyr::tibble(
-    "cohort_definition_id" = 1, "cohort_name" = "my_cohort"
+    "cohort_definition_id" = 1L, "cohort_name" = "my_cohort"
   ))
 
   expect_warning(
@@ -59,17 +59,17 @@ test_that("test cdmFromTables", {
   cdmFromTables(
     tables = list(
       "person" = dplyr::tibble(
-        person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
-        race_concept_id = 0, ethnicity_concept_id = 0
+        person_id = 1L, gender_concept_id = 0L, year_of_birth = 1990L,
+        race_concept_id = 0L, ethnicity_concept_id = 0L
       ),
       "observation_period" = dplyr::tibble(
-        observation_period_id = 1, person_id = 1,
+        observation_period_id = 1L, person_id = 1L,
         observation_period_start_date = as.Date("2000-01-01"),
         observation_period_end_date = as.Date("2025-12-31"),
-        period_type_concept_id = 0
+        period_type_concept_id = 0L
       ),
       "cdm_source" = dplyr::tibble(
-        cdm_source_name = "test", cdm_version = NA
+        cdm_source_name = "test", cdm_version = NA_character_
       )
     ),
     cdmName = "mock"
@@ -78,14 +78,14 @@ test_that("test cdmFromTables", {
 
   # overlap between observation periods
   person <- dplyr::tibble(
-    person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
-    race_concept_id = 0, ethnicity_concept_id = 0
+    person_id = 1L, gender_concept_id = 0L, year_of_birth = 1990L,
+    race_concept_id = 0L, ethnicity_concept_id = 0L
   )
   observation_period <- dplyr::tibble(
-    observation_period_id = 1, person_id = 1,
+    observation_period_id = 1L, person_id = 1L,
     observation_period_start_date = as.Date(c("2000-01-01", "2020-01-01")),
     observation_period_end_date = as.Date(c("2025-12-31", "2020-01-01")),
-    period_type_concept_id = 0
+    period_type_concept_id = 0L
   )
   expect_error(cdm <- cdmFromTables(
     tables = list("person" = person, "observation_period" = observation_period),
@@ -94,14 +94,14 @@ test_that("test cdmFromTables", {
 
   # start before end date of observation periods
   person <- dplyr::tibble(
-    person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
-    race_concept_id = 0, ethnicity_concept_id = 0
+    person_id = 1L, gender_concept_id = 0L, year_of_birth = 1990L,
+    race_concept_id = 0L, ethnicity_concept_id = 0L
   )
   observation_period <- dplyr::tibble(
-    observation_period_id = 1, person_id = 1,
+    observation_period_id = 1L, person_id = 1L,
     observation_period_start_date = as.Date(c("2050-01-01", "2020-01-01")),
     observation_period_end_date = as.Date(c("2025-12-31", "2020-01-01")),
-    period_type_concept_id = 0
+    period_type_concept_id = 0L
   )
   expect_error(cdm <- cdmFromTables(
     tables = list("person" = person, "observation_period" = observation_period),
@@ -110,19 +110,19 @@ test_that("test cdmFromTables", {
 
   # no drug_exposure
   person <- dplyr::tibble(
-    person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
-    race_concept_id = 0, ethnicity_concept_id = 0
+    person_id = 1L, gender_concept_id = 0L, year_of_birth = 1990L,
+    race_concept_id = 0L, ethnicity_concept_id = 0L
   )
   observation_period <- dplyr::tibble(
-    observation_period_id = 1, person_id = 1,
+    observation_period_id = 1L, person_id = 1L,
     observation_period_start_date = as.Date(c("2000-01-01")),
     observation_period_end_date = as.Date(c("2025-12-31")),
-    period_type_concept_id = 0
+    period_type_concept_id = 0L
   )
   drug_exposure <- dplyr::tibble(
-    drug_exposure_id = 1,
-    person_id = 1,
-    drug_concept_id = 0,
+    drug_exposure_id = 1L,
+    person_id = 1L,
+    drug_concept_id = 0L,
     drug_exposure_start_date = as.Date("2020-01-01"),
     drug_exposure_end_date = as.Date("2020-01-01")
   )

@@ -30,14 +30,14 @@ test_that("bind a cohort_table", {
   cdm <- cdmFromTables(
     tables = list(
       "person" = dplyr::tibble(
-        person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
-        race_concept_id = 0, ethnicity_concept_id = 0
+        person_id = c(1L, 2L, 3L), gender_concept_id = 0L, year_of_birth = 1990L,
+        race_concept_id = 0L, ethnicity_concept_id = 0L
       ),
       "observation_period" = dplyr::tibble(
-        observation_period_id = 1:3, person_id = 1:3,
+        observation_period_id = c(1L, 2L, 3L), person_id = c(1L, 2L, 3L),
         observation_period_start_date = as.Date("2000-01-01"),
         observation_period_end_date = as.Date("2025-12-31"),
-        period_type_concept_id = 0
+        period_type_concept_id = 0L
       )
     ),
     cdmName = "mock",
@@ -113,14 +113,14 @@ test_that("bind a cohort_table", {
   cdm <- cdmFromTables(
     tables = list(
       "person" = dplyr::tibble(
-        person_id = c(1, 2, 3), gender_concept_id = 0, year_of_birth = 1990,
-        race_concept_id = 0, ethnicity_concept_id = 0
+        person_id = c(1L, 2L, 3L), gender_concept_id = 0L, year_of_birth = 1990L,
+        race_concept_id = 0L, ethnicity_concept_id = 0L
       ),
       "observation_period" = dplyr::tibble(
-        observation_period_id = 1:3, person_id = 1:3,
+        observation_period_id = c(1L, 2L, 3L), person_id = c(1L, 2L, 3L),
         observation_period_start_date = as.Date("2000-01-01"),
         observation_period_end_date = as.Date("2025-12-31"),
-        period_type_concept_id = 0
+        period_type_concept_id = 0L
       )
     ),
     cdmName = "mock",

@@ -4,12 +4,14 @@
 \alias{newOmopTable}
 \title{Create an omop table from a cdm table.}
 \usage{
-newOmopTable(table, version = "5.3")
+newOmopTable(table, version = "5.3", cast = FALSE)
 }
 \arguments{
 \item{table}{A cdm_table.}
 
 \item{version}{version of the cdm.}
+
+\item{cast}{Whether to cast columns to the correct type.}
 }
 \value{
 An omop_table object

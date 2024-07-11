@@ -18,14 +18,16 @@
 #'
 #' @param table A cdm_table.
 #' @param version version of the cdm.
+#' @param cast Whether to cast columns to the correct type.
 #'
 #' @return An achilles_table object
 #'
 #' @export
 #'
-newAchillesTable <- function(table, version = "5.3") {
+newAchillesTable <- function(table, version = "5.3", cast = FALSE) {
   # create the structure
   assertClass(table, class = "cdm_table")
+  assertLogical(cast, length = 1)
   table <- addClass(table, "achilles_table")
   name <- tableName(table)
 
@@ -35,8 +37,9 @@ newAchillesTable <- function(table, version = "5.3") {
   }
 
   cols <- achillesColumns(table = name, version = version)
-  checkColumnsCdm(table, name, col)
-  table <- castAchillesColumns(table, name, version)
+  checkColumnsCdm(table, name, cols)
+
+  if (cast) table <- castAchillesColumns(table, name, version)
 
   return(table)
 }
