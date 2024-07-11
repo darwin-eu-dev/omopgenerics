@@ -187,9 +187,8 @@ checkColumnsCdm <- function(table, nm, required, call = parent.frame()) {
   # check required
   x <- required[!required %in% columns]
   if (length(x) > 0) {
-    cli::cli_abort(
-      "{combine(x)} {verb(x)} not present in table {nm}", call = call
-    )
+    "{combine(x)} {verb(x)} not present in table {nm}" |>
+      cli::cli_abort(call = call)
   }
 
   return(invisible(TRUE))

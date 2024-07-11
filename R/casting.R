@@ -26,10 +26,10 @@ detectColsToCast <- function(table, cols) {
   colTypes <- table |>
     utils::head(1) |>
     dplyr::collect() |>
-    purrr::map(dplyr::type_sum) |>
+    lapply(dplyr::type_sum) |>
     lapply(assertClassification)
   vals <- intersect(names(colTypes), names(cols))
-  differentValues <- names(setdiff(cols[vals], colTypes[vals]))
+  differentValues <- vals[unlist(cols[vals]) != unlist(colTypes[vals])]
   colsToCast <- list(
     "new" = cols[differentValues], "old" = colTypes[differentValues])
   return(colsToCast)

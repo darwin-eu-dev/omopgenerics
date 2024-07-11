@@ -4,10 +4,12 @@
 \alias{newAchillesTable}
 \title{Create an achilles table from a cdm_table.}
 \usage{
-newAchillesTable(table)
+newAchillesTable(table, version = "5.3")
 }
 \arguments{
 \item{table}{A cdm_table.}
+
+\item{version}{version of the cdm.}
 }
 \value{
 An achilles_table object

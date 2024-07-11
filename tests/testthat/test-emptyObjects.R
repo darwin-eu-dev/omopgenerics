@@ -1,5 +1,5 @@
 
-test_that("you cna create empty objects",{
+test_that("you can create empty objects",{
 
   # cdm_reference
   expect_error(emptyCdmReference())

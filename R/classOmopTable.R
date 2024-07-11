@@ -17,12 +17,13 @@
 #' Create an omop table from a cdm table.
 #'
 #' @param table A cdm_table.
+#' @param version version of the cdm.
 #'
 #' @return An omop_table object
 #'
 #' @export
 #'
-newOmopTable <- function(table) {
+newOmopTable <- function(table, version = "5.3") {
   # create the structure
   assertClass(table, class = "cdm_table")
   table <- addClass(table, "omop_table")
@@ -33,9 +34,9 @@ newOmopTable <- function(table) {
     cli::cli_abort("{name} is not one of the omop cdm standard tables.")
   }
 
-  cols <- omopColumns(table = tableName(table))
+  cols <- omopColumns(table = tableName(table), version = version)
   checkColumnsCdm(table, name, cols)
-  table <- castOmopColumns(table, name)
+  table <- castOmopColumns(table, name, version)
 
   return(table)
 }
@@ -80,9 +81,10 @@ emptyOmopTable <- function(cdm, name) {
   return(cdm)
 }
 
-castOmopColumns <- function(table, name) {
+castOmopColumns <- function(table, name, version) {
   cols <- fieldsTables |>
     dplyr::filter(
+      grepl(.env$version, .data$cdm_version) &
       .data$type == "cdm_table" & .data$cdm_table_name == .env$name) |>
     dplyr::select("cdm_field_name", "cdm_datatype") |>
     dplyr::mutate("cdm_datatype" = dplyr::case_when(

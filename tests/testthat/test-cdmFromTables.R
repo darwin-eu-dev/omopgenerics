@@ -136,22 +136,22 @@ test_that("test cdmFromTables", {
   expect_false("drug_exposure" %in% names(cdm))
 
   person <- dplyr::tibble(
-    person_id = 1, gender_concept_id = 0, year_of_birth = 1990,
-    race_concept_id = 0, ethnicity_concept_id = 0
+    person_id = 1L, gender_concept_id = 0L, year_of_birth = 1990L,
+    race_concept_id = 0L, ethnicity_concept_id = 0L
   )
   observation_period <- dplyr::tibble(
-    observation_period_id = 1, person_id = 1,
+    observation_period_id = 1L, person_id = 1L,
     observation_period_start_date = as.Date(c("2000-01-01")),
     observation_period_end_date = as.Date(c("2025-12-31")),
-    period_type_concept_id = 0
+    period_type_concept_id = 0L
   )
   drug_exposure <- dplyr::tibble(
-    drug_exposure_id = 1,
-    person_id = 1,
-    drug_concept_id = 0,
+    drug_exposure_id = 1L,
+    person_id = 1L,
+    drug_concept_id = 0L,
     drug_exposure_start_date = as.Date("2020-01-01"),
     drug_exposure_end_date = as.Date("2020-01-01"),
-    drug_type_concept_id = 0
+    drug_type_concept_id = 0L
   )
   expect_no_warning(cdm <- cdmFromTables(
     tables = list(

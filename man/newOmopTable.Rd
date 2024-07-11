@@ -4,10 +4,12 @@
 \alias{newOmopTable}
 \title{Create an omop table from a cdm table.}
 \usage{
-newOmopTable(table)
+newOmopTable(table, version = "5.3")
 }
 \arguments{
 \item{table}{A cdm_table.}
+
+\item{version}{version of the cdm.}
 }
 \value{
 An omop_table object
