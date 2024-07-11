@@ -34,26 +34,27 @@ newConceptSetExpression <- function(x) {
   return(x)
 }
 
-constructConceptSetExpression <- function(x) {
+ constructConceptSetExpression <- function(x) {
 
-  class(x) <- c("conceptSetExpression", class(x)[which(class(x) != "conceptSetExpression")])
+   x <- x |> addClass("conceptSetExpression")
 
   return(x)
 }
 
-validateConceptSetExpression <- function(x) {
+validateConceptSetExpression <- function(x, call = parent.frame()) {
 
-  assertList(x, named = TRUE, class = c("tbl"))
+  assertList(x, named = TRUE, class = c("tbl"), call = call)
 
   for(i in seq_along(x)){
     assertTable(
       x = x[[i]], class = "data.frame",
-      columns = c("concept_id", "excluded", "descendants", "mapped")
+      columns = c("concept_id", "excluded", "descendants", "mapped"),
+      call = call
     )
-    assertNumeric(x[[i]]$concept_id, integerish = TRUE)
-    assertLogical(x[[i]]$excluded)
-    assertLogical(x[[i]]$descendants)
-    assertLogical(x[[i]]$mapped)
+    assertNumeric(x[[i]]$concept_id, integerish = TRUE, call = call)
+    assertLogical(x[[i]]$excluded, call = call)
+    assertLogical(x[[i]]$descendants, call = call)
+    assertLogical(x[[i]]$mapped, call = call)
   }
 
   return(x)

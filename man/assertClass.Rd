@@ -8,7 +8,7 @@ assertClass(
   x,
   class,
   length = NULL,
-  null = TRUE,
+  null = FALSE,
   all = FALSE,
   extra = TRUE,
   call = parent.frame(),

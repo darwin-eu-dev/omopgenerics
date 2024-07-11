@@ -38,18 +38,18 @@ constructCodelist <- function(x) {
   x |> addClass("codelist")
 }
 
-validateCodelist <- function(x) {
+validateCodelist <- function(codelist, call = parent.frame()) {
 
-  assertList(x, named = TRUE,
-             class = c("numeric", "integer", "integer64"))
+  assertList(codelist, named = TRUE,
+             class = c("numeric", "integer", "integer64"), call = call)
 
-  for (nm in names(x)) {
-    if (any(is.na(unique(x[[nm]])))) {
-      cli::cli_abort("`{nm}` must not contain NA.")
+  for (nm in names(codelist)) {
+    if (any(is.na(unique(codelist[[nm]])))) {
+      cli::cli_abort("`{nm}` must not contain NA.", call = call)
     }
   }
 
-  return(x)
+  return(codelist)
 }
 
 
