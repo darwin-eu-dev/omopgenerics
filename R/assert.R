@@ -395,7 +395,8 @@ assertNumeric <- function(x,
 
     # assert integerish
     if (integerish & base::length(xNoNa) > 0) {
-      err <- max(abs(xNoNa - round(xNoNa)))
+      xInt <- xNoNa[!is.infinite(xNoNa)]
+      err <- max(abs(xInt - round(xInt)))
       if (err > 0.0001) {
         c("!" = "{.strong `{nm}` is not integerish.}", msg) |>
           cli::cli_abort(call = call)
