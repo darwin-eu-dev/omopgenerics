@@ -74,10 +74,10 @@ print.codelist <- function(x, ...) {
       cli::cat_line(paste0("- ", names(x)[i], " (", length(x[[i]]), " codes)"))
     }
   } else {
-    for(i in seq_along(x[1:10])){
-      cli::cat_line(paste0("- ", names(x[1:10])[i], " (", length(x[[i]]), " codes)"))
+    for(i in seq_along(x[1:6])){
+      cli::cat_line(paste0("- ", names(x[1:6])[i], " (", length(x[[i]]), " codes)"))
     }
-    cli::cat_line(paste0("along with ", length(x)-10, " more codelists"))
+    cli::cat_line(paste0("along with ", length(x)-6, " more codelists"))
   }
   invisible(x)
 }
