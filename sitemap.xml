@@ -52,6 +52,8 @@
 <url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptyOmopTable.html</loc></url>
 <url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/emptySummarisedResult.html</loc></url>
 <url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/estimateTypeChoices.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/exportCodelist.html</loc></url>
+<url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/exportConceptSetExpression.html</loc></url>
 <url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/exportSummarisedResult.html</loc></url>
 <url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/getCohortId.html</loc></url>
 <url><loc>https://darwin-eu-dev.github.io/omopgenerics/reference/getCohortName.html</loc></url>
