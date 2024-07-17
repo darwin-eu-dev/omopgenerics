@@ -1,4 +1,4 @@
-test_that("multiplication works", {
+test_that("import concept set expression", {
   skip_if_not_installed("jsonlite")
 
   dir.create(cs_path <- file.path(tempdir(), omopgenerics::uniqueTableName()))
