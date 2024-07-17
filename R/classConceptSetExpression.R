@@ -31,9 +31,6 @@ newConceptSetExpression <- function(x) {
   # validate
   x <- validateConceptSetExpression(x)
 
-  # alphabetical order
-  x <- x[order(names(x))]
-
   return(x)
 }
 
@@ -59,6 +56,10 @@ validateConceptSetExpression <- function(x, call = parent.frame()) {
     assertLogical(x[[i]]$descendants, call = call)
     assertLogical(x[[i]]$mapped, call = call)
   }
+
+  # alphabetical order
+  x <- x[order(names(x))] |>
+    addClass("conceptSetExpression")
 
   return(x)
 }

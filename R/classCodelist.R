@@ -31,9 +31,6 @@ newCodelist <- function(x) {
   # validate
   x <- validateCodelist(x)
 
-  # alphabetical order
-  x <- x[order(names(x))]
-
   return(x)
 }
 
@@ -51,6 +48,10 @@ validateCodelist <- function(codelist, call = parent.frame()) {
       cli::cli_abort("`{nm}` must not contain NA.", call = call)
     }
   }
+
+  # alphabetical order
+  codelist <- codelist[order(names(codelist))] |>
+    addClass("codelist")
 
   return(codelist)
 }
