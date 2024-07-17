@@ -31,6 +31,9 @@ newConceptSetExpression <- function(x) {
   # validate
   x <- validateConceptSetExpression(x)
 
+  # alphabetical order
+  x <- x[order(names(x))]
+
   return(x)
 }
 

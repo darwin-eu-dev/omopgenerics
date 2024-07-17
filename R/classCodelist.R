@@ -31,6 +31,9 @@ newCodelist <- function(x) {
   # validate
   x <- validateCodelist(x)
 
+  # alphabetical order
+  x <- x[order(names(x))]
+
   return(x)
 }
 
