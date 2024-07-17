@@ -51,6 +51,7 @@ Depends:
 Suggests: 
     covr,
     knitr,
+    jsonlite,
     rmarkdown,
     testthat (>= 3.0.0)
 URL: https://darwin-eu-dev.github.io/omopgenerics/
