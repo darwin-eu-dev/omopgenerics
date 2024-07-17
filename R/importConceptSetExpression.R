@@ -21,7 +21,7 @@
 #'
 #' @return A concept set expression
 #' @export
-importConceptSetExpression <- function(path, type){
+importConceptSetExpression <- function(path, type = "json") {
 
   rlang::check_installed("jsonlite")
   if(type != "json"){

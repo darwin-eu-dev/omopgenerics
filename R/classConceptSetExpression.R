@@ -58,8 +58,10 @@ validateConceptSetExpression <- function(x, call = parent.frame()) {
   }
 
   # alphabetical order
+  if(length(x) > 0 ){
   x <- x[order(names(x))] |>
     addClass("conceptSetExpression")
+  }
 
   return(x)
 }

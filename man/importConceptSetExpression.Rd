@@ -4,7 +4,7 @@
 \alias{importConceptSetExpression}
 \title{Import a concept set expression.}
 \usage{
-importConceptSetExpression(path, type)
+importConceptSetExpression(path, type = "json")
 }
 \arguments{
 \item{path}{Path to where files will be created.}
