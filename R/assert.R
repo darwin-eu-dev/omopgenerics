@@ -394,7 +394,7 @@ assertNumeric <- function(x,
     }
 
     # assert integerish
-    if (integerish & base::length(xNoNa) > 0) {
+    if (integerish & base::length(xNoNa) > 0 & !all(is.infinite(xNoNa))) {
       xInt <- xNoNa[!is.infinite(xNoNa)]
       err <- max(abs(xInt - round(xInt)))
       if (err > 0.0001) {

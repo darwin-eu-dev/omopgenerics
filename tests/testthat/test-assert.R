@@ -218,6 +218,7 @@ test_that("test assertNumeric", {
   expect_no_error(assertNumeric(1L, integerish = TRUE))
   expect_no_error(assertNumeric(1, integerish = TRUE))
   expect_no_error(assertNumeric(c(1, Inf), integerish = TRUE))
+  expect_no_warning(assertNumeric(Inf, integerish = TRUE))
   expect_no_error(assertNumeric(c(1, NA), integerish = TRUE, na = TRUE))
   expect_error(assertNumeric(c(1, NA, 0.5), integerish = TRUE, na = TRUE))
 
