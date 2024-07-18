@@ -57,6 +57,12 @@ validateConceptSetExpression <- function(x, call = parent.frame()) {
     assertLogical(x[[i]]$mapped, call = call)
   }
 
+  # alphabetical order
+  if(length(x) > 0 ){
+  x <- x[order(names(x))] |>
+    addClass("conceptSetExpression")
+  }
+
   return(x)
 }
 
