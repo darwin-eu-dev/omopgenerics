@@ -65,7 +65,7 @@ reference:
 - subtitle: codelist utility functions
   desc: Utility functions for codelist objects
 - contents:
-  - matches("exportCodelist|exportConceptSetExpression|*.codelist|*.codelist_with_details|*.conceptSetExpression")
+  - matches("exportCodelist|exportConceptSetExpression|importCodelist|importConceptSetExpression|*.codelist|*.codelist_with_details|*.conceptSetExpression")
 - subtitle: Argument validation
   desc: To validate input arguments of the functions
 - contents:
