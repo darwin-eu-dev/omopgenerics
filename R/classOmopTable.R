@@ -17,12 +17,14 @@
 #' Create an omop table from a cdm table.
 #'
 #' @param table A cdm_table.
+#' @param version version of the cdm.
+#' @param cast Whether to cast columns to the correct type.
 #'
 #' @return An omop_table object
 #'
 #' @export
 #'
-newOmopTable <- function(table) {
+newOmopTable <- function(table, version = "5.3", cast = FALSE) {
   # create the structure
   assertClass(table, class = "cdm_table")
   table <- addClass(table, "omop_table")
@@ -33,8 +35,9 @@ newOmopTable <- function(table) {
     cli::cli_abort("{name} is not one of the omop cdm standard tables.")
   }
 
-  cols <- omopColumns(table = tableName(table))
+  cols <- omopColumns(table = tableName(table), version = version)
   checkColumnsCdm(table, name, cols)
+  if (cast) table <- castOmopColumns(table, name, version)
 
   return(table)
 }
@@ -77,4 +80,23 @@ emptyOmopTable <- function(cdm, name) {
   cdm <- insertTable(cdm = cdm, name = name, table = table, overwrite = FALSE)
   cdm[[name]] <- newOmopTable(cdm[[name]])
   return(cdm)
+}
+
+castOmopColumns <- function(table, name, version) {
+  cols <- fieldsTables |>
+    dplyr::filter(
+      grepl(.env$version, .data$cdm_version) &
+      .data$type == "cdm_table" & .data$cdm_table_name == .env$name) |>
+    dplyr::select("cdm_field_name", "cdm_datatype") |>
+    dplyr::mutate("cdm_datatype" = dplyr::case_when(
+      grepl("varchar", .data$cdm_datatype) ~ "character",
+      .data$cdm_datatype == "float" ~ "numeric",
+      .data$cdm_datatype == "datetime" ~ "date",
+      .default = .data$cdm_datatype
+    ))
+  cols <- cols |>
+    split(f = as.factor(cols$cdm_field_name)) |>
+    lapply(dplyr::pull, "cdm_datatype")
+  table <- castColumns(table, cols, name)
+  return(table)
 }

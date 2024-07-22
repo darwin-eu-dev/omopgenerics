@@ -132,10 +132,10 @@ validateCdmReference <- function(cdm, soft) {
   omopTables <- omopTables[omopTables %in% names(cdm)]
   for (nm in omopTables) {
     if (nm %in% c("person", "observation_period")) {
-      cdm[[nm]] <- newOmopTable(cdm[[nm]])
+      cdm[[nm]] <- newOmopTable(cdm[[nm]], version = cdmVersion(cdm), cast = !soft)
     } else {
       cdm[[nm]] <- tryCatch(
-        expr = {newOmopTable(cdm[[nm]])},
+        expr = {newOmopTable(cdm[[nm]], version = cdmVersion(cdm), cast = !soft)},
         error = function(e){
           cli::cli_warn(c(
             "{nm} table not included in cdm because:", as.character(e)
@@ -151,7 +151,7 @@ validateCdmReference <- function(cdm, soft) {
   achillesTables <- achillesTables[achillesTables %in% names(cdm)]
   for (nm in achillesTables) {
     cdm[[nm]] <- tryCatch(
-      expr = {newAchillesTable(cdm[[nm]])},
+      expr = {newAchillesTable(cdm[[nm]], version = cdmVersion(cdm), cast = !soft)},
       error = function(e){
         cli::cli_warn(c(
           "{nm} table not included in cdm because:", as.character(e)
@@ -187,9 +187,8 @@ checkColumnsCdm <- function(table, nm, required, call = parent.frame()) {
   # check required
   x <- required[!required %in% columns]
   if (length(x) > 0) {
-    cli::cli_abort(
-      "{combine(x)} {verb(x)} not present in table {nm}", call = call
-    )
+    "{combine(x)} {verb(x)} not present in table {nm}" |>
+      cli::cli_abort(call = call)
   }
 
   return(invisible(TRUE))
@@ -246,6 +245,7 @@ checkStartBeforeEndObservation <- function(x, call = parent.frame()) {
     )
   }
 }
+
 #' Get the name of a cdm_reference associated object
 #'
 #' @param x A cdm_reference or cdm_table object.
@@ -293,7 +293,6 @@ cdmName.cdm_reference <- function(x) {
 cdmName.cdm_table <- function(x) {
   x |> cdmReference() |> cdmName()
 }
-
 
 #' Get the version of a cdm_reference.
 #'
@@ -581,6 +580,9 @@ cdmSourceType <- function(cdm) {
     }
     if (remoteName %in% achillesTables()) {
       value <- value |> newAchillesTable()
+    }
+    if ("cohort_table" %in% class(value)) {
+      #value <- value |> castCohort()
     }
   }
 

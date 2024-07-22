@@ -17,14 +17,17 @@
 #' Create an achilles table from a cdm_table.
 #'
 #' @param table A cdm_table.
+#' @param version version of the cdm.
+#' @param cast Whether to cast columns to the correct type.
 #'
 #' @return An achilles_table object
 #'
 #' @export
 #'
-newAchillesTable <- function(table) {
+newAchillesTable <- function(table, version = "5.3", cast = FALSE) {
   # create the structure
   assertClass(table, class = "cdm_table")
+  assertLogical(cast, length = 1)
   table <- addClass(table, "achilles_table")
   name <- tableName(table)
 
@@ -33,8 +36,10 @@ newAchillesTable <- function(table) {
     cli::cli_abort("{name} is not one of the achilles omop cdm tables.")
   }
 
-  cols <- achillesColumns(table = name)
+  cols <- achillesColumns(table = name, version = version)
   checkColumnsCdm(table, name, cols)
+
+  if (cast) table <- castAchillesColumns(table, name, version)
 
   return(table)
 }
@@ -68,4 +73,23 @@ emptyAchillesTable <- function(cdm, name) {
   cdm <- insertTable(cdm = cdm, name = name, table = table, overwrite = FALSE)
   cdm[[name]] <- cdm[[name]] |> newAchillesTable()
   return(cdm)
+}
+
+castAchillesColumns <- function(table, name, version) {
+  cols <- fieldsTables |>
+    dplyr::filter(
+      grepl(.env$version, .data$cdm_version) &
+        .data$type == "achilles" & .data$cdm_table_name == .env$name) |>
+    dplyr::select("cdm_field_name", "cdm_datatype") |>
+    dplyr::mutate("cdm_datatype" = dplyr::case_when(
+      grepl("varchar", .data$cdm_datatype) ~ "character",
+      .data$cdm_datatype == "float" ~ "numeric",
+      .data$cdm_datatype == "datetime" ~ "date",
+      .default = .data$cdm_datatype
+    ))
+  cols <- cols |>
+    split(f = as.factor(cols$cdm_field_name)) |>
+    lapply(dplyr::pull, "cdm_datatype")
+  table <- castColumns(table, cols, name)
+  return(table)
 }
