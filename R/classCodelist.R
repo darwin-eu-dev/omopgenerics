@@ -49,6 +49,11 @@ validateCodelist <- function(codelist, call = parent.frame()) {
     }
   }
 
+  if (length(names(codelist)) != length(unique(names(codelist))))  {
+    cli::cli_abort("The names of the codelists cannot be identical.",
+                   call = call)
+  }
+
   # alphabetical order
   if(length(codelist) > 0 ){
   codelist <- codelist[order(names(codelist))] |>
