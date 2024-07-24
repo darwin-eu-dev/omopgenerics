@@ -36,6 +36,12 @@ test_that("test codelist works", {
                 "disease Y" = as.character(c(4,5)))
   expect_error(codes <- newCodelist(codes))
 
+  # codelist with identical names
+  codes_identical <- list(a = c(123),
+            a = c(123))
+
+  expect_error(newCodelist(codes_identical))
+
 
 })
 
