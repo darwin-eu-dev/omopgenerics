@@ -61,7 +61,7 @@ reference:
 - subtitle: summarised_result utility functions
   desc: Utility functions for summarised_result objects
 - contents:
-  - matches("exportSummarisedResult|estimateTypeChoices|resultColumns|*.summarised_result")
+  - matches("exportSummarisedResult|importSummarisedResult|estimateTypeChoices|resultColumns|*.summarised_result")
 - subtitle: codelist utility functions
   desc: Utility functions for codelist objects
 - contents:
