@@ -219,3 +219,57 @@ assertValidation <- function(validation, call = parent.frame()) {
   validation |>
     assertChoice(choices = c("error", "warning"), length = 1, call = call)
 }
+
+
+
+#' validateCdmArgument
+#'
+#' @param cdm A cdm_reference object
+#' @param checkClass TRUE to check the cdm class
+#' @param checkOverlapObservation TRUE to perform check on no overlap observation period
+#' @param checkStartBeforeEndObservation TRUE to perform check on correct observational start and end date
+#' @param validation How to perform validation: "error", "warning".
+#' @param call A call argument to pass to cli functions.
+#'
+#' @return A cdm_reference object
+#' @export
+#'
+validateCdmArgument <- function(cdm,
+                                checkClass = TRUE,
+                                checkOverlapObservation = TRUE,
+                                checkStartBeforeEndObservation = TRUE,
+                                validation = "error",
+                                call = parent.frame()) {
+  assertValidation(validation)
+  assertLogical(checkOverlapObservation, length = 1)
+  assertLogical(checkStartBeforeEndObservation, length = 1)
+  assertLogical(checkClass, length = 1)
+
+
+  # validate
+  if (isTRUE(checkClass)) {
+    # assert class
+    assertClass(cdm,
+                class = c("cdm_reference"),
+                all = TRUE,
+                call = call)
+
+  }
+  # not overlapping periods
+  if (isTRUE(checkOverlapObservation)){
+    checkOverlapObservation(cdm$observation_period)
+  }
+
+  # no start observation before end
+  if (isTRUE(checkStartBeforeEndObservation)){
+    checkStartBeforeEndObservation(cdm$observation_period)
+  }
+
+  return(invisible(cdm))
+
+
+
+}
+
+
+
