@@ -241,6 +241,22 @@ validateSummariseResult <- function(x) {
   # validate groupCount
   checkGroupCount(x)
 
+  # validate duplicates
+  dup <- x |>
+    dplyr::group_by(dplyr::across(!"estimate_value")) |>
+    dplyr::tally() |>
+    dplyr::filter(n > 2)
+  if (nrow(dup) > 0) {
+    cli::cli_abort(c(
+      "x" = "There are duplicated results with different estimate values.",
+      "!" = "Run the following to see which are",
+      "data |>",
+      " " = "dplyr::group_by(dplyr::across(!'estimate_value')) |>",
+      " " = "dplyr::tally() |>",
+      " " = "dplyr::filter(n > 2)"
+    ))
+  }
+
   return(x)
 }
 checkColumns <- function(x, resultName, call = parent.frame()) {
