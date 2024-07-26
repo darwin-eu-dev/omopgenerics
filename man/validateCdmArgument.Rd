@@ -6,17 +6,14 @@
 \usage{
 validateCdmArgument(
   cdm,
-  checkClass = TRUE,
-  checkOverlapObservation = TRUE,
-  checkStartBeforeEndObservation = TRUE,
+  checkOverlapObservation = FALSE,
+  checkStartBeforeEndObservation = FALSE,
   validation = "error",
   call = parent.frame()
 )
 }
 \arguments{
 \item{cdm}{A cdm_reference object}
-
-\item{checkClass}{TRUE to check the cdm class}
 
 \item{checkOverlapObservation}{TRUE to perform check on no overlap observation period}
 
