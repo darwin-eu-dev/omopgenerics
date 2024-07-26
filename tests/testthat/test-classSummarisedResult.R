@@ -284,6 +284,9 @@ test_that("test SummarisedResult object", {
   )
   expect_no_error(x |> newSummarisedResult())
 
+  y <- bind(x, x)
+  expect_identical(y, x)
+
 })
 
 test_that("validateNameLevel", {

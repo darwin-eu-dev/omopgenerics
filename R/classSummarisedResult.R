@@ -87,7 +87,7 @@ newSummarisedResult <- function(x, settings = attr(x, "settings")) {
 }
 
 constructSummarisedResult <- function(x, set, call = parent.frame()) {
-  x <- x |> dplyr::as_tibble()
+  x <- x |> dplyr::as_tibble() |> dplyr::distinct()
 
   if (!is.null(set)) {
     set <- set |> dplyr::as_tibble()
