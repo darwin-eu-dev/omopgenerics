@@ -52,19 +52,11 @@ test_that("test validateCdmArgument", {
       period_type_concept_id = 0L
     ))
 
+  class(cdm_object) <- c("cdm_reference")
+
   expect_no_error(
     validateCdmArgument(
       cdm_object,
-      checkClass = FALSE,
-      checkOverlapObservation = TRUE,
-      checkStartBeforeEndObservation = TRUE
-    )
-  )
-
-  expect_error(
-    validateCdmArgument(
-      cdm_object,
-      checkClass = TRUE,
       checkOverlapObservation = TRUE,
       checkStartBeforeEndObservation = TRUE
     )
@@ -77,11 +69,11 @@ test_that("test validateCdmArgument", {
       observation_period_end_date = c(as.Date("2025-12-31"),as.Date("2023-01-01")),
       period_type_concept_id = c(0L,0L)
     ))
+  class(cdm_object) <- c("cdm_reference")
 
   expect_error(
     validateCdmArgument(
       cdm_object,
-      checkClass = FALSE,
       checkOverlapObservation = TRUE,
       checkStartBeforeEndObservation = TRUE
     )
@@ -90,7 +82,6 @@ test_that("test validateCdmArgument", {
   expect_no_error(
     validateCdmArgument(
       cdm_object,
-      checkClass = FALSE,
       checkOverlapObservation = FALSE,
       checkStartBeforeEndObservation = FALSE
     )
