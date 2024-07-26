@@ -179,7 +179,7 @@ test_that("test SummarisedResult object", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
-  expect_error(x |> newSummarisedResult())
+  expect_true(x |> newSummarisedResult() |> nrow() == 1)
 
   x <- dplyr::tibble(
     "result_id" = c(1, 2),
@@ -265,7 +265,7 @@ test_that("test SummarisedResult object", {
     "additional_level" = "overall"
   )
   expect_no_error(x |> newSummarisedResult())
-  expect_error(x |> dplyr::union_all(x) |> newSummarisedResult())
+  expect_equal(x |> dplyr::union_all(x) |> newSummarisedResult(), x |> newSummarisedResult())
 
   x <- dplyr::tibble(
     "result_id" = 1L,
@@ -282,7 +282,7 @@ test_that("test SummarisedResult object", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
-  expect_no_error(x |> newSummarisedResult())
+  expect_no_error(x <- x |> newSummarisedResult())
 
   y <- bind(x, x)
   expect_identical(y, x)

@@ -199,7 +199,7 @@ test_that("bind summarised_result", {
 
   # if we bind the same summarised_result we get an error because number of
   # subjects is repeated
-  expect_error(new3 <- bind(res2, res2))
+  expect_equal(bind(res2, res2), res2)
 
   # repeated settings
   expect_no_error(new4 <- bind(res3, res5))
