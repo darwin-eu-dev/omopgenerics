@@ -214,4 +214,12 @@ test_that("bind summarised_result", {
   expect_identical(
     new5 |> settings() |> dplyr::pull("result_id") |> unique(), c(1L, 2L)
   )
+
+  # empty elements
+  expect_error(bind(NULL))
+  expect_no_error(bind(res3, emptySummarisedResult()))
+  expect_no_error(bind(res3, NULL))
+  # note we will still get an error if the first element is NULL
+  expect_error(bind(NULL, res3))
+
 })

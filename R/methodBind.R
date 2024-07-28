@@ -281,7 +281,8 @@ missingColumns <- function(cols, extra) {
 #'
 bind.summarised_result <- function(...) {
   # initial checks
-  results <- list(...)
+  results <- list(...) |>
+    vctrs::list_drop_empty()
   assertList(results, class = "summarised_result")
 
   settings <- lapply(results, settings) |>
