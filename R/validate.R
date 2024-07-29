@@ -83,10 +83,16 @@ validateCohortArgument <- function(cohort,
   assertClass(cohort, class = c("cohort_table", "cdm_table"), all = TRUE, call = call)
 
   if(is.na(tableName(cohort))){
-    cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
-                     "i" = "The cohort table must be a permanent table when working with databases.",
-                     "i" = "Use dplyr::compute(temporary = FALSE, ...) to create a permanent table from a temporary table."))
-  }
+    if(cdmSourceType(cdm) == "local"){
+      cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
+                       "i" = "Did you use insertTable() when adding the table to the cdm reference?"))
+
+    } else {
+      cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
+                       "i" = "The cohort table must be a permanent table when working with databases.",
+                       "i" = "Use dplyr::compute(temporary = FALSE, ...) to create a permanent table from a temporary table."))
+    }
+    }
 
   # columns
   notPresent <- cohortColumns("cohort")[!cohortColumns("cohort") %in% colnames(cohort)]

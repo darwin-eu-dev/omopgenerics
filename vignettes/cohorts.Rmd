@@ -177,7 +177,7 @@ asthma <- tibble(
   cohort_start_date = as.Date("2020-01-01"),
   cohort_end_date = as.Date("2020-01-10")
 )
-cdm$asthma <- asthma
+cdm <- insertTable(cdm, name = "asthma", table = asthma)
 cdm$asthma <- newCohortTable(cdm$asthma, 
                              cohortSetRef = tibble(cohort_definition_id = 1,
                                                    cohort_name = "asthma"))

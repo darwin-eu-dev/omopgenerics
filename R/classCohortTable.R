@@ -578,9 +578,15 @@ populateCohortSet <- function(table, cohortSetRef) {
   }
   cohortName <- tableName(table)
   if(is.na(cohortName)){
-    cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
-                     "i" = "The cohort table must be a permanent table when working with databases.",
-                     "i" = "Use dplyr::compute(temporary = FALSE, ...) to create a permanent table from a temporary table."))
+   if(cdmSourceType(cdm) == "local"){
+     cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
+                      "i" = "Did you use insertTable() when adding the table to the cdm reference?"))
+
+   } else {
+     cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
+                      "i" = "The cohort table must be a permanent table when working with databases.",
+                      "i" = "Use dplyr::compute(temporary = FALSE, ...) to create a permanent table from a temporary table."))
+   }
   }
   assertClass(cohortSetRef, "data.frame", null = TRUE)
   cohortSetRef <- dplyr::as_tibble(cohortSetRef)
