@@ -81,6 +81,13 @@ validateCohortArgument <- function(cohort,
   assertLogical(checkInObservation, length = 1)
 
   assertClass(cohort, class = c("cohort_table", "cdm_table"), all = TRUE, call = call)
+
+  if(is.na(tableName(cohort))){
+    cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
+                     "i" = "The cohort table must be a permanent table when working with databases.",
+                     "i" = "Use dplyr::compute(temporary = FALSE, ...) to create a permanent table from a temporary table."))
+  }
+
   # columns
   notPresent <- cohortColumns("cohort")[!cohortColumns("cohort") %in% colnames(cohort)]
   if (length(notPresent) > 0) {

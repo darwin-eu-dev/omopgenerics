@@ -577,6 +577,11 @@ populateCohortSet <- function(table, cohortSetRef) {
     cohortSetRef <- cohortSetRef |> dplyr::collect()
   }
   cohortName <- tableName(table)
+  if(is.na(cohortName)){
+    cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
+                     "i" = "The cohort table must be a permanent table when working with databases.",
+                     "i" = "Use dplyr::compute(temporary = FALSE, ...) to create a permanent table from a temporary table."))
+  }
   assertClass(cohortSetRef, "data.frame", null = TRUE)
   cohortSetRef <- dplyr::as_tibble(cohortSetRef)
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
