@@ -323,3 +323,27 @@ test_that("validateNameLevel", {
         nameColumn = "group_name", levelColumn = "group_level", sep = " &&& | and ", warn = TRUE)
   )
 })
+
+test_that("validate duplicates", {
+  x <- dplyr::tibble(
+    "result_id" = as.integer(1),
+    "cdm_name" = "cprd",
+    "result_type" = "summarised_characteristics",
+    "package_name" = "PatientProfiles",
+    "package_version" = "0.4.0",
+    "group_name" = "sex",
+    "group_level" = "male",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable_name" = "Age group",
+    "variable_level" = "10 to 50",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
+  expect_no_error(x |> newSummarisedResult())
+  sr <- dplyr::bind_rows(x, x |> dplyr::mutate(estimate_value = "6"))
+  expect_error(sr |> newSummarisedResult())
+})

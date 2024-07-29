@@ -245,7 +245,7 @@ validateSummariseResult <- function(x) {
   dup <- x |>
     dplyr::group_by(dplyr::across(!"estimate_value")) |>
     dplyr::tally() |>
-    dplyr::filter(n > 2)
+    dplyr::filter(n > 1)
   if (nrow(dup) > 0) {
     cli::cli_abort(c(
       "x" = "There are duplicated results with different estimate values.",
