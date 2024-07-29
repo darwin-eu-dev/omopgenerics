@@ -23,7 +23,7 @@ test_that("test validateCohortIdArgument", {
   expect_error(validateCohortIdArgument(1, cohort))
 })
 
-test_that("test validateCdmArgument", {
+test_that("test validateResultArguemnt", {
 
 
 
@@ -89,3 +89,44 @@ test_that("test validateCdmArgument", {
 
 
 })
+
+
+test_that("test validateResults", {
+
+  x <- dplyr::tibble(
+    "result_id" = as.integer(1),
+    "cdm_name" = "cprd",
+    "result_type" = "summarised_characteristics",
+    "package_name" = "PatientProfiles",
+    "package_version" = "0.4.0",
+    "group_name" = "sex",
+    "group_level" = "male",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable_name" = "Age group",
+    "variable_level" = "10 to 50",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
+
+
+
+  expect_no_error(x |>
+                    newSummarisedResult() |>
+                    validateResultArguemnt())
+
+  expect_error(x |>
+                 newSummarisedResult() |>
+                 validateResultArguemnt(packageName = "test"))
+
+  expect_no_error(x |>
+                 newSummarisedResult() |>
+                 validateResultArguemnt(packageName = "PatientProfiles"))
+
+
+
+}
+)
