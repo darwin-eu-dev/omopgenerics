@@ -34,17 +34,27 @@ importSummarisedResult <- function(path){
                          pattern = "\\.csv$",
                          full.names = FALSE)
 
-  allResults <- NULL
+  if(length(csvFiles) == 0){
+    cli::cli_warn("No csv files found in directory. Returning an empty summarised result.")
+    return(omopgenerics::emptySummarisedResult())
+    }
+
+  allResults <- list()
+  allResults[["empty"]] <- omopgenerics::emptySummarisedResult()
   for(i in seq_along(csvFiles)){
     allResults[[i]] <- readr::read_csv(csvFiles[[i]],
                                        col_types = c(.default = "c",
                                                      result_id = "integer"),
                                        show_col_types = FALSE)
+
+
     if(isFALSE(setequal(sort(colnames(allResults[[i]])), sort(resultColumns())))){
-     cli::cli_abort("{csvFileNames[[i]]} does not have summarised result columns")
+     cli::cli_warn("{csvFileNames[[i]]} does not have summarised result columns and so was omitted")
+      allResults[[i]] <- omopgenerics::emptySummarisedResult()
+      } else {
+      allResults[[i]] <- newSummarisedResult(allResults[[i]])
     }
 
-    allResults[[i]] <- newSummarisedResult(allResults[[i]])
   }
   allResults <- bind(allResults)
 
