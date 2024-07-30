@@ -61,15 +61,16 @@ test_that("import summarised result", {
  results_imported <- importSummarisedResult(path = cs_path)
  expect_identical(results_original,results_imported)
 
- # csv in wrong format
- expect_warning(importSummarisedResult(path = cs_path))
  # empty folder
  dir.create(cs_path_2 <- file.path(tempdir(), omopgenerics::uniqueTableName()))
- expect_warning(importSummarisedResult(path = cs_path_2))
+ expect_warning(result <- importSummarisedResult(path = cs_path_2))
+ expect_identical(result, emptySummarisedResult())
 
  # expected errors
  expect_error(importSummarisedResult(path = "not a path"))
- readr::write_csv(cars, file = paste0(cs_path, "/cars.csv"))
+ # csv in wrong format
+ readr::write_csv(cars, file = paste0(cs_path_2, "/cars.csv"))
+ expect_warning(expect_warning(importSummarisedResult(path = cs_path_2)))
 
 
  })
