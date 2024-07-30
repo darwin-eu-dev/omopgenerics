@@ -22,3 +22,23 @@ test_that("test validateCohortIdArgument", {
   expect_identical(validateCohortIdArgument(c(4L, 2L), cohort), c(4L, 2L))
   expect_error(validateCohortIdArgument(1, cohort))
 })
+
+
+test_that("test validateWindowArgument", {
+
+  window <- c(0, 1)
+  expect_no_error(validateWindowArgument(window))
+  window <- list(c(0, 1), c(2, 3))
+  expect_no_error(validateWindowArgument(window))
+  window <- list(c("a", 1))
+  expect_error(validateWindowArgument(window))
+  window <- list("window" = c(0, 1), "window2" = c(-1, 1))
+  expect_no_error(validateWindowArgument(window))
+  window <- list(c(0,-1))
+  expect_error(validateWindowArgument(window))
+  window <- list(c(-Inf,-Inf))
+  expect_error(validateWindowArgument(window))
+  window <- list(c(Inf, Inf))
+  expect_error(validateWindowArgument(window))
+
+})

@@ -225,16 +225,13 @@ assertValidation <- function(validation, call = parent.frame()) {
 #' validateWindowArgument
 #'
 #' @param window time window
-#' @param validation How to perform validation: "error", "warning".
 #' @param call A call argument to pass to cli functions.
 #'
 #' @return time window
 #' @export
 #'
 validateWindowArgument <- function(window,
-                                   validation = "error",
                                    call = parent.frame()) {
-  assertValidation(validation)
 
   if (!is.list(window)) {
     window <- list(window)
@@ -300,14 +297,15 @@ getWindowNames <- function(window) {
   invisible(windowNames)
 }
 
+#' @noRd
 assertWindowName <- function(window, call = parent.frame()) {
   names(window) <- getWindowNames(window)
   lower <- lapply(window, function(x) {
     x[1]
-  }) %>% unlist()
+  }) |> unlist()
   upper <- lapply(window, function(x) {
     x[2]
-  }) %>% unlist()
+  }) |> unlist()
 
   if (any(lower > upper)) {
     cli::cli_abort("First element in window must be smaller or equal to

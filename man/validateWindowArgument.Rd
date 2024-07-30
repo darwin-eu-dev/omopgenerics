@@ -4,12 +4,10 @@
 \alias{validateWindowArgument}
 \title{validateWindowArgument}
 \usage{
-validateWindowArgument(window, validation = "error", call = parent.frame())
+validateWindowArgument(window, call = parent.frame())
 }
 \arguments{
 \item{window}{time window}
-
-\item{validation}{How to perform validation: "error", "warning".}
 
 \item{call}{A call argument to pass to cli functions.}
 }
