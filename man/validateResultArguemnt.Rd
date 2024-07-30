@@ -4,21 +4,14 @@
 \alias{validateResultArguemnt}
 \title{validateResultArguemnt}
 \usage{
-validateResultArguemnt(
-  result,
-  packageName = NULL,
-  validation = "error",
-  call = parent.frame()
-)
+validateResultArguemnt(result, validation = "error", call = parent.frame())
 }
 \arguments{
 \item{result}{summarise result object to validate}
 
-\item{packageName}{name of the package the result from, if NULL ignore.}
-
 \item{validation}{message to return}
 
-\item{call}{}
+\item{call}{parent.frame}
 }
 \value{
 summarise result object

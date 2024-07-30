@@ -118,14 +118,6 @@ test_that("test validateResults", {
                     newSummarisedResult() |>
                     validateResultArguemnt())
 
-  expect_error(x |>
-                 newSummarisedResult() |>
-                 validateResultArguemnt(packageName = "test"))
-
-  expect_no_error(x |>
-                 newSummarisedResult() |>
-                 validateResultArguemnt(packageName = "PatientProfiles"))
-
 
 
 }

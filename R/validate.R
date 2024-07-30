@@ -274,7 +274,6 @@ validateCdmArgument <- function(cdm,
 #' validateResultArguemnt
 #'
 #' @param result summarise result object to validate
-#' @param packageName name of the package the result from, if NULL ignore.
 #' @param validation message to return
 #' @param call parent.frame
 #'
@@ -282,29 +281,17 @@ validateCdmArgument <- function(cdm,
 #' @export
 #'
 validateResultArguemnt <- function(result,
-                                   packageName = NULL,
                                    validation = "error",
                                    call = parent.frame()) {
   assertValidation(validation, call = parent.frame())
   assertTable(result, call = parent.frame())
 
-  assertCharacter(packageName, null = TRUE, call = parent.frame())
-
   result <- validateSummariseResult(result)
-
-  if (!is.null(packageName)) {
-    if (!isTRUE(settings(result)$package_name == packageName)) {
-      cli::cli_abort(
-        "The package name in the settings
-                     of the result input are different to {packageName}!"
-      )
-    }
-
-  }
 
   return(invisible(result))
 
-}
+  }
+
 
 
 
