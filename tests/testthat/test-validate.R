@@ -22,3 +22,26 @@ test_that("test validateCohortIdArgument", {
   expect_identical(validateCohortIdArgument(c(4L, 2L), cohort), c(4L, 2L))
   expect_error(validateCohortIdArgument(1, cohort))
 })
+
+
+
+test_that("test validateAgeGroup", {
+  #test list
+  ageGroup = c(0, 18)
+
+  expect_error(validateAgeGroupArgument(ageGroup))
+  ageGroup = list(c(0, 18))
+  expect_no_error(validateAgeGroupArgument(ageGroup))
+
+  #test overlap
+  ageGroup = list(c(0, 18), c(16, 20))
+  expect_error(validateAgeGroupArgument(ageGroup, overlap = FALSE))
+  expect_no_error(validateAgeGroupArgument(ageGroup, overlap = TRUE))
+
+  #test order
+  ageGroup = list(c(19, 18), c(21, 20))
+  expect_error(validateAgeGroupArgument(ageGroup, overlap = FALSE))
+
+
+
+})
