@@ -294,9 +294,9 @@ checkCategory <-
     # built tibble
     result <- lapply(category, function(x) {
       dplyr::tibble(lower_bound = x[1], upper_bound = x[2])
-    }) %>%
-      dplyr::bind_rows() %>%
-      dplyr::mutate(category_label = names(.env$category)) %>%
+    }) |>
+      dplyr::bind_rows() |>
+      dplyr::mutate(category_label = names(.env$category)) |>
       dplyr::mutate(
         category_label = dplyr::if_else(
           .data$category_label == "",
@@ -311,7 +311,7 @@ checkCategory <-
           ),
           .data$category_label
         )
-      ) %>%
+      ) |>
       dplyr::arrange(.data$lower_bound)
 
     # check overlap
