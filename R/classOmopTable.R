@@ -26,7 +26,8 @@
 #'
 newOmopTable <- function(table, version = "5.3", cast = FALSE) {
   # create the structure
-   assertClass(table, class = "cdm_table")
+   assertClass(table, class = "cdm_table",
+               msg = "table must be a cdm_table")
    table <- addClass(table, "omop_table")
    name <- attr(table, "tbl_name")
 
