@@ -26,16 +26,19 @@
 #'
 newOmopTable <- function(table, version = "5.3", cast = FALSE) {
   # create the structure
-  assertClass(table, class = "cdm_table")
-  table <- addClass(table, "omop_table")
-  name <- tableName(table)
+   assertClass(table, class = "cdm_table")
+   table <- addClass(table, "omop_table")
+   name <- attr(table, "tbl_name")
 
   # validation
-  if (!tableName(table) %in% omopTables()) {
+  if (!attr(table, "tbl_name") %in% tableChoice(version = version, type = "cdm_table")) {
     cli::cli_abort("{name} is not one of the omop cdm standard tables.")
   }
 
-  cols <- omopColumns(table = tableName(table), version = version)
+  cols <- getColumns(table = attr(table, "tbl_name"),
+                     version = version,
+                     type = "cdm_table",
+                     required = TRUE)
   checkColumnsCdm(table, name, cols)
   if (cast) table <- castOmopColumns(table, name, version)
 
