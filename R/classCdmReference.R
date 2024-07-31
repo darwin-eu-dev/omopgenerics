@@ -852,7 +852,8 @@ achillesColumns <- function(table, required = TRUE, version = "5.3") {
 }
 
 assertVersion <- function(version, call = parent.frame()) {
-  assertChoice(x = version, choices = c("5.3", "5.4"), call = call)
+  assertChoice(x = version, choices = c("5.3", "5.4"), call = call,
+               msg = "`version` must be a choice between 5.3 and 5.4; it can not contain NA; it can not be NULL.")
 }
 assertTableName <- function(table, version, type, call = parent.frame()) {
   assertChoice(x = table, choices = tableChoice(version, type), call = call)
