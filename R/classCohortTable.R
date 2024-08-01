@@ -577,6 +577,9 @@ populateCohortSet <- function(table, cohortSetRef) {
     cohortSetRef <- cohortSetRef |> dplyr::collect()
   }
   cohortName <- tableName(table)
+  if(is.na(cohortName)){
+    missingCohortTableNameError(cdm, validation = "error")
+  }
   assertClass(cohortSetRef, "data.frame", null = TRUE)
   cohortSetRef <- dplyr::as_tibble(cohortSetRef)
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
@@ -688,4 +691,34 @@ getEmptyField <- function(datatype) {
     "logical" = logical()
   )
   return(empty)
+}
+
+missingCohortTableNameError <- function(cdm, validation = "error"){
+
+if(validation == "error"){
+  if(cdmSourceType(cdm) == "local"){
+    cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
+                     "i" = "Did you use insertTable() when adding the table to the cdm reference?"))
+
+  } else {
+    cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
+                     "i" = "The cohort table must be a permanent table when working with databases.",
+                     "i" = "Use dplyr::compute(temporary = FALSE, ...) to create a permanent table from a temporary table."))
+  }
+} else if (validation == "warning"){
+  if(cdmSourceType(cdm) == "local"){
+    cli::cli_warn(c("Table name for cohort could not be inferred.",
+                     "i" = "Did you use insertTable() when adding the table to the cdm reference?"))
+
+  } else {
+    cli::cli_warn(c("Table name for cohort could not be inferred.",
+                     "i" = "The cohort table must be a permanent table when working with databases.",
+                     "i" = "Use dplyr::compute(temporary = FALSE, ...) to create a permanent table from a temporary table."))
+  }
+} else {
+
+  return(invisible())
+}
+
+
 }

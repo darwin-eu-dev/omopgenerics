@@ -81,6 +81,11 @@ validateCohortArgument <- function(cohort,
   assertLogical(checkInObservation, length = 1)
 
   assertClass(cohort, class = c("cohort_table", "cdm_table"), all = TRUE, call = call)
+
+  if(is.na(tableName(cohort))){
+    missingCohortTableNameError(cdm, validation = validation)
+    }
+
   # columns
   notPresent <- cohortColumns("cohort")[!cohortColumns("cohort") %in% colnames(cohort)]
   if (length(notPresent) > 0) {
