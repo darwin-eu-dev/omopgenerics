@@ -62,6 +62,9 @@ test_that("import summarised result", {
  expect_identical(results_original,results_imported)
 
 
+ expect_no_error(res_1_imported <- importSummarisedResult(path = here::here(cs_path, "/result_1.csv")))
+ expect_identical(res_1, res_1_imported)
+
  # expected errors
  expect_error(importSummarisedResult(path = "not a path"))
  readr::write_csv(cars, file = paste0(cs_path, "/cars.csv"))

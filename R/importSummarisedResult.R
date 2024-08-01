@@ -23,16 +23,31 @@
 #'
 importSummarisedResult <- function(path){
   rlang::check_installed("readr")
-  if(!dir.exists(path)){
-    cli::cli_abort(c("x" = "Given path does not exist"))
+
+  if(stringr::str_sub(path, -4, -1) == ".csv"){
+    isDir <- FALSE
+    if(!file.exists(path)){
+      cli::cli_abort(c("x" = "Given file does not exist"))
+    }
+  } else {
+    isDir <- TRUE
+    if(!dir.exists(path)){
+      cli::cli_abort(c("x" = "Given path does not exist"))
+    }
   }
 
+
+  if(isDir){
   csvFiles <- list.files(path,
                           pattern = "\\.csv$",
                           full.names = TRUE)
   csvFileNames <- list.files(path,
                          pattern = "\\.csv$",
                          full.names = FALSE)
+  } else {
+    csvFiles <- path
+    csvFileNames <- basename(path)
+  }
 
   allResults <- NULL
   for(i in seq_along(csvFiles)){
