@@ -33,6 +33,17 @@ test_that("test validateAgeGroup", {
   ageGroup = list(c(0, 18))
   expect_no_error(validateAgeGroupArgument(ageGroup))
 
+  #test name
+  ageGroup = validateAgeGroupArgument(ageGroup)
+
+  expect_true(names(ageGroup) == "age_group")
+
+  # name multiple group
+
+  ageGroup = list(list(c(0, 19)), list(c(0, 18)))
+  ageGroup = validateAgeGroupArgument(ageGroup)
+  expect_true(all(names(ageGroup) == c("age_group_1", "age_group_2")))
+
   #test overlap
   ageGroup = list(c(0, 18), c(16, 20))
   expect_error(validateAgeGroupArgument(ageGroup, overlap = FALSE))
@@ -41,6 +52,8 @@ test_that("test validateAgeGroup", {
   #test order
   ageGroup = list(c(19, 18), c(21, 20))
   expect_error(validateAgeGroupArgument(ageGroup, overlap = FALSE))
+
+
 
 
 
