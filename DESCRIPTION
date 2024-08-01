@@ -50,6 +50,7 @@ Depends:
     R (>= 4.1)
 Suggests: 
     covr,
+    here,
     knitr,
     jsonlite,
     readr,
