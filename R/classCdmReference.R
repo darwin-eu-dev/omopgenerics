@@ -107,13 +107,15 @@ constructCdmReference <- function(tables, cdmName, cdmVersion, cdmSource) {
 }
 validateCdmReference <- function(cdm, soft) {
   # assert version
-  assertChoice(cdmVersion(cdm), c("5.3", "5.4"), length = 1)
+  version <- cdmVersion(cdm)
+  assertChoice(version, c("5.3", "5.4"), length = 1)
 
   # assert source
   assertClass(cdmSource(cdm), "cdm_source")
 
   # assert lowercase names
-  x <- names(cdm)[names(cdm) != tolower(names(cdm))]
+  xNames <- names(cdm)
+  x <- xNames[xNames != tolower(xNames)]
   if (length(x) > 0) {
     cli::cli_abort(
       "table names should be lower case; {combine(x)} {verb(x)} not."
@@ -122,20 +124,20 @@ validateCdmReference <- function(cdm, soft) {
 
   # assert compulsory tables
   compulsoryTables <- c("person", "observation_period")
-  x <- compulsoryTables[!compulsoryTables %in% names(cdm)]
+  x <- compulsoryTables[!compulsoryTables %in% xNames]
   if (length(x) > 0) {
     cli::cli_abort("{combine(x)} {verb(x)} not included in the cdm object")
   }
 
   # validate omop tables
-  omopTables <- omopTables(version = cdmVersion(cdm))
-  omopTables <- omopTables[omopTables %in% names(cdm)]
+  omopTables <- omopTables(version = version)
+  omopTables <- omopTables[omopTables %in% xNames]
   for (nm in omopTables) {
     if (nm %in% c("person", "observation_period")) {
-      cdm[[nm]] <- newOmopTable(cdm[[nm]], version = cdmVersion(cdm), cast = !soft)
+      cdm[[nm]] <- newOmopTable(cdm[[nm]], version = version, cast = !soft)
     } else {
       cdm[[nm]] <- tryCatch(
-        expr = {newOmopTable(cdm[[nm]], version = cdmVersion(cdm), cast = !soft)},
+        expr = {newOmopTable(cdm[[nm]], version = version, cast = !soft)},
         error = function(e){
           cli::cli_warn(c(
             "{nm} table not included in cdm because:", as.character(e)
@@ -147,11 +149,11 @@ validateCdmReference <- function(cdm, soft) {
   }
 
   # validate achilles tables
-  achillesTables <- achillesTables(version = cdmVersion(cdm))
-  achillesTables <- achillesTables[achillesTables %in% names(cdm)]
+  achillesTables <- achillesTables(version = version)
+  achillesTables <- achillesTables[achillesTables %in% xNames]
   for (nm in achillesTables) {
     cdm[[nm]] <- tryCatch(
-      expr = {newAchillesTable(cdm[[nm]], version = cdmVersion(cdm), cast = !soft)},
+      expr = {newAchillesTable(cdm[[nm]], version = version, cast = !soft)},
       error = function(e){
         cli::cli_warn(c(
           "{nm} table not included in cdm because:", as.character(e)
@@ -852,7 +854,8 @@ achillesColumns <- function(table, required = TRUE, version = "5.3") {
 }
 
 assertVersion <- function(version, call = parent.frame()) {
-  assertChoice(x = version, choices = c("5.3", "5.4"), call = call)
+  assertChoice(x = version, choices = c("5.3", "5.4"), call = call,
+               msg = "`version` must be a choice between 5.3 and 5.4; it can not contain NA; it can not be NULL.")
 }
 assertTableName <- function(table, version, type, call = parent.frame()) {
   assertChoice(x = table, choices = tableChoice(version, type), call = call)
