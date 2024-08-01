@@ -219,3 +219,80 @@ assertValidation <- function(validation, call = parent.frame()) {
   validation |>
     assertChoice(choices = c("error", "warning"), length = 1, call = call)
 }
+
+
+
+#' validateCdmArgument
+#'
+#' @param cdm A cdm_reference object
+#' @param checkOverlapObservation TRUE to perform check on no overlap observation period
+#' @param checkStartBeforeEndObservation TRUE to perform check on correct observational start and end date
+#' @param validation How to perform validation: "error", "warning".
+#' @param call A call argument to pass to cli functions.
+#'
+#' @return A cdm_reference object
+#' @export
+#'
+validateCdmArgument <- function(cdm,
+                                checkOverlapObservation = FALSE,
+                                checkStartBeforeEndObservation = FALSE,
+                                validation = "error",
+                                call = parent.frame()) {
+  assertValidation(validation, call = parent.frame())
+  assertLogical(checkOverlapObservation,
+                length = 1,
+                call = parent.frame())
+  assertLogical(checkStartBeforeEndObservation,
+                length = 1,
+                call = parent.frame())
+
+
+  # validate
+    # assert class
+    assertClass(cdm,
+                class = c("cdm_reference"),
+                all = TRUE,
+                call = call)
+
+  # not overlapping periods
+  if (isTRUE(checkOverlapObservation)){
+    checkOverlapObservation(cdm$observation_period)
+  }
+
+  # no start observation before end
+  if (isTRUE(checkStartBeforeEndObservation)){
+    checkStartBeforeEndObservation(cdm$observation_period)
+  }
+
+  return(invisible(cdm))
+
+
+
+}
+
+
+#' validateResultArguemnt
+#'
+#' @param result summarise result object to validate
+#' @param validation message to return
+#' @param call parent.frame
+#'
+#' @return summarise result object
+#' @export
+#'
+validateResultArguemnt <- function(result,
+                                   validation = "error",
+                                   call = parent.frame()) {
+  assertValidation(validation, call = parent.frame())
+  assertTable(result, call = parent.frame())
+
+  result <- validateSummariseResult(result)
+
+  return(invisible(result))
+
+  }
+
+
+
+
+
