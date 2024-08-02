@@ -7,7 +7,8 @@
 importSummarisedResult(path)
 }
 \arguments{
-\item{path}{Path to directory with summarised result files.}
+\item{path}{Path to directory with CSV files containing summarised results or
+to a specific CSV file with a summarised result.}
 }
 \value{
 A summarised result

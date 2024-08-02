@@ -16,13 +16,18 @@
 
 #' Import a set of summarised results.
 #'
-#' @param path Path to directory with summarised result files.
+#' @param path Path to directory with CSV files containing summarised results or
+#' to a specific CSV file with a summarised result.
+#'
 #'
 #' @return A summarised result
 #' @export
 #'
 importSummarisedResult <- function(path){
   rlang::check_installed("readr")
+
+  assertCharacter(path, length = 1,
+                  msg = "Only a single path can be specified")
 
   if(stringr::str_sub(path, -4, -1) == ".csv"){
     isDir <- FALSE

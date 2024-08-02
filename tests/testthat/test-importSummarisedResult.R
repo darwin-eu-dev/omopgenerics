@@ -61,11 +61,17 @@ test_that("import summarised result", {
  results_imported <- importSummarisedResult(path = cs_path)
  expect_identical(results_original,results_imported)
 
-
+ # import one specific file
  expect_no_error(res_1_imported <- importSummarisedResult(path = here::here(cs_path, "/result_1.csv")))
  expect_identical(res_1, res_1_imported)
 
  # expected errors
+ # error if we try to read mutliple specified csvs
+ expect_error(
+   results_imported <- importSummarisedResult(path =
+                                                c(here::here(cs_path, "/result_1.csv"),
+                                                  here::here(cs_path, "/result_2.csv")))
+ )
  expect_error(importSummarisedResult(path = "not a path"))
  readr::write_csv(cars, file = paste0(cs_path, "/cars.csv"))
  expect_error(expect_warning(importSummarisedResult(path = cs_path)))
