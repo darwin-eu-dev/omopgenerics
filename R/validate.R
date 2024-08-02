@@ -249,7 +249,7 @@ validateAgeGroupArgument <- function(ageGroup,
 
   if (!isTRUE(multipleAgeGroup)) {
 
-    if (class(ageGroup[[2]]) == "list"){
+    if (inherits(ageGroup[[2]],"list")){
       cli::cli_abort("Multiple age group are not allowed")
     }
 
