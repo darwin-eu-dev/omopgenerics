@@ -58,6 +58,6 @@ funToCast <- function(x) {
   x[x == "character"] <- "as.character"
   x[x == "date"] <- "as.Date"
   x[x == "numeric"] <- "as.numeric"
-  x[x == "logical"] <- "as.logicla"
+  x[x == "logical"] <- "as.logical"
   return(x)
 }

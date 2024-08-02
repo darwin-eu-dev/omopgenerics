@@ -214,4 +214,18 @@ test_that("bind summarised_result", {
   expect_identical(
     new5 |> settings() |> dplyr::pull("result_id") |> unique(), c(1L, 2L)
   )
+
+  # empty elements
+  expect_no_error(bind(NULL))
+  expect_no_error(bind(res3, emptySummarisedResult()))
+  expect_no_error(bind(res3, NULL))
+  expect_no_error(bind(NULL, res3))
+  expect_no_error(bind(list(NULL, res3)))
+  expect_no_error(bind(list(res3, NULL)))
+  expect_no_error(bind(NULL, list(NULL, res3)))
+  expect_no_error(bind(NULL, list(res3, NULL)))
+  # do we want this to work?
+  expect_error(bind(list(NULL, res3), NULL))
+  expect_error(bind(list(res3, NULL), NULL))
+
 })

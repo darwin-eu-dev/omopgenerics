@@ -24,7 +24,6 @@ test_that("test validateCohortIdArgument", {
 })
 
 
-
 test_that("test validateAgeGroup", {
   #test list
   ageGroup = c(0, 18)
@@ -68,3 +67,104 @@ test_that("test validateAgeGroup", {
 
 
 })
+
+test_that("test validateResultArguemnt", {
+
+
+
+  cdm_object <- 1
+  class(cdm_object) <- c("cdm_reference")
+  expect_no_error(
+    validateCdmArgument(
+      cdm_object,
+      checkOverlapObservation = FALSE,
+      checkStartBeforeEndObservation = FALSE
+    )
+  )
+  expect_error(
+    validateCdmArgument(
+      cdm_object,
+      checkOverlapObservation = TRUE,
+      checkStartBeforeEndObservation = TRUE
+    )
+  )
+
+  cdm_object <- list(
+    "observation_period" = dplyr::tibble(
+      observation_period_id = 1L, person_id = 1L,
+      observation_period_start_date = as.Date("2000-01-01"),
+      observation_period_end_date = as.Date("2025-12-31"),
+      period_type_concept_id = 0L
+    ))
+
+  class(cdm_object) <- c("cdm_reference")
+
+  expect_no_error(
+    validateCdmArgument(
+      cdm_object,
+      checkOverlapObservation = TRUE,
+      checkStartBeforeEndObservation = TRUE
+    )
+  )
+
+  cdm_object <- list(
+    "observation_period" = dplyr::tibble(
+      observation_period_id = c(1L,1L), person_id = c(1L,1L),
+      observation_period_start_date = c(as.Date("2000-01-01"),as.Date("2000-01-01")),
+      observation_period_end_date = c(as.Date("2025-12-31"),as.Date("2023-01-01")),
+      period_type_concept_id = c(0L,0L)
+    ))
+  class(cdm_object) <- c("cdm_reference")
+
+  expect_error(
+    validateCdmArgument(
+      cdm_object,
+      checkOverlapObservation = TRUE,
+      checkStartBeforeEndObservation = TRUE
+    )
+  )
+
+  expect_no_error(
+    validateCdmArgument(
+      cdm_object,
+      checkOverlapObservation = FALSE,
+      checkStartBeforeEndObservation = FALSE
+    )
+  )
+
+
+})
+
+
+test_that("test validateResults", {
+
+  x <- dplyr::tibble(
+    "result_id" = as.integer(1),
+    "cdm_name" = "cprd",
+    "result_type" = "summarised_characteristics",
+    "package_name" = "PatientProfiles",
+    "package_version" = "0.4.0",
+    "group_name" = "sex",
+    "group_level" = "male",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable_name" = "Age group",
+    "variable_level" = "10 to 50",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
+
+
+
+  expect_no_error(x |>
+                    newSummarisedResult() |>
+                    validateResultArguemnt())
+
+
+
+}
+)
+
