@@ -76,7 +76,8 @@ bind <- function(...) {
 #'
 bind.cohort_table <- function(..., name) {
   # initial checks
-  cohorts <- list(...)
+  cohorts <- list(...) |>
+    vctrs::list_drop_empty()
   assertList(cohorts, class = "cohort_table")
   assertCharacter(name, length = 1)
 
@@ -281,7 +282,8 @@ missingColumns <- function(cols, extra) {
 #'
 bind.summarised_result <- function(...) {
   # initial checks
-  results <- list(...)
+  results <- list(...) |>
+    vctrs::list_drop_empty()
   assertList(results, class = "summarised_result")
 
   settings <- lapply(results, settings) |>
@@ -314,6 +316,17 @@ bind.summarised_result <- function(...) {
 }
 
 #' @export
+bind.NULL <- function(...) {
+  x <- list(...) |>
+    vctrs::list_drop_empty()
+  if (length(x) == 0) return(NULL)
+  bind(x)
+}
+
+#' @export
 bind.list <- function(...) {
+  if (length(list(...)) > 1) {
+    cli::cli_abort("{.fn bind.list} only support one argument (a list).")
+  }
   do.call(bind, ...)
 }
