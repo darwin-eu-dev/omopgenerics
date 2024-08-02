@@ -225,13 +225,18 @@ assertValidation <- function(validation, call = parent.frame()) {
 #' validateWindowArgument
 #'
 #' @param window time window
+#' @param snakeCase return default window  name in snake case if TRUE
 #' @param call A call argument to pass to cli functions.
 #'
 #' @return time window
 #' @export
 #'
 validateWindowArgument <- function(window,
+                                   snakeCase = TRUE,
                                    call = parent.frame()) {
+
+
+  assertLogical(snakeCase, length = 1)
 
   if (!is.list(window)) {
     window <- list(window)
@@ -242,7 +247,7 @@ validateWindowArgument <- function(window,
     cli::cli_abort("NA found in window, please use Inf or -Inf instead", call = call)
   }
 
-  originalWindow <- window
+ originalWindow <- window
   # change inf to NA to check for floats, as Inf won't pass integerish check
   window <-
     lapply(window, function(x)
@@ -274,51 +279,69 @@ validateWindowArgument <- function(window,
     )
   }
 
-  assertWindowName(window)
+  assertWindowName(window,snakeCase)
 
-  invisible(window)
+
 
 }
 
 #' @noRd
-getWindowNames <- function(window) {
+getWindowNames <- function(window, snakeCase) {
+  #snakecase
   getname <- function(element) {
     element <- tolower(as.character(element))
     element <- gsub("-", "m", element)
     invisible(paste0(element[1], "_to_", element[2]))
   }
+  #snakecase False
+  getname2 <- function(element) {
+    element <- tolower(as.character(element))
+    invisible(paste0(element[1], " to ", element[2]))
+  }
+
   windowNames <- names(window)
-  if (is.null(windowNames)) {
-    windowNames <- lapply(window, getname)
+
+  if (isTRUE(snakeCase)) {
+    if (is.null(windowNames)) {
+      windowNames <- lapply(window, getname)
+    } else {
+      windowNames[windowNames == ""] <-
+        lapply(window[windowNames == ""], getname)
+    }
   } else {
-    windowNames[windowNames == ""] <-
-      lapply(window[windowNames == ""], getname)
+    if (is.null(windowNames)) {
+      windowNames <- lapply(window, getname2)
+    } else {
+      windowNames[windowNames == ""] <-
+        lapply(window[windowNames == ""], getname2)
+    }
   }
   invisible(windowNames)
 }
 
 #' @noRd
-assertWindowName <- function(window, call = parent.frame()) {
-  names(window) <- getWindowNames(window)
-  lower <- lapply(window, function(x) {
-    x[1]
-  }) |> unlist()
-  upper <- lapply(window, function(x) {
-    x[2]
-  }) |> unlist()
+assertWindowName <-
+  function(window, snakeCase, call = parent.frame()) {
+    names(window) <- getWindowNames(window, snakeCase = snakeCase)
+    lower <- lapply(window, function(x) {
+      x[1]
+    }) |> unlist()
+    upper <- lapply(window, function(x) {
+      x[2]
+    }) |> unlist()
 
-  if (any(lower > upper)) {
-    cli::cli_abort("First element in window must be smaller or equal to
+    if (any(lower > upper)) {
+      cli::cli_abort("First element in window must be smaller or equal to
                    the second one",
-                   call = call)
-  }
-  if (any(is.infinite(lower) & lower == upper & sign(upper) == 1)) {
-    cli::cli_abort("Not both elements in the window can be +Inf", call = call)
-  }
-  if (any(is.infinite(lower) &
-          lower == upper & sign(upper) == -1)) {
-    cli::cli_abort("Not both elements in the window can be -Inf", call = call)
-  }
+                     call = call)
+    }
+    if (any(is.infinite(lower) & lower == upper & sign(upper) == 1)) {
+      cli::cli_abort("Not both elements in the window can be +Inf", call = call)
+    }
+    if (any(is.infinite(lower) &
+            lower == upper & sign(upper) == -1)) {
+      cli::cli_abort("Not both elements in the window can be -Inf", call = call)
+    }
 
-  invisible(window)
-}
+    invisible(window)
+  }
