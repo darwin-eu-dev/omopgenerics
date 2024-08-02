@@ -75,6 +75,12 @@ newCohortTable <- function(table,
   assertClass(table, "cdm_table")
   assertChoice(.softValidation, choices = c(TRUE, FALSE), length = 1)
 
+  # 'clean' table
+  table <- table |> removeClass("cohort_table")
+  attr(table, "cohort_set") <- NULL
+  attr(table, "cohort_attrition") <- NULL
+  attr(table, "cohort_codelist") <- NULL
+
   # populate
   cohortSetRef <- populateCohortSet(table, cohortSetRef)
   cohortAttritionRef <- populateCohortAttrition(
