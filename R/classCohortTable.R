@@ -75,6 +75,16 @@ newCohortTable <- function(table,
   assertClass(table, "cdm_table")
   assertChoice(.softValidation, choices = c(TRUE, FALSE), length = 1)
 
+  if (!is.null(cohortSetRef)) {
+    cohortSetRef <- cohortSetRef |> dplyr::as_tibble()
+  }
+  if (!is.null(cohortAttritionRef)) {
+    cohortAttritionRef <- cohortAttritionRef |> dplyr::as_tibble()
+  }
+  if (!is.null(cohortCodelistRef)) {
+    cohortCodelistRef <- cohortCodelistRef |> dplyr::as_tibble()
+  }
+
   # 'clean' table
   table <- table |> removeClass("cohort_table")
   attr(table, "cohort_set") <- NULL

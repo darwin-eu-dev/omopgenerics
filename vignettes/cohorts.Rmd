@@ -85,7 +85,8 @@ cohortCount(cdm$cohort)
 Note that because the cohort count is taken from the last row of attrition, if we make changes to a cohort we should then update attrition as we go. We can do this 
 ```{r}
 cdm$cohort <- cdm$cohort |>
-  filter(cohort_start_date == as.Date("2019-01-01")) %>% 
+  filter(cohort_start_date == as.Date("2019-01-01")) |>
+  compute(name = "cohort", temporary = FALSE) |>
   recordCohortAttrition("Require cohort start January 1st 2019")
 attrition(cdm$cohort)
 cohortCount(cdm$cohort)
