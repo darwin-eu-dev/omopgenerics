@@ -225,6 +225,7 @@ assertValidation <- function(validation, call = parent.frame()) {
 #' validateAgeGroupArgument
 #'
 #' @param ageGroup age group in a list
+#' @param multipleAgeGroup allow mutliple age group
 #' @param overlap allow overlapping ageGroup
 #' @param call parent frame
 #'
@@ -232,14 +233,28 @@ assertValidation <- function(validation, call = parent.frame()) {
 #' @export
 #'
 validateAgeGroupArgument <- function(ageGroup,
+                                     multipleAgeGroup = TRUE,
                                      overlap = FALSE,
                                      call = parent.frame()){
 
   assertList(ageGroup, null = TRUE, call = call)
+  assertLogical(multipleAgeGroup, length = 1)
+  assertLogical(overlap, length = 1)
+
   if (!is.null(ageGroup)) {
     if (is.numeric(ageGroup[[1]])) {
       ageGroup <- list("age_group" = ageGroup)
     }
+  #check multiple age group
+
+  if (!isTRUE(multipleAgeGroup)) {
+
+    if (class(ageGroup[[2]]) == "list"){
+      cli::cli_abort("Multiple age group are not allowed")
+    }
+
+  }
+
     for (k in seq_along(ageGroup)) {
       invisible(checkCategory(ageGroup[[k]], overlap))
       if (any(ageGroup[[k]] |> unlist() |> unique() < 0)) {

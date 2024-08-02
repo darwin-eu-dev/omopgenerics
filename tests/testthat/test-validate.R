@@ -53,6 +53,16 @@ test_that("test validateAgeGroup", {
   ageGroup = list(c(19, 18), c(21, 20))
   expect_error(validateAgeGroupArgument(ageGroup, overlap = FALSE))
 
+  # test multiple age group
+
+  ageGroup = list(list(c(0, 19)), list(c(0, 18)))
+
+  expect_error(validateAgeGroupArgument(ageGroup, overlap = FALSE,
+                                        multipleAgeGroup = FALSE))
+
+  expect_no_error(validateAgeGroupArgument(ageGroup, overlap = FALSE,
+                                           multipleAgeGroup = TRUE))
+
 
 
 

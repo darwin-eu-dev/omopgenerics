@@ -4,10 +4,17 @@
 \alias{validateAgeGroupArgument}
 \title{validateAgeGroupArgument}
 \usage{
-validateAgeGroupArgument(ageGroup, overlap = FALSE, call = parent.frame())
+validateAgeGroupArgument(
+  ageGroup,
+  multipleAgeGroup = TRUE,
+  overlap = FALSE,
+  call = parent.frame()
+)
 }
 \arguments{
 \item{ageGroup}{age group in a list}
+
+\item{multipleAgeGroup}{allow mutliple age group}
 
 \item{overlap}{allow overlapping ageGroup}
 
