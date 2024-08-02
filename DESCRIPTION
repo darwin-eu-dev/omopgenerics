@@ -45,7 +45,8 @@ Imports:
     rlang,
     snakecase,
     stringr,
-    tidyr
+    tidyr, 
+    vctrs
 Depends: 
     R (>= 4.1)
 Suggests: 
