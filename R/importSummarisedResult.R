@@ -18,13 +18,33 @@
 #'
 #' @param path Path to directory with CSV files containing summarised results or
 #' to a specific CSV file with a summarised result.
+#' @param recursive If TRUE and path is a directory, search for files will
+#' recurse into directories
 #'
 #'
 #' @return A summarised result
 #' @export
 #'
-importSummarisedResult <- function(path){
+importSummarisedResult <- function(path,
+                                   recursive = FALSE){
   rlang::check_installed("readr")
+
+  result <- list()
+  for(i in seq_along(path)){
+  result[[i]] <- importSummarisedResultFromPath(path = path[i],
+                                 recursive = recursive)
+  }
+  result <- bind(result) |>
+    newSummarisedResult() |>
+    dplyr::arrange(.data$cdm_name,
+                   .data$result_id)
+
+  result
+
+}
+
+importSummarisedResultFromPath <- function(path,
+                                           recursive){
 
   assertCharacter(path, length = 1,
                   msg = "Only a single path can be specified")
@@ -43,12 +63,14 @@ importSummarisedResult <- function(path){
 
 
   if(isDir){
-  csvFiles <- list.files(path,
-                          pattern = "\\.csv$",
-                          full.names = TRUE)
-  csvFileNames <- list.files(path,
-                         pattern = "\\.csv$",
-                         full.names = FALSE)
+    csvFiles <- list.files(path,
+                           recursive = recursive,
+                           pattern = "\\.csv$",
+                           full.names = TRUE)
+    csvFileNames <- list.files(path,
+                               recursive = recursive,
+                               pattern = "\\.csv$",
+                               full.names = FALSE)
   } else {
     csvFiles <- path
     csvFileNames <- basename(path)
@@ -56,12 +78,13 @@ importSummarisedResult <- function(path){
 
   allResults <- NULL
   for(i in seq_along(csvFiles)){
+    cli::cli_inform("Reading {csvFiles[[i]]}")
     allResults[[i]] <- readr::read_csv(csvFiles[[i]],
                                        col_types = c(.default = "c",
                                                      result_id = "integer"),
                                        show_col_types = FALSE)
     if(isFALSE(setequal(sort(colnames(allResults[[i]])), sort(resultColumns())))){
-     cli::cli_abort("{csvFileNames[[i]]} does not have summarised result columns")
+      cli::cli_abort("{csvFiles[[i]]} does not have summarised result columns")
     }
 
     allResults[[i]] <- newSummarisedResult(allResults[[i]])
@@ -69,4 +92,5 @@ importSummarisedResult <- function(path){
   allResults <- bind(allResults)
 
   allResults
+
 }
