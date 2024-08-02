@@ -589,8 +589,6 @@ consistentNaming <- function(cohortName,
 populateCohortSet <- function(table, cohortSetRef) {
   if (is.null(cohortSetRef)) {
     cohortSetRef <- defaultCohortSet(table)
-  } else {
-    cohortSetRef <- cohortSetRef |> dplyr::collect()
   }
   cohortName <- tableName(table)
   assertClass(cohortSetRef, "data.frame", null = TRUE)
@@ -605,8 +603,6 @@ populateCohortSet <- function(table, cohortSetRef) {
 populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
   if (is.null(cohortAttritionRef)) {
     cohortAttritionRef <- defaultCohortAttrition(table, cohortSetRef)
-  } else {
-    cohortAttritionRef <- cohortAttritionRef |> dplyr::collect()
   }
   cohortName <- tableName(table)
   assertClass(cohortAttritionRef, "data.frame", null = TRUE)
@@ -621,8 +617,6 @@ populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
 populateCohortCodelist <- function(table, cohortCodelistRef) {
   if (is.null(cohortCodelistRef)) {
     cohortCodelistRef <- defaultCohortCodelist(table)
-  } else {
-    cohortCodelistRef <- cohortCodelistRef |> dplyr::collect()
   }
   cohortName <- tableName(table)
   assertClass(cohortCodelistRef, "data.frame", null = TRUE)
