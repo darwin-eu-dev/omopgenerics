@@ -23,6 +23,42 @@ test_that("test validateCohortIdArgument", {
   expect_error(validateCohortIdArgument(1, cohort))
 })
 
+test_that("test validateWindowArgument", {
+
+  window <- c(0, 1)
+  expect_no_error(validateWindowArgument(window))
+  window <- list(c(0, 1), c(2, 3))
+  expect_no_error(validateWindowArgument(window))
+  window <- list(c("a", 1))
+  expect_error(validateWindowArgument(window))
+  window <- list("window" = c(0, 1), "window2" = c(-1, 1))
+  expect_no_error(validateWindowArgument(window))
+  window <- list(c(0, -1))
+  expect_error(validateWindowArgument(window))
+  window <- list(c(-Inf, -Inf))
+  expect_error(validateWindowArgument(window))
+  window <- list(c(Inf, Inf))
+  expect_error(validateWindowArgument(window))
+
+  #window name check
+  window <- list(c(-1, 1))
+
+  window <- window |> validateWindowArgument(snakeCase = FALSE)
+
+  expect_true(names(window) == "-1 to 1")
+
+  window <- list(c(-1, 1))
+
+  window <- window |> validateWindowArgument(snakeCase = TRUE)
+
+  expect_true(names(window) == "m1_to_1")
+
+
+  window <- list("window" = c(-1, 1))
+  window <- window |> validateWindowArgument(snakeCase = TRUE)
+  expect_true(names(window) == "window")
+
+})
 
 test_that("test validateAgeGroup", {
   #test list
@@ -148,7 +184,6 @@ test_that("test validateResultArguemnt", {
 
 })
 
-
 test_that("test validateResults", {
 
   x <- dplyr::tibble(
@@ -178,6 +213,4 @@ test_that("test validateResults", {
 
 
 
-}
-)
-
+})

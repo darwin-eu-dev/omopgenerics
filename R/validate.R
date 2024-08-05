@@ -225,8 +225,130 @@ assertValidation <- function(validation, call = parent.frame()) {
     assertChoice(choices = c("error", "warning"), length = 1, call = call)
 }
 
+#' validateWindowArgument
+#'
+#' @param window time window
+#' @param snakeCase return default window  name in snake case if TRUE
+#' @param call A call argument to pass to cli functions.
+#'
+#' @return time window
+#' @export
+#'
+validateWindowArgument <- function(window,
+                                   snakeCase = TRUE,
+                                   call = parent.frame()) {
 
 
+  assertLogical(snakeCase, length = 1,call = call)
+
+  if (!is.list(window)) {
+    window <- list(window)
+  }
+
+  # Find if any NA, throw warning that it will be changed to Inf, change it later
+  if (any(unlist(lapply(window, is.na)))) {
+    cli::cli_abort("NA found in window, please use Inf or -Inf instead", call = call)
+  }
+
+ originalWindow <- window
+  # change inf to NA to check for floats, as Inf won't pass integerish check
+  window <-
+    lapply(window, function(x)
+      replace(x, is.infinite(x), NA))
+  assertList(window, class = "numeric", call = call)
+  assertNumeric(
+    window |> unlist(),
+    integerish = TRUE,
+    na = TRUE,
+    call = call
+  )
+  window <- originalWindow
+
+  # if any element of window list has length over 2, throw error
+  if (any(lengths(window) > 2)) {
+    cli::cli_abort("window can only contain two values: windowStart and windowEnd",
+                   call = call)
+  }
+
+  # eg if list(1,2,3), change to list(c(1,1), c(2,2), c(3,3))
+  if (length(window) > 1 && any(lengths(window) == 1)) {
+    window[lengths(window) == 1] <- lapply(window[lengths(window) == 1],
+                                           function(x)
+                                             c(unlist(x[lengths(x) == 1]),
+                                               unlist(x[lengths(x) == 1])))
+    cli::cli_warn(
+      "Window list contains element with only 1 value provided,
+          use it as both window start and window end"
+    )
+  }
+
+  assertWindowName(window,snakeCase, call = call)
+
+
+
+}
+
+#' @noRd
+getWindowNames <- function(window, snakeCase) {
+  #snakecase
+  getname <- function(element) {
+    element <- tolower(as.character(element))
+    element <- gsub("-", "m", element)
+    invisible(paste0(element[1], "_to_", element[2]))
+  }
+  #snakecase False
+  getname2 <- function(element) {
+    element <- tolower(as.character(element))
+    invisible(paste0(element[1], " to ", element[2]))
+  }
+
+  windowNames <- names(window)
+
+  if (isTRUE(snakeCase)) {
+    if (is.null(windowNames)) {
+      windowNames <- lapply(window, getname)
+    } else {
+      windowNames[windowNames == ""] <-
+        lapply(window[windowNames == ""], getname)
+    }
+  } else {
+    if (is.null(windowNames)) {
+      windowNames <- lapply(window, getname2)
+    } else {
+      windowNames[windowNames == ""] <-
+        lapply(window[windowNames == ""], getname2)
+    }
+  }
+  invisible(windowNames)
+}
+
+#' @noRd
+assertWindowName <-
+  function(window, snakeCase, call = parent.frame()) {
+    names(window) <- getWindowNames(window, snakeCase = snakeCase)
+    lower <- lapply(window, function(x) {
+      x[1]
+    }) |> unlist()
+    upper <- lapply(window, function(x) {
+      x[2]
+    }) |> unlist()
+
+    if (any(lower > upper)) {
+      cli::cli_abort("First element in window must be smaller or equal to
+                   the second one",
+                     call = call)
+    }
+    if (any(is.infinite(lower) & lower == upper & sign(upper) == 1)) {
+      cli::cli_abort("Not both elements in the window can be +Inf", call = call)
+    }
+    if (any(is.infinite(lower) &
+            lower == upper & sign(upper) == -1)) {
+      cli::cli_abort("Not both elements in the window can be -Inf", call = call)
+    }
+
+    invisible(window)
+}
+                                           
 #' validateAgeGroupArgument
 #'
 #' @param ageGroup age group in a list
@@ -407,7 +529,6 @@ validateCdmArgument <- function(cdm,
 
 }
 
-
 #' validateResultArguemnt
 #'
 #' @param result summarise result object to validate
@@ -428,5 +549,3 @@ validateResultArguemnt <- function(result,
   return(invisible(result))
 
   }
-
-
