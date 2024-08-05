@@ -395,3 +395,6 @@ attribute_definition,attribute_name,TRUE,varchar(255)
 attribute_definition,attribute_description,FALSE,varchar(max)
 attribute_definition,attribute_type_concept_id,TRUE,integer
 attribute_definition,attribute_syntax,FALSE,varchar(max)
+concept_recommended,concept_id_1,TRUE,integer
+concept_recommended,concept_id_2,TRUE,integer
+concept_recommended,relationship_id,TRUE,varchar(20)
