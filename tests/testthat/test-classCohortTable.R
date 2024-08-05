@@ -44,7 +44,12 @@ test_that("test create cohort", {
   )
 
   set$cohort_name <- "Cohort 1"
-  expect_warning(newCohortTable(table = cdm$cohort1, cohortSetRef = set, cohortAttritionRef = attrition))
+  expect_warning(x <- newCohortTable(table = cdm$cohort1, cohortSetRef = set, cohortAttritionRef = attrition))
+  expect_identical(settings(x)$cohort_name, "cohort_1")
+
+  set$cohort_name <- "name_is_toooooooooooo_laaaaaaaaargeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  expect_warning(x <- newCohortTable(table = cdm$cohort1, cohortSetRef = set, cohortAttritionRef = attrition))
+  expect_identical(settings(x)$cohort_name, substr(set$cohort_name, 1, 100))
 
   cdm <- insertTable(
     cdm = cdm,
