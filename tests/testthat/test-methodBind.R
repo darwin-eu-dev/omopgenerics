@@ -215,6 +215,25 @@ test_that("bind summarised_result", {
     new5 |> settings() |> dplyr::pull("result_id") |> unique(), c(1L, 2L)
   )
 
+  # empty results with no settings
+  expect_identical(bind(emptySummarisedResult()),
+                   emptySummarisedResult())
+  expect_identical(bind(emptySummarisedResult(),
+                        emptySummarisedResult()),
+                   emptySummarisedResult())
+
+  # empty results with settings
+  expect_identical(bind(emptySummarisedResult(settings = dplyr::tibble(result_id = 1L,
+                                                                       a = "a"))),
+                   emptySummarisedResult(settings = dplyr::tibble(result_id = 1L,
+                                                                  a = "a")))
+  expect_identical(bind(emptySummarisedResult(settings = dplyr::tibble(result_id = 1L,
+                                                                       a = "a")),
+                        emptySummarisedResult(settings = dplyr::tibble(result_id = 2L,
+                                                                       a = "b"))),
+                   emptySummarisedResult(settings = dplyr::tibble(result_id = c(1L, 2L),
+                                                                  a = c("a", "b"))))
+
   # empty elements
   expect_no_error(bind(NULL))
   expect_no_error(bind(res3, emptySummarisedResult()))
