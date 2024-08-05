@@ -68,10 +68,10 @@ validateNameArgument <- function(name,
 #' @export
 #'
 validateCohortArgument <- function(cohort,
-                                   checkEndAfterStart = TRUE,
-                                   checkOverlappingEntries = TRUE,
-                                   checkMissingValues = TRUE,
-                                   checkInObservation = TRUE,
+                                   checkEndAfterStart = FALSE,
+                                   checkOverlappingEntries = FALSE,
+                                   checkMissingValues = FALSE,
+                                   checkInObservation = FALSE,
                                    validation = "error",
                                    call = parent.frame()) {
   assertValidation(validation)
@@ -348,7 +348,7 @@ assertWindowName <-
 
     invisible(window)
 }
-                                           
+
 #' validateAgeGroupArgument
 #'
 #' @param ageGroup age group in a list
