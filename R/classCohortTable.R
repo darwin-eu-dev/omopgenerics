@@ -592,7 +592,7 @@ populateCohortSet <- function(table, cohortSetRef) {
   }
   cohortName <- tableName(table)
   if(is.na(cohortName)){
-    missingCohortTableNameError(cdm, validation = "error")
+    missingCohortTableNameError(cdmReference(table), validation = "error")
   }
   assertClass(cohortSetRef, "data.frame", null = TRUE)
   cohortSetRef <- dplyr::as_tibble(cohortSetRef)

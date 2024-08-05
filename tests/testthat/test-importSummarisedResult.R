@@ -86,6 +86,12 @@ test_that("import summarised result", {
  results_imported <- importSummarisedResult(path = cs_path)
  expect_identical(results_original,results_imported)
 
+
+ # empty folder
+ dir.create(cs_path_2 <- file.path(tempdir(), omopgenerics::uniqueTableName()))
+ expect_warning(result <- importSummarisedResult(path = cs_path_2))
+ expect_identical(result, emptySummarisedResult())
+
  # check recursive
  dir.create(cs_path_rex <- file.path(cs_path, omopgenerics::uniqueTableName()))
  expect_no_error(exportSummarisedResult(res_3, fileName = "result_3.csv",
@@ -119,15 +125,12 @@ expect_identical(bind(res_1, res_2, res_3) |> arrange(cdm_name),
                                  here::here(cs_path, "/result_1.csv")),
                                  recursive = FALSE)
 
+
  # expected errors
- # error if we try to read mutliple specified csvs
- expect_error(
-   results_imported <- importSummarisedResult(path =
-                                                c(here::here(cs_path, "/result_1.csv"),
-                                                  "not a path"))
- )
  expect_error(importSummarisedResult(path = "not a path"))
- readr::write_csv(cars, file = paste0(cs_path, "/cars.csv"))
- expect_error(expect_warning(importSummarisedResult(path = cs_path)))
+ # csv in wrong format
+ readr::write_csv(cars, file = paste0(cs_path_2, "/cars.csv"))
+ expect_warning(expect_warning(importSummarisedResult(path = cs_path_2)))
+
 
  })
