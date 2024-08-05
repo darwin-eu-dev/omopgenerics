@@ -8,6 +8,7 @@ validateAgeGroupArgument(
   ageGroup,
   multipleAgeGroup = TRUE,
   overlap = FALSE,
+  null = TRUE,
   call = parent.frame()
 )
 }
@@ -17,6 +18,8 @@ validateAgeGroupArgument(
 \item{multipleAgeGroup}{allow mutliple age group}
 
 \item{overlap}{allow overlapping ageGroup}
+
+\item{null}{null age group allowed true or false}
 
 \item{call}{parent frame}
 }

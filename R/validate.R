@@ -232,6 +232,7 @@ assertValidation <- function(validation, call = parent.frame()) {
 #' @param ageGroup age group in a list
 #' @param multipleAgeGroup allow mutliple age group
 #' @param overlap allow overlapping ageGroup
+#' @param null null age group allowed true or false
 #' @param call parent frame
 #'
 #' @return validate ageGroup
@@ -240,11 +241,21 @@ assertValidation <- function(validation, call = parent.frame()) {
 validateAgeGroupArgument <- function(ageGroup,
                                      multipleAgeGroup = TRUE,
                                      overlap = FALSE,
+                                     null = TRUE,
                                      call = parent.frame()){
 
   assertList(ageGroup, null = TRUE, call = call)
-  assertLogical(multipleAgeGroup, length = 1)
-  assertLogical(overlap, length = 1)
+  assertLogical(multipleAgeGroup, length = 1, call = call)
+  assertLogical(overlap, length = 1, call = call)
+  assertLogical(null, length = 1, call = call)
+
+
+  #null age group
+  if (!isTRUE(null)){
+    if(is.null(ageGroup)){
+      cli::cli_abort("Age group can not be null.")
+    }
+  }
 
   if (!is.null(ageGroup)) {
     if (is.numeric(ageGroup[[1]])) {
@@ -261,7 +272,7 @@ validateAgeGroupArgument <- function(ageGroup,
   }
 
     for (k in seq_along(ageGroup)) {
-      invisible(checkCategory(ageGroup[[k]], overlap))
+      invisible(checkCategory(ageGroup[[k]], overlap, call = call))
       if (any(ageGroup[[k]] |> unlist() |> unique() < 0)) {
         cli::cli_abort("ageGroup can't contain negative values")
       }

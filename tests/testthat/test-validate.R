@@ -63,6 +63,19 @@ test_that("test validateAgeGroup", {
                                            multipleAgeGroup = TRUE))
 
 
+  # null age group
+
+
+
+  expect_no_error(validateAgeGroupArgument(ageGroup = NULL, overlap = FALSE,
+                                        multipleAgeGroup = FALSE))
+
+  expect_error(validateAgeGroupArgument(ageGroup = NULL, overlap = FALSE,
+                                        null = FALSE, multipleAgeGroup = FALSE))
+
+
+
+
 
 
 
