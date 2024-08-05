@@ -722,8 +722,8 @@ updateCohortNames <- function(cohortSetRef) {
     x <- paste0(oldName, " -> ", newName)
     names(x) <- rep("*", length(x))
     cli::cli_warn(c(
-      "cohort_name must be snake case and have less than {limChar}, the
-      following cohorts will be renamed:",
+      "cohort_name must be snake case and have less than {limChar} characters,
+      the following cohorts will be renamed:",
       x
     ))
     id <- uniqueId(exclude = colnames(cohortSetRef), prefix = "id_")
