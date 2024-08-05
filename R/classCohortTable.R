@@ -75,6 +75,22 @@ newCohortTable <- function(table,
   assertClass(table, "cdm_table")
   assertChoice(.softValidation, choices = c(TRUE, FALSE), length = 1)
 
+  if (!is.null(cohortSetRef)) {
+    cohortSetRef <- cohortSetRef |> dplyr::as_tibble()
+  }
+  if (!is.null(cohortAttritionRef)) {
+    cohortAttritionRef <- cohortAttritionRef |> dplyr::as_tibble()
+  }
+  if (!is.null(cohortCodelistRef)) {
+    cohortCodelistRef <- cohortCodelistRef |> dplyr::as_tibble()
+  }
+
+  # 'clean' table
+  table <- table |> removeClass("cohort_table")
+  attr(table, "cohort_set") <- NULL
+  attr(table, "cohort_attrition") <- NULL
+  attr(table, "cohort_codelist") <- NULL
+
   # populate
   cohortSetRef <- populateCohortSet(table, cohortSetRef)
   cohortAttritionRef <- populateCohortAttrition(
@@ -573,10 +589,11 @@ consistentNaming <- function(cohortName,
 populateCohortSet <- function(table, cohortSetRef) {
   if (is.null(cohortSetRef)) {
     cohortSetRef <- defaultCohortSet(table)
-  } else {
-    cohortSetRef <- cohortSetRef |> dplyr::collect()
   }
   cohortName <- tableName(table)
+  if(is.na(cohortName)){
+    missingCohortTableNameError(cdm, validation = "error")
+  }
   assertClass(cohortSetRef, "data.frame", null = TRUE)
   cohortSetRef <- dplyr::as_tibble(cohortSetRef)
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
@@ -589,8 +606,6 @@ populateCohortSet <- function(table, cohortSetRef) {
 populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
   if (is.null(cohortAttritionRef)) {
     cohortAttritionRef <- defaultCohortAttrition(table, cohortSetRef)
-  } else {
-    cohortAttritionRef <- cohortAttritionRef |> dplyr::collect()
   }
   cohortName <- tableName(table)
   assertClass(cohortAttritionRef, "data.frame", null = TRUE)
@@ -605,8 +620,6 @@ populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
 populateCohortCodelist <- function(table, cohortCodelistRef) {
   if (is.null(cohortCodelistRef)) {
     cohortCodelistRef <- defaultCohortCodelist(table)
-  } else {
-    cohortCodelistRef <- cohortCodelistRef |> dplyr::collect()
   }
   cohortName <- tableName(table)
   assertClass(cohortCodelistRef, "data.frame", null = TRUE)
@@ -688,4 +701,34 @@ getEmptyField <- function(datatype) {
     "logical" = logical()
   )
   return(empty)
+}
+
+missingCohortTableNameError <- function(cdm, validation = "error"){
+
+if(validation == "error"){
+  if(cdmSourceType(cdm) == "local"){
+    cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
+                     "i" = "Did you use insertTable() when adding the table to the cdm reference?"))
+
+  } else {
+    cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
+                     "i" = "The cohort table must be a permanent table when working with databases.",
+                     "i" = "Use dplyr::compute(temporary = FALSE, ...) to create a permanent table from a temporary table."))
+  }
+} else if (validation == "warning"){
+  if(cdmSourceType(cdm) == "local"){
+    cli::cli_warn(c("Table name for cohort could not be inferred.",
+                     "i" = "Did you use insertTable() when adding the table to the cdm reference?"))
+
+  } else {
+    cli::cli_warn(c("Table name for cohort could not be inferred.",
+                     "i" = "The cohort table must be a permanent table when working with databases.",
+                     "i" = "Use dplyr::compute(temporary = FALSE, ...) to create a permanent table from a temporary table."))
+  }
+} else {
+
+  return(invisible())
+}
+
+
 }
