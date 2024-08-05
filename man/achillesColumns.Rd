@@ -10,7 +10,8 @@ achillesColumns(table, required = TRUE, version = "5.3")
 \item{table}{Table for which to see the required columns. One of
 "achilles_analysis", "achilles_results", or "achilles_results_dist".}
 
-\item{required}{Whether to include only required fields.}
+\item{required}{Whether to include only required fields. If NULL all columns
+will be shown.}
 
 \item{version}{Version of the OMOP Common Data Model.}
 }

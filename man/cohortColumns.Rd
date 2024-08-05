@@ -9,7 +9,8 @@ cohortColumns(table, required = TRUE, version = "5.3")
 \arguments{
 \item{table}{Either \code{cohort}, \code{cohort_set} or \code{cohort_attrition}}
 
-\item{required}{Whether to include only required fields.}
+\item{required}{Whether to include only required fields. If NULL all columns
+will be shown.}
 
 \item{version}{Version of the OMOP Common Data Model.}
 }
