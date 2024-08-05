@@ -18,7 +18,7 @@ test_that("test create cohort", {
     cdm = cdm,
     name = "cohort1",
     table = dplyr::tibble(
-      cohort_definition_id = 1, subject_id = 1,
+      cohort_definition_id = 1L, subject_id = 1L,
       cohort_start_date = as.Date("2020-01-01"),
       cohort_end_date = as.Date("2020-01-10")
     )

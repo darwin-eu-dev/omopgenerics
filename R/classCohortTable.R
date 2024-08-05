@@ -212,6 +212,9 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
   checkColumnsCohort(cohort_attrition, "cohort_attrition")
   checkColumnsCohort(cohort_codelist, "cohort_codelist")
 
+  # cast cohort columns
+  cohort <- castCohortColumns(cohort, tableName(cohort), "cohort")
+
   # check cohort_codelist type colum
   if(cohort_codelist |>
      utils::head(10) |>
@@ -336,29 +339,31 @@ defaultCohortAttrition <- function(cohort, set) {
   cohortName <- tableName(cohort)
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
   x <- cohort |>
-    group_by(.data$cohort_definition_id) |>
-    summarise(
+    dplyr::group_by(.data$cohort_definition_id) |>
+    dplyr::summarise(
       number_records = dplyr::n(),
       number_subjects = dplyr::n_distinct(.data$subject_id)
     ) |>
+    collect() |>
     dplyr::right_join(
-      set |> dplyr::select("cohort_definition_id"),
-      by = "cohort_definition_id",
-      copy = TRUE
+      set |>
+        dplyr::select("cohort_definition_id") |>
+        dplyr::collect(),
+      by = "cohort_definition_id"
     ) |>
     dplyr::mutate(
+      "cohort_definition_id" = as.integer(.data$cohort_definition_id),
       "number_records" = dplyr::if_else(
-        is.na(.data$number_records), 0, .data$number_records
+        is.na(.data$number_records), 0L, as.integer(.data$number_records)
       ),
       "number_subjects" = dplyr::if_else(
-        is.na(.data$number_subjects), 0, .data$number_subjects
+        is.na(.data$number_subjects), 0L, as.integer(.data$number_subjects)
       ),
-      "reason_id" = 1,
+      "reason_id" = 1L,
       "reason" = "Initial qualifying events",
-      "excluded_records" = 0,
-      "excluded_subjects" = 0
-    ) |>
-    collect()
+      "excluded_records" = 0L,
+      "excluded_subjects" = 0L
+    )
   return(x)
 }
 defaultCohortCodelist <- function(cohort) {
@@ -369,7 +374,6 @@ defaultCohortCodelist <- function(cohort) {
     type = as.character()
   )
 }
-
 
 #' Check whether a cohort table satisfies requirements
 #'
@@ -597,6 +601,7 @@ populateCohortSet <- function(table, cohortSetRef) {
   assertClass(cohortSetRef, "data.frame", null = TRUE)
   cohortSetRef <- dplyr::as_tibble(cohortSetRef)
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
+  cohortSetRef <- castCohortColumns(cohortSetRef, cohortName, "cohort_set")
   cohortSetRef <- insertTable(
     cdm = tableSource(table), name = name, table = cohortSetRef,
     overwrite = TRUE
@@ -611,6 +616,8 @@ populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
   assertClass(cohortAttritionRef, "data.frame", null = TRUE)
   cohortAttritionRef <- dplyr::as_tibble(cohortAttritionRef)
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
+  cohortAttritionRef <- castCohortColumns(
+    cohortAttritionRef, cohortName, "cohort_attrition")
   cohortAttritionRef <- insertTable(
     cdm = tableSource(table), name = name, table = cohortAttritionRef,
     overwrite = TRUE
@@ -625,6 +632,8 @@ populateCohortCodelist <- function(table, cohortCodelistRef) {
   assertClass(cohortCodelistRef, "data.frame", null = TRUE)
   cohortCodelistRef <- dplyr::as_tibble(cohortCodelistRef)
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_codelist"))
+  cohortCodelistRef <- castCohortColumns(
+    cohortCodelistRef, cohortName, "cohort_codelist")
   cohortCodelistRef <- insertTable(
     cdm = tableSource(table), name = name, table = cohortCodelistRef,
     overwrite = TRUE
@@ -684,6 +693,24 @@ emptyCohortTable <- function(cdm, name, overwrite = TRUE) {
   return(cdm)
 }
 
+castCohortColumns <- function(table, tName, name) {
+  cols <- fieldsTables |>
+    dplyr::filter(
+      .data$type == "cohort" & .data$cdm_table_name == .env$name) |>
+    dplyr::select("cdm_field_name", "cdm_datatype") |>
+    dplyr::mutate("cdm_datatype" = dplyr::case_when(
+      grepl("varchar", .data$cdm_datatype) ~ "character",
+      .data$cdm_datatype == "float" ~ "numeric",
+      .data$cdm_datatype == "datetime" ~ "date",
+      .default = .data$cdm_datatype
+    ))
+  cols <- cols |>
+    split(f = as.factor(cols$cdm_field_name)) |>
+    lapply(dplyr::pull, "cdm_datatype")
+  if (name != "cohort") tName <- paste0(tName, " (", name, ")")
+  table <- castColumns(table, cols, tName)
+  return(table)
+}
 emptyTable <- function(fields) {
   lapply(fields$cdm_datatype, getEmptyField) |>
     rlang::set_names(fields$cdm_field_name) |>
@@ -702,7 +729,6 @@ getEmptyField <- function(datatype) {
   )
   return(empty)
 }
-
 missingCohortTableNameError <- function(cdm, validation = "error"){
 
 if(validation == "error"){
