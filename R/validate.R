@@ -241,7 +241,7 @@ validateWindowArgument <- function(window,
                                    call = parent.frame()) {
 
 
-  assertLogical(snakeCase, length = 1)
+  assertLogical(snakeCase, length = 1,call = call)
 
   if (!is.list(window)) {
     window <- list(window)
@@ -284,7 +284,7 @@ validateWindowArgument <- function(window,
     )
   }
 
-  assertWindowName(window,snakeCase)
+  assertWindowName(window,snakeCase, call = call)
 
 
 
