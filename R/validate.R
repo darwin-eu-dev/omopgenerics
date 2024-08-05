@@ -225,8 +225,6 @@ assertValidation <- function(validation, call = parent.frame()) {
     assertChoice(choices = c("error", "warning"), length = 1, call = call)
 }
 
-
-
 #' validateWindowArgument
 #'
 #' @param window time window
@@ -349,6 +347,139 @@ assertWindowName <-
     }
 
     invisible(window)
+}
+                                           
+#' validateAgeGroupArgument
+#'
+#' @param ageGroup age group in a list
+#' @param multipleAgeGroup allow mutliple age group
+#' @param overlap allow overlapping ageGroup
+#' @param null null age group allowed true or false
+#' @param call parent frame
+#'
+#' @return validate ageGroup
+#' @export
+#'
+validateAgeGroupArgument <- function(ageGroup,
+                                     multipleAgeGroup = TRUE,
+                                     overlap = FALSE,
+                                     null = TRUE,
+                                     call = parent.frame()){
+
+  assertList(ageGroup, null = TRUE, call = call)
+  assertLogical(multipleAgeGroup, length = 1, call = call)
+  assertLogical(overlap, length = 1, call = call)
+  assertLogical(null, length = 1, call = call)
+
+
+  #null age group
+  if (!isTRUE(null)){
+    if(is.null(ageGroup)){
+      cli::cli_abort("Age group can not be null.")
+    }
+  }
+
+  if (!is.null(ageGroup)) {
+    if (is.numeric(ageGroup[[1]])) {
+      ageGroup <- list("age_group" = ageGroup)
+    }
+  #check multiple age group
+
+  if (!isTRUE(multipleAgeGroup)) {
+
+    if (inherits(ageGroup[[2]],"list")){
+      cli::cli_abort("Multiple age group are not allowed")
+    }
+
+  }
+
+    for (k in seq_along(ageGroup)) {
+      invisible(checkCategory(ageGroup[[k]], overlap, call = call))
+      if (any(ageGroup[[k]] |> unlist() |> unique() < 0)) {
+        cli::cli_abort("ageGroup can't contain negative values")
+      }
+    }
+    if (is.null(names(ageGroup))) {
+      names(ageGroup) <- paste0("age_group_", 1:length(ageGroup))
+    }
+    if ("" %in% names(ageGroup)) {
+      id <- which(names(ageGroup) == "")
+      names(ageGroup)[id] <- paste0("age_group_", id)
+    }
+  }
+  invisible(ageGroup)
+
+}
+
+#' @noRd
+checkCategory <-
+  function(category,
+           overlap = FALSE,
+           type = "numeric",
+           call = parent.frame()) {
+    assertList(category, class = type, call = call)
+
+    if (is.null(names(category))) {
+      names(category) <- rep("", length(category))
+    }
+
+    # check length
+    category <- lapply(category, function(x) {
+      if (length(x) == 1) {
+        x <- c(x, x)
+      } else if (length(x) > 2) {
+        cli::cli_abort("Please specify only two values
+                       (lower bound and upper bound) per category",
+                       call = call)
+      }
+      invisible(x)
+    })
+
+    # check lower bound is smaller than upper bound
+    checkLower <- unlist(lapply(category, function(x) {
+      x[1] <= x[2]
+    }))
+    if (!(all(checkLower))) {
+      "Lower bound should be equal or smaller than upper bound" |>
+        cli::cli_abort(call = call)
+    }
+
+    # built tibble
+    result <- lapply(category, function(x) {
+      dplyr::tibble(lower_bound = x[1], upper_bound = x[2])
+    }) |>
+      dplyr::bind_rows() |>
+      dplyr::mutate(category_label = names(.env$category)) |>
+      dplyr::mutate(
+        category_label = dplyr::if_else(
+          .data$category_label == "",
+          dplyr::case_when(
+            is.infinite(.data$lower_bound) &
+              is.infinite(.data$upper_bound) ~ "any",
+            is.infinite(.data$lower_bound) ~ paste(.data$upper_bound,
+                                                   "or below"),
+            is.infinite(.data$upper_bound) ~ paste(.data$lower_bound,
+                                                   "or above"),
+            TRUE ~ paste(.data$lower_bound, "to", .data$upper_bound)
+          ),
+          .data$category_label
+        )
+      ) |>
+      dplyr::arrange(.data$lower_bound)
+
+    # check overlap
+    if (!overlap) {
+      if (nrow(result) > 1) {
+        lower <- result$lower_bound[2:nrow(result)]
+        upper <- result$upper_bound[1:(nrow(result) - 1)]
+        if (!all(lower > upper)) {
+          "There can not be overlap between categories" |>
+            cli::cli_abort(call = call)
+        }
+      }
+    }
+
+    invisible(result)
   }
 #' validateCdmArgument
 #'
@@ -398,7 +529,6 @@ validateCdmArgument <- function(cdm,
 
 }
 
-
 #' validateResultArguemnt
 #'
 #' @param result summarise result object to validate
@@ -419,4 +549,3 @@ validateResultArguemnt <- function(result,
   return(invisible(result))
 
   }
-

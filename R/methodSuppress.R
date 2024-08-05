@@ -129,7 +129,9 @@ suppressCounts <- function(result, minCellCount) {
 }
 suppressGroup <- function(result, groupSuppress) {
   obsLabels <- unique(result$variable_name)
-  obsLabels <- obsLabels[tolower(gsub("_", " ", obsLabels)) %in% groupSuppress]
+  obsLabels <- obsLabels[tolower(stringr::str_replace_all(string = obsLabels,
+                                                          pattern = "_",
+                                                          replacement = " ")) %in% groupSuppress]
 
   supByGroup <- result |>
     dplyr::filter(

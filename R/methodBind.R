@@ -76,8 +76,7 @@ bind <- function(...) {
 #'
 bind.cohort_table <- function(..., name) {
   # initial checks
-  cohorts <- list(...) |>
-    vctrs::list_drop_empty()
+  cohorts <- list(...)
   assertList(cohorts, class = "cohort_table")
   assertCharacter(name, length = 1)
 

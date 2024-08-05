@@ -75,6 +75,22 @@ newCohortTable <- function(table,
   assertClass(table, "cdm_table")
   assertChoice(.softValidation, choices = c(TRUE, FALSE), length = 1)
 
+  if (!is.null(cohortSetRef)) {
+    cohortSetRef <- cohortSetRef |> dplyr::as_tibble()
+  }
+  if (!is.null(cohortAttritionRef)) {
+    cohortAttritionRef <- cohortAttritionRef |> dplyr::as_tibble()
+  }
+  if (!is.null(cohortCodelistRef)) {
+    cohortCodelistRef <- cohortCodelistRef |> dplyr::as_tibble()
+  }
+
+  # 'clean' table
+  table <- table |> removeClass("cohort_table")
+  attr(table, "cohort_set") <- NULL
+  attr(table, "cohort_attrition") <- NULL
+  attr(table, "cohort_codelist") <- NULL
+
   # populate
   cohortSetRef <- populateCohortSet(table, cohortSetRef)
   cohortAttritionRef <- populateCohortAttrition(
@@ -573,8 +589,6 @@ consistentNaming <- function(cohortName,
 populateCohortSet <- function(table, cohortSetRef) {
   if (is.null(cohortSetRef)) {
     cohortSetRef <- defaultCohortSet(table)
-  } else {
-    cohortSetRef <- cohortSetRef |> dplyr::collect()
   }
   cohortName <- tableName(table)
   if(is.na(cohortName)){
@@ -592,8 +606,6 @@ populateCohortSet <- function(table, cohortSetRef) {
 populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
   if (is.null(cohortAttritionRef)) {
     cohortAttritionRef <- defaultCohortAttrition(table, cohortSetRef)
-  } else {
-    cohortAttritionRef <- cohortAttritionRef |> dplyr::collect()
   }
   cohortName <- tableName(table)
   assertClass(cohortAttritionRef, "data.frame", null = TRUE)
@@ -608,8 +620,6 @@ populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
 populateCohortCodelist <- function(table, cohortCodelistRef) {
   if (is.null(cohortCodelistRef)) {
     cohortCodelistRef <- defaultCohortCodelist(table)
-  } else {
-    cohortCodelistRef <- cohortCodelistRef |> dplyr::collect()
   }
   cohortName <- tableName(table)
   assertClass(cohortCodelistRef, "data.frame", null = TRUE)
