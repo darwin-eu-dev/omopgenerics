@@ -175,18 +175,42 @@ fieldsResults <- dplyr::tibble(
       rep(NA, 2), "name1", "level1", "name2", "level2", "name3", "level3",
       "name4", "level4", rep(NA, 5), "name5", "level5", "name6", "level6"
     )
+  )) |>
+  dplyr::union_all(dplyr::tibble(
+    result = "omop_result",
+    result_field_name = c(
+      "settings_id", "groupping_id", "cdm_name", "variable_name",
+      "variable_level", "estimate_name", "estimate_type", "estimate_value"
+    ),
+    is_required = TRUE,
+    datatype = c("integer", "integer", rep("character", 6)),
+    na_allowed = c(TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE),
+    pair = NA_character_
+  )) |>
+  dplyr::union_all(dplyr::tibble(
+    result = "omop_result_settings",
+    result_field_name = c(
+      "settings_id", "settings_name", "settings_type", "settings_value"
+    ),
+    is_required = TRUE,
+    datatype = c("integer", rep("character", 3)),
+    na_allowed = FALSE,
+    pair = NA_character_
+  )) |>
+  dplyr::union_all(dplyr::tibble(
+    result = "omop_result_groupping",
+    result_field_name = c(
+      "groupping_id", "groupping_name", "groupping_type", "groupping_value"
+    ),
+    is_required = TRUE,
+    datatype = c("integer", rep("character", 3)),
+    na_allowed = FALSE,
+    pair = NA_character_
   ))
 
 groupCount <- c("number subjects", "number records")
 
-argumentValidation <- dplyr::tribble(
-  ~"argument_name", ~"validation", ~"required_arguments", ~"optional_arguments",
-  "name", "It must be a character (NULL and NA allowed) of length 1. If NA it will be changed to NULL", list(), list("cdm" = "if name already exists in the cdm object a message will be displayed")
-)
-
 usethis::use_data(
-  fieldsTables, fieldsResults, groupCount, argumentValidation, internal = TRUE,
+  fieldsTables, fieldsResults, groupCount, internal = TRUE,
   overwrite = TRUE
 )
-
-

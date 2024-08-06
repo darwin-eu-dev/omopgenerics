@@ -105,11 +105,22 @@ constructSummarisedResult <- function(x, settings, group, call = parent.frame())
     dplyr::distinct()
 
   # try to build settings
+  # settings == NULL -> get from lines
+  # settings != NULL -> error if settings is in variable
+  # is character -> get from columns
+  # if is table thats settings
+
   set <- getAttribute(x, "settings")
   if (is.character(settings)) {
-
+    assertTable(x, columns = settings, call = call)
+    set2 <- x |>
+      dplyr::select(dplyr::all_of(settings)) |>
+      dplyr::distinct() |>
+      dplyr::mutate()
   } else {
-    assertTable(settings, columns = , null = TRUE, call = call)
+    assertTable(settings, columns = c(
+      "settings_id", "settings_name", "settings_type", "settings_value"),
+      null = TRUE, call = call)
   }
 
   set <- set |>
