@@ -132,7 +132,10 @@ an analysis.</p>
 <span>  cohort_end_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2020-01-10"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">cdm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/insertTable.html">insertTable</a></span><span class="op">(</span>cdm <span class="op">=</span> <span class="va">cdm</span>, name <span class="op">=</span> <span class="st">"cohort"</span>, table <span class="op">=</span> <span class="va">cohort</span><span class="op">)</span></span>
-<span><span class="va">cdm</span><span class="op">$</span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newCohortTable.html">newCohortTable</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">$</span><span class="va">cohort</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">cdm</span><span class="op">$</span><span class="va">cohort</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newCohortTable.html">newCohortTable</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">$</span><span class="va">cohort</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> 2 casted columns in <span style="font-weight: bold;">cohort</span> as do not match expected column type:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `cohort_definition_id` from <span style="color: #0000BB;">numeric</span> to <span style="color: #0000BB;">integer</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `subject_id` from <span style="color: #0000BB;">numeric</span> to <span style="color: #0000BB;">integer</span></span></span></code></pre></div>
 <p>The cohort table will be associated with settings and attrition. As
 we didn’t specify these in newCohortTable() above they will have been
 automatically populated. You can access the cohort set of a cohort table
@@ -169,6 +172,9 @@ attrition as we go. We can do this</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cohort_start_date</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="st">"2019-01-01"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">compute</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"cohort"</span>, temporary <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/recordCohortAttrition.html">recordCohortAttrition</a></span><span class="op">(</span><span class="st">"Require cohort start January 1st 2019"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> 1 casted column in <span style="font-weight: bold;">cohort (cohort_attrition)</span> as do not match expected column</span></span>
+<span><span class="co">#&gt;   type:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `reason_id` from <span style="color: #0000BB;">numeric</span> to <span style="color: #0000BB;">integer</span></span></span>
 <span><span class="fu"><a href="../reference/attrition.html">attrition</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">$</span><span class="va">cohort</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 7</span></span></span>
 <span><span class="co">#&gt;   cohort_definition_id number_records number_subjects reason_id reason          </span></span>
@@ -198,6 +204,10 @@ associated with our cohort.</p>
 <span>                                 concept_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">101</span>,<span class="fl">102</span><span class="op">)</span>,</span>
 <span>                                 type <span class="op">=</span> <span class="st">"index event"</span></span>
 <span>                               <span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> 2 casted columns in <span style="font-weight: bold;">cohort (cohort_codelist)</span> as do not match expected column</span></span>
+<span><span class="co">#&gt;   type:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `cohort_definition_id` from <span style="color: #0000BB;">numeric</span> to <span style="color: #0000BB;">integer</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `concept_id` from <span style="color: #0000BB;">numeric</span> to <span style="color: #0000BB;">integer</span></span></span>
 <span><span class="fu"><a href="../reference/cohortCodelist.html">cohortCodelist</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">$</span><span class="va">cohort</span>, cohortId <span class="op">=</span> <span class="fl">1</span>, type <span class="op">=</span> <span class="st">"index event"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">1 codelist</span> <span style="color: #00BBBB;">──────────────────────────────────────────────────────────────────</span></span></span>
@@ -295,6 +305,11 @@ cohort tables. You have to provide a name for the new cohort table.</p>
 <span><span class="va">cdm</span><span class="op">$</span><span class="va">asthma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newCohortTable.html">newCohortTable</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">$</span><span class="va">asthma</span>, </span>
 <span>                             cohortSetRef <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>cohort_definition_id <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>                                                   cohort_name <span class="op">=</span> <span class="st">"asthma"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> 1 casted column in <span style="font-weight: bold;">asthma (cohort_set)</span> as do not match expected column type:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `cohort_definition_id` from <span style="color: #0000BB;">numeric</span> to <span style="color: #0000BB;">integer</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> 2 casted columns in <span style="font-weight: bold;">asthma</span> as do not match expected column type:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `cohort_definition_id` from <span style="color: #0000BB;">numeric</span> to <span style="color: #0000BB;">integer</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `subject_id` from <span style="color: #0000BB;">numeric</span> to <span style="color: #0000BB;">integer</span></span></span>
 <span></span>
 <span><span class="va">copd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  cohort_definition_id <span class="op">=</span> <span class="fl">1</span>, subject_id <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -305,6 +320,11 @@ cohort tables. You have to provide a name for the new cohort table.</p>
 <span><span class="va">cdm</span><span class="op">$</span><span class="va">copd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newCohortTable.html">newCohortTable</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">$</span><span class="va">copd</span>, </span>
 <span>                           cohortSetRef <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>cohort_definition_id <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>                                                   cohort_name <span class="op">=</span> <span class="st">"copd"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> 1 casted column in <span style="font-weight: bold;">copd (cohort_set)</span> as do not match expected column type:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `cohort_definition_id` from <span style="color: #0000BB;">numeric</span> to <span style="color: #0000BB;">integer</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> 2 casted columns in <span style="font-weight: bold;">copd</span> as do not match expected column type:</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `cohort_definition_id` from <span style="color: #0000BB;">numeric</span> to <span style="color: #0000BB;">integer</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> `subject_id` from <span style="color: #0000BB;">numeric</span> to <span style="color: #0000BB;">integer</span></span></span>
 <span></span>
 <span><span class="va">cdm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bind.html">bind</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">$</span><span class="va">asthma</span>, </span>
 <span>            <span class="va">cdm</span><span class="op">$</span><span class="va">copd</span>,</span>
@@ -312,7 +332,7 @@ cohort tables. You have to provide a name for the new cohort table.</p>
 <span><span class="va">cdm</span><span class="op">$</span><span class="va">exposures</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 4</span></span></span>
 <span><span class="co">#&gt;   cohort_definition_id subject_id cohort_start_date cohort_end_date</span></span>
-<span><span class="co">#&gt;                  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>         </span></span>
+<span><span class="co">#&gt;                  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;date&gt;</span>         </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>                    1          1 2020-01-01        2020-01-10     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>                    2          2 2020-01-01        2020-01-10</span></span>
 <span></span>
