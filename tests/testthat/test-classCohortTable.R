@@ -7,7 +7,7 @@ test_that("test create cohort", {
     observation_period_id = 1L,
     person_id = 1L,
     observation_period_start_date = as.Date("2000-01-01"),
-    observation_period_end_date = as.Date("2025-12-31"),
+    observation_period_end_date = as.Date("2023-12-31"),
     period_type_concept_id = 0L
   )
   cdm <- cdmFromTables(
@@ -265,7 +265,7 @@ test_that("test validateCohortArgument", {
     observation_period_id = 1L,
     person_id = 1L,
     observation_period_start_date = as.Date("2000-01-01"),
-    observation_period_end_date = as.Date("2025-12-31"),
+    observation_period_end_date = as.Date("2023-12-31"),
     period_type_concept_id = 0L
   )
   cdm <- cdmFromTables(
@@ -357,7 +357,7 @@ test_that("test error if attributes lost after class creation", {
     observation_period_id = 1L,
     person_id = 1L,
     observation_period_start_date = as.Date("2000-01-01"),
-    observation_period_end_date = as.Date("2025-12-31"),
+    observation_period_end_date = as.Date("2023-12-31"),
     period_type_concept_id = 0L
   )
   cdm <- cdmFromTables(

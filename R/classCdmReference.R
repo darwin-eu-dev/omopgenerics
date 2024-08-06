@@ -42,7 +42,7 @@
 #'   "observation_period" = tibble(
 #'     observation_period_id = 1, person_id = 1,
 #'     observation_period_start_date = as.Date("2000-01-01"),
-#'     observation_period_end_date = as.Date("2025-12-31"),
+#'     observation_period_end_date = as.Date("2023-12-31"),
 #'     period_type_concept_id = 0
 #'   ) |>
 #'     newCdmTable(newLocalSource(), "observation_period")
@@ -249,6 +249,8 @@ checkStartBeforeEndObservation <- function(x, call = parent.frame()) {
   }
 }
 checkPlausibleObservationDates <- function(x, call = parent.frame()) {
+
+  if(isTRUE(nrow(x |> utils::head(1) |> dplyr::collect()) > 0)){
   x <- x |>
     dplyr::summarise(minObsStart = min(.data$observation_period_start_date,
                                       na.rm = TRUE),
@@ -257,7 +259,7 @@ checkPlausibleObservationDates <- function(x, call = parent.frame()) {
     dplyr::collect()
 
   if(as.Date(x$minObsStart) < as.Date("1800-01-01")){
-    cli::cli_abort(
+    cli::cli_warn(
       message = c("There are observation period start dates before 1800-01-01",
                   "i" = "The earliest max observation period end date found is {x$minObsStart}"),
       call = call
@@ -265,11 +267,12 @@ checkPlausibleObservationDates <- function(x, call = parent.frame()) {
   }
 
   if(as.Date(x$maxObsEnd) > Sys.Date()){
-    cli::cli_abort(
+    cli::cli_warn(
       message = c("There are observation period end dates after the current date: {Sys.Date()}",
                   "i" = "The latest max observation period end date found is {x$maxObsEnd}"),
       call = call
     )
+  }
   }
 
 
@@ -297,7 +300,7 @@ checkPlausibleObservationDates <- function(x, call = parent.frame()) {
 #'     "observation_period" = tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
-#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       observation_period_end_date = as.Date("2023-12-31"),
 #'       period_type_concept_id = 0
 #'     )
 #'   ),
@@ -345,7 +348,7 @@ cdmName.cdm_table <- function(x) {
 #'     "observation_period" = tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
-#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       observation_period_end_date = as.Date("2023-12-31"),
 #'       period_type_concept_id = 0
 #'     )
 #'   ),
@@ -381,7 +384,7 @@ cdmVersion <- function(cdm) {
 #'     "observation_period" = tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
-#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       observation_period_end_date = as.Date("2023-12-31"),
 #'       period_type_concept_id = 0
 #'     )
 #'   ),
@@ -418,7 +421,7 @@ cdmSource <- function(cdm) {
 #'     "observation_period" = tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
-#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       observation_period_end_date = as.Date("2023-12-31"),
 #'       period_type_concept_id = 0
 #'     )
 #'   ),
@@ -454,7 +457,7 @@ cdmSourceType <- function(cdm) {
 #'     "observation_period" = tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
-#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       observation_period_end_date = as.Date("2023-12-31"),
 #'       period_type_concept_id = 0
 #'     )
 #'   ),
@@ -489,7 +492,7 @@ cdmSourceType <- function(cdm) {
 #'     "observation_period" = tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
-#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       observation_period_end_date = as.Date("2023-12-31"),
 #'       period_type_concept_id = 0
 #'     )
 #'   ),
@@ -541,7 +544,7 @@ cdmSourceType <- function(cdm) {
 #'     "observation_period" = dplyr::tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
-#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       observation_period_end_date = as.Date("2023-12-31"),
 #'       period_type_concept_id = 0
 #'     )
 #'   ),
@@ -658,7 +661,7 @@ cdmSourceType <- function(cdm) {
 #'     "observation_period" = dplyr::tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
-#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       observation_period_end_date = as.Date("2023-12-31"),
 #'       period_type_concept_id = 0
 #'     )
 #'   ),
@@ -725,7 +728,7 @@ print.cdm_reference <- function(x, ...) {
 #'     "observation_period" = dplyr::tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
-#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       observation_period_end_date = as.Date("2023-12-31"),
 #'       period_type_concept_id = 0
 #'     )
 #'   ),

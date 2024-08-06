@@ -62,7 +62,7 @@ bind <- function(...) {
 #'     "observation_period" = tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
-#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       observation_period_end_date = as.Date("2023-12-31"),
 #'       period_type_concept_id = 0
 #'     )
 #'   ),
@@ -260,7 +260,7 @@ missingColumns <- function(cols, extra) {
 #'     "observation_period" = tibble(
 #'       observation_period_id = 1:3, person_id = 1:3,
 #'       observation_period_start_date = as.Date("2000-01-01"),
-#'       observation_period_end_date = as.Date("2025-12-31"),
+#'       observation_period_end_date = as.Date("2023-12-31"),
 #'       period_type_concept_id = 0
 #'     )
 #'   ),

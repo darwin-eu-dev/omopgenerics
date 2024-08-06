@@ -9,7 +9,7 @@ test_that("test cdm_reference", {
     "observation_period" = dplyr::tibble(
       observation_period_id = 1L, person_id = 1L,
       observation_period_start_date = as.Date("2000-01-01"),
-      observation_period_end_date = as.Date("2025-12-31"),
+      observation_period_end_date = as.Date("2023-12-31"),
       period_type_concept_id = 0L
     ) |>
       newCdmTable(src, "observation_period")
