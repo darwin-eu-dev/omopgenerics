@@ -90,16 +90,27 @@ buildAttribute <- function(x, id, cols, call = parent.frame()) {
   return(x)
 }
 getAttribute <- function(x, id, call = parent.frame()) {
+  cols <- c(
+    paste0(id, "_id"), "estimate_name", "estimate_type", "estimate_value")
+  names(cols) <- stringr::str_replace(cols, "estimate", id)
   set <- x |>
     dplyr::filter(.data$variable_name == id) |>
-    dplyr::select(
-      paste0(id, "_id"), "estimate_name", "estimate_type", "estimate_value"
-    )
+    dplyr::select(dplyr::all_of(cols)) |>
+    dplyr::distinct()
+  return(set)
 }
-constructSummarisedResult <- function(x, set, group, call = parent.frame()) {
+constructSummarisedResult <- function(x, settings, group, call = parent.frame()) {
   x <- x |>
     dplyr::as_tibble() |>
     dplyr::distinct()
+
+  # try to build settings
+  set <- getAttribute(x, "settings")
+  if (is.character(settings)) {
+
+  } else {
+    assertTable(settings, columns = , null = TRUE, call = call)
+  }
 
   set <- set |>
     dplyr::as_tibble() |>
