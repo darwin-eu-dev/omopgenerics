@@ -778,7 +778,7 @@ omopTables <- function(version = "5.3") {
 #' have.
 #'
 #' @param table Table to see required columns.
-#' @param required Whether to include only required fields.
+#' @param onlyRequired Whether to include only required fields.
 #' @param version Version of the OMOP Common Data Model.
 #'
 #' @return Character vector with the column names
@@ -790,11 +790,11 @@ omopTables <- function(version = "5.3") {
 #'
 #' omopColumns("person")
 #'
-omopColumns <- function(table, required = TRUE, version = "5.3") {
+omopColumns <- function(table, onlyRequired = TRUE, version = "5.3") {
   assertVersion(version = version)
   assertTableName(table = table, version = version, type = "cdm_table")
-  assertLogical(x = required, length = 1)
-  getColumns(table = table, version = version, type = "cdm_table", required = required)
+  assertLogical(x = onlyRequired, length = 1)
+  getColumns(table = table, version = version, type = "cdm_table", required = onlyRequired)
 }
 
 #' Cohort tables that a cdm reference can contain in the OMOP Common Data
@@ -819,7 +819,6 @@ cohortTables <- function(version = "5.3") {
 #' Required columns for a generated cohort set.
 #'
 #' @param table Either `cohort`, `cohort_set` or `cohort_attrition`
-#' @param required Whether to include only required fields.
 #' @param version Version of the OMOP Common Data Model.
 #'
 #' @return Character vector with the column names
@@ -833,11 +832,10 @@ cohortTables <- function(version = "5.3") {
 #' library(omopgenerics)
 #' cohortColumns("cohort")
 #' }
-cohortColumns <- function(table, required = TRUE, version = "5.3") {
+cohortColumns <- function(table, version = "5.3") {
   assertVersion(version = version)
   assertTableName(table = table, version = version, type = "cohort")
-  assertLogical(x = required, length = 1)
-  getColumns(table = table, version = version, type = "cohort", required = required)
+  getColumns(table = table, version = version, type = "cohort", required = TRUE)
 }
 
 #' Names of the tables that contain the results of achilles analyses
@@ -862,7 +860,7 @@ achillesTables <- function(version = "5.3"){
 #'
 #' @param table Table for which to see the required columns. One of
 #' "achilles_analysis", "achilles_results", or "achilles_results_dist".
-#' @param required Whether to include only required fields.
+#' @param onlyRequired Whether to include only required fields.
 #' @param version Version of the OMOP Common Data Model.
 #'
 #' @return Character vector with the column names
@@ -876,11 +874,11 @@ achillesTables <- function(version = "5.3"){
 #' achillesColumns("achilles_results")
 #' achillesColumns("achilles_results_dist")
 #' }
-achillesColumns <- function(table, required = TRUE, version = "5.3") {
+achillesColumns <- function(table, onlyRequired = TRUE, version = "5.3") {
   assertVersion(version = version)
   assertTableName(table = table, version = version, type = "achilles")
-  assertLogical(x = required, length = 1)
-  getColumns(table = table, version = version, type = "achilles", required = required)
+  assertLogical(x = onlyRequired, length = 1, null = TRUE)
+  getColumns(table = table, version = version, type = "achilles", required = onlyRequired)
 }
 
 assertVersion <- function(version, call = parent.frame()) {
@@ -898,12 +896,20 @@ tableChoice <- function(version, type) {
     unique()
 }
 getColumns <- function(table, version, type, required) {
-  fieldsTables$cdm_field_name[
-    grepl(version, fieldsTables$cdm_version) &
-      fieldsTables$cdm_table_name == table &
-      fieldsTables$is_required == required &
-      fieldsTables$type == type
-  ]
+  if (isTRUE(required)) {
+    fieldsTables$cdm_field_name[
+      grepl(version, fieldsTables$cdm_version) &
+        fieldsTables$cdm_table_name == table &
+        fieldsTables$is_required == TRUE &
+        fieldsTables$type == type
+    ]
+  } else {
+    fieldsTables$cdm_field_name[
+      grepl(version, fieldsTables$cdm_version) &
+        fieldsTables$cdm_table_name == table &
+        fieldsTables$type == type
+    ]
+  }
 }
 
 #' @export
