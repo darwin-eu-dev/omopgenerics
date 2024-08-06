@@ -7,7 +7,7 @@ test_that("test getCohortName and getCohortId", {
     observation_period_id = 1L,
     person_id = 1L,
     observation_period_start_date = as.Date("2000-01-01"),
-    observation_period_end_date = as.Date("2025-12-31"),
+    observation_period_end_date = Sys.Date(),
     period_type_concept_id = 0L
   )
   x <- dplyr::tibble(

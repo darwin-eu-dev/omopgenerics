@@ -43,7 +43,7 @@ person <- tibble(
 observation_period <- dplyr::tibble(
   observation_period_id = c(1,2), person_id = c(1,2),
   observation_period_start_date = as.Date("2000-01-01"),
-  observation_period_end_date = as.Date("2025-12-31"),
+  observation_period_end_date = as.Date("2021-12-31"),
   period_type_concept_id = 0
 )
 cdm <- cdmFromTables(

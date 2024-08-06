@@ -8,6 +8,7 @@ validateCdmArgument(
   cdm,
   checkOverlapObservation = FALSE,
   checkStartBeforeEndObservation = FALSE,
+  checkPlausibleObservationDates = FALSE,
   validation = "error",
   call = parent.frame()
 )
@@ -15,9 +16,15 @@ validateCdmArgument(
 \arguments{
 \item{cdm}{A cdm_reference object}
 
-\item{checkOverlapObservation}{TRUE to perform check on no overlap observation period}
+\item{checkOverlapObservation}{TRUE to perform check on no overlap
+observation period}
 
-\item{checkStartBeforeEndObservation}{TRUE to perform check on correct observational start and end date}
+\item{checkStartBeforeEndObservation}{TRUE to perform check on correct
+observational start and end date}
+
+\item{checkPlausibleObservationDates}{TRUE to perform check that there are
+no implausible observation period start dates (before 1800-01-01) or end
+dates (after the current date)}
 
 \item{validation}{How to perform validation: "error", "warning".}
 

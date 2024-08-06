@@ -486,8 +486,13 @@ checkCategory <-
 #' validateCdmArgument
 #'
 #' @param cdm A cdm_reference object
-#' @param checkOverlapObservation TRUE to perform check on no overlap observation period
-#' @param checkStartBeforeEndObservation TRUE to perform check on correct observational start and end date
+#' @param checkOverlapObservation TRUE to perform check on no overlap
+#' observation period
+#' @param checkStartBeforeEndObservation TRUE to perform check on correct
+#' observational start and end date
+#' @param checkPlausibleObservationDates TRUE to perform check that there are
+#' no implausible observation period start dates (before 1800-01-01) or end
+#' dates (after the current date)
 #' @param validation How to perform validation: "error", "warning".
 #' @param call A call argument to pass to cli functions.
 #'
@@ -497,6 +502,7 @@ checkCategory <-
 validateCdmArgument <- function(cdm,
                                 checkOverlapObservation = FALSE,
                                 checkStartBeforeEndObservation = FALSE,
+                                checkPlausibleObservationDates = FALSE,
                                 validation = "error",
                                 call = parent.frame()) {
   assertValidation(validation, call = parent.frame())
@@ -524,6 +530,11 @@ validateCdmArgument <- function(cdm,
   if (isTRUE(checkStartBeforeEndObservation)){
     checkStartBeforeEndObservation(cdm$observation_period)
   }
+
+ if (isTRUE(checkPlausibleObservationDates)){
+   checkPlausibleObservationDates(cdm$observation_period)
+
+ }
 
   return(invisible(cdm))
 

@@ -6,7 +6,7 @@ test_that("test cdmFromTables", {
   observation_period <- dplyr::tibble(
     observation_period_id = 1L, person_id = 1L,
     observation_period_start_date = as.Date("2000-01-01"),
-    observation_period_end_date = as.Date("2025-12-31"),
+    observation_period_end_date = as.Date("2023-12-31"),
     period_type_concept_id = 0L
   )
   cdm <- cdmFromTables(
@@ -65,7 +65,7 @@ test_that("test cdmFromTables", {
       "observation_period" = dplyr::tibble(
         observation_period_id = 1L, person_id = 1L,
         observation_period_start_date = as.Date("2000-01-01"),
-        observation_period_end_date = as.Date("2025-12-31"),
+        observation_period_end_date = as.Date("2023-12-31"),
         period_type_concept_id = 0L
       ),
       "cdm_source" = dplyr::tibble(
@@ -84,7 +84,7 @@ test_that("test cdmFromTables", {
   observation_period <- dplyr::tibble(
     observation_period_id = 1L, person_id = 1L,
     observation_period_start_date = as.Date(c("2000-01-01", "2020-01-01")),
-    observation_period_end_date = as.Date(c("2025-12-31", "2020-01-01")),
+    observation_period_end_date = as.Date(c("2023-12-31", "2020-01-01")),
     period_type_concept_id = 0L
   )
   expect_error(cdm <- cdmFromTables(
@@ -100,7 +100,7 @@ test_that("test cdmFromTables", {
   observation_period <- dplyr::tibble(
     observation_period_id = 1L, person_id = 1L,
     observation_period_start_date = as.Date(c("2050-01-01", "2020-01-01")),
-    observation_period_end_date = as.Date(c("2025-12-31", "2020-01-01")),
+    observation_period_end_date = as.Date(c("2023-12-31", "2020-01-01")),
     period_type_concept_id = 0L
   )
   expect_error(cdm <- cdmFromTables(
@@ -116,7 +116,7 @@ test_that("test cdmFromTables", {
   observation_period <- dplyr::tibble(
     observation_period_id = 1L, person_id = 1L,
     observation_period_start_date = as.Date(c("2000-01-01")),
-    observation_period_end_date = as.Date(c("2025-12-31")),
+    observation_period_end_date = as.Date(c("2023-12-31")),
     period_type_concept_id = 0L
   )
   drug_exposure <- dplyr::tibble(
@@ -142,7 +142,7 @@ test_that("test cdmFromTables", {
   observation_period <- dplyr::tibble(
     observation_period_id = 1L, person_id = 1L,
     observation_period_start_date = as.Date(c("2000-01-01")),
-    observation_period_end_date = as.Date(c("2025-12-31")),
+    observation_period_end_date = as.Date(c("2023-12-31")),
     period_type_concept_id = 0L
   )
   drug_exposure <- dplyr::tibble(
