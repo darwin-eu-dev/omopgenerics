@@ -2,16 +2,16 @@
 % Please edit documentation in R/classCdmSource.R
 \name{sourceType}
 \alias{sourceType}
-\title{Get the source type of a cdm_source.}
+\title{Get the source type of an object.}
 \usage{
-sourceType(cdmSource)
+sourceType(x)
 }
 \arguments{
-\item{cdmSource}{A cdm_source object.}
+\item{x}{Object to know the source type.}
 }
 \value{
 A character vector that defines the type of cdm_source.
 }
 \description{
-Get the source type of a cdm_source.
+Get the source type of an object.
 }
