@@ -117,7 +117,7 @@ test_that("test validateAgeGroup", {
 
 })
 
-test_that("test validateResultArguemnt", {
+test_that("test validateCdmArgument", {
 
 
 
@@ -181,6 +181,49 @@ test_that("test validateResultArguemnt", {
     )
   )
 
+  # implausible starting observation date
+  cdm_object <- list(
+    "observation_period" = dplyr::tibble(
+      observation_period_id = c(1L,1L), person_id = c(1L,1L),
+      observation_period_start_date = c(as.Date("1700-01-01"),as.Date("2000-01-01")),
+      observation_period_end_date = c(as.Date("2000-01-01"),as.Date("2023-01-01")),
+      period_type_concept_id = c(0L,0L)
+    ))
+  class(cdm_object) <- c("cdm_reference")
+  expect_error(
+    validateCdmArgument(
+      cdm_object,
+      checkPlausibleObservationDates = TRUE
+    )
+  )
+  expect_no_error(
+    validateCdmArgument(
+      cdm_object,
+      checkPlausibleObservationDates = FALSE
+    )
+  )
+
+  # implausible ending observation date
+  cdm_object <- list(
+    "observation_period" = dplyr::tibble(
+      observation_period_id = c(1L,1L), person_id = c(1L,1L),
+      observation_period_start_date = c(as.Date("2000-01-01"),as.Date("2000-01-02")),
+      observation_period_end_date = c(as.Date("2000-01-01"),as.Date("2100-01-01")),
+      period_type_concept_id = c(0L,0L)
+    ))
+  class(cdm_object) <- c("cdm_reference")
+  expect_error(
+    validateCdmArgument(
+      cdm_object,
+      checkPlausibleObservationDates = TRUE
+    )
+  )
+  expect_no_error(
+    validateCdmArgument(
+      cdm_object,
+      checkPlausibleObservationDates = FALSE
+    )
+  )
 
 })
 
