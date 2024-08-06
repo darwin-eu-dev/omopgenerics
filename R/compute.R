@@ -18,7 +18,7 @@
 #'
 #' @param x Table in the cdm.
 #' @param name Name to store the table with.
-#' @param temporary Whether to store table temporarily (TRUE) or permanent
+#' @param temporary Whether to store table temporarily (TRUE) or permanently
 #' (FALSE).
 #' @param overwrite Whether to overwrite previously existing table with name
 #' same.
@@ -29,10 +29,13 @@
 #' @export
 #' @importFrom dplyr compute
 compute.cdm_table <- function(x,
-                              name = uniqueTableName(),
-                              temporary = TRUE,
+                              name = NULL,
+                              temporary = NULL,
                               overwrite = TRUE,
                               ...) {
+  if (is.character(name) & is.null(temporary)) temporary <- FALSE
+  if (is.null(name)) name <- uniqueTableName()
+  if (is.null(temporary)) temporary <- TRUE
   src <- tableSource(x)
   cl <- class(src)[class(src) != "cdm_source"]
   cx <- class(x)

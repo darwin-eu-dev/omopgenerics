@@ -4,14 +4,14 @@
 \alias{compute.cdm_table}
 \title{Store results in a table.}
 \usage{
-\method{compute}{cdm_table}(x, name = uniqueTableName(), temporary = TRUE, overwrite = TRUE, ...)
+\method{compute}{cdm_table}(x, name = NULL, temporary = NULL, overwrite = TRUE, ...)
 }
 \arguments{
 \item{x}{Table in the cdm.}
 
 \item{name}{Name to store the table with.}
 
-\item{temporary}{Whether to store table temporarily (TRUE) or permanent
+\item{temporary}{Whether to store table temporarily (TRUE) or permanently
 (FALSE).}
 
 \item{overwrite}{Whether to overwrite previously existing table with name
