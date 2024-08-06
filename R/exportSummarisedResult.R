@@ -45,11 +45,15 @@ exportSummarisedResult <- function(...,
 
   # cdm name
   cdmName <- results$cdm_name |> unique() |> paste0(collapse = "_")
-  fileName <- gsub(pattern = "\\{cdm_name\\}", replacement = cdmName, x = fileName)
+  fileName <- stringr::str_replace(string = fileName,
+                       pattern = "\\{cdm_name\\}",
+                       replacement = cdmName)
 
   # date
-  date <- gsub("-", "_", Sys.Date() |> as.character())
-  fileName <- gsub(pattern = "\\{date\\}", replacement = date, x = fileName)
+  date <- format(Sys.Date(), format = "%Y_%m_%d") |> as.character()
+  fileName <- stringr::str_replace(string = fileName,
+                                   pattern = "\\{date\\}",
+                                   replacement = date)
 
   # to tibble + pivot settings
   x <- results |>

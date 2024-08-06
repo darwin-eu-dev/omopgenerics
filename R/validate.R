@@ -293,7 +293,9 @@ getWindowNames <- function(window, snakeCase) {
   #snakecase
   getname <- function(element) {
     element <- tolower(as.character(element))
-    element <- gsub("-", "m", element)
+    element <- stringr::str_replace_all(string = element,
+                             pattern = "-",
+                             replacement = "m")
     invisible(paste0(element[1], "_to_", element[2]))
   }
   #snakecase False

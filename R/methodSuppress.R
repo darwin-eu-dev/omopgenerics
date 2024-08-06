@@ -173,7 +173,9 @@ suppressLinkage <- function(result, linkedSuppression) {
         "estimate_type", "estimate_value", "suppress", "is_count"
       ))) |>
       dplyr::mutate(
-        "estimate_name" = gsub(.env$nm, .env$subs, .data$estimate_name)
+        "estimate_name" = stringr::str_replace(string = .data$estimate_name,
+                                               pattern = .env$nm,
+                                               replacement = .env$subs)
       ) |>
       dplyr::mutate("suppress_linked" = T)
   }
