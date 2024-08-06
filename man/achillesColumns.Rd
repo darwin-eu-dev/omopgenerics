@@ -4,14 +4,13 @@
 \alias{achillesColumns}
 \title{Required columns for each of the achilles result tables}
 \usage{
-achillesColumns(table, required = TRUE, version = "5.3")
+achillesColumns(table, onlyRequired = TRUE, version = "5.3")
 }
 \arguments{
 \item{table}{Table for which to see the required columns. One of
 "achilles_analysis", "achilles_results", or "achilles_results_dist".}
 
-\item{required}{Whether to include only required fields. If NULL all columns
-will be shown.}
+\item{onlyRequired}{Whether to include only required fields.}
 
 \item{version}{Version of the OMOP Common Data Model.}
 }
