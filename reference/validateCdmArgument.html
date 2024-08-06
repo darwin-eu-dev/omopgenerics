@@ -53,6 +53,7 @@
 <span>  <span class="va">cdm</span>,</span>
 <span>  checkOverlapObservation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  checkStartBeforeEndObservation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  checkPlausibleObservationDates <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  validation <span class="op">=</span> <span class="st">"error"</span>,</span>
 <span>  call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -67,11 +68,19 @@
 
 
 <dt id="arg-checkoverlapobservation">checkOverlapObservation<a class="anchor" aria-label="anchor" href="#arg-checkoverlapobservation"></a></dt>
-<dd><p>TRUE to perform check on no overlap observation period</p></dd>
+<dd><p>TRUE to perform check on no overlap
+observation period</p></dd>
 
 
 <dt id="arg-checkstartbeforeendobservation">checkStartBeforeEndObservation<a class="anchor" aria-label="anchor" href="#arg-checkstartbeforeendobservation"></a></dt>
-<dd><p>TRUE to perform check on correct observational start and end date</p></dd>
+<dd><p>TRUE to perform check on correct
+observational start and end date</p></dd>
+
+
+<dt id="arg-checkplausibleobservationdates">checkPlausibleObservationDates<a class="anchor" aria-label="anchor" href="#arg-checkplausibleobservationdates"></a></dt>
+<dd><p>TRUE to perform check that there are
+no implausible observation period start dates (before 1800-01-01) or end
+dates (after the current date)</p></dd>
 
 
 <dt id="arg-validation">validation<a class="anchor" aria-label="anchor" href="#arg-validation"></a></dt>
