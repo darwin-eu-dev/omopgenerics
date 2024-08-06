@@ -15,7 +15,7 @@ test_that("test getCohortName and getCohortId", {
     cohort_end_date = Sys.Date()
   )
   attr(x, "cohort_set") <- dplyr::tibble(
-    cohort_definition_id = c(1, 2, 3, 4),
+    cohort_definition_id = c(1, 2, 3, 4) |> as.integer(),
     cohort_name = c("condition1", "drug1", "covid", "asthma")
   )
   y <- dplyr::tibble(
@@ -30,23 +30,23 @@ test_that("test getCohortName and getCohortId", {
 
   expect_identical(
     getCohortId(cdm$my_first_cohort),
-    c("condition1" = 1, "drug1" = 2, "covid" = 3, "asthma" = 4)
+    c("condition1" = 1L, "drug1" = 2L, "covid" = 3L, "asthma" = 4L)
   )
 
   expect_identical(
-    getCohortId(cdm$my_first_cohort, "drug1"), c("drug1" = 2)
+    getCohortId(cdm$my_first_cohort, "drug1"), c("drug1" = 2L)
   )
   expect_identical(
     getCohortId(cdm$my_first_cohort, c("asthma", "covid")),
-    c(asthma = 4, covid = 3)
+    c(asthma = 4L, covid = 3L)
   )
   expect_identical(
     getCohortId(cdm$my_first_cohort, c("covid", "asthma")),
-    c(covid = 3, asthma = 4)
+    c(covid = 3L, asthma = 4L)
   )
   expect_warning(expect_identical(
     getCohortId(cdm$my_first_cohort, c("covid", "random", "asthma")),
-    c(covid = 3, asthma = 4)
+    c(covid = 3L, asthma = 4L)
   ))
   expect_warning(getCohortId(cdm$my_first_cohort, "random"))
 

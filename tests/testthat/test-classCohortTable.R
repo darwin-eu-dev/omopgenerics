@@ -18,7 +18,7 @@ test_that("test create cohort", {
     cdm = cdm,
     name = "cohort1",
     table = dplyr::tibble(
-      cohort_definition_id = 1, subject_id = 1,
+      cohort_definition_id = 1L, subject_id = 1L,
       cohort_start_date = as.Date("2020-01-01"),
       cohort_end_date = as.Date("2020-01-10")
     )
@@ -382,4 +382,69 @@ test_that("test error if attributes lost after class creation", {
   attr(cdm$cohort1, "cohort_set") <- NULL
   expect_error(cdm$cohort1 |> dplyr::collect())
 
+})
+
+test_that("test that tables are casted", {
+  person <- dplyr::tibble(
+    person_id = 1L, gender_concept_id = 0L, year_of_birth = 1990L,
+    race_concept_id = 0L, ethnicity_concept_id = 0L
+  )
+  observation_period <- dplyr::tibble(
+    observation_period_id = 1L,
+    person_id = 1L,
+    observation_period_start_date = as.Date("2000-01-01"),
+    observation_period_end_date = as.Date("2025-12-31"),
+    period_type_concept_id = 0L
+  )
+  cdm <- cdmFromTables(
+    tables = list("person" = person, "observation_period" = observation_period),
+    cdmName = "test"
+  )
+  cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
+    cohort_definition_id = 1,
+    subject_id = 1,
+    cohort_start_date = as.Date(c("2020-01-01")),
+    cohort_end_date = as.Date(c("2020-01-10"))
+  ))
+  expect_warning(cohort1 <- newCohortTable(cdm$cohort1))
+  cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
+    cohort_definition_id = 1L,
+    subject_id = 1L,
+    cohort_start_date = as.Date(c("2020-01-01")),
+    cohort_end_date = as.Date(c("2020-01-10"))
+  ))
+  expect_no_warning(cohort2 <- newCohortTable(cdm$cohort1))
+  expect_no_warning(cohort3 <- newCohortTable(
+    cdm$cohort1, cohortSetRef = dplyr::tibble(
+      cohort_definition_id = 1L, cohort_name = "cohort1", set = TRUE
+    )))
+  expect_warning(cohort4 <- newCohortTable(
+    cdm$cohort1, cohortSetRef = dplyr::tibble(
+      cohort_definition_id = 1, cohort_name = "cohort1", set = TRUE
+    )))
+  expect_identical(cohort3, cohort4)
+  expect_no_warning(cohort5 <- newCohortTable(
+    cdm$cohort1, cohortAttritionRef = dplyr::tibble(
+      cohort_definition_id = 1L, number_records = 1L, number_subjects = 1L,
+      reason_id = 1L, reason = "Individual of interest", excluded_records = 0L,
+      excluded_subjects = 0L
+    )))
+  expect_warning(cohort6 <- newCohortTable(
+    cdm$cohort1, cohortAttritionRef = dplyr::tibble(
+      cohort_definition_id = 1L, number_records = 1L, number_subjects = 1L,
+      reason_id = 1L, reason = "Individual of interest", excluded_records = 0,
+      excluded_subjects = 0L
+    )))
+  expect_identical(cohort5, cohort6)
+  expect_no_warning(cohort7 <- newCohortTable(
+    cdm$cohort1, cohortCodelistRef = dplyr::tibble(
+      cohort_definition_id = 1L, codelist_name = "covid", concept_id = 1L,
+      type = "index event"
+    )))
+  expect_warning(cohort8 <- newCohortTable(
+    cdm$cohort1, cohortCodelistRef = dplyr::tibble(
+      cohort_definition_id = 1L, codelist_name = "covid", concept_id = "1",
+      type = "index event"
+    )))
+  expect_identical(cohort7, cohort8)
 })
