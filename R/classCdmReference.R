@@ -326,11 +326,11 @@ cdmName.cdm_table <- function(x) {
   x |> cdmReference() |> cdmName()
 }
 
-#' Get the version of a cdm_reference.
+#' Get the version of an object.
 #'
-#' @param cdm A cdm_reference object.
+#' @param x Object to know the cdm version of an object.
 #'
-#' @return Version of the cdm_reference.
+#' @return A character vector indicating the cdm version.
 #'
 #' @export
 #'
@@ -356,15 +356,25 @@ cdmName.cdm_table <- function(x) {
 #' )
 #'
 #' cdmVersion(cdm)
+#' cdmVersion(cdm$person)
 #' }
-cdmVersion <- function(cdm) {
-  assertClass(cdm, "cdm_reference")
-  attr(cdm, "cdm_version")
+cdmVersion <- function(x) {
+  UseMethod("cdmVersion")
 }
 
-#' Get the source of a cdm_reference.
+#' @export
+cdmVersion.cdm_reference <- function(x) {
+  attr(x, "cdm_version")
+}
+
+#' @export
+cdmVersion.cdm_table <- function(x) {
+  x |> cdmReference() |> cdmVersion()
+}
+
+#' Get the cdmSource of an object.
 #'
-#' @param cdm A cdm_reference object.
+#' @param x Object to obtain the cdmSource.
 #'
 #' @return A cdm_source object.
 #'
@@ -392,13 +402,25 @@ cdmVersion <- function(cdm) {
 #' )
 #'
 #' cdmSource(cdm)
+#' cdmSource(cdm$person)
 #' }
-cdmSource <- function(cdm) {
-  assertClass(cdm, "cdm_reference")
-  attr(cdm, "cdm_source")
+cdmSource <- function(x) {
+  UseMethod("cdmSource")
+}
+
+#' @export
+cdmSource.cdm_reference <- function(x) {
+  attr(x, "cdm_source")
+}
+
+#' @export
+cdmSource.cdm_table <- function(x) {
+  x |> cdmReference() |> cdmSource()
 }
 
 #' Get the source type of a cdm_reference object.
+#'
+#' `r lifecycle::badge("deprecated")`
 #'
 #' @param  cdm A cdm_reference object.
 #'
@@ -428,10 +450,12 @@ cdmSource <- function(cdm) {
 #'   cdmName = "mock"
 #' )
 #'
-#' cdmSourceType(cdm = cdm)
+#' cdmSourceType(cdm)
 #' }
 cdmSourceType <- function(cdm) {
-  cdm |> cdmSource() |> sourceType()
+  lifecycle::deprecate_soft(
+    when = "0.3.0", what = "cdmSourceType()", with = "sourceType()")
+  sourceType(cdm)
 }
 
 #' Subset a cdm reference object.
@@ -671,7 +695,7 @@ cdmSourceType <- function(cdm) {
 #' print(cdm)
 #' }
 print.cdm_reference <- function(x, ...) {
-  type <- cdmSource(x) |> sourceType()
+  type <- sourceType(x)
   name <- cdmName(x)
   nms <- names(x)
   classes <- lapply(names(x), function(nm) {

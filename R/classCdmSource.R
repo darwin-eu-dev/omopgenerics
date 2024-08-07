@@ -91,15 +91,29 @@ print.cdm_source <- function(x, ...) {
   )
 }
 
-#' Get the source type of a cdm_source.
+#' Get the source type of an object.
 #'
-#' @param cdmSource A cdm_source object.
+#' @param x Object to know the source type.
 #'
 #' @return A character vector that defines the type of cdm_source.
 #'
 #' @export
 #'
-sourceType <- function(cdmSource) {
-  assertClass(cdmSource, "cdm_source")
-  attr(cdmSource, "source_type")
+sourceType <- function(x) {
+  UseMethod("sourceType")
+}
+
+#' @export
+sourceType.cdm_source <- function(x) {
+  attr(x, "source_type")
+}
+
+#' @export
+sourceType.cdm_reference <- function(x) {
+  x |> cdmSource() |> sourceType()
+}
+
+#' @export
+sourceType.cdm_table <- function(x) {
+  x |> cdmReference() |> sourceType()
 }

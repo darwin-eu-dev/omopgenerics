@@ -2,18 +2,18 @@
 % Please edit documentation in R/classCdmReference.R
 \name{cdmSource}
 \alias{cdmSource}
-\title{Get the source of a cdm_reference.}
+\title{Get the cdmSource of an object.}
 \usage{
-cdmSource(cdm)
+cdmSource(x)
 }
 \arguments{
-\item{cdm}{A cdm_reference object.}
+\item{x}{Object to obtain the cdmSource.}
 }
 \value{
 A cdm_source object.
 }
 \description{
-Get the source of a cdm_reference.
+Get the cdmSource of an object.
 }
 \examples{
 \donttest{
@@ -37,5 +37,6 @@ cdm <- cdmFromTables(
 )
 
 cdmSource(cdm)
+cdmSource(cdm$person)
 }
 }
