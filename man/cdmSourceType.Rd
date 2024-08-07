@@ -14,7 +14,7 @@ A character vector with the type of source of the cdm_reference
 object.
 }
 \description{
-Get the source type of a cdm_reference object.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
 \examples{
 \donttest{
@@ -37,6 +37,6 @@ cdm <- cdmFromTables(
   cdmName = "mock"
 )
 
-cdmSourceType(cdm = cdm)
+cdmSourceType(cdm)
 }
 }

@@ -713,7 +713,7 @@ getEmptyField <- function(datatype) {
 missingCohortTableNameError <- function(cdm, validation = "error"){
 
 if(validation == "error"){
-  if(cdmSourceType(cdm) == "local"){
+  if(sourceType(cdm) == "local"){
     cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
                      "i" = "Did you use insertTable() when adding the table to the cdm reference?"))
 
@@ -723,7 +723,7 @@ if(validation == "error"){
                      "i" = "Use dplyr::compute(temporary = FALSE, ...) to create a permanent table from a temporary table."))
   }
 } else if (validation == "warning"){
-  if(cdmSourceType(cdm) == "local"){
+  if(sourceType(cdm) == "local"){
     cli::cli_warn(c("Table name for cohort could not be inferred.",
                      "i" = "Did you use insertTable() when adding the table to the cdm reference?"))
 
