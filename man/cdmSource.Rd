@@ -4,10 +4,12 @@
 \alias{cdmSource}
 \title{Get the cdmSource of an object.}
 \usage{
-cdmSource(x)
+cdmSource(x, cdm = lifecycle::deprecated())
 }
 \arguments{
 \item{x}{Object to obtain the cdmSource.}
+
+\item{cdm}{Deprecated, use x please.}
 }
 \value{
 A cdm_source object.
