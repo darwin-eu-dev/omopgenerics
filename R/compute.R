@@ -41,7 +41,7 @@ compute.cdm_table <- function(x,
   cx <- class(x)
 
   logFile <- getOption("omopgenerics.log_sql_path")
-  if(!is.null(logFile)){
+  if(!is.null(logFile) && inherits(cdmSource(x), "db_cdm")){
     # log sql if option set
     # must have specified a directory that exists
     if (dir.exists(logFile)) {
