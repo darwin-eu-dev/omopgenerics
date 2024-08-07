@@ -415,7 +415,12 @@ cdmSource.cdm_reference <- function(x) {
 
 #' @export
 cdmSource.cdm_table <- function(x) {
-  x |> cdmReference() |> cdmSource()
+  cdmRef <- x |> cdmReference()
+  if(!is.null(cdmRef)){
+    return(cdmSource(cdmRef))
+  } else {
+    return(NULL)
+  }
 }
 
 #' Get the source type of a cdm_reference object.
