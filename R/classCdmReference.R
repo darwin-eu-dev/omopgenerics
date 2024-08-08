@@ -375,6 +375,7 @@ cdmVersion.cdm_table <- function(x) {
 #' Get the cdmSource of an object.
 #'
 #' @param x Object to obtain the cdmSource.
+#' @param cdm Deprecated, use x please.
 #'
 #' @return A cdm_source object.
 #'
@@ -404,17 +405,21 @@ cdmVersion.cdm_table <- function(x) {
 #' cdmSource(cdm)
 #' cdmSource(cdm$person)
 #' }
-cdmSource <- function(x) {
+cdmSource <- function(x, cdm = lifecycle::deprecated()) {
+  if (lifecycle::is_present(cdm)) {
+    lifecycle::deprecate_soft(when = "0.3.0", what = "cdmSource(cdm = )", with = "cdmSource(x = )")
+    return(cdmSource(x = cdm))
+  }
   UseMethod("cdmSource")
 }
 
 #' @export
-cdmSource.cdm_reference <- function(x) {
+cdmSource.cdm_reference <- function(x, ...) {
   attr(x, "cdm_source")
 }
 
 #' @export
-cdmSource.cdm_table <- function(x) {
+cdmSource.cdm_table <- function(x, ...) {
   x |> cdmReference() |> cdmSource()
 }
 
