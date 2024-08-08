@@ -326,6 +326,11 @@ cdmName.cdm_table <- function(x) {
   x |> cdmReference() |> cdmName()
 }
 
+#' @export
+cdmName.default <- function(x) {
+  NULL
+}
+
 #' Get the version of an object.
 #'
 #' @param x Object to know the cdm version of an object.
@@ -370,6 +375,11 @@ cdmVersion.cdm_reference <- function(x) {
 #' @export
 cdmVersion.cdm_table <- function(x) {
   x |> cdmReference() |> cdmVersion()
+}
+
+#' @export
+cdmVersion.default <- function(x) {
+  NULL
 }
 
 #' Get the cdmSource of an object.
@@ -425,7 +435,6 @@ cdmSource.cdm_table <- function(x, ...) {
 
 #' @export
 cdmSource.default <- function(x, ...) {
-  cli::cli_warn(c("!" = "No cdm source found."))
   NULL
 }
 

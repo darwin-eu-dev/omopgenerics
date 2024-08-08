@@ -117,3 +117,8 @@ sourceType.cdm_reference <- function(x) {
 sourceType.cdm_table <- function(x) {
   x |> cdmReference() |> sourceType()
 }
+
+#' @export
+sourceType.default <- function(x) {
+  NULL
+}
