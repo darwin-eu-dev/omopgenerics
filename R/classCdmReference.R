@@ -423,6 +423,12 @@ cdmSource.cdm_table <- function(x, ...) {
   x |> cdmReference() |> cdmSource()
 }
 
+#' @export
+cdmSource.default <- function(x, ...) {
+  cli::cli_warn(c("!" = "No cdm source found."))
+  NULL
+}
+
 #' Get the source type of a cdm_reference object.
 #'
 #' `r lifecycle::badge("deprecated")`
