@@ -415,12 +415,13 @@ cdmSource.cdm_reference <- function(x) {
 
 #' @export
 cdmSource.cdm_table <- function(x) {
-  cdmRef <- x |> cdmReference()
-  if(!is.null(cdmRef)){
-    return(cdmSource(cdmRef))
-  } else {
-    return(NULL)
-  }
+  x |> cdmReference() |> cdmSource()
+}
+
+#' @export
+cdmSource.default <- function(x) {
+  cli::cli_warn(c("!" = "No cdm source found."))
+  NULL
 }
 
 #' Get the source type of a cdm_reference object.
