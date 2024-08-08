@@ -424,7 +424,7 @@ cdmSource.cdm_table <- function(x, ...) {
 }
 
 #' @export
-cdmSource.default <- function(x) {
+cdmSource.default <- function(x, ...) {
   cli::cli_warn(c("!" = "No cdm source found."))
   NULL
 }
