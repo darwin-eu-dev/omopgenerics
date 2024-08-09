@@ -560,8 +560,11 @@ assertTrue <- function(x,
 #' Assert Date
 #'
 #' @param x Expression to check.
-#' @param length length of the date vector
+#' @param length Required length.
+#' @param na Whether it can contain NA values.
 #' @param null Whether it can be NULL.
+#' @param unique Whether it has to contain unique elements.
+#' @param named Whether it has to be named.
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message
 #'
@@ -570,22 +573,46 @@ assertTrue <- function(x,
 #'
 assertDate <- function(x,
                        length,
+                       na = FALSE,
                        null = FALSE,
+                       unique = FALSE,
+                       named = FALSE,
                        call = parent.frame(),
                        msg = NULL) {
   nm <- substitute(x) |> utils::capture.output()
   # create error message
+  if (is.null(msg)) {
+    msg <- errorMessage(
+      nm = nm, object = "a date vector", length = length, na = na,
+      null = null, unique = unique, named = named
+    )
+  }
 
   assertNull(x, nm, null, msg, call)
 
-  errorMessage <-
-    paste0(nm, " must be an object of class Date.")
+  # assert null
+  if (assertNull(x, nm, null, msg, call)) {
+    # assert class
+    errorMessage <-
+      paste0(nm, " must be an object of class Date.")
 
-  if (!class(x) %in% "Date") {
-    cli::cli_abort(errorMessage, call = call)
+    if (!class(x) %in% "Date") {
+      cli::cli_abort(errorMessage, call = call)
+    }
+
+    # assert length
+    assertLength(x, nm, length, msg, call)
+
+    # assert na
+    assertNa(x, nm, na, msg, call)
+
+    # assert unique
+    assertUnique(x, nm, unique, msg, call)
+
+    # assert named
+    assertNamed(x, nm, named, msg, call)
+
   }
-
-  assertLength(x, nm,length, msg, call)
 
   invisible(x)
 }

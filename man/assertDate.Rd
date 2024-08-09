@@ -4,14 +4,29 @@
 \alias{assertDate}
 \title{Assert Date}
 \usage{
-assertDate(x, length, null = FALSE, call = parent.frame(), msg = NULL)
+assertDate(
+  x,
+  length,
+  na = FALSE,
+  null = FALSE,
+  unique = FALSE,
+  named = FALSE,
+  call = parent.frame(),
+  msg = NULL
+)
 }
 \arguments{
 \item{x}{Expression to check.}
 
-\item{length}{length of the date vector}
+\item{length}{Required length.}
+
+\item{na}{Whether it can contain NA values.}
 
 \item{null}{Whether it can be NULL.}
+
+\item{unique}{Whether it has to contain unique elements.}
+
+\item{named}{Whether it has to be named.}
 
 \item{call}{Call argument that will be passed to \code{cli} error message.}
 
