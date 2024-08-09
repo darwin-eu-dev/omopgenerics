@@ -557,6 +557,42 @@ assertTrue <- function(x,
   return(invisible(x))
 }
 
+#' Assert Date
+#'
+#' @param x Expression to check.
+#' @param length length of the date vector
+#' @param null Whether it can be NULL.
+#' @param call Call argument that will be passed to `cli` error message.
+#' @param msg Custom error message
+#'
+#' @return x
+#' @export
+#'
+assertDate <- function(x,
+                       length,
+                       null = FALSE,
+                       call = parent.frame(),
+                       msg = NULL) {
+  nm <- substitute(x) |> utils::capture.output()
+  # create error message
+
+  assertNull(x, nm, null, msg, call)
+
+  errorMessage <-
+    paste0(nm, " must be an object of class Date.")
+
+  if (!class(x) %in% "Date") {
+    cli::cli_abort(errorMessage, call = call)
+  }
+
+  assertLength(x, nm,length, msg, call)
+
+  invisible(x)
+}
+
+
+
+
 
 errorMessage <- function(nm,
                          object,
