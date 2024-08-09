@@ -176,6 +176,10 @@ test_that("test assertList", {
   expect_error(assertList(list(1, "2"), class = "numeric"))
   expect_error(assertList(list(1, "2"), class = "character"))
   expect_no_error(assertList(list(1, "2"), class = c("character", "numeric")))
+
+  #check tibble
+  expect_error(assertList(tibble::tibble(1,2)))
+
 })
 
 test_that("test assertLogical", {

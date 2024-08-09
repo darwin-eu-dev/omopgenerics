@@ -264,7 +264,7 @@ assertList <- function(x,
     xNoNa <- x[!is.na(x)]
 
     # assert class
-    if (!is.list(x)) {
+    if (!inherits(x,"list")) {
       c("!" = "{.strong `{nm}` is not a list.}", msg) |>
         cli::cli_abort(call = call)
     }
