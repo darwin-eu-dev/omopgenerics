@@ -178,7 +178,7 @@ test_that("test assertList", {
   expect_no_error(assertList(list(1, "2"), class = c("character", "numeric")))
 
   #check tibble
-  expect_error(assertList(tibble::tibble(1,2)))
+  expect_error(assertList(tibble(1,2)))
 
 })
 
