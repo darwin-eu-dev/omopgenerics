@@ -76,6 +76,69 @@ compute.local_cdm <- function(x, ...) {
   return(x)
 }
 
+#' @export
+compute.cohort_table <- function(x,
+                                 name = NULL,
+                                 temporary = NULL,
+                                 uncohort = FALSE,
+                                 ...) {
+  # initial checks
+  if (is.character(name) & is.null(temporary)) temporary <- FALSE
+  if (is.null(name)) name <- uniqueTableName()
+  if (is.null(temporary)) temporary <- TRUE
+  assertLogical(uncohort, length = 1)
+  assertLogical(temporary, length = 1)
+  assertCharacter(name, length = 1, na = temporary)
+
+  # warn if uncohort and not explicitly asked for it
+  oldName <- tableName(x)
+  if (temporary == TRUE && uncohort == FALSE) {
+    if (!missing(uncohort)) {
+      cli::cli_inform(c("!" = "`uncohort` = {.pkg FALSE} not compatible with
+                        `temporary` = {.pkg TRUE} -> uncohort was changed to {.pkg TRUE}"))
+    }
+    uncohort <- TRUE
+    cli::cli_warn(c("!" = "The cohort {.strong {oldName}} is computed to
+                    temporary table and it will lose the class `cohort_table`"))
+  }
+
+  # inform new tables if not asked explicitly to create
+  if (temporary == TRUE && oldName != name && uncohort == FALSE && !missing(uncohort)) {
+    newNames <- paste0(name, c("_set", "_attrition", "_codelist"))
+    cli::cli_inform(c(
+      "!" = "copying cohort from {.strong {oldName}} to {.strong {name}},
+      attributes will be copied to: {.pkg {newNames}}.",
+      "i" = "You can switch off this message setting the option: `uncohort` = FALSE"
+    ))
+  }
+
+  if (!uncohort) {
+    set <- settings(x)
+    atr <- attrition(x)
+    cod <- attr(x, "cohort_codelist") |>
+      dplyr::collect()
+  }
+
+  attr(x, "cohort_set") <- NULL
+  attr(x, "cohort_attrition") <- NULL
+  attr(x, "cohort_codelist") <- NULL
+
+  x <- x |>
+    removeClass("cohort_table") |>
+    dplyr::compute(name = name, temporary = temporary, ...)
+
+  if (!uncohort) {
+    x <- x|>
+      omopgenerics::newCohortTable(
+        cohortSetRef = set,
+        cohortAttritionRef = atr,
+        cohortCodelistRef = cod,
+        .softValidation = TRUE)
+  }
+
+  return(x)
+}
+
 #' Create a unique table name
 #'
 #' @param prefix Prefix for the table names.
