@@ -171,4 +171,3 @@ tmpPrefix <- function() {
   options(tmp_prefix_number = i)
   sprintf("tmp_%03i_", i)
 }
-
