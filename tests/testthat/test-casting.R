@@ -8,13 +8,13 @@ test_that("casting works", {
 
   # the column must be casted to character
   cols <- list(a = "character")
-  expect_warning(y <- castColumns(x, cols, name))
+  expect_warning(y <- castColumns(x, cols, name, cast = TRUE))
   expect_true(is.character(y$a))
 
   # only one of the two columns is casted
   cols <- list(a = "character", person_id = "integer")
   x <- dplyr::tibble(x = c(1, 2), person_id = "1", a = "asdf")
-  expect_warning(y <- castColumns(x, cols, name))
+  expect_warning(y <- castColumns(x, cols, name, cast = TRUE))
   expect_true(is.character(y$a))
   expect_true(is.integer(y$person_id))
   expect_true(is.numeric(y$x))
@@ -22,7 +22,7 @@ test_that("casting works", {
   # cast multiple columns
   cols <- list(a = "character", person_id = "integer", cohort_start_date = "date")
   x <- dplyr::tibble(x = c(1, 2), person_id = "1", a = "asdf", cohort_start_date = "2021-01-01")
-  expect_warning(y <- castColumns(x, cols, name))
+  expect_warning(y <- castColumns(x, cols, name, cast = TRUE))
   expect_true(is.character(y$a))
   expect_true(is.integer(y$person_id))
   expect_true(is.numeric(y$x))

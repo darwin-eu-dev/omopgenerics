@@ -18,7 +18,8 @@ test_that("test create cohort", {
     cdm = cdm,
     name = "cohort1",
     table = dplyr::tibble(
-      cohort_definition_id = 1L, subject_id = 1L,
+      cohort_definition_id = 1L,
+      subject_id = 1L,
       cohort_start_date = as.Date("2020-01-01"),
       cohort_end_date = as.Date("2020-01-10")
     )
@@ -55,7 +56,8 @@ test_that("test create cohort", {
     cdm = cdm,
     name = "cohort2",
     table = dplyr::tibble(
-      cohort_definition_id = c(1, 2), subject_id = 1,
+      cohort_definition_id = c(1, 2) |> as.integer(),
+      subject_id = 1L,
       cohort_start_date = as.Date("2020-01-01"),
       cohort_end_date = as.Date("2020-01-10")
     )
@@ -70,7 +72,8 @@ test_that("test create cohort", {
     cdm = cdm,
     name = "cohort3",
     table = dplyr::tibble(
-      cohort_definition_id = 1, subject_id = 1,
+      cohort_definition_id = 1L,
+      subject_id = 1L,
       cohort_start_date = as.Date("2020-01-01"),
       cohort_end_date = as.Date("2020-01-10")
     )
@@ -101,15 +104,15 @@ test_that("test create cohort", {
   )
 
   # check cohort set
-  cohort_set1 <- dplyr::tibble(cohort_definition_id = 1)
-  cohort_set2 <- dplyr::tibble(cohort_definition_id = 1, cohort_name = "hi")
+  cohort_set1 <- dplyr::tibble(cohort_definition_id = 1L)
+  cohort_set2 <- dplyr::tibble(cohort_definition_id = 1L, cohort_name = "hi")
   cohort_set3 <- dplyr::tibble(
-    cohort_definition_id = 1, cohort_name = "hi", rand = "random"
+    cohort_definition_id = 1L, cohort_name = "hi", rand = "random"
   )
   cohort_set4 <- dplyr::tibble(
-    cohort_definition_id = c(1, 2), cohort_name = c("hi", "ha")
+    cohort_definition_id = c(1, 2) |> as.integer(), cohort_name = c("hi", "ha")
   )
-  cohort_set5 <- dplyr::tibble(cohort_definition_id = 2, cohort_name = c("ha"))
+  cohort_set5 <- dplyr::tibble(cohort_definition_id = 2L, cohort_name = c("ha"))
   expect_error(cohort1 <- newCohortTable(cdm$cohort3, cohort_set1))
   expect_no_error(cohort2 <- newCohortTable(cdm$cohort3, cohort_set2))
   expect_no_error(cohort3 <- newCohortTable(cdm$cohort3, cohort_set3))
@@ -121,23 +124,24 @@ test_that("test create cohort", {
   expect_equal(x, cohort_set3 |> as.data.frame())
 
   # check cohort attrition
-  cohort_attrition1 <- dplyr::tibble(cohort_definition_id = 1)
+  cohort_attrition1 <- dplyr::tibble(cohort_definition_id = 1L)
   cohort_attrition2 <- dplyr::tibble(
-    cohort_definition_id = 1, number_records = 2, number_subjects = 1,
-    reason_id = 1, reason = "a", excluded_records = 0, excluded_subjects = 0
+    cohort_definition_id = 1L, number_records = 2L, number_subjects = 1L,
+    reason_id = 1L, reason = "a", excluded_records = 0L, excluded_subjects = 0L
   )
   cohort_attrition3 <- dplyr::tibble(
-    cohort_definition_id = 1, number_records = 2, number_subjects = 1,
-    reason_id = 1, reason = "a", excluded_records = 0, excluded_subjects = 0,
+    cohort_definition_id = 1L, number_records = 2L, number_subjects = 1L,
+    reason_id = 1L, reason = "a", excluded_records = 0L, excluded_subjects = 0L,
     extra_field = "random"
   )
   cohort_attrition4 <- dplyr::tibble(
-    cohort_definition_id = c(1, 2), number_records = 2, number_subjects = 1,
-    reason_id = 1, reason = "a", excluded_records = 0, excluded_subjects = 0
+    cohort_definition_id = c(1, 2) |> as.integer(), number_records = 2L,
+    number_subjects = 1L,
+    reason_id = 1L, reason = "a", excluded_records = 0L, excluded_subjects = 0L
   )
   cohort_attrition5 <- dplyr::tibble(
-    cohort_definition_id = 2, number_records = 2, number_subjects = 1,
-    reason_id = 1, reason = "a", excluded_records = 0, excluded_subjects = 0
+    cohort_definition_id = 2L, number_records = 2L, number_subjects = 1L,
+    reason_id = 1L, reason = "a", excluded_records = 0L, excluded_subjects = 0L
   )
   expect_error(cohort1 <- newCohortTable(cdm$cohort3, cohortAttritionRef = cohort_attrition1))
   expect_no_error(cohort2 <- newCohortTable(cdm$cohort3, cohortAttritionRef = cohort_attrition2))
@@ -161,7 +165,7 @@ test_that("test create cohort", {
   expect_equal(
     cohortCount(cohort2),
     dplyr::tibble(
-      cohort_definition_id = 1, number_records = 2, number_subjects = 1
+      cohort_definition_id = 1L, number_records = 2L, number_subjects = 1L
     )
   )
   expect_true(is.integer(cohortCount(cohort2)$cohort_definition_id))
@@ -171,7 +175,7 @@ test_that("test create cohort", {
   expect_equal(
     cohortCount(cohort3),
     dplyr::tibble(
-      cohort_definition_id = 1, number_records = 2, number_subjects = 1
+      cohort_definition_id = 1L, number_records = 2L, number_subjects = 1L
     )
   )
 
@@ -195,7 +199,7 @@ test_that("test create cohort", {
   expect_error(validateGeneratedCohortSet(cohort2))
 
   cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
-    cohort_definition_id = 1, subject_id = 1,
+    cohort_definition_id = 1L, subject_id = 1L,
     cohort_start_date = as.Date("2020-01-01"),
     cohort_end_date = as.Date("2020-01-10")
   ))
@@ -224,13 +228,14 @@ test_that("test create cohort", {
   # empty cohort id
   expect_no_error(newCohortTable(
     table = cdm$cohort1, cohortSetRef = dplyr::tibble(
-      cohort_definition_id = 1:2, cohort_name = c("cohort_1", "cohort_2")
+      cohort_definition_id = 1:2 |> as.integer(),
+      cohort_name = c("cohort_1", "cohort_2")
     ), cohortAttritionRef = NULL
   ))
 
   # test NA
   cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
-    cohort_definition_id = 1, subject_id = 1,
+    cohort_definition_id = 1L, subject_id = 1L,
     cohort_start_date = as.Date(NA),
     cohort_end_date = as.Date("2020-01-10")
   ))
@@ -238,7 +243,7 @@ test_that("test create cohort", {
 
   # not in observation
   cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
-    cohort_definition_id = 1, subject_id = 1,
+    cohort_definition_id = 1L, subject_id = 1L,
     cohort_start_date = as.Date("1020-01-01"),
     cohort_end_date = as.Date("1020-01-10")
   ))
@@ -246,7 +251,7 @@ test_that("test create cohort", {
 
   # test overlap
   cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
-    cohort_definition_id = 1, subject_id = 1,
+    cohort_definition_id = 1L, subject_id = 1L,
     cohort_start_date = as.Date(c("2020-01-01", "2020-01-10")),
     cohort_end_date = as.Date(c("2020-01-10", "2020-01-25"))
   ))
@@ -254,7 +259,7 @@ test_that("test create cohort", {
 
   # test start before end
   cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
-    cohort_definition_id = 1, subject_id = 1,
+    cohort_definition_id = 1L, subject_id = 1L,
     cohort_start_date = as.Date(c("2020-01-01")),
     cohort_end_date = as.Date(c("2019-01-10"))
   ))
@@ -280,7 +285,7 @@ test_that("test validateCohortArgument", {
 
   # test overlap
   cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
-    cohort_definition_id = 1, subject_id = 1,
+    cohort_definition_id = 1L, subject_id = 1L,
     cohort_start_date = as.Date(c("2020-01-01", "2020-01-10")),
     cohort_end_date = as.Date(c("2020-01-10", "2020-01-25"))
   ))
@@ -293,7 +298,7 @@ test_that("test validateCohortArgument", {
 
   # test NA
   cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
-    cohort_definition_id = 1, subject_id = 1,
+    cohort_definition_id = 1L, subject_id = 1L,
     cohort_start_date = as.Date(NA),
     cohort_end_date = as.Date("2020-01-10")
   ))
@@ -309,7 +314,7 @@ test_that("test validateCohortArgument", {
 
   # not in observation
   cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
-    cohort_definition_id = 1, subject_id = 1,
+    cohort_definition_id = 1L, subject_id = 1L,
     cohort_start_date = as.Date("1020-01-01"),
     cohort_end_date = as.Date("1020-01-10")
   ))
@@ -322,7 +327,8 @@ test_that("test validateCohortArgument", {
 
   # test start before end
   cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
-    cohort_definition_id = 1, subject_id = 1,
+    cohort_definition_id = 1L,
+    subject_id = 1L,
     cohort_start_date = as.Date(c("2020-01-01")),
     cohort_end_date = as.Date(c("2019-01-10"))
   ))
@@ -371,7 +377,7 @@ test_that("test error if attributes lost after class creation", {
   )
 
   cdm <- insertTable(cdm, name = "cohort1", table = dplyr::tibble(
-    cohort_definition_id = 1, subject_id = 1,
+    cohort_definition_id = 1L, subject_id = 1L,
     cohort_start_date = as.Date(c("2020-01-01")),
     cohort_end_date = as.Date(c("2020-01-10"))
   ))
@@ -398,7 +404,7 @@ test_that("test that tables are casted", {
     observation_period_id = 1L,
     person_id = 1L,
     observation_period_start_date = as.Date("2000-01-01"),
-    observation_period_end_date = as.Date("2025-12-31"),
+    observation_period_end_date = as.Date("2023-12-31"),
     period_type_concept_id = 0L
   )
   cdm <- cdmFromTables(

@@ -62,8 +62,8 @@ test_that("test that classes and attributes are keep", {
     period_type_concept_id = 0L
   )
   cohort1 <- dplyr::tibble(
-    cohort_definition_id = c(1,2),
-    subject_id = c(1,1),
+    cohort_definition_id = c(1,2) |> as.integer(),
+    subject_id = c(1,1) |> as.integer(),
     cohort_start_date = as.Date("2020-01-01"),
     cohort_end_date = as.Date("2020-01-10")
   )
