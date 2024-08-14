@@ -8,6 +8,7 @@ validateNameArgument(
   name,
   cdm = NULL,
   validation = "error",
+  null = FALSE,
   call = parent.frame()
 )
 }
@@ -18,6 +19,8 @@ validateNameArgument(
 already exists in the cdm.}
 
 \item{validation}{How to perform validation: "error", "warning".}
+
+\item{null}{If TRUE, name can be NULL}
 
 \item{call}{A call argument to pass to cli functions.}
 }
