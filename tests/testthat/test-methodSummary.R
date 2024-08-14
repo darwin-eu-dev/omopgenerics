@@ -97,8 +97,8 @@ test_that("summary a generated cohort set", {
     period_type_concept_id = 0L
   )
   cohort <- dplyr::tibble(
-    cohort_definition_id = 1,
-    subject_id = 1,
+    cohort_definition_id = 1L,
+    subject_id = 1L,
     cohort_start_date = as.Date("2020-01-01"),
     cohort_end_date = as.Date("2020-01-01")
   )
@@ -111,7 +111,7 @@ test_that("summary a generated cohort set", {
   expect_no_error(summary(cdm$cohort2))
   cdm$cohort2 <- cdm$cohort2 |>
     newCohortTable(cohortSetRef = dplyr::tibble(
-      cohort_definition_id = 1, cohort_name = "my_cohort", parameter = 1
+      cohort_definition_id = 1L, cohort_name = "my_cohort", parameter = 1
     ))
   expect_no_error(cdm <- bind(cdm$cohort1, cdm$cohort2, name = "cohort3"))
   expect_no_error(summary(cdm$cohort3))

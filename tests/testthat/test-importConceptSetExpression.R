@@ -37,8 +37,10 @@ test_that("import concept set expression", {
   expect_true(x[[2]]$mapped  == FALSE)
 
   # cohort jsons - won't work
-  expect_warning(x <- importConceptSetExpression(path =  system.file(package = "omopgenerics",
-                                     "cohorts_for_mock")))
+  expect_warning(expect_warning(
+    x <- importConceptSetExpression(path =  system.file(package = "omopgenerics",
+                                     "cohorts_for_mock"))
+  ))
   expect_true(length(x) == 0)
 
   # file with both cohorts and concept set jsons

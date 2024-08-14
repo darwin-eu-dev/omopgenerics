@@ -139,7 +139,7 @@ updateAttrition <- function(cohort, cohortId, reason) {
           "reason_id" = max(.data$reason_id), .groups = "drop"
         ) |>
         dplyr::mutate(
-          "reason_id" = .data$reason_id + 1, "reason" = .env$reason
+          "reason_id" = .data$reason_id + 1L, "reason" = .env$reason
         ),
       by = "cohort_definition_id"
     ) |>

@@ -14,11 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-castColumns <- function(table, cols, name) {
+castColumns <- function(table, cols, name, cast = FALSE) {
   colsToCast <- detectColsToCast(table, cols)
   if (length(colsToCast$new) > 0) {
-    warnColsToCast(colsToCast, name)
-    table <- castTableColumns(table, colsToCast)
+    warnColsToCast(colsToCast, name, cast)
+    if (cast) table <- castTableColumns(table, colsToCast)
   }
   return(table)
 }
@@ -34,15 +34,27 @@ detectColsToCast <- function(table, cols) {
     "new" = cols[differentValues], "old" = colTypes[differentValues])
   return(colsToCast)
 }
-warnColsToCast <- function(colsToCast, name) {
+warnColsToCast <- function(colsToCast, name, cast) {
   msg <- NULL
   nms <- names(colsToCast$new)
+  if (cast) {
+    origin <- "from"
+    final <- "to"
+    casted <- "casted "
+    as <- "as "
+  } else {
+    origin <- "observed"
+    final <- "expected"
+    casted <- ""
+    as <- ""
+  }
   for (nm in nms) {
     msg <- c(msg, "*" = paste0(
-      "`", nm, "` from {.pkg ", colsToCast$old[[nm]], "} to {.pkg ",
+      "`", nm, "` {origin} {.pkg ", colsToCast$old[[nm]], "} {final} {.pkg ",
       colsToCast$new[[nm]], "}"))
   }
-  msg <- c("!" = "{length(colsToCast$new)} casted column{?s} in {.strong {name}} as do not match expected column type:", msg)
+  msg <- c("!" = "{length(colsToCast$new)} {casted}column{?s} in {.strong {name}} {as}do not match expected column type:", msg)
+
   cli::cli_warn(message = msg)
 }
 castTableColumns <- function(table, colsToCast) {

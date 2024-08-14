@@ -42,13 +42,13 @@ test_that("multiplication works", {
   expect_equal(
     att |> dplyr::as_tibble(),
     dplyr::tibble(
-      cohort_definition_id = c(1, 1, 2, 2),
-      number_records = c(3, 2, 1, 0),
-      number_subjects = c(1, 1, 1, 0),
-      reason_id = c(1, 2, 1, 2),
+      cohort_definition_id = c(1, 1, 2, 2) |> as.integer(),
+      number_records = c(3, 2, 1, 0) |> as.integer(),
+      number_subjects = c(1, 1, 1, 0) |> as.integer(),
+      reason_id = c(1, 2, 1, 2) |> as.integer(),
       reason = rep(c("Initial qualifying events", "Before 2021-06-01"), 2),
-      excluded_records = c(0, 1, 0, 1),
-      excluded_subjects = c(0, 0, 0, 1)
+      excluded_records = c(0, 1, 0, 1) |> as.integer(),
+      excluded_subjects = c(0, 0, 0, 1) |> as.integer()
     )
   )
 
@@ -69,13 +69,13 @@ test_that("multiplication works", {
   expect_equal(
     att |> dplyr::as_tibble(),
     dplyr::tibble(
-      cohort_definition_id = c(1, 1, 1, 2, 2, 2),
-      number_records = c(3, 2, 1, 1, 0, 0),
-      number_subjects = c(1, 1, 1, 1, 0, 0),
-      reason_id = c(1, 2, 3, 1, 2, 3),
+      cohort_definition_id = c(1, 1, 1, 2, 2, 2) |> as.integer(),
+      number_records = c(3, 2, 1, 1, 0, 0) |> as.integer(),
+      number_subjects = c(1, 1, 1, 1, 0, 0) |> as.integer(),
+      reason_id = c(1, 2, 3, 1, 2, 3) |> as.integer(),
       reason = rep(c("Initial qualifying events", "Before 2021-06-01", "First record"), 2),
-      excluded_records = c(0, 1, 1, 0, 1, 0),
-      excluded_subjects = c(0, 0, 0, 0, 1, 0)
+      excluded_records = c(0, 1, 1, 0, 1, 0) |> as.integer(),
+      excluded_subjects = c(0, 0, 0, 0, 1, 0) |> as.integer()
     )
   )
 
@@ -105,13 +105,13 @@ test_that("multiplication works", {
   expect_equal(
     att |> dplyr::as_tibble(),
     dplyr::tibble(
-      cohort_definition_id = c(1, 1, 2),
-      number_records = c(3, 2, 1),
-      number_subjects = c(1, 1, 1),
-      reason_id = c(1, 2, 1),
+      cohort_definition_id = c(1, 1, 2) |> as.integer(),
+      number_records = c(3, 2, 1) |> as.integer(),
+      number_subjects = c(1, 1, 1) |> as.integer(),
+      reason_id = c(1, 2, 1) |> as.integer(),
       reason = c("Initial qualifying events", "Before june 2021", "Initial qualifying events"),
-      excluded_records = c(0, 1, 0),
-      excluded_subjects = c(0, 0, 0)
+      excluded_records = c(0, 1, 0) |> as.integer(),
+      excluded_subjects = c(0, 0, 0) |> as.integer()
     )
   )
 
@@ -132,16 +132,16 @@ test_that("multiplication works", {
   expect_equal(
     att |> dplyr::as_tibble(),
     dplyr::tibble(
-      cohort_definition_id = c(1, 1, 1, 2, 2),
-      number_records = c(3, 2, 1, 1, 1),
-      number_subjects = c(1, 1, 1, 1, 1),
-      reason_id = c(1, 2, 3, 1, 2),
+      cohort_definition_id = c(1, 1, 1, 2, 2) |> as.integer(),
+      number_records = c(3, 2, 1, 1, 1) |> as.integer(),
+      number_subjects = c(1, 1, 1, 1, 1) |> as.integer(),
+      reason_id = c(1, 2, 3, 1, 2) |> as.integer(),
       reason = c(
         "Initial qualifying events", "Before june 2021", "First record",
         "Initial qualifying events", "First record"
       ),
-      excluded_records = c(0, 1, 1, 0, 0),
-      excluded_subjects = c(0, 0, 0, 0, 0)
+      excluded_records = c(0, 1, 1, 0, 0) |> as.integer(),
+      excluded_subjects = c(0, 0, 0, 0, 0) |> as.integer()
     )
   )
 

@@ -689,7 +689,8 @@ castCohortColumns <- function(table, tName, name) {
     split(f = as.factor(cols$cdm_field_name)) |>
     lapply(dplyr::pull, "cdm_datatype")
   if (name != "cohort") tName <- paste0(tName, " (", name, ")")
-  table <- castColumns(table, cols, tName)
+  cast <- name != "cohort"
+  table <- castColumns(table, cols, tName, cast)
   return(table)
 }
 emptyTable <- function(fields) {
