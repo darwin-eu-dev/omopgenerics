@@ -19,6 +19,7 @@
 #' @param name Name of a new table to be added to a cdm object.
 #' @param cdm A cdm_reference object. It will check if a table named name
 #' already exists in the cdm.
+#' @param null If TRUE, name can be NULL
 #' @param validation How to perform validation: "error", "warning".
 #' @param call A call argument to pass to cli functions.
 #'
@@ -27,8 +28,13 @@
 validateNameArgument <- function(name,
                                  cdm = NULL,
                                  validation = "error",
+                                 null = FALSE,
                                  call = parent.frame()) {
   assertValidation(validation)
+  if(null == TRUE && is.null(name)){
+    return(NULL)
+  }
+
   nm <- substitute(name) |> utils::capture.output()
   assertCharacter(name, length = 1, call = call)
   newName <- toSnakeCase(name)

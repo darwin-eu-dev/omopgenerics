@@ -8,6 +8,10 @@ test_that("test validateNameArgument", {
   expect_warning(expect_warning(expect_identical(
     "my_name", validateNameArgument("myName", list("my_name" = 1), validation = "warning")
   )))
+
+  expect_error(validateNameArgument(name = NULL, null = TRUE))
+  expect_error(validateNameArgument(name = NULL, null = FALSE))
+
 })
 
 test_that("test validateCohortIdArgument", {
