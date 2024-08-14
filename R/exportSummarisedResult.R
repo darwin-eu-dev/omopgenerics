@@ -137,6 +137,7 @@ assertClassification <- function(x) {
     "chr" = "character",
     "fct" = "character",
     "ord" = "character",
+    "glue" = "character",
     "date" = "date",
     "dttm" = "date",
     "lgl" = "logical",
