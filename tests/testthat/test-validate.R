@@ -9,7 +9,7 @@ test_that("test validateNameArgument", {
     "my_name", validateNameArgument("myName", list("my_name" = 1), validation = "warning")
   )))
 
-  expect_error(validateNameArgument(name = NULL, null = TRUE))
+  expect_no_error(validateNameArgument(name = NULL, null = TRUE))
   expect_error(validateNameArgument(name = NULL, null = FALSE))
 
 })
