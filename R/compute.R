@@ -103,7 +103,7 @@ compute.cohort_table <- function(x,
   }
 
   # inform new tables if not asked explicitly to create
-  if (temporary == TRUE && oldName != name && uncohort == FALSE && !missing(uncohort)) {
+  if (temporary == FALSE && oldName != name && uncohort == FALSE && !missing(uncohort)) {
     newNames <- paste0(name, c("_set", "_attrition", "_codelist"))
     cli::cli_inform(c(
       "!" = "copying cohort from {.strong {oldName}} to {.strong {name}},

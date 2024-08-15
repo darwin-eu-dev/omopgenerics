@@ -169,7 +169,7 @@ bind.cohort_table <- function(..., name) {
   })
   newCohort <- unionCohorts(cohorts) |>
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort"))) |>
-    dplyr::compute(name = name, temporary = FALSE, overwrite = TRUE)
+    dplyr::compute(name = name, temporary = FALSE, overwrite = TRUE, uncohort = TRUE)
   newCohortSet <- newCohortSet |>
     dplyr::select(-c("cohort_definition_id", "cohort_id")) |>
     dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") |>

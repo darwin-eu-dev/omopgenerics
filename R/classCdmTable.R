@@ -28,8 +28,8 @@ newCdmTable <- function(table,
                         src = NULL,
                         name = NULL) {
   if (inherits(table, "cdm_table")) {
-    if (missing(src)) src <- tableSource(x)
-    if (missing(name)) name <- tableName(x)
+    if (missing(src)) src <- tableSource(table)
+    if (missing(name)) name <- tableName(table)
   }
   assertClass(src, class = "cdm_source",
               msg = "`src` does not have the class: cdm_source")

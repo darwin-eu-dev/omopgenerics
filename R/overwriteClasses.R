@@ -303,6 +303,7 @@ keepAttributes <- function(x, cl) {
   if ("cohort_table" %in% cl) {
     xx[["cohort_set"]] <- attr(x, "cohort_set")
     xx[["cohort_attrition"]] <- attr(x, "cohort_attrition")
+    xx[["cohort_codelist"]] <- attr(x, "cohort_codelist")
   }
   return(xx)
 }

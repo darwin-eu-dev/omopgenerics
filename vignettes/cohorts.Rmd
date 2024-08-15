@@ -36,15 +36,18 @@ A `cohort_table` is created using the `newCohortTable()` function that is define
 Let's start by creating a cdm reference with just two people.
 ```{r}
 person <- tibble(
-  person_id = c(1,2),
-  gender_concept_id = 0, year_of_birth = 1990,
-  race_concept_id = 0, ethnicity_concept_id = 0
+  person_id = c(1L, 2L),
+  gender_concept_id = 0L, 
+  year_of_birth = 1990L,
+  race_concept_id = 0L, 
+  ethnicity_concept_id = 0L
 )
 observation_period <- dplyr::tibble(
-  observation_period_id = c(1,2), person_id = c(1,2),
+  observation_period_id = c(1L, 2L), 
+  person_id = c(1L, 2L),
   observation_period_start_date = as.Date("2000-01-01"),
   observation_period_end_date = as.Date("2021-12-31"),
-  period_type_concept_id = 0
+  period_type_concept_id = 0L
 )
 cdm <- cdmFromTables(
   tables = list(
@@ -59,7 +62,8 @@ cdm
 Now let's say one of these people have a clinical event of interest, we can include them in a cohort table which can then be used as part of an analysis. 
 ```{r}
 cohort <- tibble(
-  cohort_definition_id = 1, subject_id = 1,
+  cohort_definition_id = 1L, 
+  subject_id = 1L,
   cohort_start_date = as.Date("2020-01-01"),
   cohort_end_date = as.Date("2020-01-10")
 )
@@ -102,9 +106,9 @@ We could though associate our cohort with a codelist
 ```{r}
 cdm$cohort <- newCohortTable(cdm$cohort, 
                              cohortCodelistRef = dplyr::tibble(
-                                 cohort_definition_id = c(1,1),
+                                 cohort_definition_id = 1L,
                                  codelist_name =c("disease X", "disease X"),
-                                 concept_id = c(101,102),
+                                 concept_id = c(101L, 102L),
                                  type = "index event"
                                ))
 cohortCodelist(cdm$cohort, cohortId = 1, type = "index event")
@@ -174,23 +178,25 @@ You can bind two cohort tables using the method `bind()`. You can combine severa
 
 ```{r}
 asthma <- tibble(
-  cohort_definition_id = 1, subject_id = 1,
+  cohort_definition_id = 1L, 
+  subject_id = 1L,
   cohort_start_date = as.Date("2020-01-01"),
   cohort_end_date = as.Date("2020-01-10")
 )
 cdm <- insertTable(cdm, name = "asthma", table = asthma)
 cdm$asthma <- newCohortTable(cdm$asthma, 
-                             cohortSetRef = tibble(cohort_definition_id = 1,
+                             cohortSetRef = tibble(cohort_definition_id = 1L,
                                                    cohort_name = "asthma"))
 
 copd <- tibble(
-  cohort_definition_id = 1, subject_id = 2,
+  cohort_definition_id = 1L, 
+  subject_id = 2L,
   cohort_start_date = as.Date("2020-01-01"),
   cohort_end_date = as.Date("2020-01-10")
 )
 cdm <-  insertTable(cdm, name = "copd", table = copd)
 cdm$copd <- newCohortTable(cdm$copd, 
-                           cohortSetRef = tibble(cohort_definition_id = 1,
+                           cohortSetRef = tibble(cohort_definition_id = 1L,
                                                    cohort_name = "copd"))
 
 cdm <- bind(cdm$asthma, 
