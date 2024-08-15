@@ -151,7 +151,11 @@ tableSource <- function(table) {
 #' @export
 #' @importFrom dplyr collect
 collect.cdm_table <- function(x, ...) {
-  x <- removeClass(x, "cdm_table") |> dplyr::collect()
+  x <- removeClass(x, "cdm_table")
+  if (any(colnames(x) != tolower(colnames(x)))) {
+    cli::cli_abort("A cdm_table must have lowercase column names.")
+  }
+  x <- x |> dplyr::collect()
   attr(x, "tbl_name") <- NULL
   attr(x, "tbl_source") <- NULL
   attr(x, "cdm_reference") <- NULL
