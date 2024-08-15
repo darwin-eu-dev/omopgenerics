@@ -6,7 +6,7 @@
 \usage{
 assertDate(
   x,
-  length,
+  length = NULL,
   na = FALSE,
   null = FALSE,
   unique = FALSE,

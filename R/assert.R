@@ -572,7 +572,7 @@ assertTrue <- function(x,
 #' @export
 #'
 assertDate <- function(x,
-                       length,
+                       length = NULL,
                        na = FALSE,
                        null = FALSE,
                        unique = FALSE,
