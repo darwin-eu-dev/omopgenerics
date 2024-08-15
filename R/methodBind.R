@@ -293,12 +293,18 @@ bind.summarised_result <- function(...) {
     dplyr::bind_rows(.id = "list_id")
 
   cols <- colnames(settings)[!colnames(settings) %in% c("list_id", "result_id")]
-  dic <- settings |>
-    dplyr::select(!dplyr::all_of(c("list_id", "result_id"))) |>
-    dplyr::distinct() |>
-    dplyr::mutate("new_result_id" = as.integer(dplyr::row_number())) |>
-    dplyr::inner_join(settings, by = cols) |>
-    dplyr::select(c("list_id", "result_id", "new_result_id"))
+  if (length(cols) == 0) {
+    dic <- settings |>
+      dplyr::mutate("new_result_id" = 1L) |>
+      dplyr::select(c("list_id", "result_id", "new_result_id"))
+  } else {
+    dic <- settings |>
+      dplyr::select(!dplyr::all_of(c("list_id", "result_id"))) |>
+      dplyr::distinct() |>
+      dplyr::mutate("new_result_id" = as.integer(dplyr::row_number())) |>
+      dplyr::inner_join(settings, by = cols) |>
+      dplyr::select(c("list_id", "result_id", "new_result_id"))
+  }
 
   settings <- settings |>
     dplyr::inner_join(dic, by = c("result_id", "list_id")) |>
