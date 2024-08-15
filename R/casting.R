@@ -43,8 +43,8 @@ warnColsToCast <- function(colsToCast, name, cast) {
     casted <- "casted "
     as <- "as "
   } else {
-    origin <- "observed"
-    final <- "expected"
+    origin <- "is"
+    final <- "but expected"
     casted <- ""
     as <- ""
   }
