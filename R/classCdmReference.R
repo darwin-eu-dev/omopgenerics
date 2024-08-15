@@ -250,29 +250,29 @@ checkStartBeforeEndObservation <- function(x, call = parent.frame()) {
 }
 checkPlausibleObservationDates <- function(x, call = parent.frame()) {
 
-  if(isTRUE(nrow(x |> utils::head(1) |> dplyr::collect()) > 0)){
-  x <- x |>
-    dplyr::summarise(minObsStart = min(.data$observation_period_start_date,
-                                      na.rm = TRUE),
-                     maxObsEnd = max(.data$observation_period_end_date,
+  if(isTRUE(nrow(x |> utils::head(1) |> dplyr::collect()) > 0)) {
+    x <- x |>
+      dplyr::summarise(min_obs_start = min(.data$observation_period_start_date,
+                                         na.rm = TRUE),
+                       max_obs_end = max(.data$observation_period_end_date,
                                        na.rm = TRUE)) |>
-    dplyr::collect()
+      dplyr::collect()
 
-  if(as.Date(x$minObsStart) < as.Date("1800-01-01")){
-    cli::cli_warn(
-      message = c("There are observation period start dates before 1800-01-01",
-                  "i" = "The earliest max observation period end date found is {x$minObsStart}"),
-      call = call
-    )
-  }
+    if(as.Date(x$min_obs_start) < as.Date("1800-01-01")){
+      cli::cli_warn(
+        message = c("There are observation period start dates before 1800-01-01",
+                    "i" = "The earliest min observation period start date found is {x$min_obs_start}"),
+        call = call
+      )
+    }
 
-  if(as.Date(x$maxObsEnd) > Sys.Date()){
-    cli::cli_warn(
-      message = c("There are observation period end dates after the current date: {Sys.Date()}",
-                  "i" = "The latest max observation period end date found is {x$maxObsEnd}"),
-      call = call
-    )
-  }
+    if(as.Date(x$max_obs_end) > Sys.Date()){
+      cli::cli_warn(
+        message = c("There are observation period end dates after the current date: {Sys.Date()}",
+                    "i" = "The latest max observation period end date found is {x$max_obs_end}"),
+        call = call
+      )
+    }
   }
 
 
