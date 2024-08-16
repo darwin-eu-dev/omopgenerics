@@ -19,7 +19,7 @@ assertCharacter(
 \arguments{
 \item{x}{Variable to check.}
 
-\item{length}{Required length.}
+\item{length}{Required length. If \code{NULL} length is not checked.}
 
 \item{na}{Whether it can contain NA values.}
 
@@ -29,7 +29,8 @@ assertCharacter(
 
 \item{named}{Whether it has to be named.}
 
-\item{minNumCharacter}{Minimum number of characters.}
+\item{minNumCharacter}{Minimum number of characters that all elements must
+have.}
 
 \item{call}{Call argument that will be passed to \code{cli} error message.}
 

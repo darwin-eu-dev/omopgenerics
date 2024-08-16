@@ -21,7 +21,7 @@ assertChoice(
 
 \item{choices}{Options that x is allowed to be.}
 
-\item{length}{Required length.}
+\item{length}{Required length. If \code{NULL} length is not checked.}
 
 \item{na}{Whether it can contain NA values.}
 

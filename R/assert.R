@@ -17,12 +17,13 @@
 #' Assert that an object is a character and fulfill certain conditions.
 #'
 #' @param x Variable to check.
-#' @param length Required length.
+#' @param length Required length. If `NULL` length is not checked.
 #' @param na Whether it can contain NA values.
 #' @param null Whether it can be NULL.
 #' @param unique Whether it has to contain unique elements.
 #' @param named Whether it has to be named.
-#' @param minNumCharacter Minimum number of characters.
+#' @param minNumCharacter Minimum number of characters that all elements must
+#' have.
 #' @param call Call argument that will be passed to `cli` error message.
 #' @param msg Custom error message.
 #'
@@ -81,7 +82,7 @@ assertCharacter <- function(x,
 #'
 #' @param x Variable to check.
 #' @param choices Options that x is allowed to be.
-#' @param length Required length.
+#' @param length Required length. If `NULL` length is not checked.
 #' @param na Whether it can contain NA values.
 #' @param null Whether it can be NULL.
 #' @param unique Whether it has to contain unique elements.
@@ -151,7 +152,7 @@ assertChoice <- function(x,
 #'
 #' @param x To check.
 #' @param class Expected class or classes.
-#' @param length Required length.
+#' @param length Required length. If `NULL` length is not checked.
 #' @param null Whether it can be NULL.
 #' @param all Whether it should have all the classes or only at least one of
 #' them.
@@ -222,7 +223,7 @@ assertClass <- function(x,
 #' Assert that an object is a list.
 #'
 #' @param x Variable to check.
-#' @param length Required length.
+#' @param length Required length. If `NULL` length is not checked.
 #' @param na Whether it can contain NA values.
 #' @param null Whether it can be NULL.
 #' @param unique Whether it has to contain unique elements.
@@ -301,7 +302,7 @@ assertList <- function(x,
 #' Assert that an object is a logical.
 #'
 #' @param x Variable to check.
-#' @param length Required length.
+#' @param length Required length. If `NULL` length is not checked.
 #' @param na Whether it can contain NA values.
 #' @param null Whether it can be NULL.
 #' @param named Whether it has to be named.
@@ -352,7 +353,7 @@ assertLogical <- function(x,
 #' @param integerish Whether it has to be an integer
 #' @param min Minimum value that the object can be.
 #' @param max Maximum value that the object can be.
-#' @param length Required length.
+#' @param length Required length. If `NULL` length is not checked.
 #' @param na Whether it can contain NA values.
 #' @param null Whether it can be NULL.
 #' @param unique Whether it has to contain unique elements.
@@ -617,10 +618,6 @@ assertDate <- function(x,
   invisible(x)
 }
 
-
-
-
-
 errorMessage <- function(nm,
                          object,
                          length = NULL,
@@ -703,8 +700,3 @@ assertNull <- function(x, nm, null, msg, call) {
   }
   return(!is.null(x))
 }
-
-xxxxx <- function() {
-  cli::cli_abort("asdf nou error message")
-}
-
