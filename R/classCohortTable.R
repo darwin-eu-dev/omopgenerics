@@ -256,7 +256,7 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
   # make correct order
   cols <- colnames(cohort)[1:4]
   if (!all(cols == cohortColumns("cohort"))) {
-    cli::cli_inform(c("!" = "cohort columns will be reordered to macth the expected order: {cohortColumns('cohort')}."))
+    cli::cli_inform(c("!" = "cohort columns will be reordered to match the expected order: {cohortColumns('cohort')}."))
     cohort <- cohort |>
       dplyr::relocate(dplyr::all_of(cohortColumns("cohort"))) |>
       dplyr::compute(name = tableName(cohort), temporary = FALSE)
@@ -688,8 +688,12 @@ castCohortColumns <- function(table, tName, name) {
   cols <- cols |>
     split(f = as.factor(cols$cdm_field_name)) |>
     lapply(dplyr::pull, "cdm_datatype")
-  if (name != "cohort") tName <- paste0(tName, " (", name, ")")
-  cast <- name != "cohort"
+  if (name != "cohort") {
+    cast <- TRUE
+    tName <- paste0(tName, " (", name, ")")
+  } else {
+    cast <- FALSE
+  }
   table <- castColumns(table, cols, tName, cast)
   return(table)
 }
