@@ -268,7 +268,7 @@ checkNA <- function(x, type) {
 checkColumnsFormat <- function(x, resultName) {
   cols <- resultColumns(resultName)
   expectedFormat <- fieldsResults$datatype[fieldsResults$result == resultName]
-  formats <- lapply(x, typeof) |> unlist()
+  formats <- purrr::map_chr(x, typeof)
   id <- formats != expectedFormat
   cols <- cols[id]
   formats <- formats[id]

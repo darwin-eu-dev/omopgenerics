@@ -35,13 +35,20 @@ newCodelist <- function(x) {
 }
 
 constructCodelist <- function(x) {
-  x |> addClass("codelist")
+  x |>
+    addClass("codelist")
 }
 
 validateCodelist <- function(codelist, call = parent.frame()) {
 
   assertList(codelist, named = TRUE,
              class = c("numeric", "integer", "integer64"), call = call)
+
+  if (purrr::map_lgl(codelist, inherits, "numeric") |> any()) {
+    codelist <- codelist |> purrr::map(as.integer)
+    cli::cli_warn(c(
+      "!" = "`codelist` contains numeric values, they are casted to integers."))
+  }
 
   for (nm in names(codelist)) {
     if (any(is.na(unique(codelist[[nm]])))) {
