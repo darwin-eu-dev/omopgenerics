@@ -24,12 +24,19 @@
 #'
 #' @export
 #'
-newCdmTable <- function(table, src, name) {
+newCdmTable <- function(table,
+                        src = NULL,
+                        name = NULL) {
+  if (inherits(table, "cdm_table")) {
+    if (missing(src)) src <- tableSource(table)
+    if (missing(name)) name <- tableName(table)
+  }
   assertClass(src, class = "cdm_source",
               msg = "`src` does not have the class: cdm_source")
   assertCharacter(name, length = 1, na = TRUE,
                   msg = "`name` is not a character vector of length 1")
   table <- structure(.Data = table, tbl_source = src, tbl_name = name) |>
+    removeClass("cohort_table") |>
     addClass("cdm_table")
   if (any(colnames(table) != tolower(colnames(table)))) {
     cli::cli_abort("A cdm_table must have lowercase column names.")

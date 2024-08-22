@@ -4,7 +4,7 @@
 \alias{newCdmTable}
 \title{Create an cdm table.}
 \usage{
-newCdmTable(table, src, name)
+newCdmTable(table, src = NULL, name = NULL)
 }
 \arguments{
 \item{table}{A table that is part of a cdm.}
