@@ -277,6 +277,30 @@ checkPlausibleObservationDates <- function(x, call = parent.frame()) {
 
 
 }
+checkPerson <- function(cdm, tableName, id, call = parent.frame) {
+  if (tableName %in% names(cdm)) {
+    x <- cdm[[tableName]]
+
+    if (isTRUE(nrow(x |> utils::head(1) |> dplyr::collect()) > 0)) {
+      x <- x |> dplyr::select(.data$person_id) |>
+        dplyr::distinct() |>
+        dplyr::pull()
+    }
+
+    if (!inherits(x, "tbl")) {
+      if (!all(x %in% id)) {
+        cli::cli_warn(
+          message = c(
+            "There are person_id in the {tableName} table but not in person table"
+          ),
+          call = call
+        )
+
+      }
+
+    }
+  }
+}
 
 #' Get the name of a cdm_reference associated object
 #'

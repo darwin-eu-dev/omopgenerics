@@ -240,6 +240,42 @@ test_that("test validateCdmArgument", {
     )
     )
 
+  # warnings if clinical table contain person id not in person  table
+
+  cdm_object <- list(
+    "observation_period" = dplyr::tibble(
+      observation_period_id = c(1L,1L), person_id = c(1L,1L),
+      observation_period_start_date = c(as.Date("2000-01-01"),as.Date("2000-01-02")),
+      observation_period_end_date = c(as.Date("2000-01-01"),as.Date("2100-01-01")),
+      period_type_concept_id = c(0L,0L)
+    ),
+    "person" = dplyr::tibble(
+      person_id = c(1L,1L),
+      gender_concept_id = c(8507L,8507L),
+      year_of_birth = c(1991L,1992L)
+    ),
+    "condition_occurrence" = dplyr::tibble(
+      condition_occurrence_id = c(1L,2L),
+      person_id = c(8507L,8507L),
+      condition_start_date =  c(as.Date("2000-01-01"),as.Date("2000-01-02")),
+      condition_end_date = c(as.Date("2000-01-01"),as.Date("2100-01-01"))
+    ))
+
+  class(cdm_object) <- c("cdm_reference")
+
+  expect_no_warning(
+    validateCdmArgument(
+      cdm_object,
+      checkPerson = FALSE
+    )
+  )
+
+  expect_warning(
+    validateCdmArgument(
+      cdm_object,
+      checkPerson = TRUE
+    )
+  )
 
 })
 

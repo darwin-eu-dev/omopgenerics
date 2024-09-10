@@ -499,6 +499,8 @@ checkCategory <-
 #' @param checkPlausibleObservationDates TRUE to perform check that there are
 #' no implausible observation period start dates (before 1800-01-01) or end
 #' dates (after the current date)
+#' @param checkPerson TRUE to perform check on person id in all clincial table
+#' are in person table
 #' @param validation How to perform validation: "error", "warning".
 #' @param call A call argument to pass to cli functions.
 #'
@@ -509,6 +511,7 @@ validateCdmArgument <- function(cdm,
                                 checkOverlapObservation = FALSE,
                                 checkStartBeforeEndObservation = FALSE,
                                 checkPlausibleObservationDates = FALSE,
+                                checkPerson = FALSE,
                                 validation = "error",
                                 call = parent.frame()) {
   assertValidation(validation, call = parent.frame())
@@ -539,6 +542,24 @@ validateCdmArgument <- function(cdm,
 
  if (isTRUE(checkPlausibleObservationDates)){
    checkPlausibleObservationDates(cdm$observation_period)
+
+ }
+
+ if (isTRUE(checkPerson)){
+
+   id <- cdm$person |> dplyr::pull(.data$person_id)
+   tableName <- c("observation_period","visit_occurrence",
+                  "condition_occurrence","drug_exposure",
+                  "procedure_occurrence","device_exposure",
+                  "measurement","observation","death", "specimen",
+                  "note")
+
+   for (tableName in tableName) {
+     checkPerson(cdm = cdm,
+                 tableName = tableName,
+                 id = id,
+                 call = parent.frame)
+   }
 
  }
 
