@@ -546,21 +546,7 @@ validateCdmArgument <- function(cdm,
  }
 
  if (isTRUE(checkPerson)){
-
-   id <- cdm$person |> dplyr::pull(.data$person_id)
-   tableName <- c("observation_period","visit_occurrence",
-                  "condition_occurrence","drug_exposure",
-                  "procedure_occurrence","device_exposure",
-                  "measurement","observation","death", "specimen",
-                  "note")
-
-   for (tableName in tableName) {
-     checkPerson(cdm = cdm,
-                 tableName = tableName,
-                 id = id,
-                 call = parent.frame)
-   }
-
+     checkPerson(cdm = cdm,call = parent.frame())
  }
 
   return(invisible(cdm))

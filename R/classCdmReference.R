@@ -277,29 +277,48 @@ checkPlausibleObservationDates <- function(x, call = parent.frame()) {
 
 
 }
-checkPerson <- function(cdm, tableName, id, call = parent.frame) {
-  if (tableName %in% names(cdm)) {
-    x <- cdm[[tableName]]
+checkPerson <- function(cdm, call = parent.frame()) {
+  id <- cdm$person |> dplyr::pull(.data$person_id)
+
+  # check for table with persion_id or subject_id
+  tableName <- c()
+  for (tab in names(cdm)) {
+    if (any(c("person_id", "subject_id") %in% colnames(cdm[[tab]]))) {
+      tableName <-
+        c(tableName, tab)
+    }
+  }
+
+
+  for (tab in tableName) {
+    x <- cdm[[tab]]
+
+    if ("subject_id" %in% colnames(x)) {
+      x <- x |> rename(person_id = .data$subject_id)
+    }
 
     if (isTRUE(nrow(x |> utils::head(1) |> dplyr::collect()) > 0)) {
       x <- x |> dplyr::select(.data$person_id) |>
         dplyr::distinct() |>
         dplyr::pull()
+    } else
+    {
+      return(invisible(cdm))
     }
 
-    if (!inherits(x, "tbl")) {
-      if (!all(x %in% id)) {
-        cli::cli_warn(
-          message = c(
-            "There are person_id in the {tableName} table but not in person table"
-          ),
-          call = call
-        )
 
-      }
+    if (!all(x %in% id)) {
+      cli::cli_warn(
+        message = c(
+          "There are person_id in the {tab} table but not in person table"
+        ),
+        call = call
+      )
 
     }
   }
+
+  return(invisible(cdm))
 }
 
 #' Get the name of a cdm_reference associated object
