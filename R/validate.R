@@ -514,13 +514,13 @@ validateCdmArgument <- function(cdm,
                                 checkPerson = FALSE,
                                 validation = "error",
                                 call = parent.frame()) {
-  assertValidation(validation, call = parent.frame())
+  assertValidation(validation, call = call)
   assertLogical(checkOverlapObservation,
                 length = 1,
-                call = parent.frame())
+                call = call)
   assertLogical(checkStartBeforeEndObservation,
                 length = 1,
-                call = parent.frame())
+                call = call)
 
 
   # validate
@@ -546,7 +546,7 @@ validateCdmArgument <- function(cdm,
  }
 
  if (isTRUE(checkPerson)){
-     checkPerson(cdm = cdm,call = parent.frame())
+     checkPerson(cdm = cdm, call = call)
  }
 
   return(invisible(cdm))
@@ -567,8 +567,8 @@ validateCdmArgument <- function(cdm,
 validateResultArguemnt <- function(result,
                                    validation = "error",
                                    call = parent.frame()) {
-  assertValidation(validation, call = parent.frame())
-  assertTable(result, call = parent.frame())
+  assertValidation(validation, call = call)
+  assertTable(result, call = call)
 
   result <- validateSummariseResult(result)
 
