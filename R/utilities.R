@@ -185,3 +185,25 @@ uniqueId <- function(n = 1, exclude = character(), nChar = 3, prefix = "id_") {
 
   return(x)
 }
+
+
+
+#' Create if table is empty
+#'
+#' @param table a table
+#'
+#' @return True or False
+#' @export
+#'
+isTableEmpty <- function(table){
+
+  assertTable(table)
+
+     x <- table |>
+      dplyr::ungroup() |>
+      utils::head(1) |>
+      dplyr::tally() |>
+      dplyr::pull() == 0
+
+     return(x)
+}

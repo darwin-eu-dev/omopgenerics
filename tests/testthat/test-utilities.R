@@ -103,3 +103,15 @@ test_that("uniqueId", {
     c("ma", "mh")
   )
 })
+
+test_that("isTableEmpty", {
+
+  table <- dplyr::tibble(a = "1")
+
+  expect_false(table |> isTableEmpty())
+
+  table <- dplyr::tibble()
+
+  expect_true(table |> isTableEmpty())
+
+})
