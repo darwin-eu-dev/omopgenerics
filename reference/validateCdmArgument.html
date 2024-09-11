@@ -54,6 +54,7 @@
 <span>  checkOverlapObservation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  checkStartBeforeEndObservation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  checkPlausibleObservationDates <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  checkPerson <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  validation <span class="op">=</span> <span class="st">"error"</span>,</span>
 <span>  call <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -81,6 +82,11 @@ observational start and end date</p></dd>
 <dd><p>TRUE to perform check that there are
 no implausible observation period start dates (before 1800-01-01) or end
 dates (after the current date)</p></dd>
+
+
+<dt id="arg-checkperson">checkPerson<a class="anchor" aria-label="anchor" href="#arg-checkperson"></a></dt>
+<dd><p>TRUE to perform check on person id in all clincial table
+are in person table</p></dd>
 
 
 <dt id="arg-validation">validation<a class="anchor" aria-label="anchor" href="#arg-validation"></a></dt>
