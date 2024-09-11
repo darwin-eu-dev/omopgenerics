@@ -63,16 +63,36 @@
 </h1></div>
 <!-- badges: start -->
 
+<div class="section level2">
+<h2 id="package-overview">Package overview<a class="anchor" aria-label="anchor" href="#package-overview"></a>
+</h2>
 <p>The omopgenerics package provides definitions of core classes and methods used by analytic pipelines that query the OMOP common data model.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co">#&gt; To cite package 'omopgenerics' in publications use:</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co">#&gt;   Català M, Burn E (2024). _omopgenerics: Methods and Classes for the</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&gt;   OMOP Common Data Model_. R package version 0.3.0,</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&gt;   &lt;https://CRAN.R-project.org/package=omopgenerics&gt;.</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt;   @Manual{,</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt;     title = {omopgenerics: Methods and Classes for the OMOP Common Data Model},</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#&gt;     author = {Martí Català and Edward Burn},</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a><span class="co">#&gt;     year = {2024},</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co">#&gt;     note = {R package version 0.3.0},</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co">#&gt;     url = {https://CRAN.R-project.org/package=omopgenerics},</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a><span class="co">#&gt;   }</span></span></code></pre></div>
+<p>If you find the package useful in supporting your research study, please consider citing this package.</p>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>You can install the development version of OMOPGenerics from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"darwin-eu-dev/omopgenerics"</span><span class="op">)</span></span></code></pre></div>
 <p>And load it using the library command:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://darwin-eu-dev.github.io/omopgenerics/">omopgenerics</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -88,7 +108,7 @@
 <ul>
 <li>Standard tables:</li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/omopTables.html">omopTables</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "person"                "observation_period"    "visit_occurrence"     </span></span>
 <span><span class="co">#&gt;  [4] "visit_detail"          "condition_occurrence"  "drug_exposure"        </span></span>
@@ -102,16 +122,16 @@
 <span><span class="co">#&gt; [28] "domain"                "concept_class"         "concept_relationship" </span></span>
 <span><span class="co">#&gt; [31] "relationship"          "concept_synonym"       "concept_ancestor"     </span></span>
 <span><span class="co">#&gt; [34] "source_to_concept_map" "drug_strength"         "cohort_definition"    </span></span>
-<span><span class="co">#&gt; [37] "attribute_definition"</span></span></code></pre></div>
+<span><span class="co">#&gt; [37] "attribute_definition"  "concept_recommended"</span></span></code></pre></div>
 <p>Each one of the tables has a required columns. For example, for the <code>person</code> table this are the required columns:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/omopColumns.html">omopColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"person"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "person_id"            "gender_concept_id"    "year_of_birth"       </span></span>
 <span><span class="co">#&gt; [4] "race_concept_id"      "ethnicity_concept_id"</span></span></code></pre></div>
 <ul>
 <li>Cohort tables We can see the cohort-related tables and their required columns.</li>
 </ul>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/cohortTables.html">cohortTables</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "cohort"           "cohort_set"       "cohort_attrition" "cohort_codelist"</span></span>
 <span><span class="fu"><a href="reference/cohortColumns.html">cohortColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"cohort"</span><span class="op">)</span></span>
@@ -121,7 +141,7 @@
 <ul>
 <li>Achilles tables The Achilles R package generates descriptive statistics about the data contained in the OMOP CDM. Again, we can see the tables created and their required columns.</li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/achillesTables.html">achillesTables</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "achilles_analysis"     "achilles_results"      "achilles_results_dist"</span></span>
 <span><span class="fu"><a href="reference/achillesColumns.html">achillesColumns</a></span><span class="op">(</span>table <span class="op">=</span> <span class="st">"achilles_results"</span><span class="op">)</span></span>
@@ -142,19 +162,20 @@
 <h3 id="concept-set">Concept set<a class="anchor" aria-label="anchor" href="#concept-set"></a>
 </h3>
 <p>A concept set can be represented as either a codelist or a concept set expression. A codelist is a named list, with each item of the list containing specific concept IDs.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condition_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"diabetes"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">201820</span>, <span class="fl">4087682</span>, <span class="fl">3655269</span><span class="op">)</span>,</span>
 <span>                        <span class="st">"asthma"</span> <span class="op">=</span> <span class="fl">317009</span><span class="op">)</span></span>
 <span><span class="va">condition_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/newCodelist.html">newCodelist</a></span><span class="op">(</span><span class="va">condition_codes</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: ! `codelist` contains numeric values, they are casted to integers.</span></span>
 <span></span>
 <span><span class="va">condition_codes</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── 2 codelists ─────────────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; - diabetes (3 codes)</span></span>
-<span><span class="co">#&gt; - asthma (1 codes)</span></span></code></pre></div>
+<span><span class="co">#&gt; - asthma (1 codes)</span></span>
+<span><span class="co">#&gt; - diabetes (3 codes)</span></span></code></pre></div>
 <p>Meanwhile, a concept set expression provides a high-level definition of concepts that, when applied to a specific OMOP CDM vocabulary version (by making use of the concept hierarchies and relationships), will result in a codelist.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condition_cs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="st">"diabetes"</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>    <span class="st">"concept_id"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">201820</span>, <span class="fl">4087682</span><span class="op">)</span>,</span>
@@ -175,14 +196,14 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── 2 conceptSetExpressions ─────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; - diabetes (2 concept criteria)</span></span>
-<span><span class="co">#&gt; - asthma (1 concept criteria)</span></span></code></pre></div>
+<span><span class="co">#&gt; - asthma (1 concept criteria)</span></span>
+<span><span class="co">#&gt; - diabetes (2 concept criteria)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="a-cohort-table">A cohort table<a class="anchor" aria-label="anchor" href="#a-cohort-table"></a>
 </h3>
 <p>A cohort is a set of persons who satisfy one or more inclusion criteria for a duration of time and, when defined, this table in a cdm reference has a cohort table class. Cohort tables are then associated with attributes such as settings and attrition.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">person</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  person_id <span class="op">=</span> <span class="fl">1</span>, gender_concept_id <span class="op">=</span> <span class="fl">0</span>, year_of_birth <span class="op">=</span> <span class="fl">1990</span>,</span>
 <span>  race_concept_id <span class="op">=</span> <span class="fl">0</span>, ethnicity_concept_id <span class="op">=</span> <span class="fl">0</span></span>
@@ -207,7 +228,20 @@
 <span>  <span class="op">)</span>,</span>
 <span>  cdmName <span class="op">=</span> <span class="st">"example_cdm"</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: ! 5 column in person do not match expected column type:</span></span>
+<span><span class="co">#&gt; • `person_id` is numeric but expected integer</span></span>
+<span><span class="co">#&gt; • `gender_concept_id` is numeric but expected integer</span></span>
+<span><span class="co">#&gt; • `year_of_birth` is numeric but expected integer</span></span>
+<span><span class="co">#&gt; • `race_concept_id` is numeric but expected integer</span></span>
+<span><span class="co">#&gt; • `ethnicity_concept_id` is numeric but expected integer</span></span>
+<span><span class="co">#&gt; Warning: ! 3 column in observation_period do not match expected column type:</span></span>
+<span><span class="co">#&gt; • `observation_period_id` is numeric but expected integer</span></span>
+<span><span class="co">#&gt; • `person_id` is numeric but expected integer</span></span>
+<span><span class="co">#&gt; • `period_type_concept_id` is numeric but expected integer</span></span>
 <span><span class="va">cdm</span><span class="op">$</span><span class="va">diabetes</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/newCohortTable.html">newCohortTable</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">$</span><span class="va">diabetes</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: ! 2 column in diabetes do not match expected column type:</span></span>
+<span><span class="co">#&gt; • `cohort_definition_id` is numeric but expected integer</span></span>
+<span><span class="co">#&gt; • `subject_id` is numeric but expected integer</span></span>
 <span></span>
 <span><span class="va">cdm</span><span class="op">$</span><span class="va">diabetes</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 4</span></span>
@@ -236,49 +270,43 @@
 </h3>
 <p>A summarised result provides a standard format for the results of an analysis performed against data mapped to the OMOP CDM.</p>
 <p>For example this format is used when we get a summary of the cdm as a whole</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 12</span></span>
-<span><span class="co">#&gt; Columns: 16</span></span>
-<span><span class="co">#&gt; $ result_id        &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1</span></span>
+<span><span class="co">#&gt; Rows: 13</span></span>
+<span><span class="co">#&gt; Columns: 13</span></span>
+<span><span class="co">#&gt; $ result_id        &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1</span></span>
 <span><span class="co">#&gt; $ cdm_name         &lt;chr&gt; "example_cdm", "example_cdm", "example_cdm", "example…</span></span>
-<span><span class="co">#&gt; $ result_type      &lt;chr&gt; "cdm_snapshot", "cdm_snapshot", "cdm_snapshot", "cdm_…</span></span>
-<span><span class="co">#&gt; $ package_name     &lt;chr&gt; "omopgenerics", "omopgenerics", "omopgenerics", "omop…</span></span>
-<span><span class="co">#&gt; $ package_version  &lt;chr&gt; "0.1.1", "0.1.1", "0.1.1", "0.1.1", "0.1.1", "0.1.1",…</span></span>
 <span><span class="co">#&gt; $ group_name       &lt;chr&gt; "overall", "overall", "overall", "overall", "overall"…</span></span>
 <span><span class="co">#&gt; $ group_level      &lt;chr&gt; "overall", "overall", "overall", "overall", "overall"…</span></span>
 <span><span class="co">#&gt; $ strata_name      &lt;chr&gt; "overall", "overall", "overall", "overall", "overall"…</span></span>
 <span><span class="co">#&gt; $ strata_level     &lt;chr&gt; "overall", "overall", "overall", "overall", "overall"…</span></span>
 <span><span class="co">#&gt; $ variable_name    &lt;chr&gt; "snapshot_date", "person_count", "observation_period_…</span></span>
-<span><span class="co">#&gt; $ variable_level   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA</span></span>
+<span><span class="co">#&gt; $ variable_level   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA</span></span>
 <span><span class="co">#&gt; $ estimate_name    &lt;chr&gt; "value", "count", "count", "source_name", "version", …</span></span>
 <span><span class="co">#&gt; $ estimate_type    &lt;chr&gt; "date", "integer", "integer", "character", "character…</span></span>
-<span><span class="co">#&gt; $ estimate_value   &lt;chr&gt; "2024-03-09", "1", "1", "", NA, "5.3", "", "", "", ""…</span></span>
+<span><span class="co">#&gt; $ estimate_value   &lt;chr&gt; "2024-09-11", "1", "1", "", NA, "5.3", "", "", "", ""…</span></span>
 <span><span class="co">#&gt; $ additional_name  &lt;chr&gt; "overall", "overall", "overall", "overall", "overall"…</span></span>
 <span><span class="co">#&gt; $ additional_level &lt;chr&gt; "overall", "overall", "overall", "overall", "overall"…</span></span></code></pre></div>
 <p>and also when we summarise a cohort</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cdm</span><span class="op">$</span><span class="va">diabetes</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 10</span></span>
-<span><span class="co">#&gt; Columns: 16</span></span>
-<span><span class="co">#&gt; $ result_id        &lt;int&gt; 1, 1, 1, 1, 2, 2, 2, 2, 2, 2</span></span>
+<span><span class="co">#&gt; Rows: 6</span></span>
+<span><span class="co">#&gt; Columns: 13</span></span>
+<span><span class="co">#&gt; $ result_id        &lt;int&gt; 1, 1, 2, 2, 2, 2</span></span>
 <span><span class="co">#&gt; $ cdm_name         &lt;chr&gt; "example_cdm", "example_cdm", "example_cdm", "example…</span></span>
-<span><span class="co">#&gt; $ result_type      &lt;chr&gt; "cohort_count", "cohort_count", "cohort_count", "coho…</span></span>
-<span><span class="co">#&gt; $ package_name     &lt;chr&gt; "omopgenerics", "omopgenerics", "omopgenerics", "omop…</span></span>
-<span><span class="co">#&gt; $ package_version  &lt;chr&gt; "0.1.1", "0.1.1", "0.1.1", "0.1.1", "0.1.1", "0.1.1",…</span></span>
-<span><span class="co">#&gt; $ group_name       &lt;chr&gt; "overall", "overall", "cohort_table_name", "cohort_ta…</span></span>
-<span><span class="co">#&gt; $ group_level      &lt;chr&gt; "overall", "overall", "diabetes", "diabetes", "overal…</span></span>
-<span><span class="co">#&gt; $ strata_name      &lt;chr&gt; "overall", "overall", "cohort_name", "cohort_name", "…</span></span>
-<span><span class="co">#&gt; $ strata_level     &lt;chr&gt; "overall", "overall", "cohort_1", "cohort_1", "overal…</span></span>
-<span><span class="co">#&gt; $ variable_name    &lt;chr&gt; "settings", "settings", "number_records", "number_sub…</span></span>
-<span><span class="co">#&gt; $ variable_level   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA</span></span>
-<span><span class="co">#&gt; $ estimate_name    &lt;chr&gt; "cohort_definition_id", "cohort_name", "count", "coun…</span></span>
-<span><span class="co">#&gt; $ estimate_type    &lt;chr&gt; "integer", "character", "integer", "integer", "intege…</span></span>
-<span><span class="co">#&gt; $ estimate_value   &lt;chr&gt; "1", "cohort_1", "1", "1", "1", "cohort_1", "1", "1",…</span></span>
-<span><span class="co">#&gt; $ additional_name  &lt;chr&gt; "overall", "overall", "overall", "overall", "overall"…</span></span>
-<span><span class="co">#&gt; $ additional_level &lt;chr&gt; "overall", "overall", "overall", "overall", "overall"…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ group_name       &lt;chr&gt; "cohort_name", "cohort_name", "cohort_name", "cohort_…</span></span>
+<span><span class="co">#&gt; $ group_level      &lt;chr&gt; "cohort_1", "cohort_1", "cohort_1", "cohort_1", "coho…</span></span>
+<span><span class="co">#&gt; $ strata_name      &lt;chr&gt; "overall", "overall", "reason", "reason", "reason", "…</span></span>
+<span><span class="co">#&gt; $ strata_level     &lt;chr&gt; "overall", "overall", "Initial qualifying events", "I…</span></span>
+<span><span class="co">#&gt; $ variable_name    &lt;chr&gt; "number_records", "number_subjects", "number_records"…</span></span>
+<span><span class="co">#&gt; $ variable_level   &lt;chr&gt; NA, NA, NA, NA, NA, NA</span></span>
+<span><span class="co">#&gt; $ estimate_name    &lt;chr&gt; "count", "count", "count", "count", "count", "count"</span></span>
+<span><span class="co">#&gt; $ estimate_type    &lt;chr&gt; "integer", "integer", "integer", "integer", "integer"…</span></span>
+<span><span class="co">#&gt; $ estimate_value   &lt;chr&gt; "1", "1", "1", "1", "0", "0"</span></span>
+<span><span class="co">#&gt; $ additional_name  &lt;chr&gt; "overall", "overall", "reason_id", "reason_id", "reas…</span></span>
+<span><span class="co">#&gt; $ additional_level &lt;chr&gt; "overall", "overall", "1", "1", "1", "1"</span></span></code></pre></div>
 </div>
 </div>
 </div>
