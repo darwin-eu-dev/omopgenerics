@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{isTableEmpty}
 \alias{isTableEmpty}
-\title{Create if table is empty}
+\title{Check if a table is empty or not}
 \usage{
 isTableEmpty(table)
 }
@@ -10,8 +10,8 @@ isTableEmpty(table)
 \item{table}{a table}
 }
 \value{
-True or False
+Boolean to indicate if a cdm_table is empty (TRUE or FALSE).
 }
 \description{
-Create if table is empty
+Check if a table is empty or not
 }

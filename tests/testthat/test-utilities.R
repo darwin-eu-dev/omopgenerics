@@ -105,12 +105,17 @@ test_that("uniqueId", {
 })
 
 test_that("isTableEmpty", {
-
   table <- dplyr::tibble(a = "1")
+
+  expect_error(table |> isTableEmpty())
+
+  class(table) <- c("cdm_table", "tbl_df", "tbl", "data.frame")
 
   expect_false(table |> isTableEmpty())
 
   table <- dplyr::tibble()
+
+  class(table) <- c("cdm_table", "tbl_df", "tbl", "data.frame")
 
   expect_true(table |> isTableEmpty())
 
