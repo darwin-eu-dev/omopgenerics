@@ -185,3 +185,14 @@ uniqueId <- function(n = 1, exclude = character(), nChar = 3, prefix = "id_") {
 
   return(x)
 }
+
+
+#' Table of cdm field and its format type
+#'
+#' @return tibble of cdm field informations
+#' @export
+#'
+getFieldTables <- function() {
+  return(dplyr::tibble(fieldsTables))
+
+}
