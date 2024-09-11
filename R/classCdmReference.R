@@ -278,45 +278,37 @@ checkPlausibleObservationDates <- function(x, call = parent.frame()) {
 
 }
 checkPerson <- function(cdm, call = parent.frame()) {
-  id <- cdm$person |> dplyr::pull(.data$person_id)
-
   # check for table with persion_id or subject_id
-  tableName <- c()
-  for (tab in names(cdm)) {
-    if (any(c("person_id", "subject_id") %in% colnames(cdm[[tab]]))) {
-      tableName <-
-        c(tableName, tab)
-    }
-  }
+  tableName <- names(cdm)
+
+    tables <- tableName |>
+      purrr::map_lgl(\(x) {
+        id <- c("person_id", "subject_id")
+        id <- id[id %in% colnames(cdm[[x]])]
+        if (length(id) == 1) {
+          cdm[[x]] |>
+            dplyr::select("person_id" = dplyr::all_of(id)) |>
+            dplyr::anti_join(cdm$person, by = "person_id") |>
+            utils::head(1) |>
+            dplyr::tally() |>
+            dplyr::pull() > 0
+        } else {
+          FALSE
+        }
+      })
+
+    tables <- tableName[tables]
 
 
-  for (tab in tableName) {
-    x <- cdm[[tab]]
-
-    if ("subject_id" %in% colnames(x)) {
-      x <- x |> rename(person_id = .data$subject_id)
-    }
-
-    if (isTRUE(nrow(x |> utils::head(1) |> dplyr::collect()) > 0)) {
-      x <- x |> dplyr::select(.data$person_id) |>
-        dplyr::distinct() |>
-        dplyr::pull()
-    } else
-    {
-      return(invisible(cdm))
-    }
-
-
-    if (!all(x %in% id)) {
+    if (!is.null(tables)) {
       cli::cli_warn(
         message = c(
-          "There are person_id in the {tab} table but not in person table"
+          "There are person_id in the {tables} table but not in person table"
         ),
         call = call
       )
 
     }
-  }
 
   return(invisible(cdm))
 }
