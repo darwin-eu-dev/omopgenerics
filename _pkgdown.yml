@@ -78,7 +78,7 @@ reference:
   desc: To be used internally by other packages, not meant to be user focused functions
 - contents:
   - matches("insertFromSource|sourceType|tmpPrefix|uniqueId|uniqueTableName|isTableEmpty")
-- subtitle: dataset
+- subtitle: Dataset
   desc: Dataset exported
 - contents:
   - matches("fieldsTable")
