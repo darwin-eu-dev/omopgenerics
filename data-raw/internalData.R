@@ -131,6 +131,8 @@ fieldsTables <- fieldsTables |>
     fieldsAchilles |> dplyr::mutate(type = "achilles")
   )
 
+fieldsTable <- fieldsTables
+
 fieldsResults <- dplyr::tibble(
   result = "summarised_result",
   result_field_name = c(
@@ -186,6 +188,11 @@ argumentValidation <- dplyr::tribble(
 
 usethis::use_data(
   fieldsTables, fieldsResults, groupCount, argumentValidation, internal = TRUE,
+  overwrite = TRUE
+)
+
+usethis::use_data(
+  fieldsTable, internal = FALSE,
   overwrite = TRUE
 )
 

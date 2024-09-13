@@ -103,9 +103,3 @@ test_that("uniqueId", {
     c("ma", "mh")
   )
 })
-
-test_that("getFieldTables", {
-
-  expect_true(inherits(getFieldTables(),"tbl"))
-
-})
