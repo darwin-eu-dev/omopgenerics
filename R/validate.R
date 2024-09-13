@@ -499,6 +499,8 @@ checkCategory <-
 #' @param checkPlausibleObservationDates TRUE to perform check that there are
 #' no implausible observation period start dates (before 1800-01-01) or end
 #' dates (after the current date)
+#' @param checkPerson TRUE to perform check on person id in all clincial table
+#' are in person table
 #' @param validation How to perform validation: "error", "warning".
 #' @param call A call argument to pass to cli functions.
 #'
@@ -509,15 +511,16 @@ validateCdmArgument <- function(cdm,
                                 checkOverlapObservation = FALSE,
                                 checkStartBeforeEndObservation = FALSE,
                                 checkPlausibleObservationDates = FALSE,
+                                checkPerson = FALSE,
                                 validation = "error",
                                 call = parent.frame()) {
-  assertValidation(validation, call = parent.frame())
+  assertValidation(validation, call = call)
   assertLogical(checkOverlapObservation,
                 length = 1,
-                call = parent.frame())
+                call = call)
   assertLogical(checkStartBeforeEndObservation,
                 length = 1,
-                call = parent.frame())
+                call = call)
 
 
   # validate
@@ -542,6 +545,10 @@ validateCdmArgument <- function(cdm,
 
  }
 
+ if (isTRUE(checkPerson)){
+     checkPerson(cdm = cdm, call = call)
+ }
+
   return(invisible(cdm))
 
 
@@ -560,8 +567,8 @@ validateCdmArgument <- function(cdm,
 validateResultArguemnt <- function(result,
                                    validation = "error",
                                    call = parent.frame()) {
-  assertValidation(validation, call = parent.frame())
-  assertTable(result, call = parent.frame())
+  assertValidation(validation, call = call)
+  assertTable(result, call = call)
 
   result <- validateSummariseResult(result)
 
