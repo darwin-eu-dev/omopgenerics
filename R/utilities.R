@@ -185,3 +185,25 @@ uniqueId <- function(n = 1, exclude = character(), nChar = 3, prefix = "id_") {
 
   return(x)
 }
+
+
+
+#' Check if a table is empty or not
+#'
+#' @param table a table
+#'
+#' @return Boolean to indicate if a cdm_table is empty (TRUE or FALSE).
+#' @export
+#'
+isTableEmpty <- function(table){
+
+  assertClass(table,class = "cdm_table")
+
+     x <- table |>
+      dplyr::ungroup() |>
+      utils::head(1) |>
+      dplyr::tally() |>
+      dplyr::pull() == 0
+
+     return(x)
+}

@@ -9,6 +9,7 @@ validateCdmArgument(
   checkOverlapObservation = FALSE,
   checkStartBeforeEndObservation = FALSE,
   checkPlausibleObservationDates = FALSE,
+  checkPerson = FALSE,
   validation = "error",
   call = parent.frame()
 )
@@ -25,6 +26,9 @@ observational start and end date}
 \item{checkPlausibleObservationDates}{TRUE to perform check that there are
 no implausible observation period start dates (before 1800-01-01) or end
 dates (after the current date)}
+
+\item{checkPerson}{TRUE to perform check on person id in all clincial table
+are in person table}
 
 \item{validation}{How to perform validation: "error", "warning".}
 
