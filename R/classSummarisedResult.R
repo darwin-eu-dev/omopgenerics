@@ -88,6 +88,7 @@ newSummarisedResult <- function(x, settings = attr(x, "settings")) {
 
 constructSummarisedResult <- function(x, set, call = parent.frame()) {
   x <- x |> dplyr::as_tibble() |> dplyr::distinct()
+  xCol <- names(x)
 
   if (!is.null(set)) {
     set <- set |> dplyr::as_tibble()
@@ -116,6 +117,7 @@ constructSummarisedResult <- function(x, set, call = parent.frame()) {
           dplyr::distinct()
       )
   }
+
   x <- x |> dplyr::select(!dplyr::all_of(settingsCols))
   extraSets <- x |>
     dplyr::filter(.data$variable_name == "settings") |>
@@ -161,7 +163,19 @@ constructSummarisedResult <- function(x, set, call = parent.frame()) {
   }
 
   if (is.null(set)) {
-    set <- x |> dplyr::select("result_id") |> dplyr::distinct()
+    set <- x |>
+      dplyr::select("result_id") |> dplyr::distinct()
+  }
+
+  requiredSettingsColumns <-
+    c("result_type" , "package_name", "package_version")
+  for (name in requiredSettingsColumns) {
+    if (!(name %in% xCol) & !(name %in% names(set))) {
+      set <- set |> dplyr::mutate(!!name := "")
+
+      cli::cli_warn("{name} is not provided an empty {name} will be populated in the settings",
+                    call = call)
+    }
   }
 
   x <- structure(
@@ -544,5 +558,6 @@ emptySummarisedResult <- function(settings = NULL) {
     rlang::rep_named(list(character())) |>
     dplyr::as_tibble() |>
     dplyr::mutate("result_id" = as.integer()) |>
-    newSummarisedResult(settings = settings)
+    newSummarisedResult(settings = settings) |>
+    suppressWarnings()
 }
