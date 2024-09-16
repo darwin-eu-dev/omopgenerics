@@ -87,9 +87,8 @@ emptyOmopTable <- function(cdm, name) {
 }
 
 castOmopColumns <- function(table, name, version) {
-  cols <- fieldsTables |>
+  cols <- omopTableFields(version) |>
     dplyr::filter(
-      grepl(.env$version, .data$cdm_version) &
       .data$type == "cdm_table" & .data$cdm_table_name == .env$name) |>
     dplyr::select("cdm_field_name", "cdm_datatype") |>
     dplyr::mutate("cdm_datatype" = dplyr::case_when(

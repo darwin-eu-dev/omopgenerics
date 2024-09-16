@@ -108,7 +108,7 @@ constructCdmReference <- function(tables, cdmName, cdmVersion, cdmSource) {
 validateCdmReference <- function(cdm, soft) {
   # assert version
   version <- cdmVersion(cdm)
-  assertChoice(version, c("5.3", "5.4"), length = 1)
+  assertChoice(version, names(fieldsTables), length = 1)
 
   # assert source
   assertClass(cdmSource(cdm), "cdm_source")
@@ -961,33 +961,23 @@ achillesColumns <- function(table, onlyRequired = TRUE, version = "5.3") {
 }
 
 assertVersion <- function(version, call = parent.frame()) {
-  assertChoice(x = version, choices = c("5.3", "5.4"), call = call,
-               msg = "`version` must be a choice between 5.3 and 5.4; it can not contain NA; it can not be NULL.")
+  assertChoice(x = version, choices = names(fieldsTables), call = call)
 }
 assertTableName <- function(table, version, type, call = parent.frame()) {
   assertChoice(x = table, choices = tableChoice(version, type), call = call)
 }
 tableChoice <- function(version, type) {
-  fieldsTables$cdm_table_name[
-    grepl(version, fieldsTables$cdm_version) &
-      fieldsTables$type == type
-  ] |>
-    unique()
+  x <- omopTableFields(version)
+  unique(x$cdm_table_name[x$type == type])
 }
 getColumns <- function(table, version, type, required) {
+  x <- omopTableFields(version)
   if (isTRUE(required)) {
-    fieldsTables$cdm_field_name[
-      grepl(version, fieldsTables$cdm_version) &
-        fieldsTables$cdm_table_name == table &
-        fieldsTables$is_required == TRUE &
-        fieldsTables$type == type
+    x$cdm_field_name[
+        x$cdm_table_name == table & x$is_required == TRUE & x$type == type
     ]
   } else {
-    fieldsTables$cdm_field_name[
-      grepl(version, fieldsTables$cdm_version) &
-        fieldsTables$cdm_table_name == table &
-        fieldsTables$type == type
-    ]
+    x$cdm_field_name[x$cdm_table_name == table & x$type == type]
   }
 }
 
@@ -1026,11 +1016,7 @@ emptyCdmReference <- function(cdmName, cdmVersion = NULL) {
 }
 
 emptyOmopTableInternal <- function(name, version = "5.3") {
-  fieldsTables |>
-    dplyr::filter(
-      .data$cdm_table_name == name &
-        .data$type == "cdm_table" &
-        grepl(.env$version, .data$cdm_version)
-    ) |>
+  omopTableFields(version) |>
+    dplyr::filter(.data$cdm_table_name == name & .data$type == "cdm_table") |>
     emptyTable()
 }

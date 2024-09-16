@@ -207,3 +207,16 @@ isTableEmpty <- function(table){
 
      return(x)
 }
+
+
+#' Return a table of omop cdm fields informations
+#'
+#' @param cdmVersion cdm version of the omop cdm.
+#'
+#' @return a tibble contain informations on all the different fields in omop cdm.
+#' @export
+#'
+omopTableFields <- function(cdmVersion = "5.3") {
+  assertChoice(cdmVersion, choices = names(fieldsTables))
+  fieldsTables[[cdmVersion]]
+}
