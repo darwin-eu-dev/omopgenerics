@@ -374,6 +374,16 @@ assertNumeric <- function(x,
                           named = FALSE,
                           call = parent.frame(),
                           msg = NULL) {
+  report <- createCheckObject(x) |>
+    assertNull(null) |>
+    appendNoNa() |>
+    assertLength(length) |>
+    assertNa(na) |>
+    assertUnique(unique) |>
+    assertNamed(named)
+
+  if (is.null(report$error)) return(invisible(report$value))
+
   nm <- substitute(x) |> utils::capture.output()
   if (is.null(msg)) {
     if (integerish) obj <- "an integerish numeric" else obj <- "a numeric"
@@ -382,6 +392,11 @@ assertNumeric <- function(x,
       null = null, unique = unique, named = named
     )
   }
+  err <- c("!" = paste0("{.strong {.var {nm}} ", report$error, "}"))
+  cli::cli_abort(c(err, msg), call = call)
+
+
+
 
   # assert null
   if (assertNull(x, nm, null, msg, call)) {
@@ -453,7 +468,7 @@ assertNumeric <- function(x,
 #' @export
 #'
 assertTable <- function(x,
-                        class = NULL,
+                        class = "data.frame",
                         numberColumns = NULL,
                         numberRows = NULL,
                         columns = character(),
@@ -462,6 +477,7 @@ assertTable <- function(x,
                         unique = FALSE,
                         call = parent.frame(),
                         msg = NULL) {
+
   nm <- substitute(x) |> utils::capture.output()
   if (is.null(msg)) {
     if (!is.null(class)) {
@@ -547,15 +563,19 @@ assertTrue <- function(x,
                        null = FALSE,
                        call = parent.frame(),
                        msg = NULL) {
-  # error message
+  report <- createCheckObject(x) |>
+    assertNull(null) |>
+    isTrue()
+
+  if (is.null(report$error)) return(invisible(report$value))
+
   nm <- substitute(x) |> utils::capture.output()
-  if (is.null(msg)) msg <- c("!" = "{.strong `{nm}` is not TRUE.}")
-
-  if (assertNull(x, nm, null, msg, call)) {
-    if (!isTRUE(x)) cli::cli_abort(message = msg, call = call)
+  # create error message
+  if (is.null(msg)) {
+    msg <- c("!" = "{.strong `{nm}` must be TRUE.}")
   }
-
-  return(invisible(x))
+  err <- c("!" = paste0("{.strong {.var {nm}} ", report$error, "}"))
+  cli::cli_abort(c(err, msg), call = call)
 }
 
 #' Assert Date
@@ -580,44 +600,104 @@ assertDate <- function(x,
                        named = FALSE,
                        call = parent.frame(),
                        msg = NULL) {
+  report <- createCheckObject(x) |>
+    assertNull(null) |>
+    isClass("Date") |>
+    assertLength(length) |>
+    assertNa(na) |>
+    assertUnique(unique) |>
+    assertNamed(named)
+
+  if (is.null(report$error)) return(invisible(report$value))
+
   nm <- substitute(x) |> utils::capture.output()
-  # create error message
   if (is.null(msg)) {
     msg <- errorMessage(
       nm = nm, object = "a date vector", length = length, na = na,
       null = null, unique = unique, named = named
     )
   }
-
-  assertNull(x, nm, null, msg, call)
-
-  # assert null
-  if (assertNull(x, nm, null, msg, call)) {
-    # assert class
-    errorMessage <-
-      paste0(nm, " must be an object of class Date.")
-
-    if (!class(x) %in% "Date") {
-      cli::cli_abort(errorMessage, call = call)
-    }
-
-    # assert length
-    assertLength(x, nm, length, msg, call)
-
-    # assert na
-    assertNa(x, nm, na, msg, call)
-
-    # assert unique
-    assertUnique(x, nm, unique, msg, call)
-
-    # assert named
-    assertNamed(x, nm, named, msg, call)
-
-  }
-
-  invisible(x)
+  err <- c("!" = paste0("{.strong {.var {nm}} ", report$error, "}"))
+  cli::cli_abort(c(err, msg), call = call)
 }
 
+createCheckObject <- function(x) {
+  list(value = x, continue = TRUE, error = NULL)
+}
+assertNull <- function(x, null) {
+  if (is.null(x$value)) {
+    x$continue <- FALSE
+    if (!null) {
+      x$error = "can not be NULL."
+    }
+  }
+  return(x)
+}
+assertLength <- function(x, length) {
+  if (!x$continue) return(x)
+  len <- base::length(x$value)
+  if (!is.null(length) && len != length) {
+    x$continue <- FALSE
+    x$error <- paste0("has length ", len, " but must have length {length}.")
+  }
+  return(x)
+}
+assertNa <- function(x, na) {
+  if (!x$continue) return(x)
+  if (!na && length(x$value) > 0) {
+    pos <- which(is.na(x$value))
+    if (length(pos) > 0) {
+      x$continue <- FALSE
+      x$error <- "contains NA in position {pos}." |>
+        cli::cli_text() |>
+        cli::cli_fmt()
+    }
+  }
+  return(x)
+}
+assertNamed <- function(x, named) {
+  if (!x$continue) return(x)
+  if (named && length(names(x$value)[names(x$value) != ""]) != length(x$value)) {
+    x$continue <- FALSE
+    x$error <- "must be named."
+  }
+  return(x)
+}
+assertUnique <- function(x, unique) {
+  if (!x$continue) return(x)
+  if (unique && length(unique(x$value)) != length(x$value)) {
+    x$continue <- FALSE
+    x$error <- "must be unique."
+  }
+  return(x)
+}
+appendNoNa <- function(x) {
+  x$value_no_na <- x$value[!is.na(x$value)]
+  return(x)
+}
+isClass <- function(x, class) {
+  if (!x$continue) return(x)
+  cl <- base::class(x$value)
+  if (!any(class %in% cl)) {
+    x$continue <- FALSE
+    x$error <- "must have class {.var {collapseStr(class, 'or')}} but has class {.cls {cl}}." |>
+      cli::cli_text() |>
+      cli::cli_fmt()
+  }
+  return(x)
+}
+isTrue <- function(x) {
+  if (!x$continue) return(x)
+  if (!isTRUE(x$value)) {
+    x$continue <- FALSE
+    x$error <- "is not TRUE."
+  }
+  return(x)
+}
+collapseStr <- function(x, sep) {
+  if (length(x) == 1) return(x)
+  paste0(paste0(x[-1], collapse = ", "), " ", sep, " ", x[length(x)])
+}
 errorMessage <- function(nm,
                          object,
                          length = NULL,
@@ -657,46 +737,4 @@ errorMessage <- function(nm,
     paste0(collapse = " ") |>
     paste0(".") |>
     as.character()
-}
-assertLength <- function(x, nm, length, msg, call) {
-  len <- base::length(x)
-  if (!is.null(length) && len != length) {
-    c(
-      "!" = "{.strong `{nm}` has length {len}, but must have length {length}.}",
-      msg
-    ) |>
-      cli::cli_abort(call = call)
-  }
-  invisible(NULL)
-}
-assertNa <- function(x, nm, na, msg, call) {
-  if (!na && length(x) > 0) {
-    pos <- which(is.na(x))
-    if (length(pos) > 0) {
-      c("!" = "{.strong `{nm}` contains NA in position {pos}.}", msg) |>
-        cli::cli_abort(call = call)
-    }
-  }
-  invisible(NULL)
-}
-assertNamed <- function(x, nm, named, msg, call) {
-  if (named && length(names(x)[names(x) != ""]) != length(x)) {
-    c("!" = "{.strong `{nm}` must be named.}", msg) |>
-      cli::cli_abort(call = call)
-  }
-  invisible(NULL)
-}
-assertUnique <- function(x, nm, unique, msg, call) {
-  if (unique && length(unique(x)) != length(x)) {
-    c("!" = "{.strong `{nm}` must be unique.}", msg) |>
-      cli::cli_abort(call = call)
-  }
-  invisible(NULL)
-}
-assertNull <- function(x, nm, null, msg, call) {
-  if (!null && is.null(x)) {
-    c("!" = "{.strong `{nm}` can not be NULL.}", msg) |>
-      cli::cli_abort(call = call)
-  }
-  return(!is.null(x))
 }
