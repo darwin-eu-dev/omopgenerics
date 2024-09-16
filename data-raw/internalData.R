@@ -131,8 +131,6 @@ fieldsTables <- fieldsTables |>
     fieldsAchilles |> dplyr::mutate(type = "achilles")
   )
 
-fieldsTable <- fieldsTables
-
 fieldsResults <- dplyr::tibble(
   result = "summarised_result",
   result_field_name = c(
@@ -191,9 +189,5 @@ usethis::use_data(
   overwrite = TRUE
 )
 
-usethis::use_data(
-  fieldsTable, internal = FALSE,
-  overwrite = TRUE
-)
 
 
