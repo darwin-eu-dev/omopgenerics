@@ -18,7 +18,8 @@ test_that("test SummarisedResult object", {
     "additional_level" = "overall"
   )
   expect_no_error(newSummarisedResult(x = x))
-
+  expect_no_warning(newSummarisedResult(x = x))
+  newSummarisedResult(x = x)
   expect_identical(
     estimateTypeChoices() |> sort(),
     c(
@@ -27,7 +28,6 @@ test_that("test SummarisedResult object", {
     ) |>
       sort()
   )
-
   x |>
     newSummarisedResult() |>
     inherits("summarised_result") |>
@@ -161,7 +161,7 @@ test_that("test SummarisedResult object", {
 
   expect_identical(
     x |> newSummarisedResult(),
-    x |> newSummarisedResult() |> newSummarisedResult()
+  x |> newSummarisedResult() |> newSummarisedResult()
   )
 
   x <- dplyr::tibble(
@@ -287,6 +287,28 @@ test_that("test SummarisedResult object", {
   y <- bind(x, x)
   expect_identical(y, x)
 
+  x <- dplyr::tibble(
+    "result_id" = as.integer(1),
+    "cdm_name" = "cprd",
+    "group_name" = "sex",
+    "group_level" = "male",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable_name" = "Age group",
+    "variable_level" = "10 to 50",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  )
+
+  expect_warning(x <- newSummarisedResult(x = x))
+
+  expect_true(all(
+    c("result_type", "package_name", "package_version") %in%
+      names(settings(x))
+  ))
 })
 
 test_that("validateNameLevel", {
@@ -326,3 +348,5 @@ test_that("validateNameLevel", {
         nameColumn = "group_name", levelColumn = "group_level", sep = " &&& | and ", warn = TRUE)
   )
 })
+
+

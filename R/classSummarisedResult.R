@@ -116,6 +116,7 @@ constructSummarisedResult <- function(x, set, call = parent.frame()) {
           dplyr::distinct()
       )
   }
+
   x <- x |> dplyr::select(!dplyr::all_of(settingsCols))
   extraSets <- x |>
     dplyr::filter(.data$variable_name == "settings") |>
@@ -162,6 +163,19 @@ constructSummarisedResult <- function(x, set, call = parent.frame()) {
 
   if (is.null(set)) {
     set <- x |> dplyr::select("result_id") |> dplyr::distinct()
+  }
+
+  requiredSettingsColumns <- c(
+    "result_type" , "package_name", "package_version")
+  notPresent <- requiredSettingsColumns[
+    !requiredSettingsColumns %in% colnames(set)]
+  if (length(notPresent) > 0) {
+    '{.var {notPresent}} {?is/are} not provided will be populated as "" in settings' |>
+      cli::cli_warn()
+    for (col in notPresent) {
+      set <- set |>
+        dplyr::mutate(!!col := "")
+    }
   }
 
   x <- structure(
@@ -540,6 +554,14 @@ estimateTypeChoices <- function() {
 #' emptySummarisedResult()
 #'
 emptySummarisedResult <- function(settings = NULL) {
+  if (is.null(settings)) {
+    settings <- dplyr::tibble(
+      "result_id" = integer(),
+      "result_type" = character(),
+      "package_name" = character(),
+      "package_version" = character()
+    )
+  }
   resultColumns("summarised_result") |>
     rlang::rep_named(list(character())) |>
     dplyr::as_tibble() |>
