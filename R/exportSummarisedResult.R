@@ -21,13 +21,14 @@
 #' @param fileName Name of the file that will be created. Use \{cdm_name\} to
 #' refer to the cdmName of the objects and \{date\} to add the export date.
 #' @param path Path where to create the csv file.
-#'
+#' @param temp whether you are saving a temp file, default as FALSE
 #' @export
 #'
 exportSummarisedResult <- function(...,
                                    minCellCount = 5,
                                    fileName = "results_{cdm_name}_{date}.csv",
-                                   path = getwd()) {
+                                   path = getwd(),
+                                   temp = FALSE) {
   # initial checks
   results <- list(...)
   assertList(x = results, class = "summarised_result")
@@ -44,25 +45,39 @@ exportSummarisedResult <- function(...,
   results <- bind(...) |> suppress(minCellCount = minCellCount)
 
   # cdm name
-  cdmName <- results$cdm_name |> unique() |> paste0(collapse = "_")
-  fileName <- stringr::str_replace(string = fileName,
-                       pattern = "\\{cdm_name\\}",
-                       replacement = cdmName)
+  cdmName <- results$cdm_name |>
+    unique() |>
+    paste0(collapse = "_")
+  fileName <- stringr::str_replace(
+    string = fileName,
+    pattern = "\\{cdm_name\\}",
+    replacement = cdmName
+  )
 
   # date
   date <- format(Sys.Date(), format = "%Y_%m_%d") |> as.character()
-  fileName <- stringr::str_replace(string = fileName,
-                                   pattern = "\\{date\\}",
-                                   replacement = date)
+  fileName <- stringr::str_replace(
+    string = fileName,
+    pattern = "\\{date\\}",
+    replacement = date
+  )
 
   # to tibble + pivot settings
   x <- results |>
     dplyr::as_tibble() |>
     dplyr::union_all(results |> pivotSettings() |> dplyr::as_tibble())
 
-  utils::write.csv(
-    x, file = file.path(path, fileName), row.names = FALSE
-  )
+  if (!isTRUE(temp)) {
+    utils::write.csv(
+      x,
+      file = file.path(path, fileName), row.names = FALSE
+    )
+  } else {
+    utils::write.csv(
+      x,
+      file = fileName, row.names = FALSE
+    )
+  }
 }
 
 pivotSettings <- function(x) {
@@ -132,8 +147,7 @@ variableTypes <- function(table) {
   return(x)
 }
 assertClassification <- function(x) {
-  switch (
-    x,
+  switch(x,
     "chr" = "character",
     "fct" = "character",
     "ord" = "character",

@@ -8,7 +8,8 @@ exportSummarisedResult(
   ...,
   minCellCount = 5,
   fileName = "results_{cdm_name}_{date}.csv",
-  path = getwd()
+  path = getwd(),
+  temp = FALSE
 )
 }
 \arguments{
@@ -20,6 +21,8 @@ exportSummarisedResult(
 refer to the cdmName of the objects and \{date\} to add the export date.}
 
 \item{path}{Path where to create the csv file.}
+
+\item{temp}{whether you are saving a temp file, default as FALSE}
 }
 \description{
 Export a summarised_result object to a csv file.
