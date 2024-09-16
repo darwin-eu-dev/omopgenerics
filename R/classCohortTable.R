@@ -662,12 +662,8 @@ populateCohortCodelist <- function(table, cohortCodelistRef) {
 emptyCohortTable <- function(cdm, name, overwrite = TRUE) {
   assertCharacter(name, length = 1)
   assertClass(cdm, "cdm_reference")
-  table <- fieldsTables |>
-    dplyr::filter(
-      .data$cdm_table_name == "cohort" &
-        .data$type == "cohort" &
-        grepl(cdmVersion(cdm), .data$cdm_version)
-    ) |>
+  table <- omopTableFields(cdmVersion(cdm)) |>
+    dplyr::filter(.data$cdm_table_name == "cohort" & .data$type == "cohort") |>
     emptyTable()
   cdm <- insertTable(cdm = cdm, name = name, table = table, overwrite = overwrite)
   cdm[[name]] <- newCohortTable(cdm[[name]], .softValidation = TRUE)
@@ -675,9 +671,8 @@ emptyCohortTable <- function(cdm, name, overwrite = TRUE) {
 }
 
 castCohortColumns <- function(table, tName, name) {
-  cols <- fieldsTables |>
-    dplyr::filter(
-      .data$type == "cohort" & .data$cdm_table_name == .env$name) |>
+  cols <- omopTableFields() |>
+    dplyr::filter(.data$type == "cohort" & .data$cdm_table_name == .env$name) |>
     dplyr::select("cdm_field_name", "cdm_datatype") |>
     dplyr::mutate("cdm_datatype" = dplyr::case_when(
       grepl("varchar", .data$cdm_datatype) ~ "character",

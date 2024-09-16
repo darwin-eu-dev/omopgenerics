@@ -217,10 +217,6 @@ isTableEmpty <- function(table){
 #' @export
 #'
 omopTableFields <- function(cdmVersion = "5.3") {
-  assertChoice(cdmVersion, choices = c("5.3", "5.4"))
-
-  x <-
-    fieldsTables |> filter(grepl(cdmVersion, .data$cdm_version))
-
-  return(x)
+  assertChoice(cdmVersion, choices = names(fieldsTables))
+  fieldsTables[[cdmVersion]]
 }
