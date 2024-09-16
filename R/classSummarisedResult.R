@@ -88,7 +88,6 @@ newSummarisedResult <- function(x, settings = attr(x, "settings")) {
 
 constructSummarisedResult <- function(x, set, call = parent.frame()) {
   x <- x |> dplyr::as_tibble() |> dplyr::distinct()
-  xCol <- names(x)
 
   if (!is.null(set)) {
     set <- set |> dplyr::as_tibble()
@@ -166,14 +165,16 @@ constructSummarisedResult <- function(x, set, call = parent.frame()) {
     set <- x |> dplyr::select("result_id") |> dplyr::distinct()
   }
 
-  requiredSettingsColumns <-
-    c("result_type" , "package_name", "package_version")
-  for (name in requiredSettingsColumns) {
-    if (!(name %in% xCol) & !(name %in% names(set))) {
-      set <- set |> dplyr::mutate(!!name := "")
-
-      cli::cli_warn("{name} is not provided an empty {name} will be populated in the settings",
-                    call = call)
+  requiredSettingsColumns <- c(
+    "result_type" , "package_name", "package_version")
+  notPresent <- requiredSettingsColumns[
+    !requiredSettingsColumns %in% colnames(set)]
+  if (length(notPresent) > 0) {
+    '{.var {notPresent}} {?is/are} not provided will be populated as "" in settings' |>
+      cli::cli_warn()
+    for (col in notPresent) {
+      set <- set |>
+        dplyr::mutate(!!col := "")
     }
   }
 
@@ -553,12 +554,17 @@ estimateTypeChoices <- function() {
 #' emptySummarisedResult()
 #'
 emptySummarisedResult <- function(settings = NULL) {
+  if (is.null(settings)) {
+    settings <- dplyr::tibble(
+      "result_id" = integer(),
+      "result_type" = character(),
+      "package_name" = character(),
+      "package_version" = character()
+    )
+  }
   resultColumns("summarised_result") |>
     rlang::rep_named(list(character())) |>
     dplyr::as_tibble() |>
-    dplyr::mutate("result_id" = as.integer(),
-                  "result_type" = "" ,
-                  "package_name" = "" ,
-                  "package_version" = "") |>
+    dplyr::mutate("result_id" = as.integer()) |>
     newSummarisedResult(settings = settings)
 }

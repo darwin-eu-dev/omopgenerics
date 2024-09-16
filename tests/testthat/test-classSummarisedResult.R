@@ -303,9 +303,7 @@ test_that("test SummarisedResult object", {
     "additional_level" = "overall"
   )
 
-  expect_warning(newSummarisedResult(x = x))
-
-  x <- newSummarisedResult(x = x)
+  expect_warning(x <- newSummarisedResult(x = x))
 
   expect_true(all(
     c("result_type", "package_name", "package_version") %in%
