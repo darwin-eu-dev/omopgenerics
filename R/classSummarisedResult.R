@@ -163,8 +163,7 @@ constructSummarisedResult <- function(x, set, call = parent.frame()) {
   }
 
   if (is.null(set)) {
-    set <- x |>
-      dplyr::select("result_id") |> dplyr::distinct()
+    set <- x |> dplyr::select("result_id") |> dplyr::distinct()
   }
 
   requiredSettingsColumns <-
@@ -557,7 +556,9 @@ emptySummarisedResult <- function(settings = NULL) {
   resultColumns("summarised_result") |>
     rlang::rep_named(list(character())) |>
     dplyr::as_tibble() |>
-    dplyr::mutate("result_id" = as.integer()) |>
-    newSummarisedResult(settings = settings) |>
-    suppressWarnings()
+    dplyr::mutate("result_id" = as.integer(),
+                  "result_type" = "" ,
+                  "package_name" = "" ,
+                  "package_version" = "") |>
+    newSummarisedResult(settings = settings)
 }

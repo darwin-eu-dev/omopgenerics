@@ -49,7 +49,6 @@ test_that("you can create empty objects",{
     cohortColumns("cohort_attrition") %in% (cdm$my_cohort |> attrition() |> colnames())
   ))
   expect_error(cdm <- emptyCohortTable(cdm = cdm, name = "person"))
-  settings(emptySummarisedResult())
   # summarised result
   expect_no_error(x <- emptySummarisedResult())
   expect_true(inherits(x, "summarised_result"))
