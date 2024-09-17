@@ -95,9 +95,9 @@ containing specific concept IDs.</p>
 <code class="sourceCode R"><span><span class="va">condition_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">201820</span>, <span class="fl">4087682</span>, <span class="fl">3655269</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/newCodelist.html">newCodelist</a></span><span class="op">(</span><span class="va">condition_codes</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `newCodelist()`:</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="font-weight: bold;">`codelist` must be named.</span></span></span>
-<span><span class="co">#&gt; `codelist` must be a list with objects of class numeric, integer, and</span></span>
-<span><span class="co">#&gt; integer64; it can not contain NA; it has to be named; it can not be NULL.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="font-weight: bold;">`codelist` must be named</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> `codelist` must be a list with objects of class numeric, integer, and</span></span>
+<span><span class="co">#&gt;   integer64; it can not contain NA; it has to be named; it can not be NULL.</span></span></code></pre></div>
 <p>And a codelist cannot have missing values</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condition_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"diabetes"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">201820</span>, <span class="cn">NA</span>, <span class="fl">3655269</span><span class="op">)</span>,</span>
@@ -148,9 +148,9 @@ cannot have missing elements.</p>
 <span>  <span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/newConceptSetExpression.html">newConceptSetExpression</a></span><span class="op">(</span><span class="va">condition_cs</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `newConceptSetExpression()`:</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="font-weight: bold;">`x` must be named.</span></span></span>
-<span><span class="co">#&gt; `x` must be a list with objects of class tbl; it can not contain NA; it has to</span></span>
-<span><span class="co">#&gt; be named; it can not be NULL.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="font-weight: bold;">`x` must be named</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> `x` must be a list with objects of class tbl; it can not contain NA; it has</span></span>
+<span><span class="co">#&gt;   to be named; it can not be NULL.</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">condition_cs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="st">"diabetes"</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
@@ -168,9 +168,9 @@ cannot have missing elements.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/newConceptSetExpression.html">newConceptSetExpression</a></span><span class="op">(</span><span class="va">condition_cs</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `newConceptSetExpression()`:</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="font-weight: bold;">`x[[i]]$concept_id` contains NA in position 2.</span></span></span>
-<span><span class="co">#&gt; `x[[i]]$concept_id` must be an integerish numeric; it can not contain NA; it</span></span>
-<span><span class="co">#&gt; can not be NULL.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="font-weight: bold;">`x[[i]]$concept_id` contains NA in position 2</span>.</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> `x[[i]]$concept_id` must be an integerish numeric; it can not contain NA; it</span></span>
+<span><span class="co">#&gt;   can not be NULL.</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
