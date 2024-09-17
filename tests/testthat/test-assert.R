@@ -306,7 +306,6 @@ test_that("test assertTable", {
   expect_error(assertTable(dplyr::tibble(b = c(1, 1), a = c(1, 1)), unique = TRUE))
 })
 
-
 test_that("test assertDate", {
 
   date = as.Date(c("1950-01-01", "2000-12-31"))
@@ -320,5 +319,4 @@ test_that("test assertDate", {
 
   expect_error(assertDate(x =date, length = 1))
 
-}
-)
+})
