@@ -256,7 +256,7 @@ validateWindowArgument <- function(window,
     cli::cli_abort("NA found in window, please use Inf or -Inf instead", call = call)
   }
 
- originalWindow <- window
+  originalWindow <- window
   # change inf to NA to check for floats, as Inf won't pass integerish check
   window <-
     lapply(window, function(x)
@@ -300,8 +300,8 @@ getWindowNames <- function(window, snakeCase) {
   getname <- function(element) {
     element <- tolower(as.character(element))
     element <- stringr::str_replace_all(string = element,
-                             pattern = "-",
-                             replacement = "m")
+                                        pattern = "-",
+                                        replacement = "m")
     invisible(paste0(element[1], "_to_", element[2]))
   }
   #snakecase False
@@ -355,7 +355,7 @@ assertWindowName <-
     }
 
     invisible(window)
-}
+  }
 
 #' validateAgeGroupArgument
 #'
@@ -391,15 +391,15 @@ validateAgeGroupArgument <- function(ageGroup,
     if (is.numeric(ageGroup[[1]])) {
       ageGroup <- list("age_group" = ageGroup)
     }
-  #check multiple age group
+    #check multiple age group
 
-  if (!isTRUE(multipleAgeGroup)) {
+    if (!isTRUE(multipleAgeGroup)) {
 
-    if (inherits(ageGroup[[2]],"list")){
-      cli::cli_abort("Multiple age group are not allowed")
+      if (inherits(ageGroup[[2]],"list")){
+        cli::cli_abort("Multiple age group are not allowed")
+      }
+
     }
-
-  }
 
     for (k in seq_along(ageGroup)) {
       invisible(checkCategory(ageGroup[[k]], overlap, call = call))
@@ -524,11 +524,11 @@ validateCdmArgument <- function(cdm,
 
 
   # validate
-    # assert class
-    assertClass(cdm,
-                class = c("cdm_reference"),
-                all = TRUE,
-                call = call)
+  # assert class
+  assertClass(cdm,
+              class = c("cdm_reference"),
+              all = TRUE,
+              call = call)
 
   # not overlapping periods
   if (isTRUE(checkOverlapObservation)){
@@ -540,14 +540,14 @@ validateCdmArgument <- function(cdm,
     checkStartBeforeEndObservation(cdm$observation_period)
   }
 
- if (isTRUE(checkPlausibleObservationDates)){
-   checkPlausibleObservationDates(cdm$observation_period)
+  if (isTRUE(checkPlausibleObservationDates)){
+    checkPlausibleObservationDates(cdm$observation_period)
 
- }
+  }
 
- if (isTRUE(checkPerson)){
-     checkPerson(cdm = cdm, call = call)
- }
+  if (isTRUE(checkPerson)){
+    checkPerson(cdm = cdm, call = call)
+  }
 
   return(invisible(cdm))
 
@@ -574,4 +574,4 @@ validateResultArguemnt <- function(result,
 
   return(invisible(result))
 
-  }
+}

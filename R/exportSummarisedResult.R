@@ -21,21 +21,25 @@
 #' @param fileName Name of the file that will be created. Use \{cdm_name\} to
 #' refer to the cdmName of the objects and \{date\} to add the export date.
 #' @param path Path where to create the csv file.
-#' @param temp whether you are saving a temp file, default as FALSE
 #' @export
 #'
 exportSummarisedResult <- function(...,
                                    minCellCount = 5,
                                    fileName = "results_{cdm_name}_{date}.csv",
-                                   path = getwd(),
-                                   temp = FALSE) {
+                                   path = getwd()) {
   # initial checks
   results <- list(...)
   assertList(x = results, class = "summarised_result")
   assertCharacter(fileName, length = 1, minNumCharacter = 1)
   assertCharacter(path, length = 1, minNumCharacter = 1)
-  if (!dir.exists(path)) {
-    cli::cli_abort("path: {path}, does not exist")
+  if (!grepl("\\.csv$", path, ignore.case = TRUE)) {
+    if (!dir.exists(path)) {
+      cli::cli_abort("path: {path}, does not exist")
+    }
+  } else {
+    if (!dir.exists(dirname(path))) {
+      cli::cli_abort("path: {path}, does not exist")
+    }
   }
   if (tools::file_ext(fileName) != "csv") {
     fileName <- paste0(fileName, ".csv")
@@ -67,7 +71,7 @@ exportSummarisedResult <- function(...,
     dplyr::as_tibble() |>
     dplyr::union_all(results |> pivotSettings() |> dplyr::as_tibble())
 
-  if (!isTRUE(temp)) {
+  if (!grepl("\\.csv$", path, ignore.case = TRUE)) {
     utils::write.csv(
       x,
       file = file.path(path, fileName), row.names = FALSE
@@ -75,7 +79,7 @@ exportSummarisedResult <- function(...,
   } else {
     utils::write.csv(
       x,
-      file = fileName, row.names = FALSE
+      file = path, row.names = FALSE
     )
   }
 }
