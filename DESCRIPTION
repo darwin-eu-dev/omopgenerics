@@ -58,6 +58,7 @@ Suggests:
     readr,
     rmarkdown,
     testthat (>= 3.0.0),
+    tictoc,
     withr
 URL: https://darwin-eu-dev.github.io/omopgenerics/
 Config/testthat/edition: 3
