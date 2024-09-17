@@ -307,16 +307,61 @@ test_that("test assertTable", {
 })
 
 test_that("test assertDate", {
+  # is date
+  date <- as.Date(c("1950-01-01", "2000-12-31"))
+  expect_no_error(assertDate(date))
+  expect_error(assertDate(1L))
+  expect_error(assertDate("2010-04-05"))
 
-  date = as.Date(c("1950-01-01", "2000-12-31"))
+  # length
+  expect_no_error(assertDate(date, length = 2))
+  expect_error(assertDate(date, length = 1))
+  expect_error(assertDate(date, length = 3))
 
+  # length
+  expect_no_error(assertDate(c(date, NA), na = TRUE))
+  expect_error(assertDate(c(date, NA), na = FALSE))
+  expect_no_error(assertDate(c(date), na = TRUE))
+  expect_no_error(assertDate(c(date), na = FALSE))
 
-  expect_no_error(assertDate(x =date, length = 2))
+  # null
+  expect_no_error(assertDate(NULL, null = TRUE))
+  expect_error(assertDate(NULL, null = FALSE))
+  expect_no_error(assertDate(date, null = TRUE))
+  expect_no_error(assertDate(date, null = FALSE))
 
-  expect_error(assertDate(x =date, length = 1))
+  # unique
+  expect_no_error(assertDate(date, unique = TRUE))
+  expect_no_error(assertDate(date, unique = FALSE))
+  expect_error(assertDate(c(date, date), unique = TRUE))
+  expect_no_error(assertDate(c(date, date), unique = FALSE))
 
-  date = 1
+  # named
+  expect_no_error(assertDate(c("a" = as.Date("1993-04-19")), named = TRUE))
+  expect_no_error(assertDate(c("a" = as.Date("1993-04-19")), named = FALSE))
+  expect_error(assertDate(as.Date("1993-04-19"), named = TRUE))
+  expect_no_error(assertDate(as.Date("1993-04-19"), named = FALSE))
+})
 
-  expect_error(assertDate(x =date, length = 1))
+test_that("benchmark code", {
+  skip_on_cran()
+  nrep <- 10L # number repetitions
 
+  # no error
+  tictoc::tic()
+  for (k in seq_len(nrep)) {
+    assertCharacter("1")
+  }
+  x <- tictoc::toc(quiet = TRUE)
+  timeNoError <- x$toc - x$tic
+
+  # error
+  tictoc::tic()
+  for (k in seq_len(nrep)) {
+    expect_error(assertCharacter(1L))
+  }
+  x <- tictoc::toc(quiet = TRUE)
+  timeError <- x$toc - x$tic
+
+  expect_true(timeNoError < timeError)
 })

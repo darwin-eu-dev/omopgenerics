@@ -41,7 +41,7 @@ assertCharacter <- function(x,
   # perform checks
   report <- createCheckObject(x) |>
     checkNull(null) |>
-    checkInherits("character") |>
+    checkFunction(is.character, "is not character") |>
     checkLength(length) |>
     checkNa(na) |>
     checkNamed(named) |>
@@ -203,12 +203,12 @@ assertList <- function(x,
   # perform checks
   report <- createCheckObject(x) |>
     checkNull(null) |>
-    checkInherits("list") |>
+    checkFunction(is.list, "is not a list") |>
     checkLength(length) |>
     checkNa(na) |>
     checkUnique(unique) |>
     checkNamed(named) |>
-    checkListClas(class)
+    checkListClass(class)
 
   # return if no error
   if (is.null(report$error)) return(invisible(report$value))
@@ -258,7 +258,7 @@ assertLogical <- function(x,
   # perform checks
   report <- createCheckObject(x) |>
     checkNull(null) |>
-    checkInherits("logical") |>
+    checkFunction(is.logical, "is not logical") |>
     checkLength(length) |>
     checkNa(na) |>
     checkNamed(named)
@@ -312,7 +312,7 @@ assertNumeric <- function(x,
   report <- createCheckObject(x) |>
     checkNull(null) |>
     appendNoNa() |>
-    checkInherits("numeric") |>
+    checkFunction(is.numeric, "is not numeric") |>
     checkIntegerish(integerish) |>
     checkMin(min) |>
     checkMax(max) |>
@@ -560,7 +560,7 @@ checkClass <- function(x, class, all = FALSE, extra = TRUE) {
     }
   }
   if (x$continue & !extra) {
-    extra <- intersect(cl, class)
+    extra <- union(setdiff(cl, class), setdiff(class, cl))
     if (length(extra) > 0) {
       x$continue <- FALSE
       x$error <- "must have exactly class {.cls {class}} but has class {.cls {cl}}" |>
@@ -577,6 +577,22 @@ checkInherits <- function(x, what) {
     x$error <- "must inherit from {.var {what}}" |>
       cli::cli_text() |>
       cli::cli_fmt()
+  }
+  return(x)
+}
+checkFunction <- function(x, fun, message) {
+  if (!x$continue) return(x)
+  if (!do.call(fun, list(x$value))) {
+    x$continue <- FALSE
+    x$error <- message
+  }
+  return(x)
+}
+checkNumeric <- function(x) {
+  if (!x$continue) return(x)
+  if (!is.numeric(x$value)) {
+    x$continue <- FALSE
+    x$error <- "is not numeric"
   }
   return(x)
 }
@@ -647,7 +663,7 @@ checkColumns2 <- function(x, columns, allowExtraColumns) {
   if (!x$continue) return(x)
   if (!is.null(columns)) {
     cols <- colnames(x$value)
-    notPresent <- intersect(columns, cols)
+    notPresent <- setdiff(columns, cols)
     if (length(notPresent) > 0) {
       x$continue <- FALSE
       x$error <- "must have {notPresent} as columns" |>
@@ -657,7 +673,7 @@ checkColumns2 <- function(x, columns, allowExtraColumns) {
         as.character()
     }
     if (!allowExtraColumns & x$continue) {
-      extraCols <- intersect(cols, columns)
+      extraCols <- setdiff(cols, columns)
       if (length(extraCols) > 0) {
         x$continue <- FALSE
         x$error <- "must not have the following {extraCols} extra column{?s}" |>
@@ -680,10 +696,11 @@ checkDistinct <- function(x, unique) {
   }
   return(x)
 }
-checkListClas <- function(x, class) {
+checkListClass <- function(x, class) {
   if (!x$continue) return(x)
   if (!is.null(class)) {
-    pos <- purrr::map_lgl(x$value, \(x) !any(class %in% base::class(x))) |>
+    x <- appendNoNa(x)
+    pos <- purrr::map_lgl(x$value_no_na, \(x) !any(class %in% base::class(x))) |>
       which()
     if (length(pos) > 0) {
       x$continue <- FALSE
