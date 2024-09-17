@@ -606,7 +606,7 @@ checkTrue <- function(x) {
 }
 checkIntegerish <- function(x, integerish) {
   if (!x$continue) return(x)
-  if (integerish & base::length(x$value_no_na) > 0 & !all(is.infinite(x$value_no_na))) {
+  if (integerish & x$present_no_na & !all(is.infinite(x$value_no_na))) {
     if (inherits(x$value, "integer")) return(x)
     xInt <- x$value_no_na[!is.infinite(x$value_no_na)]
     err <- max(abs(xInt - round(xInt)))

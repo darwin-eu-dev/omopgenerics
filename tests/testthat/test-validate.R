@@ -8,10 +8,8 @@ test_that("test validateNameArgument", {
   expect_warning(expect_warning(expect_identical(
     "my_name", validateNameArgument("myName", list("my_name" = 1), validation = "warning")
   )))
-
   expect_no_error(validateNameArgument(name = NULL, null = TRUE))
   expect_error(validateNameArgument(name = NULL, null = FALSE))
-
 })
 
 test_that("test validateCohortIdArgument", {
@@ -28,7 +26,6 @@ test_that("test validateCohortIdArgument", {
 })
 
 test_that("test validateWindowArgument", {
-
   window <- c(0, 1)
   expect_no_error(validateWindowArgument(window))
   window <- list(c(0, 1), c(2, 3))
@@ -66,19 +63,15 @@ test_that("test validateWindowArgument", {
 
 test_that("test validateAgeGroup", {
   #test list
-  ageGroup = c(0, 18)
-
-  expect_error(validateAgeGroupArgument(ageGroup))
+  expect_error(validateAgeGroupArgument(c("1", "18")))
   ageGroup = list(c(0, 18))
   expect_no_error(validateAgeGroupArgument(ageGroup))
 
   #test name
   ageGroup = validateAgeGroupArgument(ageGroup)
-
   expect_true(names(ageGroup) == "age_group")
 
   # name multiple group
-
   ageGroup = list(list(c(0, 19)), list(c(0, 18)))
   ageGroup = validateAgeGroupArgument(ageGroup)
   expect_true(all(names(ageGroup) == c("age_group_1", "age_group_2")))
@@ -93,37 +86,35 @@ test_that("test validateAgeGroup", {
   expect_error(validateAgeGroupArgument(ageGroup, overlap = FALSE))
 
   # test multiple age group
-
   ageGroup = list(list(c(0, 19)), list(c(0, 18)))
-
-  expect_error(validateAgeGroupArgument(ageGroup, overlap = FALSE,
-                                        multipleAgeGroup = FALSE))
-
-  expect_no_error(validateAgeGroupArgument(ageGroup, overlap = FALSE,
-                                           multipleAgeGroup = TRUE))
-
+  expect_error(validateAgeGroupArgument(
+    ageGroup, overlap = FALSE, multipleAgeGroup = FALSE))
+  expect_no_error(validateAgeGroupArgument(
+    ageGroup, overlap = FALSE, multipleAgeGroup = TRUE))
 
   # null age group
+  expect_no_error(validateAgeGroupArgument(
+    ageGroup = NULL, overlap = FALSE, multipleAgeGroup = FALSE))
+  expect_error(validateAgeGroupArgument(
+    ageGroup = NULL, overlap = FALSE, null = FALSE, multipleAgeGroup = FALSE))
 
-
-
-  expect_no_error(validateAgeGroupArgument(ageGroup = NULL, overlap = FALSE,
-                                        multipleAgeGroup = FALSE))
-
-  expect_error(validateAgeGroupArgument(ageGroup = NULL, overlap = FALSE,
-                                        null = FALSE, multipleAgeGroup = FALSE))
-
-
-
-
-
-
-
+  # correct naming
+  x <- list(0, c(1, 19), c(20, 39), c(40, 59), c(60, 79), c(80, Inf)) |>
+    validateAgeGroupArgument()
+  expect_identical(
+    x,
+    list("age_group" = list(
+      "0 to 0" = c(0, 0), "1 to 19" = c(1, 19), "20 to 39" = c(20, 39),
+      "40 to 59" = c(40, 59), "60 to 79" = c(60, 79), "80 or above" = c(80, Inf)
+    ))
+  )
+  expect_identical(
+    validateAgeGroupArgument(c(0, Inf), ageGroupName = "my_age_group"),
+    list(my_age_group = list(overall = c(0L, Inf)))
+  )
 })
 
 test_that("test validateCdmArgument", {
-
-
 
   cdm_object <- 1
   class(cdm_object) <- c("cdm_reference")
