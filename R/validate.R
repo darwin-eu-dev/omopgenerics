@@ -589,7 +589,27 @@ validateCdmArgument <- function(cdm,
   return(invisible(cdm))
 }
 
-#' validateResultArguemnt
+#' validateResultArgument
+#'
+#' @param result summarise result object to validate
+#' @param validation message to return
+#' @param call parent.frame
+#'
+#' @return summarise result object
+#' @export
+#'
+validateResultArgument <- function(result,
+                                   validation = "error",
+                                   call = parent.frame()) {
+  assertValidation(validation, call = call)
+  assertTable(result, call = call)
+
+  result <- validateSummariseResult(result)
+
+  return(invisible(result))
+}
+
+#' validateResultArgument
 #'
 #' @param result summarise result object to validate
 #' @param validation message to return
@@ -601,11 +621,8 @@ validateCdmArgument <- function(cdm,
 validateResultArguemnt <- function(result,
                                    validation = "error",
                                    call = parent.frame()) {
-  assertValidation(validation, call = call)
-  assertTable(result, call = call)
-
-  result <- validateSummariseResult(result)
-
-  return(invisible(result))
-
-  }
+  lifecycle::deprecate_soft(
+    "0.4.0", "validateResultArguemnt()", "validateResultArgument()"
+  )
+  validateResultArgument(result = result, validation = validation, call = call)
+}
