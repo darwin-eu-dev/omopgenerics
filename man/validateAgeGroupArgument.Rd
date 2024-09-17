@@ -9,19 +9,22 @@ validateAgeGroupArgument(
   multipleAgeGroup = TRUE,
   overlap = FALSE,
   null = TRUE,
+  ageGroupName = "age_group",
   call = parent.frame()
 )
 }
 \arguments{
-\item{ageGroup}{age group in a list}
+\item{ageGroup}{age group in a list.}
 
-\item{multipleAgeGroup}{allow mutliple age group}
+\item{multipleAgeGroup}{allow mutliple age group.}
 
-\item{overlap}{allow overlapping ageGroup}
+\item{overlap}{allow overlapping ageGroup.}
 
-\item{null}{null age group allowed true or false}
+\item{null}{null age group allowed true or false.}
 
-\item{call}{parent frame}
+\item{ageGroupName}{Name of the default age group.}
+
+\item{call}{parent frame.}
 }
 \value{
 validate ageGroup
