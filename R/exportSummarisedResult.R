@@ -20,7 +20,8 @@
 #' @param minCellCount Minimum count for suppression purposes.
 #' @param fileName Name of the file that will be created. Use \{cdm_name\} to
 #' refer to the cdmName of the objects and \{date\} to add the export date.
-#' @param path Path where to create the csv file.
+#' @param path Path where to create the csv file. It is ignored if fileName it
+#' is a full name with path included.
 #' @export
 #'
 exportSummarisedResult <- function(...,
@@ -32,17 +33,21 @@ exportSummarisedResult <- function(...,
   assertList(x = results, class = "summarised_result")
   assertCharacter(fileName, length = 1, minNumCharacter = 1)
   assertCharacter(path, length = 1, minNumCharacter = 1)
-  if (!grepl("\\.csv$", path, ignore.case = TRUE)) {
-    if (!dir.exists(path)) {
-      cli::cli_abort("path: {path}, does not exist")
-    }
-  } else {
-    if (!dir.exists(dirname(path))) {
-      cli::cli_abort("path: {path}, does not exist")
-    }
+
+  if (dirname(fileName) != ".") {
+    path <- dirname(fileName)
+    fileName <- basename(fileName)
   }
-  if (tools::file_ext(fileName) != "csv") {
+  if (!dir.exists(path)) {
+    cli::cli_abort("path: {path}, does not exist")
+  }
+
+  fileExt <- tools::file_ext(fileName)
+  if (fileExt == "") {
     fileName <- paste0(fileName, ".csv")
+  } else if (fileExt != "csv") {
+    cli::cli_warn("Only .csv extrension is allowed (.{fileExt} -> .csv).")
+    fileName <- paste0(tools::file_path_sans_ext(fileName), ".csv")
   }
 
   # bind and suppress
@@ -71,17 +76,10 @@ exportSummarisedResult <- function(...,
     dplyr::as_tibble() |>
     dplyr::union_all(results |> pivotSettings() |> dplyr::as_tibble())
 
-  if (!grepl("\\.csv$", path, ignore.case = TRUE)) {
-    utils::write.csv(
-      x,
-      file = file.path(path, fileName), row.names = FALSE
-    )
-  } else {
-    utils::write.csv(
-      x,
-      file = path, row.names = FALSE
-    )
-  }
+  utils::write.csv(
+    x,
+    file = file.path(path, fileName), row.names = FALSE
+  )
 }
 
 pivotSettings <- function(x) {

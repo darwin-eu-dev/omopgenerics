@@ -67,7 +67,7 @@ test_that("test temp file", {
   tempFile <- tempfile(fileext = ".csv")
 
   expect_no_error(exportSummarisedResult(results = res,
-                                         path = tempFile))
+                                         fileName = tempFile))
 
 })
 
