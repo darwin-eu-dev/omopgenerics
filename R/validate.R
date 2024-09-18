@@ -626,3 +626,38 @@ validateResultArguemnt <- function(result,
   )
   validateResultArgument(result = result, validation = validation, call = call)
 }
+
+#' Validate a new column of a table
+#'
+#' @param table The table to check if the column already exists.
+#' @param column Character vector with the name(s) of the new column(s).
+#' @param validation Whether to throw warning or error.
+#' @param call Passed to cli functions.
+#'
+#' @return table without conflicting columns.
+#' @export
+#'
+validateNewColumn <- function(table,
+                              column,
+                              validation = "error",
+                              call = parent.frame()) {
+  # input check
+  cols <- colnames(table)
+  assertCharacter(column)
+  assertValidation(validation)
+
+  # assert if they exist
+  eliminate <- column[column %in% cols]
+  if (length(eliminate) > 0) {
+    if (validation == "error") {
+      cli::cli_abort(c("x" = "columns {.var {eliminate}} already exist in the table. Remove or rename new columns."), call = call)
+    } else if (validation == "warning") {
+      cli::cli_warn(c("!" = "columns {.var {eliminate}} already exist in the table. They will be overwritten."))
+      table <- table |>
+        dplyr::select(!dplyr::all_of(eliminate))
+    }
+  }
+
+  # output table or sc_column
+  return(table)
+}
