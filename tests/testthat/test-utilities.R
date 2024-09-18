@@ -120,3 +120,16 @@ test_that("isTableEmpty", {
   expect_true(table |> isTableEmpty())
 
 })
+
+test_that("omopTableFields", {
+
+  expect_no_error(omopTableFields())
+
+  expect_identical(omopTableFields(), omopTableFields("5.3"))
+
+  expect_false(omopTableFields(cdmVersion = "5.4") |> nrow() ==
+                     omopTableFields(cdmVersion = "5.3") |> nrow())
+
+  expect_error(omopTableFields(cdmVersion = "5.5"))
+
+})

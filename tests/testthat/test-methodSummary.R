@@ -120,9 +120,10 @@ test_that("summary a generated cohort set", {
   expect_true(inherits(x, "data.frame"))
   expect_equal(
     x |>
-      dplyr::select("cohort_definition_id", "cohort_name", "parameter") |>
+      dplyr::select("cohort_definition_id", "parameter") |>
       dplyr::distinct(),
-    settings(cdm$cohort3)
+    settings(cdm$cohort3) |>
+      dplyr::select(!"cohort_name")
   )
 
 })

@@ -30,7 +30,7 @@ assertDate(
 
 \item{call}{Call argument that will be passed to \code{cli} error message.}
 
-\item{msg}{Custom error message}
+\item{msg}{Custom error message.}
 }
 \value{
 x

@@ -17,25 +17,15 @@
 library(dplyr)
 
 # fields and type of tables
-fieldsTables53 <- readr::read_csv(
+fieldsCdmTables <- readr::read_csv(
   here::here("data-raw", "OMOP_CDMv5.3_Field_Level.csv"), show_col_types = FALSE
 ) |>
-  dplyr::mutate(cdm_version_53 = 1)
-fieldsTables54 <- readr::read_csv(
-  here::here("data-raw", "OMOP_CDMv5.4_Field_Level.csv"), show_col_types = FALSE
-) |>
-  dplyr::mutate(cdm_version_54 = 1)
-fieldsTables <- fieldsTables53 |>
-  full_join(
-    fieldsTables54,
-    by = c("cdmTableName", "cdmFieldName", "isRequired", "cdmDatatype")
-  ) |>
-  mutate(
-    cdm_version = case_when(
-      cdm_version_53 == 1 & cdm_version_54 == 1 ~ "5.3; 5.4",
-      cdm_version_53 == 1 & is.na(cdm_version_54) ~ "5.3",
-      is.na(cdm_version_53) & cdm_version_54 == 1 ~ "5.4"
-    )
+  dplyr::mutate(cdm_version = "5.3") |>
+  dplyr::union_all(
+    readr::read_csv(
+      here::here("data-raw", "OMOP_CDMv5.4_Field_Level.csv"), show_col_types = FALSE
+    ) |>
+      dplyr::mutate(cdm_version = "5.4")
   ) |>
   select(
     "cdm_table_name" = "cdmTableName",
@@ -51,15 +41,13 @@ fieldsCohorts <- tibble(
     "cohort_definition_id", "subject_id", "cohort_start_date", "cohort_end_date"
   ),
   is_required = TRUE,
-  cdm_datatype = c("integer", "integer", "date", "date"),
-  cdm_version = "5.3; 5.4"
+  cdm_datatype = c("integer", "integer", "date", "date")
 ) |>
   union_all(tibble(
     cdm_table_name = "cohort_set",
     cdm_field_name = c("cohort_definition_id", "cohort_name"),
     is_required = TRUE,
-    cdm_datatype = c("integer", "varchar(255"),
-    cdm_version = "5.3; 5.4"
+    cdm_datatype = c("integer", "varchar(255")
   )) |>
   union_all(tibble(
     cdm_table_name = "cohort_attrition",
@@ -71,8 +59,7 @@ fieldsCohorts <- tibble(
     cdm_datatype = c(
       "integer", "integer", "integer", "integer", "varchar(255)", "integer",
       "integer"
-    ),
-    cdm_version = "5.3; 5.4"
+    )
   )) |>
     union_all(tibble(
       cdm_table_name = "cohort_codelist",
@@ -82,9 +69,15 @@ fieldsCohorts <- tibble(
       is_required = TRUE,
       cdm_datatype = c(
         "integer", "varchar(255)", "integer", "varchar(255)"
-      ),
-      cdm_version = "5.3; 5.4"
+      )
     ))
+
+fieldsCohorts <- fieldsCohorts |>
+  dplyr::mutate(cdm_version = "5.3") |>
+  dplyr::union_all(
+    fieldsCohorts |>
+      dplyr::mutate(cdm_version = "5.4")
+  )
 
 fieldsAchilles <- dplyr::tibble(
   cdm_table_name = "achilles_analysis",
@@ -94,8 +87,7 @@ fieldsAchilles <- dplyr::tibble(
     "category"
   ),
   is_required = TRUE,
-  cdm_datatype = c("integer", rep("varchar(255)", 6), "logical", "varchar(255)"),
-  cdm_version = "5.3; 5.4"
+  cdm_datatype = c("integer", rep("varchar(255)", 6), "logical", "varchar(255)")
 ) |>
   dplyr::union_all(dplyr::tibble(
     cdm_table_name = "achilles_results",
@@ -104,8 +96,7 @@ fieldsAchilles <- dplyr::tibble(
       "stratum_5", "count_value"
     ),
     is_required = TRUE,
-    cdm_datatype = c("integer", rep("varchar(255)", 5), "integer"),
-    cdm_version = "5.3; 5.4"
+    cdm_datatype = c("integer", rep("varchar(255)", 5), "integer")
   )) |>
   dplyr::union_all(dplyr::tibble(
     cdm_table_name = "achilles_results_dist",
@@ -118,18 +109,33 @@ fieldsAchilles <- dplyr::tibble(
     is_required = TRUE,
     cdm_datatype = c(
       "integer", rep("varchar(255)", 5), rep("integer", 3), rep("float", 7)
-    ),
-    cdm_version = "5.3; 5.4"
+    )
   ))
 
-fieldsTables <- fieldsTables |>
+fieldsAchilles <- fieldsAchilles |>
+  dplyr::mutate(cdm_version = "5.3") |>
+  dplyr::union_all(
+    fieldsAchilles |>
+      dplyr::mutate(cdm_version = "5.4")
+  )
+
+fieldsTables <- fieldsCdmTables |>
   dplyr::mutate(type = "cdm_table") |>
   dplyr::union_all(
-    fieldsCohorts |> dplyr::mutate(type = "cohort")
+    fieldsCohorts |>
+      dplyr::mutate(type = "cohort")
   ) |>
   dplyr::union_all(
-    fieldsAchilles |> dplyr::mutate(type = "achilles")
-  )
+    fieldsAchilles |>
+      dplyr::mutate(type = "achilles")
+  ) |>
+  dplyr::group_by(.data$cdm_version) |>
+  dplyr::group_split() |>
+  as.list()
+names(fieldsTables) <- fieldsTables |>
+  purrr::map_chr(\(x) unique(x$cdm_version))
+fieldsTables <- fieldsTables |>
+  purrr::map(\(x) dplyr::select(x, !"cdm_version"))
 
 fieldsResults <- dplyr::tibble(
   result = "summarised_result",
@@ -179,14 +185,6 @@ fieldsResults <- dplyr::tibble(
 
 groupCount <- c("number subjects", "number records")
 
-argumentValidation <- dplyr::tribble(
-  ~"argument_name", ~"validation", ~"required_arguments", ~"optional_arguments",
-  "name", "It must be a character (NULL and NA allowed) of length 1. If NA it will be changed to NULL", list(), list("cdm" = "if name already exists in the cdm object a message will be displayed")
-)
-
 usethis::use_data(
-  fieldsTables, fieldsResults, groupCount, argumentValidation, internal = TRUE,
-  overwrite = TRUE
+  fieldsTables, fieldsResults, groupCount, internal = TRUE, overwrite = TRUE
 )
-
-

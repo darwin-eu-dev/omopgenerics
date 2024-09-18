@@ -5,12 +5,10 @@
 \title{Required columns that the standard tables in the OMOP Common Data Model must
 have.}
 \usage{
-omopColumns(table, onlyRequired = TRUE, version = "5.3")
+omopColumns(table, version = "5.3")
 }
 \arguments{
 \item{table}{Table to see required columns.}
-
-\item{onlyRequired}{Whether to include only required fields.}
 
 \item{version}{Version of the OMOP Common Data Model.}
 }

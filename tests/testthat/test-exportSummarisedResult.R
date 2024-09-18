@@ -2,8 +2,8 @@ test_that("test export", {
   res <- dplyr::tibble(
     "result_id" = as.integer(1),
     "cdm_name" = "cprd",
-    "group_name" = "sex",
-    "group_level" = "male",
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
     "strata_name" = "sex",
     "strata_level" = "male",
     "variable_name" = "Age group",
