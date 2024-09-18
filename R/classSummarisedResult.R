@@ -255,6 +255,9 @@ validateSummariseResult <- function(x) {
   # validate groupCount
   checkGroupCount(x)
 
+  # validate tidyNames
+  validateTidyNames(x)
+
   return(x)
 }
 checkColumns <- function(x, resultName, call = parent.frame()) {
@@ -499,6 +502,54 @@ giveType <- function(x, type) {
     "logical" = as.logical(x),
     x
   )
+}
+validateTidyNames <- function(result, call = parent.frame()) {
+  # setting columns
+  colsSettings <- colnames(settings(result))
+  colsSettings <- colsSettings[colsSettings != "result_id"]
+
+  # group columns
+  colsGroup <- uniqueCols(result$group_name)
+
+  # strata columns
+  colsStrata <- uniqueCols(result$strata_name)
+
+  # additional columns
+  colsAdditional <- uniqueCols(result$additional_name)
+
+  # default columns
+  colsSummarisedResult <- resultColumns("summarised_result")
+
+  cols <- list(
+    settings = colsSettings,
+    group = colsGroup,
+    strata = colsStrata,
+    additional = colsAdditional,
+    summarised_result = colsSummarisedResult
+  )
+
+  # compare each pair
+  len <- length(cols)
+  nms <- names(cols)
+  for (k in 1:(len -1)) {
+    for (i in (k+1):len) {
+      both <- intersect(cols[[k]], cols[[i]])
+      if (length(both) > 0) {
+        "{.var {both}} {?is/are} present in both '{nms[k]}' and '{nms[i]}'. This will be an error in the next release." |>
+          cli::cli_warn() # Turn error
+      }
+    }
+  }
+
+  return(invisible(result))
+}
+uniqueCols <- function(x) {
+  x <- x |>
+    unique() |>
+    stringr::str_split(" &&& ") |>
+    unlist() |>
+    unique()
+  x[x != "overall"]
 }
 
 #' Required columns that the result tables must have.
