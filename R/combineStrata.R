@@ -19,16 +19,17 @@
 #' @param levels Vector of all strata levels to combine.
 #'
 #' @return A vector of all combinations of strata.
-#' @importFrom utils combn
 #' @export
 combineStrata <- function(levels) {
   # Checks
-  omopgenerics::assertCharacter(levels, null = TRUE)
-  if(length(levels) < 1) {return(list())}
+  assertCharacter(levels, null = TRUE, na = TRUE)
+
+  # empty list if NULL or character()
+  if(length(levels) == 0) return(list())
 
   # Apply combn function to all lengths of combinations
-  result <- purrr::map(seq_along(levels),
-                       function(x) combn(x = levels, m = x, simplify = FALSE)) |>
+  result <- seq_along(levels) |>
+    purrr::map(\(x) utils::combn(x = levels, m = x, simplify = FALSE)) |>
     unlist(recursive = FALSE)
 
   return(result)
