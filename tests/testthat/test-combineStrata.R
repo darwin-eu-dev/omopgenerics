@@ -11,9 +11,12 @@ test_that("test combineStrata", {
                 )
   )
 
-  # Expected errors
-  expect_error(combineStrata(c("sex")))
+  # Expected errors and results for edge cases
+  expect_identical(combineStrata(c("sex")), list("sex"))
   expect_error(combineStrata(sex))
   expect_error(combineStrata(c(2,3)))
   expect_error(combineStrata(c("sex", NA)))
+  expect_identical(combineStrata(NULL), list())
+  expect_identical(combineStrata(c("")), list(""))
+  expect_identical(combineStrata(c("")[-1]), list())
 })

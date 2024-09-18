@@ -23,11 +23,12 @@
 #' @export
 combineStrata <- function(levels) {
   # Checks
-  omopgenerics::assertCharacter(levels)
-  if(length(levels) < 2) {cli::cli_abort("strata vector must have at least two levels.")}
+  omopgenerics::assertCharacter(levels, null = TRUE)
+  if(length(levels) < 1) {return(list())}
 
   # Apply combn function to all lengths of combinations
-  result <- lapply(c(1:length(levels)), combn, x = levels, simplify = FALSE) |>
+  result <- purrr::map(seq_along(levels),
+                       function(x) combn(x = levels, m = x, simplify = FALSE)) |>
     unlist(recursive = FALSE)
 
   return(result)
