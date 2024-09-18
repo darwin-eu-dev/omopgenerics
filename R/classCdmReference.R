@@ -858,6 +858,7 @@ omopTables <- function(version = "5.3") {
 #'
 #' @param table Table to see required columns.
 #' @param version Version of the OMOP Common Data Model.
+#' @param onlyRequired deprecated
 #'
 #' @return Character vector with the column names
 #'
@@ -868,7 +869,10 @@ omopTables <- function(version = "5.3") {
 #'
 #' omopColumns("person")
 #'
-omopColumns <- function(table, version = "5.3") {
+omopColumns <- function(table, version = "5.3", onlyRequired = lifecycle::deprecated()) {
+  if (lifecycle::is_present(onlyRequired)) {
+    lifecycle::deprecate_soft("0.4.0", "omopColumns(onlyRequired = )")
+  }
   assertVersion(version = version)
   assertTableName(table = table, version = version, type = "cdm_table")
   getColumns(table = table, version = version, type = "cdm_table", required = FALSE)
@@ -938,6 +942,7 @@ achillesTables <- function(version = "5.3"){
 #' @param table Table for which to see the required columns. One of
 #' "achilles_analysis", "achilles_results", or "achilles_results_dist".
 #' @param version Version of the OMOP Common Data Model.
+#' @param onlyRequired deprecated.
 #'
 #' @return Character vector with the column names
 #'
@@ -950,7 +955,10 @@ achillesTables <- function(version = "5.3"){
 #' achillesColumns("achilles_results")
 #' achillesColumns("achilles_results_dist")
 #' }
-achillesColumns <- function(table, version = "5.3") {
+achillesColumns <- function(table, version = "5.3", onlyRequired = lifecycle::deprecated()) {
+  if (lifecycle::is_present(onlyRequired)) {
+    lifecycle::deprecate_soft("0.4.0", "omopColumns(onlyRequired = )")
+  }
   assertVersion(version = version)
   assertTableName(table = table, version = version, type = "achilles")
   getColumns(table = table, version = version, type = "achilles", required = FALSE)
