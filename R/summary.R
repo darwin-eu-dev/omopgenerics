@@ -240,6 +240,7 @@ summary.cohort_table <- function(object, ...) {
 
   # settings part
   settingsSummary <- settings(object) |>
+    dplyr::select(-"cohort_name") |>
     dplyr::mutate(
       "table_name" = tableName(object),
       "result_id" = as.integer(.data$cohort_definition_id)
@@ -248,13 +249,13 @@ summary.cohort_table <- function(object, ...) {
   # counts summary
   countsSummary <- cohortCount(object) |>
     dplyr::inner_join(
-      settingsSummary |>
+      settings(object) |>
         dplyr::select(
-          "group_level" = "cohort_name", "cohort_definition_id", "result_id"
+          "group_level" = "cohort_name", "cohort_definition_id"
         ),
       by = "cohort_definition_id"
     ) |>
-    dplyr::select(-"cohort_definition_id") |>
+    dplyr::rename("result_id" = "cohort_definition_id") |>
     dplyr::mutate(dplyr::across(!"result_id", as.character)) |>
     tidyr::pivot_longer(
       cols = !c("group_level", "result_id"),
@@ -281,13 +282,13 @@ summary.cohort_table <- function(object, ...) {
   # attrition summary
   attritionSummary <- attrition(object) |>
     dplyr::inner_join(
-      settingsSummary |>
+      settings(object) |>
         dplyr::select(
-          "group_level" = "cohort_name", "cohort_definition_id", "result_id"
+          "group_level" = "cohort_name", "cohort_definition_id"
         ),
       by = "cohort_definition_id"
     ) |>
-    dplyr::select(-"cohort_definition_id") |>
+    dplyr::rename("result_id" = "cohort_definition_id") |>
     dplyr::mutate(dplyr::across(!"result_id", as.character)) |>
     tidyr::pivot_longer(
       cols = c(

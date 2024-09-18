@@ -5,8 +5,8 @@ test_that("test SummarisedResult object", {
     "result_type" = "summarised_characteristics",
     "package_name" = "PatientProfiles",
     "package_version" = "0.4.0",
-    "group_name" = "sex",
-    "group_level" = "male",
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
     "strata_name" = "sex",
     "strata_level" = "male",
     "variable_name" = "Age group",
@@ -19,7 +19,6 @@ test_that("test SummarisedResult object", {
   )
   expect_no_error(newSummarisedResult(x = x))
   expect_no_warning(newSummarisedResult(x = x))
-  newSummarisedResult(x = x)
   expect_identical(
     estimateTypeChoices() |> sort(),
     c(
@@ -40,8 +39,8 @@ test_that("test SummarisedResult object", {
     "result_type" = "summarised_characteristics",
     "package_name" = "PatientProfiles",
     "package_version" = "0.4.0",
-    "group_name" = "sex",
-    "group_level" = "male",
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
     "strata_name" = "sex",
     "strata_level" = "male",
     "variable_name" = "Age group",
@@ -52,7 +51,7 @@ test_that("test SummarisedResult object", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
-  expect_message(newSummarisedResult(x = x))
+  expect_message(expect_message(newSummarisedResult(x = x)))
 
   #check wrong columns
   x <- dplyr::tibble(
@@ -99,8 +98,8 @@ test_that("test SummarisedResult object", {
     "package_version" = "0.4.0",
     "group_name" = "sex &&& cohort_name",
     "group_level" = "male",
-    "strata_name" = "sex",
-    "strata_level" = "male &&& cohort1",
+    "strata_name" = "xxx",
+    "strata_level" = "y &&& cohort1",
     "variable_name" = "Age group",
     "variable_level" = "10 to 50",
     "estimate_name" = "count",
@@ -137,8 +136,8 @@ test_that("test SummarisedResult object", {
     "result_type" = "summarised_characteristics",
     "package_name" = "PatientProfiles",
     "package_version" = "0.4.0",
-    "group_name" = "sex",
-    "group_level" = "male",
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
     "strata_name" = "sex",
     "strata_level" = "male",
     "variable_name" = "Age group",
@@ -167,8 +166,8 @@ test_that("test SummarisedResult object", {
   x <- dplyr::tibble(
     "result_id" = 1,
     "cdm_name" = "eunomia",
-    "group_name" = "sex",
-    "group_level" = "male",
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
     "strata_name" = "sex",
     "strata_level" = "male",
     "variable_name" = rep("number records", 2),
@@ -184,8 +183,8 @@ test_that("test SummarisedResult object", {
   x <- dplyr::tibble(
     "result_id" = c(1, 2),
     "cdm_name" = "eunomia",
-    "group_name" = "sex",
-    "group_level" = "male",
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
     "strata_name" = "sex",
     "strata_level" = "male",
     "variable_name" = rep("number records", 2),
@@ -201,8 +200,8 @@ test_that("test SummarisedResult object", {
   x <- dplyr::tibble(
     "result_id" = 1,
     "cdm_name" = "eunomia",
-    "group_name" = "sex",
-    "group_level" = "male",
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
     "strata_name" = "sex",
     "strata_level" = "male",
     "variable_name" = c("number SUBJECTS", "number_subjects"),
@@ -218,8 +217,8 @@ test_that("test SummarisedResult object", {
   x <- dplyr::tibble(
     "result_id" = 1,
     "cdm_name" = c("eunomia", "cprd"),
-    "group_name" = "sex",
-    "group_level" = "male",
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
     "strata_name" = "sex",
     "strata_level" = "male",
     "variable_name" = c("number SUBJECTS", "number_subjects"),
@@ -235,8 +234,8 @@ test_that("test SummarisedResult object", {
   x <- dplyr::tibble(
     "result_id" = as.integer(c(1, 2)),
     "cdm_name" = c("cprd", "eunomia"),
-    "group_name" = "sex",
-    "group_level" = "male",
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
     "strata_name" = "sex",
     "strata_level" = "male",
     "variable_name" = c("number subjects", "number records"),
@@ -290,8 +289,8 @@ test_that("test SummarisedResult object", {
   x <- dplyr::tibble(
     "result_id" = as.integer(1),
     "cdm_name" = "cprd",
-    "group_name" = "sex",
-    "group_level" = "male",
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
     "strata_name" = "sex",
     "strata_level" = "male",
     "variable_name" = "Age group",
