@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   cdm_reference: cdm_reference.html
@@ -7,7 +7,7 @@ articles:
   cohorts: cohorts.html
   reexport: reexport.html
   summarised_result: summarised_result.html
-last_built: 2024-09-17T23:23Z
+last_built: 2024-09-18T18:50Z
 urls:
   reference: https://darwin-eu-dev.github.io/omopgenerics/reference
   article: https://darwin-eu-dev.github.io/omopgenerics/articles
