@@ -4,18 +4,25 @@
 \alias{validateNameLevel}
 \title{Validate if two columns are valid Name-Level pair.}
 \usage{
-validateNameLevel(x, nameColumn, levelColumn, sep = " &&& ", warn = FALSE)
+validateNameLevel(
+  x,
+  prefix,
+  sep = " &&& ",
+  validation = "error",
+  call = parent.frame()
+)
 }
 \arguments{
 \item{x}{A tibble.}
 
-\item{nameColumn}{Column name of the \code{name}.}
-
-\item{levelColumn}{Column name of the \code{level}.}
+\item{prefix}{Prefix for the name-level pair, e.g. 'strata' for
+strata_name-strata_level pair.}
 
 \item{sep}{Separation pattern.}
 
-\item{warn}{Whether to throw a warning (TRUE) or an error (FALSE).}
+\item{validation}{Either 'error', 'warning' or 'message'.}
+
+\item{call}{Will be used by cli to report errors.}
 }
 \description{
 Validate if two columns are valid Name-Level pair.

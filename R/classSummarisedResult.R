@@ -87,7 +87,8 @@ newSummarisedResult <- function(x, settings = attr(x, "settings")) {
 }
 
 constructSummarisedResult <- function(x, set, call = parent.frame()) {
-  x <- x |> dplyr::as_tibble() |> dplyr::distinct()
+  x <- x |>
+    dplyr::as_tibble()
 
   if (!is.null(set)) {
     set <- set |> dplyr::as_tibble()
@@ -219,17 +220,18 @@ validateSummariseResult <- function(x) {
   # Cannot contain NA columns
   checkNA(x = x, "summarised_result")
 
+  # duplicated entries with same value
+  nr <- nrow(x)
+  x <- x |> dplyr::distinct()
+  eliminated <- nr - nrow(x)
+  if (eliminated > 0) {
+    cli::cli_inform(c("!" = "{eliminated} duplicated row{?s} eliminated."))
+  }
+
   # columPairs
-  validateNameLevel(
-    x = x, nameColumn = "group_name", levelColumn = "group_level", warn = TRUE
-  )
-  validateNameLevel(
-    x = x, nameColumn = "strata_name", levelColumn = "strata_level", warn = TRUE
-  )
-  validateNameLevel(
-    x = x, nameColumn = "additional_name", levelColumn = "additional_level",
-    warn = TRUE
-  )
+  validateNameLevel(x = x, prefix = "group", validation = "warning")
+  validateNameLevel(x = x, prefix = "strata", validation = "warning")
+  validateNameLevel(x = x, prefix = "additional", validation = "warning")
 
   # estimate_type
   checkColumnContent(
@@ -254,6 +256,9 @@ validateSummariseResult <- function(x) {
   # validate groupCount
   checkGroupCount(x)
 
+  # validate duplicates
+  checkDuplicated(x, validation = "error")
+
   # validate tidyNames
   validateTidyNames(x)
 
@@ -264,19 +269,19 @@ checkColumns <- function(x, resultName, call = parent.frame()) {
   notPresent <- cols[!cols %in% colnames(x)]
   if (length(notPresent) > 0) {
     cli::cli_abort(
-      "{paste0(notPresent, collapse = ', ')} must be present in a {resultName}
+      "{paste0(notPresent, collapse = ', ')} must be present in a {.cls {resultName}}
       object."
     )
   }
   x |> dplyr::relocate(dplyr::all_of(cols))
 }
-checkNA <- function(x, type) {
+checkNA <- function(x, type, call = parent.frame()) {
   cols <- fieldsResults$result_field_name[
     fieldsResults$result == type & fieldsResults$na_allowed == FALSE
   ]
   for (col in cols) {
     if (any(is.na(unique(x[[col]])))) {
-      cli::cli_abort("`{col}` must not contain NA.")
+      cli::cli_abort("`{col}` must not contain NA.", call = call)
     }
   }
   invisible(NULL)
@@ -317,15 +322,17 @@ checkColumnsFormat <- function(x, resultName) {
   }
   invisible(x)
 }
-checkGroupCount <- function(x) {
+checkGroupCount <- function(x, validation = "error", call = parent.frame()) {
   groupping <- c(
     "result_id", "cdm_name", "group_name", "group_level", "strata_name",
     "strata_level"
   )
-  obsLabels <- x |> dplyr::pull("variable_name") |> unique()
-  obsLabelsL <- tolower(stringr::str_replace_all(string = obsLabels,
-                                                 pattern = "_",
-                                                 replacement = " "))
+  obsLabels <- x |>
+    dplyr::pull("variable_name") |>
+    unique()
+  obsLabelsL <- obsLabels |>
+    stringr::str_replace_all(pattern = "_", replacement = " ") |>
+    tolower()
   res <- character()
   n <- 0
   for (gcount in groupCount) {
@@ -373,26 +380,26 @@ getGroupping <- function(x) {
 #' Validate if two columns are valid Name-Level pair.
 #'
 #' @param x A tibble.
-#' @param nameColumn Column name of the `name`.
-#' @param levelColumn Column name of the `level`.
+#' @param prefix Prefix for the name-level pair, e.g. 'strata' for
+#' strata_name-strata_level pair.
 #' @param sep Separation pattern.
-#' @param warn Whether to throw a warning (TRUE) or an error (FALSE).
+#' @param validation Either 'error', 'warning' or 'message'.
+#' @param call Will be used by cli to report errors.
 #'
 #' @export
 #'
 validateNameLevel <- function(x,
-                              nameColumn,
-                              levelColumn,
+                              prefix,
                               sep = " &&& ",
-                              warn = FALSE) {
+                              validation = "error",
+                              call = parent.frame()) {
   # inital checks
-  assertClass(x, "data.frame")
-  assertCharacter(nameColumn, length = 1)
-  assertCharacter(levelColumn, length = 1)
-  assertTable(
-    dplyr::as_tibble(x), class = "tbl", columns = c(nameColumn, levelColumn)
-  )
-  assertChoice(warn, c(TRUE, FALSE))
+  assertCharacter(prefix, length = 1)
+  nameColumn <- paste0(prefix, "_name")
+  levelColumn <- paste0(prefix, "_level")
+  assertTable(x, columns = c(nameColumn, levelColumn))
+  assertCharacter(sep)
+  assertValidation(validation)
 
   # distinct pairs
   distinctPairs <- x |>
@@ -430,26 +437,17 @@ validateNameLevel <- function(x,
     names(unmatch) <- rep("*", nun)
     mes <- "name: `{nameColumn}` and level: `{levelColumn}` does not match in
     number of arguments ({num} unmatch), first {nun} unmatch:"
-    if (warn) {
-      cli::cli_warn(c(mes, unmatch))
-    } else {
-      cli::cli_abort(c(mes, unmatch))
-    }
+
+    # report
+    report(c(mes, unmatch), validation = validation, call = call)
   }
 
   # check case
   nameCase <- distinctPairs[["name_elements"]] |> unlist() |> unique()
   notSnake <- nameCase[!isCase(nameCase, "snake")]
   if (length(notSnake) > 0) {
-    mes <- c(
-      "!" = "{length(notSnake)} element{?s} in {nameColumn}
-      {ifelse(length(notSnake) == 1, 'is', 'are')} not snake_case."
-    )
-    if (warn) {
-      cli::cli_warn(message = mes)
-    } else {
-      cli::cli_abort(message = mes)
-    }
+    "{length(notSnake)} element{?s} in {nameColumn} {?is/are} not snake_case." |>
+      report(validation = validation, call = call)
   }
 
   return(invisible(x))
@@ -489,6 +487,29 @@ checkColumnContent <- function(x, col, content) {
       {paste0(content, collapse = ', ')}. Observed values:
       {paste0(notType, collapse = ', ')}{ifelse(len>5, '...', '.')}"
     ))
+  }
+  return(invisible(TRUE))
+}
+checkDuplicated <- function(x, validation, call = parent.frame()) {
+  nraw <- nrow(x)
+  ndist <- x |>
+    dplyr::select(!"estimate_value") |>
+    dplyr::distinct() |>
+    nrow()
+  dup <- nraw - ndist
+  if (dup > 0) {
+    report(
+      message = c(
+        "{dup} duplicated results with different estimate values found.",
+        "i" = "Run the following to see which are",
+        "data |>",
+        " " = "dplyr::group_by(dplyr::across(!'estimate_value')) |>",
+        " " = "dplyr::tally() |>",
+        " " = "dplyr::filter(n > 1)"
+      ),
+      validation = validation,
+      call = call
+    )
   }
   return(invisible(TRUE))
 }
@@ -617,4 +638,66 @@ emptySummarisedResult <- function(settings = NULL) {
     dplyr::as_tibble() |>
     dplyr::mutate("result_id" = as.integer()) |>
     newSummarisedResult(settings = settings)
+}
+
+.validateSummarisedResult <- function(result,
+                                      checkNameLevelPairs,
+                                      checkTidyColumns,
+                                      checkDuplicated,
+                                      call = parent.frame()) {
+  # basic checks
+  # class
+  if (!inherits(result, "summarised_result")) {
+    "result is not a {.cls summarised_result} object." |>
+      report(validation = "error", call = call)
+  }
+
+  # compulsory columns
+  result <- checkColumns(result, "summarised_result", call = call)
+
+  # columns format
+  result <- checkColumnsFormat(result, "summarised_result")
+
+  # Cannot contain NA columns
+  checkNA(result, "summarised_result")
+
+  # duplicated entries with same value
+  nr <- nrow(x)
+  x <- x |> dplyr::distinct()
+  eliminated <- nr - nrow(x)
+  if (eliminated > 0) {
+    "{eliminated} duplicated row{?s} eliminated." |>
+      report(validation = "message", call = call)
+  }
+
+  # checkNameLevelPairs
+  if (!is.null(checkNameLevelPairs)) {
+    for (prefix in c("group", "strata", "additional")) {
+      validateNameLevel(result, prefix = prefix, validation = checkNameLevelPairs)
+    }
+  }
+
+  # checkTidyColumns
+
+  # checkDuplicated
+
+
+  return(result)
+}
+report <- function(message,
+                   validation, # error/warning/inform
+                   call = parent.frame(), # where error is reported
+                   .envir = parent.frame()) { # where glue statements are evaluated
+  if (validation == "error") {
+    cli::cli_abort(addSignal(message, "x"), .envir = .envir, call = call)
+  } else if (validation == "warning") {
+    cli::cli_warn(addSignal(message, "!"), .envir = .envir)
+  } else if (validation == "inform") {
+    cli::cli_inform(addSignal(message, "!"), .envir = .envir)
+  }
+  return(invisible(TRUE))
+}
+addSignal <- function(x, nm) {
+  if (length(x) > 0) names(x)[1] <- nm
+  return(x)
 }
