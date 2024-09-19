@@ -70,6 +70,9 @@ reference:
   desc: To validate input arguments of the functions
 - contents:
   - matches("validate*")
+  desc: To check if result is correctly suppressed
+- contents:
+  - matches("isResultSuppressed")
 - subtitle: General assertions
   desc: To assert that an object fulfills certain criteria
 - contents:
