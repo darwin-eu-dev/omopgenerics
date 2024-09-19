@@ -335,23 +335,15 @@ test_that("validateNameLevel", {
   expect_no_error(sr |> newSummarisedResult())
   expect_no_error(
     sr |>
-      validateNameLevel(nameColumn = "group_name", levelColumn = "group_level")
+      validateNameLevel(prefix = "group")
   )
-  expect_error(
-    sr |>
-      validateNameLevel(
-        nameColumn = "group_name", levelColumn = "group_level", sep = " and ")
-  )
-  expect_warning(expect_warning(
-    sr |>
-      validateNameLevel(
-        nameColumn = "group_name", levelColumn = "group_level", sep = " and ", warn = TRUE)
+  expect_error(validateNameLevel(sr, prefix = "group", sep = " and "))
+  expect_warning(expect_warning(validateNameLevel(
+    sr, prefix = "group", sep = " and ", validation = "warning"
+  )))
+  expect_warning(validateNameLevel(
+    sr, prefix = "group", sep = " &&& | and ", validation = "warning"
   ))
-  expect_warning(
-    sr |>
-      validateNameLevel(
-        nameColumn = "group_name", levelColumn = "group_level", sep = " &&& | and ", warn = TRUE)
-  )
 })
 
 test_that("validate duplicates", {
