@@ -30,7 +30,7 @@ validateNameArgument <- function(name,
                                  validation = "error",
                                  null = FALSE,
                                  call = parent.frame()) {
-  assertValidation(validation)
+  assertValidation(validation, call = call)
   if(null == TRUE && is.null(name)){
     return(NULL)
   }
@@ -80,7 +80,7 @@ validateCohortArgument <- function(cohort,
                                    checkInObservation = FALSE,
                                    validation = "error",
                                    call = parent.frame()) {
-  assertValidation(validation)
+  assertValidation(validation, call = call)
   assertLogical(checkEndAfterStart, length = 1)
   assertLogical(checkOverlappingEntries, length = 1)
   assertLogical(checkMissingValues, length = 1)
@@ -131,7 +131,7 @@ validateCohortIdArgument <- function(cohortId,
                                      cohort,
                                      validation = "error",
                                      call = parent.frame()) {
-  assertValidation(validation)
+  assertValidation(validation, call = call)
   assertNumeric(cohortId, integerish = TRUE, null = TRUE, min = 1, unique = TRUE, call = call)
   assertClass(cohort, class = "cohort_table", call = call)
   possibleCohortIds <- settings(cohort) |>
@@ -599,6 +599,10 @@ validateCdmArgument <- function(cdm,
 #' @export
 #'
 validateResultArgument <- function(result,
+                                   checkNameLevelPairs = FALSE,
+                                   checkGroupCount = FALSE,
+                                   checkColumns = FALSE,
+                                   checkDuplicates = FALSE,
                                    validation = "error",
                                    call = parent.frame()) {
   assertValidation(validation, call = call)
