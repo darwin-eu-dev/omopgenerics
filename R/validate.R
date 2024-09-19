@@ -638,34 +638,46 @@ validateResultArguemnt <- function(result,
 #' @export
 #'
 isResultSuppressed <- function(result, minCellCount = 5) {
+  # initial checks
   validateResultArgument(result)
   assertNumeric(minCellCount, length = 1, integerish = TRUE)
 
+  # retrieve settings
   set <- settings(result)
+  if (nrow(set) == 0) return(invisible(TRUE))
   if (!"min_cell_count" %in% colnames(set)) {
-    cli::cli_warn("Column {.var min_cell_count} is missing in settings, result is not suppressed")
+    cli::cli_warn("Column {.var min_cell_count} is missing in settings, result is not suppressed.")
     return(invisible(FALSE))
   }
 
   set <- set |>
     dplyr::select("result_id", "min_cell_count") |>
-    dplyr::mutate(.data$min_cell_count == as.integer(.data$min_cell_count))
+    dplyr::mutate("min_cell_count" = as.integer(.data$min_cell_count))
 
   if (all(minCellCount == unique(set$min_cell_count))) {
     cli::cli_inform(c(
-      "v" = "The summarised result is suppressed with minCellCount = {minCellCount}."
+      "v" = "The {.cls summarised_result} is suppressed with minCellCount = {minCellCount}."
     ))
     return(invisible(TRUE))
   } else {
-
-    cli::cli_warn(c(
-      if (unique(set$min_cell_count) > minCellCount) {
-        "i" = "The min_cell_count in result ({unique(set$min_cell_count)}) is greater than the tested minCellCount ({minCellCount})."
-      } else if (unique(set$min_cell_count) < minCellCount) {
-        "i" = "The min_cell_count in result ({unique(set$min_cell_count)}) is less than the tested minCellCount ({minCellCount})."
-      }
-    ))
-
+    idSup <- set$result_id[set$min_cell_count == minCellCount]
+    idNotSup <- set$result_id[set$min_cell_count == 0 | is.na(set$min_cell_count)]
+    idSupLow <- set$result_id[set$min_cell_count > 0 & set$min_cell_count < minCellCount]
+    idSupUpp <- set$result_id[set$min_cell_count > minCellCount]
+    addMesSup(character(), idSup, result, "v", glue::glue("suppressed minCellCount = {minCellCount}")) |>
+      addMesSup(idNotSup, result, "x", "not suppressed") |>
+      addMesSup(idSupLow, result, "x", glue::glue("suppressed with minCellCount < {minCellCount}")) |>
+      addMesSup(idSupUpp, result, "!", glue::glue("suppressed with minCellCount > {minCellCount}")) |>
+      cli::cli_warn()
     return(invisible(FALSE))
   }
+}
+addMesSup <- function(mes, ids, result, lab, err) {
+  if (length(ids) == 0) return(mes)
+  ncounts <- sum(result$result_id %in% ids)
+  ms <- "{length(ids)} ({ncounts} row{?s}) {err}." |>
+    cli::cli_text() |>
+    cli::cli_fmt() |>
+    as.character()
+  c(mes, rlang::set_names(ms, lab))
 }

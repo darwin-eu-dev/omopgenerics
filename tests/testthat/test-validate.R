@@ -300,7 +300,7 @@ test_that("test validateResults", {
 })
 
 test_that("test isResultSuppressed",{
-  x <- dplyr::tibble(
+  obj <- dplyr::tibble(
     "result_id" = as.integer(1),
     "cdm_name" = "mock",
     "group_name" = "overall",
@@ -314,15 +314,13 @@ test_that("test isResultSuppressed",{
     "estimate_value" = c("10", "5", "50", "3", "30", "1", "3", "12", "6"),
     "additional_name" = "overall",
     "additional_level" = "overall"
-  )
-
-  obj <- newSummarisedResult(
-    x,
-    settings = dplyr::tibble(
+  ) |>
+    newSummarisedResult(settings = dplyr::tibble(
       "result_id" = as.integer(1),
       "result_type" = "summarised_characteristics",
       "package_name" = "omopgenerics",
-      "package_version" = as.character(utils::packageVersion("omopgenerics"))))
+      "package_version" = as.character(utils::packageVersion("omopgenerics"))
+    ))
 
   # Test for no min_cell_count column
   expect_warning(isResultSuppressed(result = obj, minCellCount = 3))
@@ -333,16 +331,9 @@ test_that("test isResultSuppressed",{
   expect_no_warning(isResultSuppressed(result = result, minCellCount = 2))
 
   # Test for greater actual min_cell_count
-  expect_warning(
-    isResultSuppressed(result = result, minCellCount = 1),
-    regexp = "The min_cell_count in result .* is greater than the tested minCellCount"
-  )
+  expect_warning(isResultSuppressed(result = result, minCellCount = 1))
 
   # Test for smaller actual min_cell_count
-  expect_warning(
-    isResultSuppressed(result = result, minCellCount = 3),
-    regexp = "The min_cell_count in result .* is less than the tested minCellCount"
-  )
-
+  expect_warning(isResultSuppressed(result = result, minCellCount = 3))
 
 })
