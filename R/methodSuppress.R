@@ -129,7 +129,9 @@ suppressCounts <- function(result, minCellCount) {
 }
 suppressGroup <- function(result, groupSuppress) {
   obsLabels <- unique(result$variable_name)
-  obsLabels <- obsLabels[tolower(gsub("_", " ", obsLabels)) %in% groupSuppress]
+  obsLabels <- obsLabels[tolower(stringr::str_replace_all(string = obsLabels,
+                                                          pattern = "_",
+                                                          replacement = " ")) %in% groupSuppress]
 
   supByGroup <- result |>
     dplyr::filter(
@@ -171,7 +173,9 @@ suppressLinkage <- function(result, linkedSuppression) {
         "estimate_type", "estimate_value", "suppress", "is_count"
       ))) |>
       dplyr::mutate(
-        "estimate_name" = gsub(.env$nm, .env$subs, .data$estimate_name)
+        "estimate_name" = stringr::str_replace(string = .data$estimate_name,
+                                               pattern = .env$nm,
+                                               replacement = .env$subs)
       ) |>
       dplyr::mutate("suppress_linked" = T)
   }

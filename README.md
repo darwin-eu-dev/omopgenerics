@@ -12,9 +12,30 @@
 coverage](https://codecov.io/gh/darwin-eu-dev/omopgenerics/branch/main/graph/badge.svg)](https://app.codecov.io/gh/darwin-eu-dev/omopgenerics?branch=main)
 <!-- badges: end -->
 
+## Package overview
+
 The omopgenerics package provides definitions of core classes and
 methods used by analytic pipelines that query the OMOP common data
 model.
+
+    #> To cite package 'omopgenerics' in publications use:
+    #> 
+    #>   Català M, Burn E (2024). _omopgenerics: Methods and Classes for the
+    #>   OMOP Common Data Model_. R package version 0.3.0,
+    #>   <https://CRAN.R-project.org/package=omopgenerics>.
+    #> 
+    #> A BibTeX entry for LaTeX users is
+    #> 
+    #>   @Manual{,
+    #>     title = {omopgenerics: Methods and Classes for the OMOP Common Data Model},
+    #>     author = {Martí Català and Edward Burn},
+    #>     year = {2024},
+    #>     note = {R package version 0.3.0},
+    #>     url = {https://CRAN.R-project.org/package=omopgenerics},
+    #>   }
+
+If you find the package useful in supporting your research study, please
+consider citing this package.
 
 ## Installation
 
@@ -67,7 +88,7 @@ omopTables()
 #> [28] "domain"                "concept_class"         "concept_relationship" 
 #> [31] "relationship"          "concept_synonym"       "concept_ancestor"     
 #> [34] "source_to_concept_map" "drug_strength"         "cohort_definition"    
-#> [37] "attribute_definition"
+#> [37] "attribute_definition"  "concept_recommended"
 ```
 
 Each one of the tables has a required columns. For example, for the
@@ -128,13 +149,14 @@ containing specific concept IDs.
 condition_codes <- list("diabetes" = c(201820, 4087682, 3655269),
                         "asthma" = 317009)
 condition_codes <- newCodelist(condition_codes)
+#> Warning: ! `codelist` contains numeric values, they are casted to integers.
 
 condition_codes
 #> 
 #> ── 2 codelists ─────────────────────────────────────────────────────────────────
 #> 
-#> - diabetes (3 codes)
 #> - asthma (1 codes)
+#> - diabetes (3 codes)
 ```
 
 Meanwhile, a concept set expression provides a high-level definition of
@@ -163,8 +185,8 @@ condition_cs
 #> 
 #> ── 2 conceptSetExpressions ─────────────────────────────────────────────────────
 #> 
-#> - diabetes (2 concept criteria)
 #> - asthma (1 concept criteria)
+#> - diabetes (2 concept criteria)
 ```
 
 ### A cohort table
@@ -182,7 +204,7 @@ person <- tibble(
 observation_period <- dplyr::tibble(
   observation_period_id = 1, person_id = 1,
   observation_period_start_date = as.Date("2000-01-01"),
-  observation_period_end_date = as.Date("2025-12-31"),
+  observation_period_end_date = as.Date("2023-12-31"),
   period_type_concept_id = 0
 )
 diabetes <- tibble(
@@ -199,7 +221,20 @@ cdm <- cdmFromTables(
   ),
   cdmName = "example_cdm"
 )
+#> Warning: ! 5 column in person do not match expected column type:
+#> • `person_id` is numeric but expected integer
+#> • `gender_concept_id` is numeric but expected integer
+#> • `year_of_birth` is numeric but expected integer
+#> • `race_concept_id` is numeric but expected integer
+#> • `ethnicity_concept_id` is numeric but expected integer
+#> Warning: ! 3 column in observation_period do not match expected column type:
+#> • `observation_period_id` is numeric but expected integer
+#> • `person_id` is numeric but expected integer
+#> • `period_type_concept_id` is numeric but expected integer
 cdm$diabetes <- newCohortTable(cdm$diabetes)
+#> Warning: ! 2 column in diabetes do not match expected column type:
+#> • `cohort_definition_id` is numeric but expected integer
+#> • `subject_id` is numeric but expected integer
 
 cdm$diabetes
 #> # A tibble: 1 × 4
@@ -235,22 +270,19 @@ whole
 ``` r
 summary(cdm) |> 
   dplyr::glimpse()
-#> Rows: 12
-#> Columns: 16
-#> $ result_id        <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+#> Rows: 13
+#> Columns: 13
+#> $ result_id        <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 #> $ cdm_name         <chr> "example_cdm", "example_cdm", "example_cdm", "example…
-#> $ result_type      <chr> "cdm_snapshot", "cdm_snapshot", "cdm_snapshot", "cdm_…
-#> $ package_name     <chr> "omopgenerics", "omopgenerics", "omopgenerics", "omop…
-#> $ package_version  <chr> "0.1.1", "0.1.1", "0.1.1", "0.1.1", "0.1.1", "0.1.1",…
 #> $ group_name       <chr> "overall", "overall", "overall", "overall", "overall"…
 #> $ group_level      <chr> "overall", "overall", "overall", "overall", "overall"…
 #> $ strata_name      <chr> "overall", "overall", "overall", "overall", "overall"…
 #> $ strata_level     <chr> "overall", "overall", "overall", "overall", "overall"…
 #> $ variable_name    <chr> "snapshot_date", "person_count", "observation_period_…
-#> $ variable_level   <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
+#> $ variable_level   <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
 #> $ estimate_name    <chr> "value", "count", "count", "source_name", "version", …
 #> $ estimate_type    <chr> "date", "integer", "integer", "character", "character…
-#> $ estimate_value   <chr> "2024-03-09", "1", "1", "", NA, "5.3", "", "", "", ""…
+#> $ estimate_value   <chr> "2024-09-11", "1", "1", "", NA, "5.3", "", "", "", ""…
 #> $ additional_name  <chr> "overall", "overall", "overall", "overall", "overall"…
 #> $ additional_level <chr> "overall", "overall", "overall", "overall", "overall"…
 ```
@@ -260,22 +292,19 @@ and also when we summarise a cohort
 ``` r
 summary(cdm$diabetes) |> 
   dplyr::glimpse()
-#> Rows: 10
-#> Columns: 16
-#> $ result_id        <int> 1, 1, 1, 1, 2, 2, 2, 2, 2, 2
+#> Rows: 6
+#> Columns: 13
+#> $ result_id        <int> 1, 1, 2, 2, 2, 2
 #> $ cdm_name         <chr> "example_cdm", "example_cdm", "example_cdm", "example…
-#> $ result_type      <chr> "cohort_count", "cohort_count", "cohort_count", "coho…
-#> $ package_name     <chr> "omopgenerics", "omopgenerics", "omopgenerics", "omop…
-#> $ package_version  <chr> "0.1.1", "0.1.1", "0.1.1", "0.1.1", "0.1.1", "0.1.1",…
-#> $ group_name       <chr> "overall", "overall", "cohort_table_name", "cohort_ta…
-#> $ group_level      <chr> "overall", "overall", "diabetes", "diabetes", "overal…
-#> $ strata_name      <chr> "overall", "overall", "cohort_name", "cohort_name", "…
-#> $ strata_level     <chr> "overall", "overall", "cohort_1", "cohort_1", "overal…
-#> $ variable_name    <chr> "settings", "settings", "number_records", "number_sub…
-#> $ variable_level   <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
-#> $ estimate_name    <chr> "cohort_definition_id", "cohort_name", "count", "coun…
-#> $ estimate_type    <chr> "integer", "character", "integer", "integer", "intege…
-#> $ estimate_value   <chr> "1", "cohort_1", "1", "1", "1", "cohort_1", "1", "1",…
-#> $ additional_name  <chr> "overall", "overall", "overall", "overall", "overall"…
-#> $ additional_level <chr> "overall", "overall", "overall", "overall", "overall"…
+#> $ group_name       <chr> "cohort_name", "cohort_name", "cohort_name", "cohort_…
+#> $ group_level      <chr> "cohort_1", "cohort_1", "cohort_1", "cohort_1", "coho…
+#> $ strata_name      <chr> "overall", "overall", "reason", "reason", "reason", "…
+#> $ strata_level     <chr> "overall", "overall", "Initial qualifying events", "I…
+#> $ variable_name    <chr> "number_records", "number_subjects", "number_records"…
+#> $ variable_level   <chr> NA, NA, NA, NA, NA, NA
+#> $ estimate_name    <chr> "count", "count", "count", "count", "count", "count"
+#> $ estimate_type    <chr> "integer", "integer", "integer", "integer", "integer"…
+#> $ estimate_value   <chr> "1", "1", "1", "1", "0", "0"
+#> $ additional_name  <chr> "overall", "overall", "reason_id", "reason_id", "reas…
+#> $ additional_level <chr> "overall", "overall", "1", "1", "1", "1"
 ```

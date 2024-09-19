@@ -431,3 +431,6 @@ cohort_definition,definition_type_concept_id,TRUE,integer
 cohort_definition,cohort_definition_syntax,FALSE,varchar(max)
 cohort_definition,subject_concept_id,TRUE,integer
 cohort_definition,cohort_initiation_date,FALSE,date
+concept_recommended,concept_id_1,TRUE,integer
+concept_recommended,concept_id_2,TRUE,integer
+concept_recommended,relationship_id,TRUE,varchar(20)

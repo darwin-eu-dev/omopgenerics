@@ -6,10 +6,10 @@
 \usage{
 validateCohortArgument(
   cohort,
-  checkEndAfterStart = TRUE,
-  checkOverlappingEntries = TRUE,
-  checkMissingValues = TRUE,
-  checkInObservation = TRUE,
+  checkEndAfterStart = FALSE,
+  checkOverlappingEntries = FALSE,
+  checkMissingValues = FALSE,
+  checkInObservation = FALSE,
   validation = "error",
   call = parent.frame()
 )

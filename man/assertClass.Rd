@@ -20,7 +20,7 @@ assertClass(
 
 \item{class}{Expected class or classes.}
 
-\item{length}{Required length.}
+\item{length}{Required length. If \code{NULL} length is not checked.}
 
 \item{null}{Whether it can be NULL.}
 

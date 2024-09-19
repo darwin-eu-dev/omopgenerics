@@ -2,18 +2,18 @@
 % Please edit documentation in R/classCdmReference.R
 \name{cdmVersion}
 \alias{cdmVersion}
-\title{Get the version of a cdm_reference.}
+\title{Get the version of an object.}
 \usage{
-cdmVersion(cdm)
+cdmVersion(x)
 }
 \arguments{
-\item{cdm}{A cdm_reference object.}
+\item{x}{Object to know the cdm version of an object.}
 }
 \value{
-Version of the cdm_reference.
+A character vector indicating the cdm version.
 }
 \description{
-Get the version of a cdm_reference.
+Get the version of an object.
 }
 \examples{
 \donttest{
@@ -29,7 +29,7 @@ cdm <- cdmFromTables(
     "observation_period" = tibble(
       observation_period_id = 1:3, person_id = 1:3,
       observation_period_start_date = as.Date("2000-01-01"),
-      observation_period_end_date = as.Date("2025-12-31"),
+      observation_period_end_date = as.Date("2023-12-31"),
       period_type_concept_id = 0
     )
   ),
@@ -37,5 +37,6 @@ cdm <- cdmFromTables(
 )
 
 cdmVersion(cdm)
+cdmVersion(cdm$person)
 }
 }

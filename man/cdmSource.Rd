@@ -2,18 +2,20 @@
 % Please edit documentation in R/classCdmReference.R
 \name{cdmSource}
 \alias{cdmSource}
-\title{Get the source of a cdm_reference.}
+\title{Get the cdmSource of an object.}
 \usage{
-cdmSource(cdm)
+cdmSource(x, cdm = lifecycle::deprecated())
 }
 \arguments{
-\item{cdm}{A cdm_reference object.}
+\item{x}{Object to obtain the cdmSource.}
+
+\item{cdm}{Deprecated, use x please.}
 }
 \value{
 A cdm_source object.
 }
 \description{
-Get the source of a cdm_reference.
+Get the cdmSource of an object.
 }
 \examples{
 \donttest{
@@ -29,7 +31,7 @@ cdm <- cdmFromTables(
     "observation_period" = tibble(
       observation_period_id = 1:3, person_id = 1:3,
       observation_period_start_date = as.Date("2000-01-01"),
-      observation_period_end_date = as.Date("2025-12-31"),
+      observation_period_end_date = as.Date("2023-12-31"),
       period_type_concept_id = 0
     )
   ),
@@ -37,5 +39,6 @@ cdm <- cdmFromTables(
 )
 
 cdmSource(cdm)
+cdmSource(cdm$person)
 }
 }

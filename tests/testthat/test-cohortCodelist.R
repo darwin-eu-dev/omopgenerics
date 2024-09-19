@@ -6,12 +6,12 @@ test_that("test codelist from cohort", {
   observation_period <- dplyr::tibble(
     observation_period_id = 1L, person_id = 1L,
     observation_period_start_date = as.Date("2000-01-01"),
-    observation_period_end_date = as.Date("2025-12-31"),
+    observation_period_end_date = as.Date("2023-12-31"),
     period_type_concept_id = 0L
   )
   cohort1 <- dplyr::tibble(
-    cohort_definition_id = c(1,2),
-    subject_id = c(1,1),
+    cohort_definition_id = c(1,2) |> as.integer(),
+    subject_id = c(1,1) |> as.integer(),
     cohort_start_date = as.Date("2020-01-01"),
     cohort_end_date = as.Date("2020-01-10")
   )
@@ -32,10 +32,10 @@ test_that("test codelist from cohort", {
   # with attribute added
   cdm$cohort1 <- newCohortTable(table = cdm$cohort1,
                                 cohortCodelistRef = dplyr::tibble(
-                                  cohort_definition_id = c(1,1,1,2,2),
+                                  cohort_definition_id = c(1,1,1,2,2) |> as.integer(),
                                   codelist_name =c("disease X", "disease X", "disease X",
                                                    "disease Y", "disease Y"),
-                                  concept_id = c(1,2,3,4,5),
+                                  concept_id = c(1,2,3,4,5) |> as.integer(),
                                   type = rep("index event", 5)
                                 ))
 
@@ -74,12 +74,12 @@ test_that("test epected error cohort_codelist in wrong format", {
   observation_period <- dplyr::tibble(
     observation_period_id = 1L, person_id = 1L,
     observation_period_start_date = as.Date("2000-01-01"),
-    observation_period_end_date = as.Date("2025-12-31"),
+    observation_period_end_date = as.Date("2023-12-31"),
     period_type_concept_id = 0L
   )
   cohort <- dplyr::tibble(
-    cohort_definition_id = c(1, 1, 1, 2),
-    subject_id = 1,
+    cohort_definition_id = c(1, 1, 1, 2) |> as.integer(),
+    subject_id = 1L,
     cohort_start_date = as.Date(c(
       "2020-01-01", "2021-01-01", "2022-01-01", "2022-01-01"
     )),
@@ -94,19 +94,19 @@ test_that("test epected error cohort_codelist in wrong format", {
   )
   expect_error(cdm$cohort1 <- newCohortTable(table = cdm$cohort1,
                                              cohortCodelistRef = dplyr::tibble(
-                                               not_a_cohort_definition_id = c(1,1,1,2,2),
+                                               not_a_cohort_definition_id = c(1,1,1,2,2) |> as.integer(),
                                                a_codelist_name =c("disease X", "disease X", "disease X",
                                                                   "disease Y", "disease Y"),
-                                               concept_id = c(1,2,3,4,5),
+                                               concept_id = c(1,2,3,4,5) |> as.integer(),
                                                type = "index event"
                                              )))
 
   expect_error(newCohortTable(table = cdm$cohort1,
                               cohortCodelistRef = dplyr::tibble(
-                                cohort_definition_id = c(1,1,1,2,2),
+                                cohort_definition_id = c(1,1,1,2,2) |> as.integer(),
                                 codelist_name =c("disease X", "disease X", "disease X",
                                                  "disease Y", "disease Y"),
-                                concept_id = c(1,2,3,4,5),
+                                concept_id = c(1,2,3,4,5) |> as.integer(),
                                 type = "another name"
                               )))
 

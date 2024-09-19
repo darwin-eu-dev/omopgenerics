@@ -14,7 +14,7 @@ A character vector with the type of source of the cdm_reference
 object.
 }
 \description{
-Get the source type of a cdm_reference object.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 }
 \examples{
 \donttest{
@@ -30,13 +30,13 @@ cdm <- cdmFromTables(
     "observation_period" = tibble(
       observation_period_id = 1:3, person_id = 1:3,
       observation_period_start_date = as.Date("2000-01-01"),
-      observation_period_end_date = as.Date("2025-12-31"),
+      observation_period_end_date = as.Date("2023-12-31"),
       period_type_concept_id = 0
     )
   ),
   cdmName = "mock"
 )
 
-cdmSourceType(cdm = cdm)
+cdmSourceType(cdm)
 }
 }

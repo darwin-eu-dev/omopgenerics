@@ -43,7 +43,7 @@
 #' observation_period <- dplyr::tibble(
 #'   observation_period_id = 1, person_id = 1,
 #'   observation_period_start_date = as.Date("2000-01-01"),
-#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   observation_period_end_date = as.Date("2023-12-31"),
 #'   period_type_concept_id = 0
 #' )
 #' cohort1 <- dplyr::tibble(
@@ -74,6 +74,25 @@ newCohortTable <- function(table,
   # initial checks
   assertClass(table, "cdm_table")
   assertChoice(.softValidation, choices = c(TRUE, FALSE), length = 1)
+
+  if(is.na(tableName(table))){
+    missingCohortTableNameError(cdmReference(table), validation = "error")
+  }
+  if (!is.null(cohortSetRef)) {
+    cohortSetRef <- cohortSetRef |> dplyr::as_tibble()
+  }
+  if (!is.null(cohortAttritionRef)) {
+    cohortAttritionRef <- cohortAttritionRef |> dplyr::as_tibble()
+  }
+  if (!is.null(cohortCodelistRef)) {
+    cohortCodelistRef <- cohortCodelistRef |> dplyr::as_tibble()
+  }
+
+  # 'clean' table
+  table <- table |> removeClass("cohort_table")
+  attr(table, "cohort_set") <- NULL
+  attr(table, "cohort_attrition") <- NULL
+  attr(table, "cohort_codelist") <- NULL
 
   # populate
   cohortSetRef <- populateCohortSet(table, cohortSetRef)
@@ -196,6 +215,9 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
   checkColumnsCohort(cohort_attrition, "cohort_attrition")
   checkColumnsCohort(cohort_codelist, "cohort_codelist")
 
+  # cast cohort columns
+  cohort <- castCohortColumns(cohort, tableName(cohort), "cohort")
+
   # check cohort_codelist type colum
   if(cohort_codelist |>
      utils::head(10) |>
@@ -231,45 +253,14 @@ validateGeneratedCohortSet <- function(cohort, soft = FALSE) {
     ))
   }
 
-  # cohort_name column
-  cohortNames <- cohort_set |> dplyr::pull("cohort_name")
-  if (length(cohortNames) != length(unique(cohortNames))) {
-    cli::cli_abort("cohort_name in the cohort_set must be unique")
-  }
-  notSnake <- cohortNames[!isSnakeCase(cohortNames)]
-  if (length(notSnake)) {
-    oldName <- notSnake
-    newName <- toSnakeCase(notSnake)
-    x <- paste0(oldName, " -> ", newName)
-    names(x) <- rep("*", length(x))
-    cli::cli_warn(c(
-      "cohort_name must be snake case, the following cohorts will be renamed:",
-      x
-    ))
-    nameChange <- dplyr::tibble(
-      "xyz_cohort_name" = newName, "cohort_name" = oldName
-    )
-    attr(cohort, "cohort_set") <- attr(cohort, "cohort_set") |>
-      dplyr::left_join(nameChange, by = "cohort_name", copy = TRUE) |>
-      dplyr::mutate("cohort_name" = dplyr::if_else(
-        is.na(.data$xyz_cohort_name), .data$cohort_name, .data$xyz_cohort_name
-      )) |>
-      dplyr::select(-"xyz_cohort_name") |>
-      dplyr::compute(
-        name = paste0(tableName(cohort), "_set"), temporary = FALSE,
-        overwrite = TRUE
-      )
-  }
-
   # make correct order
-  cohort <- cohort |>
-    dplyr::relocate(dplyr::all_of(cohortColumns("cohort")))
-  attr(cohort, "cohort_set") <- attr(cohort, "cohort_set") |>
-    dplyr::relocate(dplyr::all_of(cohortColumns("cohort_set")))
-  attr(cohort, "cohort_attrition") <- attr(cohort, "cohort_attrition") |>
-    dplyr::relocate(dplyr::all_of(cohortColumns("cohort_attrition")))
-  attr(cohort, "cohort_codelist") <- attr(cohort, "cohort_codelist") |>
-    dplyr::relocate(dplyr::all_of(cohortColumns("cohort_codelist")))
+  cols <- colnames(cohort)[1:4]
+  if (!all(cols == cohortColumns("cohort"))) {
+    cli::cli_inform(c("!" = "cohort columns will be reordered to match the expected order: {cohortColumns('cohort')}."))
+    cohort <- cohort |>
+      dplyr::relocate(dplyr::all_of(cohortColumns("cohort"))) |>
+      dplyr::compute(name = tableName(cohort), temporary = FALSE)
+  }
 
   if (!soft) {
     cohort <- validateCohortArgument(
@@ -320,29 +311,31 @@ defaultCohortAttrition <- function(cohort, set) {
   cohortName <- tableName(cohort)
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
   x <- cohort |>
-    group_by(.data$cohort_definition_id) |>
-    summarise(
+    dplyr::group_by(.data$cohort_definition_id) |>
+    dplyr::summarise(
       number_records = dplyr::n(),
       number_subjects = dplyr::n_distinct(.data$subject_id)
     ) |>
+    collect() |>
     dplyr::right_join(
-      set |> dplyr::select("cohort_definition_id"),
-      by = "cohort_definition_id",
-      copy = TRUE
+      set |>
+        dplyr::select("cohort_definition_id") |>
+        dplyr::collect(),
+      by = "cohort_definition_id"
     ) |>
     dplyr::mutate(
+      "cohort_definition_id" = as.integer(.data$cohort_definition_id),
       "number_records" = dplyr::if_else(
-        is.na(.data$number_records), 0, .data$number_records
+        is.na(.data$number_records), 0L, as.integer(.data$number_records)
       ),
       "number_subjects" = dplyr::if_else(
-        is.na(.data$number_subjects), 0, .data$number_subjects
+        is.na(.data$number_subjects), 0L, as.integer(.data$number_subjects)
       ),
-      "reason_id" = 1,
+      "reason_id" = 1L,
       "reason" = "Initial qualifying events",
-      "excluded_records" = 0,
-      "excluded_subjects" = 0
-    ) |>
-    collect()
+      "excluded_records" = 0L,
+      "excluded_subjects" = 0L
+    )
   return(x)
 }
 defaultCohortCodelist <- function(cohort) {
@@ -353,7 +346,6 @@ defaultCohortCodelist <- function(cohort) {
     type = as.character()
   )
 }
-
 
 #' Check whether a cohort table satisfies requirements
 #'
@@ -573,13 +565,22 @@ consistentNaming <- function(cohortName,
 populateCohortSet <- function(table, cohortSetRef) {
   if (is.null(cohortSetRef)) {
     cohortSetRef <- defaultCohortSet(table)
-  } else {
-    cohortSetRef <- cohortSetRef |> dplyr::collect()
   }
   cohortName <- tableName(table)
+
   assertClass(cohortSetRef, "data.frame", null = TRUE)
   cohortSetRef <- dplyr::as_tibble(cohortSetRef)
+
+  # cohort_name column
+  if ("cohort_name" %in% colnames(cohortSetRef)) {
+    cohortSetRef <- updateCohortNames(cohortSetRef)
+  }
+
+  cohortSetRef <- cohortSetRef |>
+    dplyr::relocate(dplyr::any_of(cohortColumns("cohort_set")))
+
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_set"))
+  cohortSetRef <- castCohortColumns(cohortSetRef, cohortName, "cohort_set")
   cohortSetRef <- insertTable(
     cdm = tableSource(table), name = name, table = cohortSetRef,
     overwrite = TRUE
@@ -589,13 +590,14 @@ populateCohortSet <- function(table, cohortSetRef) {
 populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
   if (is.null(cohortAttritionRef)) {
     cohortAttritionRef <- defaultCohortAttrition(table, cohortSetRef)
-  } else {
-    cohortAttritionRef <- cohortAttritionRef |> dplyr::collect()
   }
   cohortName <- tableName(table)
   assertClass(cohortAttritionRef, "data.frame", null = TRUE)
-  cohortAttritionRef <- dplyr::as_tibble(cohortAttritionRef)
+  cohortAttritionRef <- dplyr::as_tibble(cohortAttritionRef) |>
+    dplyr::relocate(dplyr::any_of(cohortColumns("cohort_attrition")))
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_attrition"))
+  cohortAttritionRef <- castCohortColumns(
+    cohortAttritionRef, cohortName, "cohort_attrition")
   cohortAttritionRef <- insertTable(
     cdm = tableSource(table), name = name, table = cohortAttritionRef,
     overwrite = TRUE
@@ -605,13 +607,14 @@ populateCohortAttrition <- function(table, cohortSetRef, cohortAttritionRef) {
 populateCohortCodelist <- function(table, cohortCodelistRef) {
   if (is.null(cohortCodelistRef)) {
     cohortCodelistRef <- defaultCohortCodelist(table)
-  } else {
-    cohortCodelistRef <- cohortCodelistRef |> dplyr::collect()
   }
   cohortName <- tableName(table)
   assertClass(cohortCodelistRef, "data.frame", null = TRUE)
-  cohortCodelistRef <- dplyr::as_tibble(cohortCodelistRef)
+  cohortCodelistRef <- dplyr::as_tibble(cohortCodelistRef) |>
+    dplyr::relocate(dplyr::any_of(cohortColumns("cohort_codelist")))
   name <- ifelse(is.na(cohortName), cohortName, paste0(cohortName, "_codelist"))
+  cohortCodelistRef <- castCohortColumns(
+    cohortCodelistRef, cohortName, "cohort_codelist")
   cohortCodelistRef <- insertTable(
     cdm = tableSource(table), name = name, table = cohortCodelistRef,
     overwrite = TRUE
@@ -640,7 +643,7 @@ populateCohortCodelist <- function(table, cohortCodelistRef) {
 #' observation_period <- tibble(
 #'   observation_period_id = 1, person_id = 1,
 #'   observation_period_start_date = as.Date("2000-01-01"),
-#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   observation_period_end_date = as.Date("2023-12-31"),
 #'   period_type_concept_id = 0
 #' )
 #' cdm <- cdmFromTables(
@@ -659,18 +662,36 @@ populateCohortCodelist <- function(table, cohortCodelistRef) {
 emptyCohortTable <- function(cdm, name, overwrite = TRUE) {
   assertCharacter(name, length = 1)
   assertClass(cdm, "cdm_reference")
-  table <- fieldsTables |>
-    dplyr::filter(
-      .data$cdm_table_name == "cohort" &
-        .data$type == "cohort" &
-        grepl(cdmVersion(cdm), .data$cdm_version)
-    ) |>
+  table <- omopTableFields(cdmVersion(cdm)) |>
+    dplyr::filter(.data$cdm_table_name == "cohort" & .data$type == "cohort") |>
     emptyTable()
   cdm <- insertTable(cdm = cdm, name = name, table = table, overwrite = overwrite)
   cdm[[name]] <- newCohortTable(cdm[[name]], .softValidation = TRUE)
   return(cdm)
 }
 
+castCohortColumns <- function(table, tName, name) {
+  cols <- omopTableFields() |>
+    dplyr::filter(.data$type == "cohort" & .data$cdm_table_name == .env$name) |>
+    dplyr::select("cdm_field_name", "cdm_datatype") |>
+    dplyr::mutate("cdm_datatype" = dplyr::case_when(
+      grepl("varchar", .data$cdm_datatype) ~ "character",
+      .data$cdm_datatype == "float" ~ "numeric",
+      .data$cdm_datatype == "datetime" ~ "date",
+      .default = .data$cdm_datatype
+    ))
+  cols <- cols |>
+    split(f = as.factor(cols$cdm_field_name)) |>
+    lapply(dplyr::pull, "cdm_datatype")
+  if (name != "cohort") {
+    cast <- TRUE
+    tName <- paste0(tName, " (", name, ")")
+  } else {
+    cast <- FALSE
+  }
+  table <- castColumns(table, cols, tName, cast)
+  return(table)
+}
 emptyTable <- function(fields) {
   lapply(fields$cdm_datatype, getEmptyField) |>
     rlang::set_names(fields$cdm_field_name) |>
@@ -688,4 +709,64 @@ getEmptyField <- function(datatype) {
     "logical" = logical()
   )
   return(empty)
+}
+missingCohortTableNameError <- function(cdm, validation = "error"){
+
+if(validation == "error"){
+  if(sourceType(cdm) == "local"){
+    cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
+                     "i" = "Did you use insertTable() when adding the table to the cdm reference?"))
+
+  } else {
+    cli::cli_abort(c("x" = "Table name for cohort could not be inferred.",
+                     "i" = "The cohort table must be a permanent table when working with databases.",
+                     "i" = "Use dplyr::compute(temporary = FALSE, ...) to create a permanent table from a temporary table."))
+  }
+} else if (validation == "warning"){
+  if(sourceType(cdm) == "local"){
+    cli::cli_warn(c("Table name for cohort could not be inferred.",
+                     "i" = "Did you use insertTable() when adding the table to the cdm reference?"))
+
+  } else {
+    cli::cli_warn(c("Table name for cohort could not be inferred.",
+                     "i" = "The cohort table must be a permanent table when working with databases.",
+                     "i" = "Use dplyr::compute(temporary = FALSE, ...) to create a permanent table from a temporary table."))
+  }
+} else {
+
+  return(invisible())
+}
+
+
+}
+updateCohortNames <- function(cohortSetRef) {
+  cohortNames <- cohortSetRef |> dplyr::pull("cohort_name")
+  limChar <- 100
+  newNames <- substr(toSnakeCase(cohortNames), 1, limChar)
+  different <- cohortNames != newNames
+  if (any(different)) {
+    oldName <- cohortNames[different]
+    newName <- newNames[different]
+    x <- paste0(oldName, " -> ", newName)
+    names(x) <- rep("*", length(x))
+    cli::cli_warn(c(
+      "cohort_name must be snake case and have less than {limChar} characters,
+      the following cohorts will be renamed:",
+      x
+    ))
+    id <- uniqueId(exclude = colnames(cohortSetRef), prefix = "id_")
+    cohortSetRef <- cohortSetRef |>
+      dplyr::left_join(
+        dplyr::tibble(!!id := newNames, cohort_name = cohortNames),
+        by = "cohort_name"
+      ) |>
+      dplyr::select(-"cohort_name") |>
+      dplyr::rename("cohort_name" = dplyr::all_of(id))
+  }
+
+  if (length(newNames) != length(unique(newNames))) {
+    cli::cli_abort("cohort_name in the cohort_set must be unique")
+  }
+
+  return(cohortSetRef)
 }

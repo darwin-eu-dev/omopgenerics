@@ -34,7 +34,7 @@
 #' observation_period <- tibble(
 #'   observation_period_id = 1, person_id = 1,
 #'   observation_period_start_date = as.Date("2000-01-01"),
-#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   observation_period_end_date = as.Date("2023-12-31"),
 #'   period_type_concept_id = 0
 #' )
 #' cdm <- cdmFromTables(
@@ -135,7 +135,7 @@ summary.cdm_reference <- function(object, ...) {
       "cdm_source_name", "vocabulary_version", "cdm_version", "cdm_holder_name",
       "cdm_release_date", "cdm_description", "cdm_documentation_reference"
     ))) |>
-    dplyr::mutate("cdm_source_type" = cdmSourceType(cdm = object)) |>
+    dplyr::mutate("cdm_source_type" = sourceType(object)) |>
     dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
     tidyr::pivot_longer(
       cols = dplyr::everything(), names_to = "variable",
@@ -209,7 +209,7 @@ summary.cdm_reference <- function(object, ...) {
 #' observation_period <- tibble(
 #'   observation_period_id = 1, person_id = 1,
 #'   observation_period_start_date = as.Date("2000-01-01"),
-#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   observation_period_end_date = as.Date("2023-12-31"),
 #'   period_type_concept_id = 0
 #' )
 #' cdm <- cdmFromTables(
@@ -240,6 +240,7 @@ summary.cohort_table <- function(object, ...) {
 
   # settings part
   settingsSummary <- settings(object) |>
+    dplyr::select(-"cohort_name") |>
     dplyr::mutate(
       "table_name" = tableName(object),
       "result_id" = as.integer(.data$cohort_definition_id)
@@ -248,13 +249,13 @@ summary.cohort_table <- function(object, ...) {
   # counts summary
   countsSummary <- cohortCount(object) |>
     dplyr::inner_join(
-      settingsSummary |>
+      settings(object) |>
         dplyr::select(
-          "group_level" = "cohort_name", "cohort_definition_id", "result_id"
+          "group_level" = "cohort_name", "cohort_definition_id"
         ),
       by = "cohort_definition_id"
     ) |>
-    dplyr::select(-"cohort_definition_id") |>
+    dplyr::rename("result_id" = "cohort_definition_id") |>
     dplyr::mutate(dplyr::across(!"result_id", as.character)) |>
     tidyr::pivot_longer(
       cols = !c("group_level", "result_id"),
@@ -281,13 +282,13 @@ summary.cohort_table <- function(object, ...) {
   # attrition summary
   attritionSummary <- attrition(object) |>
     dplyr::inner_join(
-      settingsSummary |>
+      settings(object) |>
         dplyr::select(
-          "group_level" = "cohort_name", "cohort_definition_id", "result_id"
+          "group_level" = "cohort_name", "cohort_definition_id"
         ),
       by = "cohort_definition_id"
     ) |>
-    dplyr::select(-"cohort_definition_id") |>
+    dplyr::rename("result_id" = "cohort_definition_id") |>
     dplyr::mutate(dplyr::across(!"result_id", as.character)) |>
     tidyr::pivot_longer(
       cols = c(
@@ -347,7 +348,7 @@ addPkgDetails <- function(res) {
 #' observation_period <- tibble(
 #'   observation_period_id = 1, person_id = 1,
 #'   observation_period_start_date = as.Date("2000-01-01"),
-#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   observation_period_end_date = as.Date("2023-12-31"),
 #'   period_type_concept_id = 0
 #' )
 #' cdm <- cdmFromTables(

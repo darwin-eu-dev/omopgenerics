@@ -7,7 +7,7 @@ test_that("test getCohortName and getCohortId", {
     observation_period_id = 1L,
     person_id = 1L,
     observation_period_start_date = as.Date("2000-01-01"),
-    observation_period_end_date = as.Date("2025-12-31"),
+    observation_period_end_date = Sys.Date(),
     period_type_concept_id = 0L
   )
   x <- dplyr::tibble(
@@ -15,7 +15,7 @@ test_that("test getCohortName and getCohortId", {
     cohort_end_date = Sys.Date()
   )
   attr(x, "cohort_set") <- dplyr::tibble(
-    cohort_definition_id = c(1, 2, 3, 4),
+    cohort_definition_id = c(1, 2, 3, 4) |> as.integer(),
     cohort_name = c("condition1", "drug1", "covid", "asthma")
   )
   y <- dplyr::tibble(
@@ -30,23 +30,23 @@ test_that("test getCohortName and getCohortId", {
 
   expect_identical(
     getCohortId(cdm$my_first_cohort),
-    c("condition1" = 1, "drug1" = 2, "covid" = 3, "asthma" = 4)
+    c("condition1" = 1L, "drug1" = 2L, "covid" = 3L, "asthma" = 4L)
   )
 
   expect_identical(
-    getCohortId(cdm$my_first_cohort, "drug1"), c("drug1" = 2)
+    getCohortId(cdm$my_first_cohort, "drug1"), c("drug1" = 2L)
   )
   expect_identical(
     getCohortId(cdm$my_first_cohort, c("asthma", "covid")),
-    c(asthma = 4, covid = 3)
+    c(asthma = 4L, covid = 3L)
   )
   expect_identical(
     getCohortId(cdm$my_first_cohort, c("covid", "asthma")),
-    c(covid = 3, asthma = 4)
+    c(covid = 3L, asthma = 4L)
   )
   expect_warning(expect_identical(
     getCohortId(cdm$my_first_cohort, c("covid", "random", "asthma")),
-    c(covid = 3, asthma = 4)
+    c(covid = 3L, asthma = 4L)
   ))
   expect_warning(getCohortId(cdm$my_first_cohort, "random"))
 
@@ -102,4 +102,34 @@ test_that("uniqueId", {
     uniqueId(n = 2, exclude = paste0("m", xx), nChar = 1, prefix = "m"),
     c("ma", "mh")
   )
+})
+
+test_that("isTableEmpty", {
+  table <- dplyr::tibble(a = "1")
+
+  expect_error(table |> isTableEmpty())
+
+  class(table) <- c("cdm_table", "tbl_df", "tbl", "data.frame")
+
+  expect_false(table |> isTableEmpty())
+
+  table <- dplyr::tibble()
+
+  class(table) <- c("cdm_table", "tbl_df", "tbl", "data.frame")
+
+  expect_true(table |> isTableEmpty())
+
+})
+
+test_that("omopTableFields", {
+
+  expect_no_error(omopTableFields())
+
+  expect_identical(omopTableFields(), omopTableFields("5.3"))
+
+  expect_false(omopTableFields(cdmVersion = "5.4") |> nrow() ==
+                     omopTableFields(cdmVersion = "5.3") |> nrow())
+
+  expect_error(omopTableFields(cdmVersion = "5.5"))
+
 })

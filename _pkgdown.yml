@@ -77,7 +77,7 @@ reference:
 - subtitle: Utility functions
   desc: To be used internally by other packages, not meant to be user focused functions
 - contents:
-  - matches("insertFromSource|sourceType|tmpPrefix|uniqueId|uniqueTableName")
+  - matches("insertFromSource|sourceType|tmpPrefix|uniqueId|uniqueTableName|isTableEmpty|omopTableFields")
 - subtitle: Deprecated
   desc: Deprecated function that will be eliminated in future releases of the package
 - contents:

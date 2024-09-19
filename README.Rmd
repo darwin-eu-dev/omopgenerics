@@ -22,7 +22,18 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/darwin-eu-dev/omopgenerics/branch/main/graph/badge.svg)](https://app.codecov.io/gh/darwin-eu-dev/omopgenerics?branch=main)
 <!-- badges: end -->
 
-The omopgenerics package provides definitions of core classes and methods used by analytic pipelines that query the OMOP common data model.
+## Package overview
+
+The omopgenerics package provides definitions of core classes and
+methods used by analytic pipelines that query the OMOP common data
+model.
+
+``` {r, echo =FALSE}
+citation("omopgenerics")
+```
+
+If you find the package useful in supporting your research study, please
+consider citing this package.
 
 ## Installation
 
@@ -133,7 +144,7 @@ person <- tibble(
 observation_period <- dplyr::tibble(
   observation_period_id = 1, person_id = 1,
   observation_period_start_date = as.Date("2000-01-01"),
-  observation_period_end_date = as.Date("2025-12-31"),
+  observation_period_end_date = as.Date("2023-12-31"),
   period_type_concept_id = 0
 )
 diabetes <- tibble(

@@ -49,15 +49,17 @@ test_that("you can create empty objects",{
     cohortColumns("cohort_attrition") %in% (cdm$my_cohort |> attrition() |> colnames())
   ))
   expect_error(cdm <- emptyCohortTable(cdm = cdm, name = "person"))
-
   # summarised result
   expect_no_error(x <- emptySummarisedResult())
   expect_true(inherits(x, "summarised_result"))
-  expect_identical(settings(x), dplyr::tibble("result_id" = integer()))
+  expect_identical(settings(x), dplyr::tibble("result_id" = integer(),
+                                              "result_type" = character(),
+                                              "package_name" = character(),
+                                              "package_version" = character()))
 
   set <- dplyr::tibble("result_id" = 1L, "my_setting" = TRUE)
   expect_no_error(x <- emptySummarisedResult(settings = set))
   expect_true(inherits(x, "summarised_result"))
-  expect_identical(settings(x), set)
+  expect_identical(settings(x) |> dplyr::select("result_id","my_setting"), set)
 
 })

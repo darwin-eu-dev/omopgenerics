@@ -5,14 +5,14 @@
 \title{Required columns that the standard tables in the OMOP Common Data Model must
 have.}
 \usage{
-omopColumns(table, required = TRUE, version = "5.3")
+omopColumns(table, version = "5.3", onlyRequired = lifecycle::deprecated())
 }
 \arguments{
 \item{table}{Table to see required columns.}
 
-\item{required}{Whether to include only required fields.}
-
 \item{version}{Version of the OMOP Common Data Model.}
+
+\item{onlyRequired}{deprecated}
 }
 \value{
 Character vector with the column names

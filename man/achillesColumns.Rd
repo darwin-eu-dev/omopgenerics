@@ -4,15 +4,15 @@
 \alias{achillesColumns}
 \title{Required columns for each of the achilles result tables}
 \usage{
-achillesColumns(table, required = TRUE, version = "5.3")
+achillesColumns(table, version = "5.3", onlyRequired = lifecycle::deprecated())
 }
 \arguments{
 \item{table}{Table for which to see the required columns. One of
 "achilles_analysis", "achilles_results", or "achilles_results_dist".}
 
-\item{required}{Whether to include only required fields.}
-
 \item{version}{Version of the OMOP Common Data Model.}
+
+\item{onlyRequired}{deprecated.}
 }
 \value{
 Character vector with the column names

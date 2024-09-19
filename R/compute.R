@@ -18,7 +18,7 @@
 #'
 #' @param x Table in the cdm.
 #' @param name Name to store the table with.
-#' @param temporary Whether to store table temporarily (TRUE) or permanent
+#' @param temporary Whether to store table temporarily (TRUE) or permanently
 #' (FALSE).
 #' @param overwrite Whether to overwrite previously existing table with name
 #' same.
@@ -29,13 +29,35 @@
 #' @export
 #' @importFrom dplyr compute
 compute.cdm_table <- function(x,
-                              name = uniqueTableName(),
-                              temporary = TRUE,
+                              name = NULL,
+                              temporary = NULL,
                               overwrite = TRUE,
                               ...) {
+  if (is.character(name) & is.null(temporary)) temporary <- FALSE
+  if (is.null(name)) name <- uniqueTableName()
+  if (is.null(temporary)) temporary <- TRUE
   src <- tableSource(x)
   cl <- class(src)[class(src) != "cdm_source"]
   cx <- class(x)
+
+  logFile <- getOption("omopgenerics.log_sql_path")
+  if(!is.null(logFile) && inherits(cdmSource(x), "db_cdm")){
+    # log sql if option set
+    # must have specified a directory that exists
+    if (dir.exists(logFile)) {
+    cli::cli_inform("SQL query saved to {logFile}")
+    writeLines(utils::capture.output(dplyr::show_query(x)),
+               here::here(logFile,
+                          paste0("logged_query_ran_on_",
+                          format(Sys.time(),
+                                 format = "%Y_%m_%d_at_%H_%M_%S"),
+                          ".sql"
+                          )))
+    } else {
+      cli::cli_inform("SQL query not saved as '{logFile}' not an existing directory")
+    }
+    }
+
   res <- x |>
     keepClass() |>
     addClass(cl) |>

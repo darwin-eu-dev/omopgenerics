@@ -176,6 +176,10 @@ test_that("test assertList", {
   expect_error(assertList(list(1, "2"), class = "numeric"))
   expect_error(assertList(list(1, "2"), class = "character"))
   expect_no_error(assertList(list(1, "2"), class = c("character", "numeric")))
+
+  #check tibble
+  expect_error(assertList(tibble(1,2)))
+
 })
 
 test_that("test assertLogical", {
@@ -300,4 +304,64 @@ test_that("test assertTable", {
   # unique
   expect_no_error(assertTable(dplyr::tibble(b = c(1, 1), a = c(1, 1)), unique = FALSE))
   expect_error(assertTable(dplyr::tibble(b = c(1, 1), a = c(1, 1)), unique = TRUE))
+})
+
+test_that("test assertDate", {
+  # is date
+  date <- as.Date(c("1950-01-01", "2000-12-31"))
+  expect_no_error(assertDate(date))
+  expect_error(assertDate(1L))
+  expect_error(assertDate("2010-04-05"))
+
+  # length
+  expect_no_error(assertDate(date, length = 2))
+  expect_error(assertDate(date, length = 1))
+  expect_error(assertDate(date, length = 3))
+
+  # length
+  expect_no_error(assertDate(c(date, NA), na = TRUE))
+  expect_error(assertDate(c(date, NA), na = FALSE))
+  expect_no_error(assertDate(c(date), na = TRUE))
+  expect_no_error(assertDate(c(date), na = FALSE))
+
+  # null
+  expect_no_error(assertDate(NULL, null = TRUE))
+  expect_error(assertDate(NULL, null = FALSE))
+  expect_no_error(assertDate(date, null = TRUE))
+  expect_no_error(assertDate(date, null = FALSE))
+
+  # unique
+  expect_no_error(assertDate(date, unique = TRUE))
+  expect_no_error(assertDate(date, unique = FALSE))
+  expect_error(assertDate(c(date, date), unique = TRUE))
+  expect_no_error(assertDate(c(date, date), unique = FALSE))
+
+  # named
+  expect_no_error(assertDate(c("a" = as.Date("1993-04-19")), named = TRUE))
+  expect_no_error(assertDate(c("a" = as.Date("1993-04-19")), named = FALSE))
+  expect_error(assertDate(as.Date("1993-04-19"), named = TRUE))
+  expect_no_error(assertDate(as.Date("1993-04-19"), named = FALSE))
+})
+
+test_that("benchmark code", {
+  skip_on_cran()
+  nrep <- 10L # number repetitions
+
+  # no error
+  tictoc::tic()
+  for (k in seq_len(nrep)) {
+    assertCharacter("1")
+  }
+  x <- tictoc::toc(quiet = TRUE)
+  timeNoError <- x$toc - x$tic
+
+  # error
+  tictoc::tic()
+  for (k in seq_len(nrep)) {
+    expect_error(assertCharacter(1L))
+  }
+  x <- tictoc::toc(quiet = TRUE)
+  timeError <- x$toc - x$tic
+
+  expect_true(timeNoError < timeError)
 })

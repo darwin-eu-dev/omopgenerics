@@ -4,10 +4,14 @@
 \alias{importSummarisedResult}
 \title{Import a set of summarised results.}
 \usage{
-importSummarisedResult(path)
+importSummarisedResult(path, recursive = FALSE)
 }
 \arguments{
-\item{path}{Path to directory with summarised result files.}
+\item{path}{Path to directory with CSV files containing summarised results or
+to a specific CSV file with a summarised result.}
+
+\item{recursive}{If TRUE and path is a directory, search for files will
+recurse into directories}
 }
 \value{
 A summarised result

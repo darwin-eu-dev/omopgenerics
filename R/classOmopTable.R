@@ -26,16 +26,20 @@
 #'
 newOmopTable <- function(table, version = "5.3", cast = FALSE) {
   # create the structure
-  assertClass(table, class = "cdm_table")
-  table <- addClass(table, "omop_table")
-  name <- tableName(table)
+   assertClass(table, class = "cdm_table",
+               msg = "table must be a cdm_table")
+   table <- addClass(table, "omop_table")
+   name <- attr(table, "tbl_name")
 
   # validation
-  if (!tableName(table) %in% omopTables()) {
+  if (!attr(table, "tbl_name") %in% tableChoice(version = version, type = "cdm_table")) {
     cli::cli_abort("{name} is not one of the omop cdm standard tables.")
   }
 
-  cols <- omopColumns(table = tableName(table), version = version)
+  cols <- getColumns(table = attr(table, "tbl_name"),
+                     version = version,
+                     type = "cdm_table",
+                     required = TRUE)
   checkColumnsCdm(table, name, cols)
   if (cast) table <- castOmopColumns(table, name, version)
 
@@ -61,7 +65,7 @@ newOmopTable <- function(table, version = "5.3", cast = FALSE) {
 #' observation_period <- dplyr::tibble(
 #'   observation_period_id = 1, person_id = 1,
 #'   observation_period_start_date = as.Date("2000-01-01"),
-#'   observation_period_end_date = as.Date("2025-12-31"),
+#'   observation_period_end_date = as.Date("2023-12-31"),
 #'   period_type_concept_id = 0
 #' )
 #' cdm <- cdmFromTables(
@@ -83,9 +87,8 @@ emptyOmopTable <- function(cdm, name) {
 }
 
 castOmopColumns <- function(table, name, version) {
-  cols <- fieldsTables |>
+  cols <- omopTableFields(version) |>
     dplyr::filter(
-      grepl(.env$version, .data$cdm_version) &
       .data$type == "cdm_table" & .data$cdm_table_name == .env$name) |>
     dplyr::select("cdm_field_name", "cdm_datatype") |>
     dplyr::mutate("cdm_datatype" = dplyr::case_when(

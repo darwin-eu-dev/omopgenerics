@@ -87,7 +87,7 @@ newSummarisedResult <- function(x, settings = attr(x, "settings")) {
 }
 
 constructSummarisedResult <- function(x, set, call = parent.frame()) {
-  x <- x |> dplyr::as_tibble()
+  x <- x |> dplyr::as_tibble() |> dplyr::distinct()
 
   if (!is.null(set)) {
     set <- set |> dplyr::as_tibble()
@@ -116,6 +116,7 @@ constructSummarisedResult <- function(x, set, call = parent.frame()) {
           dplyr::distinct()
       )
   }
+
   x <- x |> dplyr::select(!dplyr::all_of(settingsCols))
   extraSets <- x |>
     dplyr::filter(.data$variable_name == "settings") |>
@@ -162,6 +163,19 @@ constructSummarisedResult <- function(x, set, call = parent.frame()) {
 
   if (is.null(set)) {
     set <- x |> dplyr::select("result_id") |> dplyr::distinct()
+  }
+
+  requiredSettingsColumns <- c(
+    "result_type" , "package_name", "package_version")
+  notPresent <- requiredSettingsColumns[
+    !requiredSettingsColumns %in% colnames(set)]
+  if (length(notPresent) > 0) {
+    '{.var {notPresent}} {?is/are} not provided will be populated as "" in settings' |>
+      cli::cli_warn()
+    for (col in notPresent) {
+      set <- set |>
+        dplyr::mutate(!!col := "")
+    }
   }
 
   x <- structure(
@@ -252,6 +266,9 @@ validateSummariseResult <- function(x) {
   # validate duplicates
   checkDuplicated(x, validation = "error")
 
+  # validate tidyNames
+  validateTidyNames(x)
+
   return(x)
 }
 checkColumns <- function(x, resultName, call = parent.frame()) {
@@ -279,7 +296,7 @@ checkNA <- function(x, type) {
 checkColumnsFormat <- function(x, resultName) {
   cols <- resultColumns(resultName)
   expectedFormat <- fieldsResults$datatype[fieldsResults$result == resultName]
-  formats <- lapply(x, typeof) |> unlist()
+  formats <- purrr::map_chr(x, typeof)
   id <- formats != expectedFormat
   cols <- cols[id]
   formats <- formats[id]
@@ -520,6 +537,54 @@ giveType <- function(x, type) {
     x
   )
 }
+validateTidyNames <- function(result, call = parent.frame()) {
+  # setting columns
+  colsSettings <- colnames(settings(result))
+  colsSettings <- colsSettings[colsSettings != "result_id"]
+
+  # group columns
+  colsGroup <- uniqueCols(result$group_name)
+
+  # strata columns
+  colsStrata <- uniqueCols(result$strata_name)
+
+  # additional columns
+  colsAdditional <- uniqueCols(result$additional_name)
+
+  # default columns
+  colsSummarisedResult <- resultColumns("summarised_result")
+
+  cols <- list(
+    settings = colsSettings,
+    group = colsGroup,
+    strata = colsStrata,
+    additional = colsAdditional,
+    summarised_result = colsSummarisedResult
+  )
+
+  # compare each pair
+  len <- length(cols)
+  nms <- names(cols)
+  for (k in 1:(len -1)) {
+    for (i in (k+1):len) {
+      both <- intersect(cols[[k]], cols[[i]])
+      if (length(both) > 0) {
+        "{.var {both}} {?is/are} present in both '{nms[k]}' and '{nms[i]}'. This will be an error in the next release." |>
+          cli::cli_warn() # Turn error
+      }
+    }
+  }
+
+  return(invisible(result))
+}
+uniqueCols <- function(x) {
+  x <- x |>
+    unique() |>
+    stringr::str_split(" &&& ") |>
+    unlist() |>
+    unique()
+  x[x != "overall"]
+}
 
 #' Required columns that the result tables must have.
 #'
@@ -574,6 +639,14 @@ estimateTypeChoices <- function() {
 #' emptySummarisedResult()
 #'
 emptySummarisedResult <- function(settings = NULL) {
+  if (is.null(settings)) {
+    settings <- dplyr::tibble(
+      "result_id" = integer(),
+      "result_type" = character(),
+      "package_name" = character(),
+      "package_version" = character()
+    )
+  }
   resultColumns("summarised_result") |>
     rlang::rep_named(list(character())) |>
     dplyr::as_tibble() |>

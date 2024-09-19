@@ -5,8 +5,8 @@ test_that("summary a cdm reference", {
   )
   observation_period <- dplyr::tibble(
     observation_period_id = c(1L, 2L), person_id = 1L,
-    observation_period_start_date = as.Date(c("2000-01-01", "2031-01-01")),
-    observation_period_end_date = as.Date(c("2025-12-31", "2032-01-01")),
+    observation_period_start_date = as.Date(c("2000-01-01", "2021-01-01")),
+    observation_period_end_date = as.Date(c("2019-12-31", "2022-01-01")),
     period_type_concept_id = 0L
   )
   cdm <- cdmFromTables(
@@ -61,7 +61,7 @@ test_that("summary a cdm reference", {
     ),
     value = c(
       as.character(Sys.Date()), "1", "2", rep(NA_character_, 7),
-      "2000-01-01", "2032-01-01"
+      "2000-01-01", "2022-01-01"
     )
   )
   for (k in seq_len(nrow(expt))) {
@@ -93,12 +93,12 @@ test_that("summary a generated cohort set", {
   observation_period <- dplyr::tibble(
     observation_period_id = 1L, person_id = 1L,
     observation_period_start_date = as.Date("2000-01-01"),
-    observation_period_end_date = as.Date("2025-12-31"),
+    observation_period_end_date = as.Date("2022-12-31"),
     period_type_concept_id = 0L
   )
   cohort <- dplyr::tibble(
-    cohort_definition_id = 1,
-    subject_id = 1,
+    cohort_definition_id = 1L,
+    subject_id = 1L,
     cohort_start_date = as.Date("2020-01-01"),
     cohort_end_date = as.Date("2020-01-01")
   )
@@ -111,7 +111,7 @@ test_that("summary a generated cohort set", {
   expect_no_error(summary(cdm$cohort2))
   cdm$cohort2 <- cdm$cohort2 |>
     newCohortTable(cohortSetRef = dplyr::tibble(
-      cohort_definition_id = 1, cohort_name = "my_cohort", parameter = 1
+      cohort_definition_id = 1L, cohort_name = "my_cohort", parameter = 1
     ))
   expect_no_error(cdm <- bind(cdm$cohort1, cdm$cohort2, name = "cohort3"))
   expect_no_error(summary(cdm$cohort3))
@@ -120,9 +120,10 @@ test_that("summary a generated cohort set", {
   expect_true(inherits(x, "data.frame"))
   expect_equal(
     x |>
-      dplyr::select("cohort_definition_id", "cohort_name", "parameter") |>
+      dplyr::select("cohort_definition_id", "parameter") |>
       dplyr::distinct(),
-    settings(cdm$cohort3)
+    settings(cdm$cohort3) |>
+      dplyr::select(!"cohort_name")
   )
 
 })
