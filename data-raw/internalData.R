@@ -190,7 +190,7 @@ fieldsResults <- dplyr::tibble(
     is_required = TRUE,
     datatype = c("integer", rep("character", 3)),
     na_allowed = c(
-      TRUE, FALSE, FALSE, FALSE
+      FALSE, FALSE, FALSE, FALSE
     ),
     pair = c(
       rep(NA, 4)
