@@ -626,3 +626,38 @@ validateResultArguemnt <- function(result,
   )
   validateResultArgument(result = result, validation = validation, call = call)
 }
+
+
+
+#' Title
+#'
+#' @param result The suppressed result to check
+#' @param minCellCount  Minimum count of records used when suppressing
+#'
+#' @return Warning or message with check result
+#' @export
+#'
+validateSuppressedResult <- function(result, minCellCount = 5) {
+  validateResultArgument(result)
+  assertNumeric(minCellCount, length = 1, integerish = TRUE)
+
+  set <- settings(result)
+  if (!"min_cell_count" %in% colnames(set)) {
+    cli::cli_warn("Column {.var min_cell_count} is missing in settings, result is not suppressed")
+    return(invisible(FALSE))
+  }
+
+  set <- set |>
+    dplyr::select("result_id", "min_cell_count") |>
+    dplyr::mutate(.data$min_cell_count == as.integer(.data$min_cell_count))
+
+  if (all(minCellCount == unique(set$min_cell_count))) {
+    cli::cli_inform(c(
+      "v" = "The summarised result is suppressed with minCellCount = {minCellCount}."
+    ))
+    return(invisible(TRUE))
+  } else {
+    cli::cli_warn("The summarised result is suppressed because minCellCount != {minCellCount}.")
+    return(invisible(FALSE))
+  }
+}
