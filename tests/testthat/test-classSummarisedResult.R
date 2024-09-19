@@ -165,7 +165,7 @@ test_that("test SummarisedResult object", {
   )
 
   x <- dplyr::tibble(
-    "result_id" = 1,
+    "result_id" = 1L,
     "cdm_name" = "eunomia",
     "group_name" = "sex",
     "group_level" = "male",
@@ -175,7 +175,7 @@ test_that("test SummarisedResult object", {
     "variable_level" = NA_character_,
     "estimate_name" = "count",
     "estimate_type" = "numeric",
-    "estimate_value" = "5",
+    "estimate_value" = c("5", "6"),
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
@@ -256,7 +256,7 @@ test_that("test SummarisedResult object", {
     "group_level" = c("male", "female", "none", ">=40", "<40", "2020"),
     "strata_name" = "overall",
     "strata_level" = "overall",
-    "variable_name" = "number_subjects",
+    "variable_name" = "xxx",
     "variable_level" = NA_character_,
     "estimate_name" = "count",
     "estimate_type" = "numeric",
@@ -265,7 +265,12 @@ test_that("test SummarisedResult object", {
     "additional_level" = "overall"
   )
   expect_no_error(x |> newSummarisedResult())
-  expect_error(x |> dplyr::union_all(x) |> newSummarisedResult())
+  expect_message(x |> dplyr::union_all(x) |> newSummarisedResult())
+  expect_error(
+    x |>
+      dplyr::union_all(x |> dplyr::mutate(estimate_value = "0")) |>
+      newSummarisedResult()
+  )
 
   x <- dplyr::tibble(
     "result_id" = 1L,

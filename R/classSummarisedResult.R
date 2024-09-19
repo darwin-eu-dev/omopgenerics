@@ -206,6 +206,14 @@ validateSummariseResult <- function(x) {
   # Cannot contain NA columns
   checkNA(x = x, "summarised_result")
 
+  # duplicated entries with same value
+  nr <- nrow(x)
+  x <- x |> dplyr::distinct()
+  eliminated <- nr - nrow(x)
+  if (eliminated > 0) {
+    cli::cli_inform(c("!" = "{eliminated} duplicated row{?s} eliminated."))
+  }
+
   # columPairs
   validateNameLevel(
     x = x, nameColumn = "group_name", levelColumn = "group_level", warn = TRUE
@@ -242,20 +250,7 @@ validateSummariseResult <- function(x) {
   checkGroupCount(x)
 
   # validate duplicates
-  dup <- x |>
-    dplyr::group_by(dplyr::across(!"estimate_value")) |>
-    dplyr::tally() |>
-    dplyr::filter(n > 1)
-  if (nrow(dup) > 0) {
-    cli::cli_abort(c(
-      "x" = "There are duplicated results with different estimate values.",
-      "!" = "Run the following to see which are",
-      "data |>",
-      " " = "dplyr::group_by(dplyr::across(!'estimate_value')) |>",
-      " " = "dplyr::tally() |>",
-      " " = "dplyr::filter(n > 2)"
-    ))
-  }
+  checkDuplicated(x, validation = "error")
 
   return(x)
 }
@@ -492,6 +487,29 @@ checkColumnContent <- function(x, col, content) {
   }
   return(invisible(TRUE))
 }
+checkDuplicated <- function(x, validation, call = parent.frame()) {
+  nraw <- nrow(x)
+  ndist <- x |>
+    dplyr::select(!"estimate_value") |>
+    dplyr::distinct() |>
+    nrow()
+  dup <- nraw - ndist
+  if (dup > 0) {
+    report(
+      message = c(
+        "{dup} duplicated results with different estimate values found.",
+        "i" = "Run the following to see which are",
+        "data |>",
+        " " = "dplyr::group_by(dplyr::across(!'estimate_value')) |>",
+        " " = "dplyr::tally() |>",
+        " " = "dplyr::filter(n > 1)"
+      ),
+      validation = validation,
+      call = call
+    )
+  }
+  return(invisible(TRUE))
+}
 giveType <- function(x, type) {
   switch(
     type,
@@ -561,4 +579,22 @@ emptySummarisedResult <- function(settings = NULL) {
     dplyr::as_tibble() |>
     dplyr::mutate("result_id" = as.integer()) |>
     newSummarisedResult(settings = settings)
+}
+
+report <- function(message,
+                   validation, # error/warning/inform
+                   call = parent.frame(), # where error is reported
+                   .envir = parent.frame()) { # where glue statements are evaluated
+  if (validation == "error") {
+    cli::cli_abort(addSignal(message, "x"), .envir = .envir, call = call)
+  } else if (validation == "warning") {
+    cli::cli_warn(addSignal(message, "!"), .envir = .envir)
+  } else if (validation == "inform") {
+    cli::cli_inform(addSignal(message, "!"), .envir = .envir)
+  }
+  return(invisible(TRUE))
+}
+addSignal <- function(x, nm) {
+  if (length(x) > 0) names(x)[1] <- nm
+  return(x)
 }
