@@ -133,3 +133,43 @@ test_that("omopTableFields", {
   expect_error(omopTableFields(cdmVersion = "5.5"))
 
 })
+
+test_that("omop column names", {
+
+# date
+
+  expect_true(startDate("observation_period") == "observation_period_start_date")
+  expect_true(endDate("observation_period") == "observation_period_end_date")
+  expect_true(startDate("procedure_occurrence") == "procedure_date")
+  expect_true(endDate("procedure_occurrence") == "procedure_date")
+
+  expect_error(startDate("observation_periodss"))
+  expect_error(endDate("observation_periodss"))
+
+# standard concept
+  expect_true((standardConcept("device_exposure") == "device_concept_id"))
+  expect_error(standardConcept("observation_period"))
+  expect_error(standardConcept("observation_periodsss"))
+
+# source_concept
+  expect_true((sourceConcept("device_exposure") == "device_source_concept_id"))
+  expect_error(sourceConcept("observation_period"))
+  expect_error(sourceConcept("observation_periodsss"))
+
+# type concept
+  expect_true((typeConcept("observation_period") == "period_type_concept_id"))
+  expect_true((typeConcept("condition_occurrence") == "condition_type_concept_id"))
+  expect_error(typeConcept("observation_periodsss"))
+
+# unique id
+  expect_true((uniqueIdentifier("observation_period") == "observation_period_id"))
+  expect_true((uniqueIdentifier("condition_occurrence") == "condition_occurrence_id"))
+  expect_error(uniqueIdentifier("observation_periodsss"))
+  domainId("measurement")
+# domain_id
+  expect_true((domainId("measurement") == "measurement"))
+  expect_true((domainId("condition_occurrence") == "condition"))
+  expect_true((domainId("drug_exposure") == "drug"))
+  expect_true((domainId("observation") == "observation"))
+  expect_error(domainId("observation_periodsss"))
+})
