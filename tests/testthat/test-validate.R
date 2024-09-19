@@ -299,7 +299,7 @@ test_that("test validateResults", {
 
 })
 
-test_that("test validateSuppressedResult",{
+test_that("test isResultSuppressed",{
   x <- dplyr::tibble(
     "result_id" = as.integer(1),
     "cdm_name" = "mock",
@@ -325,14 +325,24 @@ test_that("test validateSuppressedResult",{
       "package_version" = as.character(utils::packageVersion("omopgenerics"))))
 
   # Test for no min_cell_count column
-  expect_warning(validateSuppressedResult(result = obj, minCellCount = 3))
+  expect_warning(isResultSuppressed(result = obj, minCellCount = 3))
 
   result <- suppress(obj, minCellCount = 2)
 
   # Test for correctly specified min_cell_count
-  expect_no_warning(validateSuppressedResult(result = result, minCellCount = 2))
+  expect_no_warning(isResultSuppressed(result = result, minCellCount = 2))
 
-  # Test for wrong min_cell_count
-  expect_warning(validateSuppressedResult(result = result, minCellCount = 3))
+  # Test for greater actual min_cell_count
+  expect_warning(
+    isResultSuppressed(result = result, minCellCount = 1),
+    regexp = "The min_cell_count in result .* is greater than the tested minCellCount"
+  )
+
+  # Test for smaller actual min_cell_count
+  expect_warning(
+    isResultSuppressed(result = result, minCellCount = 3),
+    regexp = "The min_cell_count in result .* is less than the tested minCellCount"
+  )
+
 
 })

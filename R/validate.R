@@ -629,7 +629,7 @@ validateResultArguemnt <- function(result,
 
 
 
-#' Title
+#' isResultSuppressed
 #'
 #' @param result The suppressed result to check
 #' @param minCellCount  Minimum count of records used when suppressing
@@ -637,7 +637,7 @@ validateResultArguemnt <- function(result,
 #' @return Warning or message with check result
 #' @export
 #'
-validateSuppressedResult <- function(result, minCellCount = 5) {
+isResultSuppressed <- function(result, minCellCount = 5) {
   validateResultArgument(result)
   assertNumeric(minCellCount, length = 1, integerish = TRUE)
 
@@ -657,7 +657,15 @@ validateSuppressedResult <- function(result, minCellCount = 5) {
     ))
     return(invisible(TRUE))
   } else {
-    cli::cli_warn("The summarised result is suppressed because minCellCount != {minCellCount}.")
+
+    cli::cli_warn(c(
+      if (unique(set$min_cell_count) > minCellCount) {
+        "i" = "The min_cell_count in result ({unique(set$min_cell_count)}) is greater than the tested minCellCount ({minCellCount})."
+      } else if (unique(set$min_cell_count) < minCellCount) {
+        "i" = "The min_cell_count in result ({unique(set$min_cell_count)}) is less than the tested minCellCount ({minCellCount})."
+      }
+    ))
+
     return(invisible(FALSE))
   }
 }
