@@ -232,30 +232,33 @@ omopTableFields <- function(cdmVersion = "5.3") {
 resultPackageVersion <- function(result) {
   # initial checks
   validateResultArgument(result)
+
   # get sets
-  set <- settings(result) |>
-    dplyr::select("result_type",
-                  "package_name",
-                  "package_version") |>
-    dplyr::distinct()
-  # throw warning if two versions of the same package have been used
-  pkgToWarn <- set |>
+  x <- settings(result) |>
+    dplyr::select("package_name", "package_version") |>
+    dplyr::distinct() |>
     dplyr::group_by(.data$package_name) |>
-    dplyr::tally() |>
-    dplyr::filter(.data$n > 1)
+    dplyr::summarise(
+      versions = paste0(.data$package_version, collapse = "; "),
+      n = dplyr::n(),
+      .groups = "drop"
+    ) |>
+    dplyr::mutate(
+      sym = dplyr::if_else(.data$n == 1, "v", "x"),
+      msg =  paste0("{.pkg ", .data$package_name, "}: ", .data$versions),
+    )
 
-  # if there are packages with multiple versions, issue a warning
-  if (nrow(pkgToWarn) > 0) {
-
-    x <- set |> filter(.data$package_name %in% pkgToWarn) |>
-      dplyr::distinct() |> dplyr::arrange(.data$package_name)
-
-    cli::cli_inform("Different packages version have been used in this result:")
-    cli::cli_inform(paste(pkgToWarn$package_name, collapse = ", "))
-
-    print(x)
-
+  # warn if multiple versions
+  if (max(x$n) > 1) {
+    cli::cli_warn(c(
+      "!" = "Multiple versions used for package{?s} {.pkg {x$package_name[x$n>1]}}.",
+      "i" = "You can check the package_version with:",
+      " " = "omopgenerics::settings({.cls summarised_result})"
+    ))
   }
+  x$msg |>
+    rlang::set_names(x$sym) |>
+    cli::cli_inform()
 
   return(invisible(result))
 }

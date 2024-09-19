@@ -179,3 +179,27 @@ test_that("resultPackageVersion", {
 
   expect_message(x |> resultPackageVersion())
 })
+
+test_that("packages versions", {
+  x <- emptySummarisedResult(settings = dplyr::tibble(
+    result_id = 1:5,
+    result_type = "unknown",
+    package_name = c(
+      "PatientProfiles", "CohortCharacteristics", "visOmopResults",
+      "PatientProfiles", "CohortCharacteristics"
+    ),
+    package_version = c("1.2.0", "0.2.2", "0.3.0", "1.2.0", "0.2.2")
+  ))
+  expect_snapshot(resultPackageVersion(x))
+
+  x <- emptySummarisedResult(settings = dplyr::tibble(
+    result_id = 1:5,
+    result_type = "unknown",
+    package_name = c(
+      "PatientProfiles", "CohortCharacteristics", "visOmopResults",
+      "PatientProfiles", "CohortCharacteristics"
+    ),
+    package_version = c("1.2.0", "0.2.2", "0.3.0", "1.1.0", "0.2.2")
+  ))
+  expect_snapshot(resultPackageVersion(x))
+})
