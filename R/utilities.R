@@ -220,3 +220,42 @@ omopTableFields <- function(cdmVersion = "5.3") {
   assertChoice(cdmVersion, choices = names(fieldsTables))
   fieldsTables[[cdmVersion]]
 }
+
+
+#' Check if different packages version are used for summarise_results object
+#'
+#' @param result a summarised results object
+#'
+#' @return a summarised results object
+#' @export
+#'
+resultPackageVersion <- function(result) {
+  # initial checks
+  validateResultArgument(result)
+  # get sets
+  set <- settings(result) |>
+    dplyr::select("result_type",
+                  "package_name",
+                  "package_version") |>
+    dplyr::distinct()
+  # throw warning if two versions of the same package have been used
+  pkgToWarn <- set |>
+    dplyr::group_by(.data$package_name) |>
+    dplyr::tally() |>
+    dplyr::filter(.data$n > 1)
+
+  # if there are packages with multiple versions, issue a warning
+  if (nrow(pkgToWarn) > 0) {
+
+    x <- set |> filter(.data$package_name %in% pkgToWarn) |>
+      dplyr::distinct() |> dplyr::arrange(.data$package_name)
+
+    cli::cli_inform("Different packages version have been used in this result:")
+    cli::cli_inform(paste(pkgToWarn$package_name, collapse = ", "))
+
+    print(x)
+
+  }
+
+  return(invisible(result))
+}

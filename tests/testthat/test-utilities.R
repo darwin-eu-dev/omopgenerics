@@ -133,3 +133,49 @@ test_that("omopTableFields", {
   expect_error(omopTableFields(cdmVersion = "5.5"))
 
 })
+
+
+test_that("resultPackageVersion", {
+
+  x <- dplyr::tibble(
+    "result_id" = c(as.integer(1),as.integer(2)),
+    "cdm_name" = c("cprd","omock"),
+    "result_type" = "summarised_characteristics",
+    "package_name" = "PatientProfiles",
+    "package_version" = "0.4.0",
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable_name" = "Age group",
+    "variable_level" = "10 to 50",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  ) |> newSummarisedResult()
+
+  expect_invisible(x |> resultPackageVersion())
+
+  x <- dplyr::tibble(
+    "result_id" = c(as.integer(1),as.integer(2)),
+    "cdm_name" = c("cprd","omock"),
+    "result_type" = "summarised_characteristics",
+    "package_name" = "PatientProfiles",
+    "package_version" = c("0.4.0","0.5.0"),
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
+    "strata_name" = "sex",
+    "strata_level" = "male",
+    "variable_name" = "Age group",
+    "variable_level" = "10 to 50",
+    "estimate_name" = "count",
+    "estimate_type" = "numeric",
+    "estimate_value" = "5",
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  ) |> newSummarisedResult()
+
+  expect_message(x |> resultPackageVersion())
+})
