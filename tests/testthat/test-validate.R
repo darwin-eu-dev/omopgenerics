@@ -297,6 +297,43 @@ test_that("test validateResults", {
                     newSummarisedResult() |>
                     validateResultArguemnt())
 
+})
 
+test_that("test isResultSuppressed",{
+  obj <- dplyr::tibble(
+    "result_id" = as.integer(1),
+    "cdm_name" = "mock",
+    "group_name" = "overall",
+    "group_level" = "overall",
+    "strata_name" = c(rep("overall", 6), rep("sex", 3)),
+    "strata_level" = c(rep("overall", 6), "male", "female", "female"),
+    "variable_name" = c("number records", "age_group", "age_group", "age_group", "age_group", "my_variable", "number records", "age_group", "age_group"),
+    "variable_level" = c(NA, "<50", "<50", ">=50", ">=50", NA, NA, "<50", "<50"),
+    "estimate_name" = c("count", "count", "percentage", "count", "percentage", "random", "count", "count", "percentage"),
+    "estimate_type" = c("integer", "integer", "percentage", "integer", "percentage", "numeric", "integer", "integer", "percentage"),
+    "estimate_value" = c("10", "5", "50", "3", "30", "1", "3", "12", "6"),
+    "additional_name" = "overall",
+    "additional_level" = "overall"
+  ) |>
+    newSummarisedResult(settings = dplyr::tibble(
+      "result_id" = as.integer(1),
+      "result_type" = "summarised_characteristics",
+      "package_name" = "omopgenerics",
+      "package_version" = as.character(utils::packageVersion("omopgenerics"))
+    ))
+
+  # Test for no min_cell_count column
+  expect_warning(isResultSuppressed(result = obj, minCellCount = 3))
+
+  result <- suppress(obj, minCellCount = 2)
+
+  # Test for correctly specified min_cell_count
+  expect_no_warning(isResultSuppressed(result = result, minCellCount = 2))
+
+  # Test for greater actual min_cell_count
+  expect_warning(isResultSuppressed(result = result, minCellCount = 1))
+
+  # Test for smaller actual min_cell_count
+  expect_warning(isResultSuppressed(result = result, minCellCount = 3))
 
 })
