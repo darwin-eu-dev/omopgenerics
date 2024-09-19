@@ -165,8 +165,7 @@ constructSummarisedResult <- function(x, set, call = parent.frame()) {
     set <- x |> dplyr::select("result_id") |> dplyr::distinct()
   }
 
-  requiredSettingsColumns <- c(
-    "result_type" , "package_name", "package_version")
+  requiredSettingsColumns <- resultColumns(table = "settings")
   notPresent <- requiredSettingsColumns[
     !requiredSettingsColumns %in% colnames(set)]
   if (length(notPresent) > 0) {
