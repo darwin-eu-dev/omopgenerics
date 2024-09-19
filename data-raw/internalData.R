@@ -181,6 +181,20 @@ fieldsResults <- dplyr::tibble(
       rep(NA, 2), "name1", "level1", "name2", "level2", "name3", "level3",
       "name4", "level4", rep(NA, 5), "name5", "level5", "name6", "level6"
     )
+  )) |>
+  dplyr::union_all(dplyr::tibble(
+    result = "settings",
+    result_field_name = c(
+      "result_id", "result_type", "package_name", "package_version"
+    ),
+    is_required = TRUE,
+    datatype = c("integer", rep("character", 3)),
+    na_allowed = c(
+      TRUE, FALSE, FALSE, FALSE
+    ),
+    pair = c(
+      rep(NA, 4)
+    )
   ))
 
 groupCount <- c("number subjects", "number records")
