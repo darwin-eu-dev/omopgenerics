@@ -2,8 +2,8 @@ test_that("import summarised result", {
   res_1 <- dplyr::tibble(
     "result_id" = as.integer(1),
     "cdm_name" = "database 1",
-    "group_name" = "sex",
-    "group_level" = "male",
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
     "strata_name" = "sex",
     "strata_level" = "male",
     "variable_name" = "Age group",
@@ -27,8 +27,8 @@ test_that("import summarised result", {
   res_2 <- dplyr::tibble(
     "result_id" = as.integer(1),
     "cdm_name" = "database 2",
-    "group_name" = "sex",
-    "group_level" = "male",
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
     "strata_name" = "sex",
     "strata_level" = "male",
     "variable_name" = "Age group",
@@ -52,8 +52,8 @@ test_that("import summarised result", {
   res_3 <- dplyr::tibble(
     "result_id" = as.integer(1),
     "cdm_name" = "database 3",
-    "group_name" = "sex",
-    "group_level" = "male",
+    "group_name" = "cohort_name",
+    "group_level" = "cohort1",
     "strata_name" = "sex",
     "strata_level" = "male",
     "variable_name" = "Age group",

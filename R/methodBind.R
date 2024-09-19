@@ -80,6 +80,13 @@ bind.cohort_table <- function(..., name) {
   assertList(cohorts, class = "cohort_table")
   assertCharacter(name, length = 1)
 
+  tablePrefix <- tmpPrefix()
+
+  # oldNames
+  oldNames <- purrr::map_chr(cohorts, tableName)
+  intermediate <- name %in% oldNames
+  if (intermediate) nameIntermediate <- uniqueTableName(tablePrefix)
+
   # get cdm
   cdm <- cdmReference(cohorts[[1]])
 
@@ -150,7 +157,7 @@ bind.cohort_table <- function(..., name) {
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_codelist")))
 
   # insert cohortSet
-  nm <- uniqueTableName(tmpPrefix())
+  nm <- uniqueTableName(tablePrefix)
   cdm <- omopgenerics::insertTable(cdm = cdm, name = nm, table = newCohortSet)
   cohorts <- lapply(seq_len(length(cohorts)), function(x) {
     cohorts[[x]] |>
@@ -167,15 +174,25 @@ bind.cohort_table <- function(..., name) {
       dplyr::select(-"cohort_definition_id") |>
       dplyr::rename("cohort_definition_id" = "new_cohort_definition_id")
   })
+
   newCohort <- unionCohorts(cohorts) |>
-    dplyr::relocate(dplyr::all_of(cohortColumns("cohort"))) |>
+    dplyr::relocate(dplyr::all_of(cohortColumns("cohort")))
+
+  if (intermediate) {
+    newCohort <- newCohort |>
+      dplyr::compute(
+        name = nameIntermediate, temporary = FALSE, overwrite = TRUE)
+  }
+
+  newCohort <- newCohort |>
     dplyr::compute(name = name, temporary = FALSE, overwrite = TRUE)
+
   newCohortSet <- newCohortSet |>
     dplyr::select(-c("cohort_definition_id", "cohort_id")) |>
     dplyr::rename("cohort_definition_id" = "new_cohort_definition_id") |>
     dplyr::relocate(dplyr::all_of(cohortColumns("cohort_set")))
 
-  dropTable(cdm = cdm, name = nm)
+  dropTable(cdm = cdm, name = dplyr::starts_with(tablePrefix))
 
   # instantiate the new generated cohort set
   cdm[[name]] <- newCohortTable(
