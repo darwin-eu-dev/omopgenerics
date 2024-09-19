@@ -178,7 +178,7 @@ test_that("test SummarisedResult object", {
     "additional_name" = "overall",
     "additional_level" = "overall"
   )
-  expect_true(x |> newSummarisedResult() |> nrow() == 1)
+  expect_error(x |> newSummarisedResult())
 
   x <- dplyr::tibble(
     "result_id" = c(1, 2),
