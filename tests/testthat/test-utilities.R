@@ -177,7 +177,7 @@ test_that("resultPackageVersion", {
     "additional_level" = "overall"
   ) |> newSummarisedResult()
 
-  expect_message(x |> resultPackageVersion())
+  expect_warning(expect_message(x |> resultPackageVersion()))
 })
 
 test_that("packages versions", {
