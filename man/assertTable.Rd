@@ -6,7 +6,7 @@
 \usage{
 assertTable(
   x,
-  class = "data.frame",
+  class = NULL,
   numberColumns = NULL,
   numberRows = NULL,
   columns = character(),
