@@ -43,7 +43,7 @@ test_that("test codelist from cohort", {
   codes_used_1 <- cohortCodelist(cdm$cohort1, cohortId = 1,
                                  type = "index event")
   expect_true("codelist" %in% class(codes_used_1))
-  expect_equal(omopgenerics::newCodelist(list("disease X" = c(1,2,3))),
+  expect_equal(omopgenerics::newCodelist(list("disease X" = c(1L,2L,3L))),
                codes_used_1)
 
   expect_warning(cohortCodelist(cdm$cohort1,
@@ -55,7 +55,7 @@ test_that("test codelist from cohort", {
 
   codes_used_2 <- cohortCodelist(cdm$cohort1, cohortId = 2)
   expect_true("codelist" %in% class(codes_used_2))
-  expect_equal(omopgenerics::newCodelist(list("disease Y" = c(4,5))),
+  expect_equal(omopgenerics::newCodelist(list("disease Y" = c(4L,5L))),
                codes_used_2)
 
   # only one id allowed

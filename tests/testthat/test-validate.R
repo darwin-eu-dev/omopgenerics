@@ -295,7 +295,7 @@ test_that("test validateResults", {
 
   expect_no_error(x |>
                     newSummarisedResult() |>
-                    validateResultArguemnt())
+                    validateResultArgument())
 
 })
 

@@ -359,7 +359,7 @@ assertNumeric <- function(x,
 #' @export
 #'
 assertTable <- function(x,
-                        class = "data.frame",
+                        class = NULL, # "data.frame" can not be added currently due to PatientProfiles
                         numberColumns = NULL,
                         numberRows = NULL,
                         columns = character(),

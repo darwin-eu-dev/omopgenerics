@@ -3,15 +3,15 @@ test_that("test export codelist", {
   skip_if_not_installed("jsonlite")
 
   # single codelist
-  codes <- newCodelist(list("disease" = c(1,2,3)))
+  codes <- newCodelist(list("disease" = c(1L,2L,3L)))
   cs_path <- tempdir("concepts")
   expect_no_error(exportCodelist(x = codes,
                  path = cs_path))
   expect_true("disease.json" %in% list.files(cs_path))
 
   # multiple codelists
-  codes <- list("disease X" = c(1,2,3),
-                "disease Y" = c(4,5))
+  codes <- list("disease X" = c(1L,2L,3L),
+                "disease Y" = c(4L,5L))
   cs_path <- tempdir("concepts")
   expect_no_error(exportCodelist(x = codes,
                  path = cs_path))
