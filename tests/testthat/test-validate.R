@@ -13,16 +13,54 @@ test_that("test validateNameArgument", {
 })
 
 test_that("test validateCohortIdArgument", {
+  # toy cohort
   cohort <- 1
   class(cohort) <- c("cohort_table", "cdm_table")
   attr(cohort, "cohort_set") <- dplyr::tibble(
-    "cohort_definition_id" = c(2, 4), "cohort_name" = c("a", "b")
+    "cohort_definition_id" = c(1L, 2L, 3L, 4L),
+    "cohort_name" = c("cohort_a", "acetaminophen", "paracetamol", "cohort_ol")
   )
-  expect_error(validateCohortIdArgument("adsfd", cohort))
+
+  # numeric behavior
   expect_identical(validateCohortIdArgument(2, cohort), 2L)
   expect_identical(validateCohortIdArgument(c(2, 4), cohort), c(2L, 4L))
   expect_identical(validateCohortIdArgument(c(4L, 2L), cohort), c(4L, 2L))
-  expect_error(validateCohortIdArgument(1, cohort))
+  expect_error(validateCohortIdArgument(5, cohort))
+  expect_warning(expect_identical(
+    validateCohortIdArgument(c(2, 8), cohort, validation = "warning"),
+    2L
+  ))
+  expect_warning(expect_warning(expect_identical(
+    validateCohortIdArgument(5, cohort, validation = "warning"),
+    integer()
+  )))
+
+  # character behavior
+  expect_identical(validateCohortIdArgument("acetaminophen", cohort), 2L)
+  expect_identical(
+    validateCohortIdArgument(c("acetaminophen", "paracetamol"), cohort),
+    c(2L, 3L))
+  expect_identical(
+    validateCohortIdArgument(c("paracetamol", "acetaminophen"), cohort),
+    c(3L, 2L))
+  expect_error(validateCohortIdArgument(c("not_present"), cohort))
+  expect_warning(expect_identical(
+    validateCohortIdArgument(
+      c("paracetamol", "not_present"), cohort, validation = "warning"
+    ),
+    3L
+  ))
+  expect_warning(expect_warning(expect_identical(
+    validateCohortIdArgument(c("not_present"), cohort, validation = "warning"),
+    integer()
+  )))
+
+  # tidyselect behavior
+
+  # error if anything else is provided
+
+  # empty
+
 })
 
 test_that("test validateWindowArgument", {

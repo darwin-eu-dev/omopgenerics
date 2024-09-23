@@ -132,26 +132,73 @@ validateCohortIdArgument <- function(cohortId,
                                      validation = "error",
                                      call = parent.frame()) {
   assertValidation(validation)
-  assertNumeric(cohortId, integerish = TRUE, null = TRUE, min = 1, unique = TRUE, call = call)
   assertClass(cohort, class = "cohort_table", call = call)
-  possibleCohortIds <- settings(cohort) |>
-    dplyr::pull("cohort_definition_id") |>
-    as.integer()
-  if (is.null(cohortId)) {
-    cohortId <- possibleCohortIds
-  } else {
-    cohortId <- as.integer(cohortId)
-    notPresent <- cohortId[!cohortId %in% possibleCohortIds]
-    cohortId <- cohortId[cohortId %in% possibleCohortIds]
-    if (length(notPresent) > 0) {
-      if (validation == "error" | length(cohortId) == 0) {
-        cli::cli_abort("cohort definition id: {notPresent} not defined in settings.", call = call)
-      } else if (validation == "warning") {
-        cli::cli_warn(c("!" = "cohort definition id: {notPresent} not considered as they are not defined in settings."), call = call)
-      }
-    }
+  set <- settings(cohort)
+
+  if (isTidySelect(cohortId)) {
+    cohortId <- selectTables(set$cohort_name, cohortId)
+    print(cohortId)
   }
+
+  if (is.null(cohortId)) {
+    cohortId <- set$cohort_definition_id
+  } else if (is.numeric(cohortId)) {
+    cohortId <- as.integer(cohortId)
+    areIn <- cohortId %in% set$cohort_definition_id
+    notPresent <- cohortId[!areIn]
+    cohortId <- cohortId[areIn]
+    if (length(notPresent) > 0) {
+      report(
+        message = "cohort definition id: {notPresent} not defined in settings.",
+        validation = validation,
+        call = call
+      )
+    }
+    cohortId <- set$cohort_definition_id[getId(set$cohort_definition_id, cohortId)]
+  } else if (is.character(cohortId)) {
+    areIn <- cohortId %in% set$cohort_name
+    notPresent <- cohortId[!areIn]
+    cohortId <- cohortId[areIn]
+    if (length(notPresent) > 0) {
+      report(
+        message = "cohort name: {notPresent} not defined in settings.",
+        validation = validation,
+        call = call
+      )
+    }
+    cohortId <- set$cohort_definition_id[getId(set$cohort_name, cohortId)]
+  } else {
+    cli::cli_abort("{.arg cohortId} can either be an integer, a character, a tidyselect expression or NULL.")
+  }
+
+  if (length(cohortId) == 0) {
+    report(message = "cohortId is empty.", validation = validation, call = call)
+  }
+
   return(cohortId)
+}
+isTidySelect <- function(arg) {
+  # check if call
+  isCall <- rlang::quo_is_call(rlang::enquo(arg))
+
+  # selection functions that we want to support
+  tidyFunctions <- c("starts_with", "contains", "ends_with", "matches",
+                     "everything", "all_of", "any_of")
+
+  if (isCall) {
+    fn <- as.character(rlang::quo_get_expr(rlang::enquo(arg)))[1] |>
+      removePackageName()
+    return(fn %in% tidyFunctions)
+  }
+
+  return(FALSE)
+}
+removePackageName <- function(x) {
+  x <- stringr::str_split_1(x, "::")
+  x[length(x)]
+}
+getId <- function(x, ids) {
+  purrr::map_int(ids, \(xx) which(x == xx))
 }
 
 #' Validate conceptSet argument.
