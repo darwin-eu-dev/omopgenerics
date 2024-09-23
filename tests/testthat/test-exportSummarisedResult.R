@@ -71,3 +71,14 @@ test_that("test temp file", {
 
 })
 
+
+test_that("empty result", {
+  tempFile <- tempfile(fileext = ".csv")
+
+  expect_warning(exportSummarisedResult(results = list(),
+                                         fileName = tempFile))
+  expect_warning(exportSummarisedResult(results = NULL,
+                                         fileName = tempFile))
+
+})
+
