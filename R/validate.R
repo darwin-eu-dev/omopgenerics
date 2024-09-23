@@ -135,9 +135,8 @@ validateCohortIdArgument <- function(cohortId,
   assertClass(cohort, class = "cohort_table", call = call)
   set <- settings(cohort)
 
-  if (isTidySelect(cohortId)) {
+  if (isTidySelect(rlang::enquo(cohortId))) {
     cohortId <- selectTables(set$cohort_name, cohortId)
-    print(cohortId)
   }
 
   if (is.null(cohortId)) {
@@ -179,14 +178,14 @@ validateCohortIdArgument <- function(cohortId,
 }
 isTidySelect <- function(arg) {
   # check if call
-  isCall <- rlang::quo_is_call(rlang::enquo(arg))
+  isCall <- rlang::quo_is_call(arg)
 
   # selection functions that we want to support
   tidyFunctions <- c("starts_with", "contains", "ends_with", "matches",
                      "everything", "all_of", "any_of")
 
   if (isCall) {
-    fn <- as.character(rlang::quo_get_expr(rlang::enquo(arg)))[1] |>
+    fn <- as.character(rlang::quo_get_expr(arg))[1] |>
       removePackageName()
     return(fn %in% tidyFunctions)
   }

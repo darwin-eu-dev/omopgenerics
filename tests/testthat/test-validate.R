@@ -56,10 +56,33 @@ test_that("test validateCohortIdArgument", {
   )))
 
   # tidyselect behavior
+  expect_identical(
+    validateCohortIdArgument(dplyr::starts_with("cohort_"), cohort),
+    c(1L, 4L)
+  )
+  expect_identical(
+    validateCohortIdArgument(dplyr::ends_with("ol"), cohort),
+    c(3L, 4L)
+  )
+  expect_identical(
+    validateCohortIdArgument(dplyr::everything(), cohort),
+    c(1L, 2L, 3L, 4L)
+  )
+  expect_error(
+    validateCohortIdArgument(dplyr::any_of(c("sdfghjk", "dfg")), cohort)
+  )
+  expect_warning(expect_identical(
+    validateCohortIdArgument(
+      dplyr::any_of(c("sdfghjk", "dfg")), cohort, validation = "warning"),
+    integer()
+  ))
+
+  # NULL
+  expect_identical(validateCohortIdArgument(NULL, cohort), c(1L, 2L, 3L, 4L))
 
   # error if anything else is provided
-
-  # empty
+  expect_error(validateCohortIdArgument(list(), cohort))
+  expect_error(validateCohortIdArgument(list(), cohort, validation = "warning"))
 
 })
 
