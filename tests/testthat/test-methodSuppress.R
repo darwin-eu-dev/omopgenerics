@@ -231,3 +231,20 @@ test_that("test supress methods", {
   result <- suppress(x)
   expect_true(nrow(x) == nrow(result))
 })
+
+test_that("multiple result ids", {
+  res <- dplyr::tibble(
+    result_id = 1L, cdm_name = "mock", group_name = "overall",
+    group_level = "overall", strata_name = "overall", strata_level = "overall",
+    variable_name = "number records", variable_level = NA_character_,
+    estimate_name = "count", estimate_type = "integer", estimate_value = "5",
+    additional_name = "overall", additional_level = "overall"
+  ) |>
+    newSummarisedResult(settings = dplyr::tibble(
+      result_id = 1L, result_type = "test", package_name = "omopgenerics",
+      package_version = "1.0.0"
+    ))
+  res0 <- res |> suppress()
+  res1 <- res
+  expect_warning(res <- suppress(bind(res1, res0)))
+})

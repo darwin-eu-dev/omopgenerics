@@ -80,9 +80,32 @@ suppress.summarised_result <- function(result,
   # check if already suppressed
   set <- settings(result)
   if ("min_cell_count" %in% colnames(set)) {
-    prevSupp <- unique(set |> dplyr::pull("min_cell_count")) |> as.numeric()
-    if (prevSupp > minCellCount) {
-      cli::cli_warn("Results passed are already obscured for counts smaller than {prevSupp}.")
+    prevSupp <- set |>
+      dplyr::select("result_id", "min_cell_count")
+    resultId <- prevSupp$result_id[as.numeric(prevSupp$min_cell_count) >= minCellCount & !is.na(prevSupp$min_cell_count)]
+    if (length(resultId) > 0) {
+      "The following result_id(s): {.var {as.character(resultId)}} {?is/are} not
+      going to be suppressed, as {?it/they} {?has/have} already been suppressed." |>
+        cli::cli_warn()
+      resSuppressed <- result |>
+        dplyr::filter(!.data$result_id %in% .env$resultId) |>
+        constructSummarisedResult(
+          set |> dplyr::filter(!.data$result_id %in% .env$resultId)
+        ) |>
+        suppress(minCellCount = minCellCount)
+      resNotSuppressed <- result |>
+        dplyr::filter(.data$result_id %in% .env$resultId) |>
+        constructSummarisedResult(
+          set |> dplyr::filter(.data$result_id %in% .env$resultId)
+        )
+      result <- resSuppressed |>
+        dplyr::union_all(resNotSuppressed) |>
+        dplyr::arrange(.data$result_id) |>
+        constructSummarisedResult(
+          settings(resSuppressed) |>
+            dplyr::union_all(settings(resNotSuppressed)) |>
+            dplyr::arrange(.data$result_id)
+        )
       return(result)
     }
   }
