@@ -87,3 +87,5 @@ If a package has a function to create an `summarised_result` object, this packag
 - `settings()`
 
 - `exportSummarisedResult()`
+
+- `importSummarisedResult()`
