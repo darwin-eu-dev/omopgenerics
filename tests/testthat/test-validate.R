@@ -14,7 +14,10 @@ test_that("test validateNameArgument", {
 
 test_that("test validateCohortIdArgument", {
   # toy cohort
-  cohort <- 1
+  cohort <- dplyr::tibble(
+    cohort_definition_id = 1:4L, subject_id = 1L, cohort_start_date = Sys.Date(),
+    cohort_end_date = Sys.Date()
+  )
   class(cohort) <- c("cohort_table", "cdm_table")
   attr(cohort, "cohort_set") <- dplyr::tibble(
     "cohort_definition_id" = c(1L, 2L, 3L, 4L),
@@ -83,6 +86,14 @@ test_that("test validateCohortIdArgument", {
   # error if anything else is provided
   expect_error(validateCohortIdArgument(list(), cohort))
   expect_error(validateCohortIdArgument(list(), cohort, validation = "warning"))
+
+  # check in external function
+  filterCohort <- function(x, id) {
+    id <- validateCohortIdArgument({{id}}, x)
+    x |>
+      dplyr::filter(.data$cohort_definition_id %in% .env$id)
+  }
+  expect_no_error(filterCohort(cohort, dplyr::starts_with("cohort")))
 
 })
 
