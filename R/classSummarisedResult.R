@@ -323,9 +323,9 @@ checkColumnsFormat <- function(x, resultName) {
   invisible(x)
 }
 checkGroupCount <- function(x, validation = "error", call = parent.frame()) {
-  groupping <- c(
+  grouping <- c(
     "result_id", "cdm_name", "group_name", "group_level", "strata_name",
-    "strata_level"
+    "strata_level", "additional_name", "additional_level"
   )
   obsLabels <- x |>
     dplyr::pull("variable_name") |>
@@ -342,14 +342,14 @@ checkGroupCount <- function(x, validation = "error", call = parent.frame()) {
         dplyr::filter(
           .data$variable_name %in% ol & grepl("count", .data$estimate_name)
         ) |>
-        dplyr::select(dplyr::all_of(c(groupping, "variable_name"))) |>
-        dplyr::group_by(dplyr::across(dplyr::all_of(groupping))) |>
+        dplyr::select(dplyr::all_of(c(grouping, "variable_name"))) |>
+        dplyr::group_by(dplyr::across(dplyr::all_of(grouping))) |>
         dplyr::filter(dplyr::n() > 1) |>
         dplyr::group_split() |>
         as.list()
       for (k in seq_along(xx)) {
         if (n < 5) {
-          res <- c(res, "*" = glue::glue("{nrow(xx[[k]])} '{gcount}' in variable_name for: {getGroupping(xx[[k]])}."))
+          res <- c(res, "*" = glue::glue("{nrow(xx[[k]])} '{gcount}' in variable_name for: {getGrouping(xx[[k]])}."))
           n <- n + 1
         }
       }
@@ -357,7 +357,7 @@ checkGroupCount <- function(x, validation = "error", call = parent.frame()) {
   }
   if (length(res) > 0) {
     res <- c(
-      "Each groupping (unique combination of: {groupping}) can not contain repeated group identifiers ({groupCount}).",
+      "Each grouping (unique combination of: {grouping}) can not contain repeated group identifiers ({groupCount}).",
       "First {n} combination{?s}:",
       res
     )
@@ -365,7 +365,7 @@ checkGroupCount <- function(x, validation = "error", call = parent.frame()) {
   }
   return(invisible(NULL))
 }
-getGroupping <- function(x) {
+getGrouping <- function(x) {
   x <- x |>
     dplyr::select(-dplyr::any_of("variable_name")) |>
     dplyr::distinct() |>
