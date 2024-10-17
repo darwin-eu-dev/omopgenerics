@@ -324,7 +324,7 @@ checkColumnsFormat <- function(x, resultName) {
 }
 checkGroupCount <- function(x, validation = "error", call = parent.frame()) {
   grouping <- c(
-    "result_id", "cdm_name", "group_name", "group_level", "strata_name",
+    "result_id", "cdm_name", "group_name", "group_level", "strata_name", "variable_level",
     "strata_level", "additional_name", "additional_level"
   )
   obsLabels <- x |>
