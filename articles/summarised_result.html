@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">omopgenerics</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1.900</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,33 +75,652 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>A summarised result is a table that contains aggregated summary
-statistics (that is, a result set that contains no patient-level
-data).</p>
-<p>Let’s look at an example result in this format. Here we have just one
-esitmate</p>
+statistics (result set with no patient-level data). The summarised
+result object consist in 2 objects: <strong>results table</strong> and
+<strong>settings table</strong>.</p>
+<div class="section level3">
+<h3 id="results-table">Results table<a class="anchor" aria-label="anchor" href="#results-table"></a>
+</h3>
+<p>This table consist in 13 columns:</p>
+<ul>
+<li>
+<code>result_id</code> (1), it is used to identify a group of
+results with a common settings (see settings below).</li>
+<li>
+<code>cdm_name</code> (2), it is used to identify the name of the
+cdm object used to obtain those results.</li>
+<li>
+<code>group_name</code> (3) - <code>group_level</code> (4), these
+columns work together as a <em>name-level</em> pair. A
+<em>name-level</em> pair are two columns that work together to summarise
+information of multiple other columns. The <em>name</em> column contains
+the column names separated by <code>&amp;&amp;&amp;</code> and the
+<em>level</em> column contains the column values separated by
+<code>&amp;&amp;&amp;</code>. Elements in the <em>name</em> column must
+be snake_case. Usually group aggregation is used to show high level
+aggregations: e.g. cohort name or codelist name.</li>
+<li>
+<code>strata_name</code> (5) - <code>strata_level</code> (6), these
+columns work together as a <em>name-level</em> pair. Usually strata
+aggregation is used to show stratifications of the results: e.g. age
+groups or sex.</li>
+<li>
+<code>variable_name</code> (7), name of the variable of
+interest.</li>
+<li>
+<code>variable_level</code> (8), level of the variable of interest,
+it is usually a subclass of the variable_name.</li>
+<li>
+<code>estimate_name</code> (9), name of the estimate.</li>
+<li>
+<code>estimate_type</code> (10), type of the value displayed, the
+supported types are: numeric, integer, date, character, proportion,
+percentage, logical.</li>
+<li>
+<code>estimate_value</code> (11), value of interest.</li>
+<li>
+<code>additional_name</code> (12) - <code>additional_level</code>
+(13), these columns work together as a <em>name-level</em> pair. Usually
+additional aggregation is used to include the aggregations that did not
+fit in the group/strata definition.</li>
+</ul>
+<p>The following table summarises the requirements of each column in the
+summarised_result format:</p>
+<div id="mwlefoodfi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#mwlefoodfi table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#mwlefoodfi thead, #mwlefoodfi tbody, #mwlefoodfi tfoot, #mwlefoodfi tr, #mwlefoodfi td, #mwlefoodfi th {
+  border-style: none;
+}
+
+#mwlefoodfi p {
+  margin: 0;
+  padding: 0;
+}
+
+#mwlefoodfi .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#mwlefoodfi .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#mwlefoodfi .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#mwlefoodfi .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#mwlefoodfi .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#mwlefoodfi .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#mwlefoodfi .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#mwlefoodfi .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#mwlefoodfi .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#mwlefoodfi .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#mwlefoodfi .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#mwlefoodfi .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#mwlefoodfi .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#mwlefoodfi .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#mwlefoodfi .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mwlefoodfi .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#mwlefoodfi .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#mwlefoodfi .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#mwlefoodfi .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mwlefoodfi .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#mwlefoodfi .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mwlefoodfi .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#mwlefoodfi .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mwlefoodfi .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#mwlefoodfi .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#mwlefoodfi .gt_left {
+  text-align: left;
+}
+
+#mwlefoodfi .gt_center {
+  text-align: center;
+}
+
+#mwlefoodfi .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#mwlefoodfi .gt_font_normal {
+  font-weight: normal;
+}
+
+#mwlefoodfi .gt_font_bold {
+  font-weight: bold;
+}
+
+#mwlefoodfi .gt_font_italic {
+  font-style: italic;
+}
+
+#mwlefoodfi .gt_super {
+  font-size: 65%;
+}
+
+#mwlefoodfi .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#mwlefoodfi .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#mwlefoodfi .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#mwlefoodfi .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#mwlefoodfi .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#mwlefoodfi .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#mwlefoodfi .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#mwlefoodfi .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#mwlefoodfi div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Column-name">Column name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Column-type">Column type</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="is-NA-allowed?">is NA allowed?</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Requirements">Requirements</th>
+    </tr></thead>
+<tbody class="gt_table_body">
+<tr>
+<td headers="Column name" class="gt_row gt_left">result_id</td>
+<td headers="Column type" class="gt_row gt_left">integer</td>
+<td headers="is NA allowed?" class="gt_row gt_left">No</td>
+<td headers="Requirements" class="gt_row gt_left">NA</td>
+</tr>
+<tr>
+<td headers="Column name" class="gt_row gt_left">cdm_name</td>
+<td headers="Column type" class="gt_row gt_left">character</td>
+<td headers="is NA allowed?" class="gt_row gt_left">No</td>
+<td headers="Requirements" class="gt_row gt_left">NA</td>
+</tr>
+<tr>
+<td headers="Column name" class="gt_row gt_left">group_name</td>
+<td headers="Column type" class="gt_row gt_left">character</td>
+<td headers="is NA allowed?" class="gt_row gt_left">No</td>
+<td headers="Requirements" class="gt_row gt_left">name1</td>
+</tr>
+<tr>
+<td headers="Column name" class="gt_row gt_left">group_level</td>
+<td headers="Column type" class="gt_row gt_left">character</td>
+<td headers="is NA allowed?" class="gt_row gt_left">No</td>
+<td headers="Requirements" class="gt_row gt_left">level1</td>
+</tr>
+<tr>
+<td headers="Column name" class="gt_row gt_left">strata_name</td>
+<td headers="Column type" class="gt_row gt_left">character</td>
+<td headers="is NA allowed?" class="gt_row gt_left">No</td>
+<td headers="Requirements" class="gt_row gt_left">name2</td>
+</tr>
+<tr>
+<td headers="Column name" class="gt_row gt_left">strata_level</td>
+<td headers="Column type" class="gt_row gt_left">character</td>
+<td headers="is NA allowed?" class="gt_row gt_left">No</td>
+<td headers="Requirements" class="gt_row gt_left">level2</td>
+</tr>
+<tr>
+<td headers="Column name" class="gt_row gt_left">variable_name</td>
+<td headers="Column type" class="gt_row gt_left">character</td>
+<td headers="is NA allowed?" class="gt_row gt_left">No</td>
+<td headers="Requirements" class="gt_row gt_left">NA</td>
+</tr>
+<tr>
+<td headers="Column name" class="gt_row gt_left">variable_level</td>
+<td headers="Column type" class="gt_row gt_left">character</td>
+<td headers="is NA allowed?" class="gt_row gt_left">Yes</td>
+<td headers="Requirements" class="gt_row gt_left">NA</td>
+</tr>
+<tr>
+<td headers="Column name" class="gt_row gt_left">estimate_name</td>
+<td headers="Column type" class="gt_row gt_left">character</td>
+<td headers="is NA allowed?" class="gt_row gt_left">No</td>
+<td headers="Requirements" class="gt_row gt_left">snake_case</td>
+</tr>
+<tr>
+<td headers="Column name" class="gt_row gt_left">estimate_type</td>
+<td headers="Column type" class="gt_row gt_left">character</td>
+<td headers="is NA allowed?" class="gt_row gt_left">No</td>
+<td headers="Requirements" class="gt_row gt_left">estimateTypeChoices()</td>
+</tr>
+<tr>
+<td headers="Column name" class="gt_row gt_left">estimate_value</td>
+<td headers="Column type" class="gt_row gt_left">character</td>
+<td headers="is NA allowed?" class="gt_row gt_left">No</td>
+<td headers="Requirements" class="gt_row gt_left">NA</td>
+</tr>
+<tr>
+<td headers="Column name" class="gt_row gt_left">additional_name</td>
+<td headers="Column type" class="gt_row gt_left">character</td>
+<td headers="is NA allowed?" class="gt_row gt_left">No</td>
+<td headers="Requirements" class="gt_row gt_left">name3</td>
+</tr>
+<tr>
+<td headers="Column name" class="gt_row gt_left">additional_level</td>
+<td headers="Column type" class="gt_row gt_left">character</td>
+<td headers="is NA allowed?" class="gt_row gt_left">No</td>
+<td headers="Requirements" class="gt_row gt_left">level3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section level3">
+<h3 id="settings">Settings<a class="anchor" aria-label="anchor" href="#settings"></a>
+</h3>
+<p>The settings table provides one row per <code>result_id</code> with
+the settings used to generate those results, there is no limit of
+columns and parameters to be provided per result_id. But there is at
+least 3 values that should be provided:</p>
+<ul>
+<li>
+<code>resut_type</code> (1): it identifies the type of result
+provided. We would usually use the name of the function that generated
+that set of result in snake_case. Example if the function that generates
+the summarised result is named <em>summariseMyCustomData</em> and then
+the used result_type would be: <em>summarise_my_custom_data</em>.</li>
+<li>
+<code>package_name</code> (2): name of the package that generated
+the result type.</li>
+<li>
+<code>package_version</code> (3): version of the package that
+generated the result type.</li>
+</ul>
+<p>All those columns are required to be characters, but this restriction
+does not apply to other extra columns.</p>
+</div>
+<div class="section level3">
+<h3 id="newsummarisedresult">newSummarisedResult<a class="anchor" aria-label="anchor" href="#newsummarisedresult"></a>
+</h3>
+<p>The <code><a href="../reference/newSummarisedResult.html">newSummarisedResult()</a></code> function can be used to create
+<em><summarised_result></summarised_result></em> objects, the inputs of this function are:
+the summarised_result table that must fulfill the conditions specified
+above; and the settings argument. The settings argument can be NULL or
+do not contain all the required columns and they will be populated by
+default (a warning will appear). Let’s see a very simple example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://darwin-eu-dev.github.io/omopgenerics/">omopgenerics</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>    <span class="st">"result_id"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
-<span>    <span class="st">"cdm_name"</span> <span class="op">=</span> <span class="st">"my_cdm"</span>,</span>
-<span>    <span class="st">"group_name"</span> <span class="op">=</span> <span class="st">"cohort_name"</span>,</span>
-<span>    <span class="st">"group_level"</span> <span class="op">=</span> <span class="st">"cohort1"</span>,</span>
-<span>    <span class="st">"strata_name"</span> <span class="op">=</span> <span class="st">"sex"</span>,</span>
-<span>    <span class="st">"strata_level"</span> <span class="op">=</span> <span class="st">"male"</span>,</span>
-<span>    <span class="st">"variable_name"</span> <span class="op">=</span> <span class="st">"Age group"</span>,</span>
-<span>    <span class="st">"variable_level"</span> <span class="op">=</span> <span class="st">"10 to 50"</span>,</span>
-<span>    <span class="st">"estimate_name"</span> <span class="op">=</span> <span class="st">"count"</span>,</span>
-<span>    <span class="st">"estimate_type"</span> <span class="op">=</span> <span class="st">"numeric"</span>,</span>
-<span>    <span class="st">"estimate_value"</span> <span class="op">=</span> <span class="st">"5"</span>,</span>
-<span>    <span class="st">"additional_name"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
-<span>    <span class="st">"additional_level"</span> <span class="op">=</span> <span class="st">"overall"</span></span>
-<span>  <span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  result_id <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  cdm_name <span class="op">=</span> <span class="st">"my_cdm"</span>,</span>
+<span>  group_name <span class="op">=</span> <span class="st">"cohort_name"</span>,</span>
+<span>  group_level <span class="op">=</span> <span class="st">"cohort1"</span>,</span>
+<span>  strata_name <span class="op">=</span> <span class="st">"sex"</span>,</span>
+<span>  strata_level <span class="op">=</span> <span class="st">"male"</span>,</span>
+<span>  variable_name <span class="op">=</span> <span class="st">"Age group"</span>,</span>
+<span>  variable_level <span class="op">=</span> <span class="st">"10 to 50"</span>,</span>
+<span>  estimate_name <span class="op">=</span> <span class="st">"count"</span>,</span>
+<span>  estimate_type <span class="op">=</span> <span class="st">"numeric"</span>,</span>
+<span>  estimate_value <span class="op">=</span> <span class="st">"5"</span>,</span>
+<span>  additional_name <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>  additional_level <span class="op">=</span> <span class="st">"overall"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newSummarisedResult.html">newSummarisedResult</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="va">result</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 1</span></span>
 <span><span class="co">#&gt; Columns: 13</span></span>
 <span><span class="co">#&gt; $ result_id        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1</span></span>
@@ -116,14 +735,23 @@ esitmate</p>
 <span><span class="co">#&gt; $ estimate_type    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "numeric"</span></span>
 <span><span class="co">#&gt; $ estimate_value   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "5"</span></span>
 <span><span class="co">#&gt; $ additional_name  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall"</span></span>
-<span><span class="co">#&gt; $ additional_level <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall"</span></span></code></pre></div>
+<span><span class="co">#&gt; $ additional_level <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall"</span></span>
+<span><span class="fu"><a href="../reference/settings.html">settings</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   result_id result_type package_name package_version</span></span>
+<span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>         1 <span style="color: #949494;">""</span>          <span style="color: #949494;">""</span>           <span style="color: #949494;">""</span></span></span></code></pre></div>
 <p>We can also associate settings with our results. These will typically
 be used to explain how the result was created.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newSummarisedResult.html">newSummarisedResult</a></span><span class="op">(</span><span class="va">x</span>, </span>
-<span>                    settings <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>result_id <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                                             package <span class="op">=</span> <span class="st">"PatientProfiles"</span>,</span>
-<span>                                             study <span class="op">=</span> <span class="st">"my_characterisation_study"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newSummarisedResult.html">newSummarisedResult</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">x</span>, </span>
+<span>  settings <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    result_id <span class="op">=</span> <span class="fl">1L</span>, </span>
+<span>    package_name <span class="op">=</span> <span class="st">"PatientProfiles"</span>,</span>
+<span>    study <span class="op">=</span> <span class="st">"my_characterisation_study"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">result</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 1</span></span>
@@ -142,64 +770,75 @@ be used to explain how the result was created.</p>
 <span><span class="co">#&gt; $ additional_name  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall"</span></span>
 <span><span class="co">#&gt; $ additional_level <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall"</span></span>
 <span><span class="fu"><a href="../reference/settings.html">settings</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 6</span></span></span>
-<span><span class="co">#&gt;   result_id package         study       result_type package_name package_version</span></span>
-<span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>         1 PatientProfiles my_charact… <span style="color: #949494;">""</span>          <span style="color: #949494;">""</span>           <span style="color: #949494;">""</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
+<span><span class="co">#&gt;   result_id package_name    study                    result_type package_version</span></span>
+<span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>         1 PatientProfiles my_characterisation_stu… <span style="color: #949494;">""</span>          <span style="color: #949494;">""</span></span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="combining-summarised-results">Combining summarised results<a class="anchor" aria-label="anchor" href="#combining-summarised-results"></a>
 </h2>
+<p>Multiple summarised results objects can be combined using the bind
+function. Result id will be assigned for each set of results with the
+same settings. So if two groups of results have the same settings
+althought being in different objects they will be merged into a single
+one.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result_1</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>    <span class="st">"result_id"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
-<span>    <span class="st">"cdm_name"</span> <span class="op">=</span> <span class="st">"my_cdm"</span>,</span>
-<span>    <span class="st">"group_name"</span> <span class="op">=</span> <span class="st">"cohort_name"</span>,</span>
-<span>    <span class="st">"group_level"</span> <span class="op">=</span> <span class="st">"cohort1"</span>,</span>
-<span>    <span class="st">"strata_name"</span> <span class="op">=</span> <span class="st">"sex"</span>,</span>
-<span>    <span class="st">"strata_level"</span> <span class="op">=</span> <span class="st">"male"</span>,</span>
-<span>    <span class="st">"variable_name"</span> <span class="op">=</span> <span class="st">"Age group"</span>,</span>
-<span>    <span class="st">"variable_level"</span> <span class="op">=</span> <span class="st">"10 to 50"</span>,</span>
-<span>    <span class="st">"estimate_name"</span> <span class="op">=</span> <span class="st">"count"</span>,</span>
-<span>    <span class="st">"estimate_type"</span> <span class="op">=</span> <span class="st">"numeric"</span>,</span>
-<span>    <span class="st">"estimate_value"</span> <span class="op">=</span> <span class="st">"5"</span>,</span>
-<span>    <span class="st">"additional_name"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
-<span>    <span class="st">"additional_level"</span> <span class="op">=</span> <span class="st">"overall"</span></span>
+<code class="sourceCode R"><span><span class="va">result1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newSummarisedResult.html">newSummarisedResult</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    result_id <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>    cdm_name <span class="op">=</span> <span class="st">"my_cdm"</span>,</span>
+<span>    group_name <span class="op">=</span> <span class="st">"cohort_name"</span>,</span>
+<span>    group_level <span class="op">=</span> <span class="st">"cohort1"</span>,</span>
+<span>    strata_name <span class="op">=</span> <span class="st">"sex"</span>,</span>
+<span>    strata_level <span class="op">=</span> <span class="st">"male"</span>,</span>
+<span>    variable_name <span class="op">=</span> <span class="st">"Age group"</span>,</span>
+<span>    variable_level <span class="op">=</span> <span class="st">"10 to 50"</span>,</span>
+<span>    estimate_name <span class="op">=</span> <span class="st">"count"</span>,</span>
+<span>    estimate_type <span class="op">=</span> <span class="st">"numeric"</span>,</span>
+<span>    estimate_value <span class="op">=</span> <span class="st">"5"</span>,</span>
+<span>    additional_name <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    additional_level <span class="op">=</span> <span class="st">"overall"</span></span>
+<span>  <span class="op">)</span>, </span>
+<span>  settings <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    result_id <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>    package_name <span class="op">=</span> <span class="st">"PatientProfiles"</span>,</span>
+<span>    package_version <span class="op">=</span> <span class="st">"1.0.0"</span>,</span>
+<span>    study <span class="op">=</span> <span class="st">"my_characterisation_study"</span>,</span>
+<span>    result_type <span class="op">=</span> <span class="st">"stratified_by_age_group"</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="va">result_1_settings</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>result_id <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                                   package_name <span class="op">=</span> <span class="st">"PatientProfiles"</span>,</span>
-<span>                                   package_version <span class="op">=</span> <span class="st">"1.0.0"</span>,</span>
-<span>                                   study <span class="op">=</span> <span class="st">"my_characterisation_study"</span>,</span>
-<span>                                   result_type <span class="op">=</span> <span class="st">"stratified_by_age_group"</span><span class="op">)</span></span>
-<span><span class="va">result_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newSummarisedResult.html">newSummarisedResult</a></span><span class="op">(</span><span class="va">result_1</span>, settings <span class="op">=</span> <span class="va">result_1_settings</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span></span>
-<span><span class="va">result_2</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>    <span class="st">"result_id"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>,</span>
-<span>    <span class="st">"cdm_name"</span> <span class="op">=</span> <span class="st">"my_cdm"</span>,</span>
-<span>    <span class="st">"group_name"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
-<span>    <span class="st">"group_level"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
-<span>    <span class="st">"strata_name"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
-<span>    <span class="st">"strata_level"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
-<span>    <span class="st">"variable_name"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
-<span>    <span class="st">"variable_level"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
-<span>    <span class="st">"estimate_name"</span> <span class="op">=</span> <span class="st">"count"</span>,</span>
-<span>    <span class="st">"estimate_type"</span> <span class="op">=</span> <span class="st">"numeric"</span>,</span>
-<span>    <span class="st">"estimate_value"</span> <span class="op">=</span> <span class="st">"55"</span>,</span>
-<span>    <span class="st">"additional_name"</span> <span class="op">=</span> <span class="st">"overall"</span>,</span>
-<span>    <span class="st">"additional_level"</span> <span class="op">=</span> <span class="st">"overall"</span></span>
+<span><span class="va">result2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newSummarisedResult.html">newSummarisedResult</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    result_id <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>    cdm_name <span class="op">=</span> <span class="st">"my_cdm"</span>,</span>
+<span>    group_name <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    group_level <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    strata_name <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    strata_level <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    variable_name <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    variable_level <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    estimate_name <span class="op">=</span> <span class="st">"count"</span>,</span>
+<span>    estimate_type <span class="op">=</span> <span class="st">"numeric"</span>,</span>
+<span>    estimate_value <span class="op">=</span> <span class="st">"55"</span>,</span>
+<span>    additional_name <span class="op">=</span> <span class="st">"overall"</span>,</span>
+<span>    additional_level <span class="op">=</span> <span class="st">"overall"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  settings <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>    result_id <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>    package_name <span class="op">=</span> <span class="st">"PatientProfiles"</span>,</span>
+<span>    package_version <span class="op">=</span> <span class="st">"1.0.0"</span>,</span>
+<span>    study <span class="op">=</span> <span class="st">"my_characterisation_study"</span>,</span>
+<span>    result_type <span class="op">=</span> <span class="st">"overall_analysis"</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="va">result_2_settings</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>result_id <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                                   package_name <span class="op">=</span> <span class="st">"PatientProfiles"</span>,</span>
-<span>                                   package_version <span class="op">=</span> <span class="st">"1.0.0"</span>,</span>
-<span>                                   study <span class="op">=</span> <span class="st">"my_characterisation_study"</span>,</span>
-<span>                                   result_type <span class="op">=</span> <span class="st">"overall_analysis"</span><span class="op">)</span></span>
-<span><span class="va">result_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/newSummarisedResult.html">newSummarisedResult</a></span><span class="op">(</span><span class="va">result_2</span>, settings <span class="op">=</span> <span class="va">result_2_settings</span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Now we have our results we can combine them using bind. Because the
 two sets of results contain the same result ID, when the results are
 combined this will be automatically updated.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bind.html">bind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">result_1</span>, <span class="va">result_2</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bind.html">bind</a></span><span class="op">(</span><span class="va">result1</span>, <span class="va">result2</span><span class="op">)</span></span>
 <span><span class="va">result</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 2</span></span>
@@ -230,7 +869,8 @@ combined this will be automatically updated.</p>
 <p>Once we have a summarised result, we can suppress the results based
 on some minimum cell count.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/suppress.html">suppress</a></span><span class="op">(</span><span class="va">result</span>, minCellCount <span class="op">=</span> <span class="fl">7</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/suppress.html">suppress</a></span><span class="op">(</span>minCellCount <span class="op">=</span> <span class="fl">7</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 2</span></span>
 <span><span class="co">#&gt; Columns: 13</span></span>
@@ -247,6 +887,102 @@ on some minimum cell count.</p>
 <span><span class="co">#&gt; $ estimate_value   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> NA, "55"</span></span>
 <span><span class="co">#&gt; $ additional_name  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall"</span></span>
 <span><span class="co">#&gt; $ additional_level <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall"</span></span></code></pre></div>
+<p>The minCellCount suppression is recorded in the settings of the
+object:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">resultSuppressed</span> <span class="op">&lt;-</span> <span class="va">result</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/suppress.html">suppress</a></span><span class="op">(</span>minCellCount <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/settings.html">settings</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 5</span></span></span>
+<span><span class="co">#&gt;   result_id package_name    package_version study                    result_type</span></span>
+<span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>         1 PatientProfiles 1.0.0           my_characterisation_stu… stratified…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>         2 PatientProfiles 1.0.0           my_characterisation_stu… overall_an…</span></span>
+<span><span class="fu"><a href="../reference/settings.html">settings</a></span><span class="op">(</span><span class="va">resultSuppressed</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 6</span></span></span>
+<span><span class="co">#&gt;   result_id package_name    package_version study     result_type min_cell_count</span></span>
+<span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>         1 PatientProfiles 1.0.0           my_chara… stratified…             10</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>         2 PatientProfiles 1.0.0           my_chara… overall_an…             10</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="how-suppression-works">How suppression works<a class="anchor" aria-label="anchor" href="#how-suppression-works"></a>
+</h3>
+<p>There are three levels of suppression:</p>
+<ul>
+<li><p><strong>record level suppression</strong>: records where the word
+‘count’ is contained in the “estimate_name” value will be suppressed if
+their numeric value is smaller than minCellCount.</p></li>
+<li><p><strong>linked suppression</strong>: if a count of estimate_name:
+‘my_precious_count’ is suppressed and it exist an estimate named
+‘my_precious_percentage’ with the same: result_id, cdm_name, group_name,
+group_level, strata_name, strata_level, variable_name, variable_level,
+additional_name, additional_level; then this estimate will also be
+suppressed.</p></li>
+<li><p><strong>suppression at variable_name level</strong>: all the
+estimates with the same: result_id, cdm_name, group_name, group_level,
+strata_name, strata_level, variable_name, additional_name,
+additional_level; will be suppressed if there exist a there exist an
+estimate with estimate_name %in% c(“count”, “denominator_count”,
+“outcome_count”, “record_count”, “subject_count”) that is
+suppressed.</p></li>
+<li><p><strong>suppression at group level</strong>: all the estimates
+with the same: result_id, cdm_name, group_name, group_level,
+strata_name, strata_level, additional_name, additional_level; will be
+suppressed if there exist a variable_name %in% c(“number subjects”,
+“number records”) that is suppressed.</p></li>
+</ul>
+<p>You can see the source code for cell suppression here: <a href="https://github.com/darwin-eu-dev/omopgenerics/blob/main/R/methodSuppress.R" class="external-link uri">https://github.com/darwin-eu-dev/omopgenerics/blob/main/R/methodSuppress.R</a>.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="export-and-import-summarised-results">Export and import summarised results<a class="anchor" aria-label="anchor" href="#export-and-import-summarised-results"></a>
+</h2>
+<p>The summarised_result object can be exported and imported as a .csv
+file with the following functions:</p>
+<ul>
+<li><p><strong>importSummarisedResult()</strong></p></li>
+<li><p><strong>exportSummarisedResult()</strong></p></li>
+</ul>
+<p>Note that exportSummarisedResult also suppresses the results.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/exportSummarisedResult.html">exportSummarisedResult</a></span><span class="op">(</span><span class="va">result</span>, path <span class="op">=</span> <span class="va">x</span>, fileName <span class="op">=</span> <span class="st">"result.csv"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="va">files</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "result.csv"</span></span></code></pre></div>
+<p>Note that the settings are included in the csv file:</p>
+<pre><code><span><span class="co">#&gt; "result_id","cdm_name","group_name","group_level","strata_name","strata_level","variable_name","variable_level","estimate_name","estimate_type","estimate_value","additional_name","additional_level" 1,"my_cdm","cohort_name","cohort1","sex","male","Age group","10 to 50","count","numeric","5","overall","overall" 2,"my_cdm","overall","overall","overall","overall","overall","overall","count","numeric","55","overall","overall" 1,NA,"overall","overall","overall","overall","settings",NA,"package_name","character","PatientProfiles","overall","overall" 1,NA,"overall","overall","overall","overall","settings",NA,"package_version","character","1.0.0","overall","overall" 1,NA,"overall","overall","overall","overall","settings",NA,"study","character","my_characterisation_study","overall","overall" 1,NA,"overall","overall","overall","overall","settings",NA,"result_type","character","stratified_by_age_group","overall","overall" 1,NA,"overall","overall","overall","overall","settings",NA,"min_cell_count","integer","5","overall","overall" 2,NA,"overall","overall","overall","overall","settings",NA,"package_name","character","PatientProfiles","overall","overall" 2,NA,"overall","overall","overall","overall","settings",NA,"package_version","character","1.0.0","overall","overall" 2,NA,"overall","overall","overall","overall","settings",NA,"study","character","my_characterisation_study","overall","overall" 2,NA,"overall","overall","overall","overall","settings",NA,"result_type","character","overall_analysis","overall","overall" 2,NA,"overall","overall","overall","overall","settings",NA,"min_cell_count","integer","5","overall","overall"</span></span></code></pre>
+<p>You can later import the results back with
+<code><a href="../reference/importSummarisedResult.html">importSummarisedResult()</a></code>:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/importSummarisedResult.html">importSummarisedResult</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"result.csv"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "summarised_result" "omop_result"       "tbl_df"           </span></span>
+<span><span class="co">#&gt; [4] "tbl"               "data.frame"</span></span>
+<span><span class="va">res</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 2</span></span>
+<span><span class="co">#&gt; Columns: 13</span></span>
+<span><span class="co">#&gt; $ result_id        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> 1, 2</span></span>
+<span><span class="co">#&gt; $ cdm_name         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "my_cdm", "my_cdm"</span></span>
+<span><span class="co">#&gt; $ group_name       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "cohort_name", "overall"</span></span>
+<span><span class="co">#&gt; $ group_level      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "cohort1", "overall"</span></span>
+<span><span class="co">#&gt; $ strata_name      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "sex", "overall"</span></span>
+<span><span class="co">#&gt; $ strata_level     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "male", "overall"</span></span>
+<span><span class="co">#&gt; $ variable_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Age group", "overall"</span></span>
+<span><span class="co">#&gt; $ variable_level   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "10 to 50", "overall"</span></span>
+<span><span class="co">#&gt; $ estimate_name    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "count", "count"</span></span>
+<span><span class="co">#&gt; $ estimate_type    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "numeric", "numeric"</span></span>
+<span><span class="co">#&gt; $ estimate_value   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "5", "55"</span></span>
+<span><span class="co">#&gt; $ additional_name  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall"</span></span>
+<span><span class="co">#&gt; $ additional_level <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "overall", "overall"</span></span>
+<span><span class="va">res</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/settings.html">settings</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 6</span></span></span>
+<span><span class="co">#&gt;   result_id package_name    package_version study     result_type min_cell_count</span></span>
+<span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>         1 PatientProfiles 1.0.0           my_chara… stratified…              5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>         2 PatientProfiles 1.0.0           my_chara… overall_an…              5</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
