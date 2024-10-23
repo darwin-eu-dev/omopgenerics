@@ -4,7 +4,14 @@
 \alias{compute.cdm_table}
 \title{Store results in a table.}
 \usage{
-\method{compute}{cdm_table}(x, name = NULL, temporary = NULL, overwrite = TRUE, ...)
+\method{compute}{cdm_table}(
+  x,
+  name = NULL,
+  temporary = NULL,
+  overwrite = TRUE,
+  logPrefix = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{Table in the cdm.}
@@ -16,6 +23,8 @@
 
 \item{overwrite}{Whether to overwrite previously existing table with name
 same.}
+
+\item{logPrefix}{Prefix to use when saving a log file.}
 
 \item{...}{For compatibility (not used).}
 }

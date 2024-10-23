@@ -21,4 +21,10 @@ test_that("logging queries does nothing if local cdm", {
     dplyr::tally() |>
     dplyr::compute())
 
+  withr::local_options("omopgenerics.log_sql_explain_path" =
+                         tempdir())
+  expect_no_error(result <- cdm$person |>
+                    dplyr::tally() |>
+                    dplyr::compute())
+
 })
