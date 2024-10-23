@@ -17,8 +17,8 @@ test_that("test validateCohortIdArgument", {
   cohort <- dplyr::tibble(
     cohort_definition_id = 1:4L, subject_id = 1L, cohort_start_date = Sys.Date(),
     cohort_end_date = Sys.Date()
-  )
-  class(cohort) <- c("cohort_table", "cdm_table")
+  ) |>
+    addClass(c("cohort_table", "cdm_table"))
   attr(cohort, "cohort_set") <- dplyr::tibble(
     "cohort_definition_id" = c(1L, 2L, 3L, 4L),
     "cohort_name" = c("cohort_a", "acetaminophen", "paracetamol", "cohort_ol")
