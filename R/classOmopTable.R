@@ -39,7 +39,7 @@ newOmopTable <- function(table, version = "5.3", cast = FALSE) {
   cols <- getColumns(table = attr(table, "tbl_name"),
                      version = version,
                      type = "cdm_table",
-                     required = TRUE)
+                     required = FALSE)
   checkColumnsCdm(table, name, cols)
   if (cast) table <- castOmopColumns(table, name, version)
 
