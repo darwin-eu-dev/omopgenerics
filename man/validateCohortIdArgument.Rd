@@ -2,7 +2,10 @@
 % Please edit documentation in R/validate.R
 \name{validateCohortIdArgument}
 \alias{validateCohortIdArgument}
-\title{Validate cohortId argument.}
+\title{Validate cohortId argument. CohortId can either be a cohort_definition_id
+value, a cohort_name or a tidyselect expression referinc to cohort_names. If
+you want to support tidyselect expressions please use the function as:
+\code{validateCohortIdArgument({{cohortId}}, cohort)}.}
 \usage{
 validateCohortIdArgument(
   cohortId,
@@ -21,5 +24,8 @@ validateCohortIdArgument(
 \item{call}{A call argument to pass to cli functions.}
 }
 \description{
-Validate cohortId argument.
+Validate cohortId argument. CohortId can either be a cohort_definition_id
+value, a cohort_name or a tidyselect expression referinc to cohort_names. If
+you want to support tidyselect expressions please use the function as:
+\code{validateCohortIdArgument({{cohortId}}, cohort)}.
 }
