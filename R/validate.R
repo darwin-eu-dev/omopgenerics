@@ -118,7 +118,10 @@ validateCohortArgument <- function(cohort,
   return(cohort)
 }
 
-#' Validate cohortId argument.
+#' Validate cohortId argument. CohortId can either be a cohort_definition_id
+#' value, a cohort_name or a tidyselect expression referinc to cohort_names. If
+#' you want to support tidyselect expressions please use the function as:
+#' `validateCohortIdArgument({{cohortId}}, cohort)`.
 #'
 #' @param cohortId A cohortId vector to be validated.
 #' @param cohort A cohort_table object.
